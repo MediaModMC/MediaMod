@@ -189,7 +189,7 @@ public class MediaMod {
             e.printStackTrace();
         }
 
-        if(Settings.AUTO_COLOR_SELECTION) {
+        if(Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             BufferedImage image = DynamicTextureWrapper.getImage(url);
             color = averageColor(image, 0, 0, image.getWidth(), image.getHeight()).getRGB();
 
@@ -299,7 +299,7 @@ public class MediaMod {
 
         // Draw Progress Bar
         Gui.drawRect(textX, 33, textX + 90, 41, Color.darkGray.darker().getRGB());
-        if(Settings.AUTO_COLOR_SELECTION) {
+        if(Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color);
         } else {
             Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, Color.green.getRGB());
