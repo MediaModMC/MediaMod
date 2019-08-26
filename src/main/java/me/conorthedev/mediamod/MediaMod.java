@@ -8,6 +8,7 @@ import com.wrapper.spotify.model_objects.specification.Track;
 import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
+import me.conorthedev.mediamod.media.MediaHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.Multithreading;
@@ -108,8 +109,12 @@ public class MediaMod {
             LOGGER.error("Failed to register with analytics...");
         }
 
+        // Load the config
         LOGGER.info("Loading configuration...");
         Settings.loadConfig();
+
+        // Initialize the MediaHandler
+        MediaHandler.INSTANCE.initializeMediaHandler();
     }
 
     // If the tick is the first one

@@ -36,6 +36,7 @@ public class SpotifyHandler {
 
             server = null;
         }
+
         try {
             // Create a HTTP Server for the Spotify API to call back to (http://localhost:1337)
             server = HttpServer.create(new InetSocketAddress(1337), 0);
