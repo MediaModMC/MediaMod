@@ -40,12 +40,16 @@ public class Settings {
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
+
         if (load) SHOW_PLAYER = showPlayerProperty.getBoolean();
         else showPlayerProperty.setValue(SHOW_PLAYER);
+
         if (load) SPOTIFY = spotifyProperty.getBoolean();
         else spotifyProperty.setValue(SPOTIFY);
+
         if (load) SHOW_ALBUM_ART = albumArtProperty.getBoolean();
         else albumArtProperty.setValue(SHOW_ALBUM_ART);
+
         if (load) AUTO_COLOR_SELECTION = autoColorProperty.getBoolean();
         else autoColorProperty.setValue(AUTO_COLOR_SELECTION);
     }

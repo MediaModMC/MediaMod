@@ -76,10 +76,8 @@ public class BaseMod {
                 manager.processReceivedPackets();
                 manager.checkDisconnected();
             }
-            if (successful.get()) {
-                return true;
-            }
-            return false;
+
+            return successful.get();
         } catch (IOException ex) {
             ex.printStackTrace();
             return false;

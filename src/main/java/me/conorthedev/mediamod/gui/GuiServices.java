@@ -1,6 +1,7 @@
 package me.conorthedev.mediamod.gui;
 
 import me.conorthedev.mediamod.gui.util.CustomButton;
+import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.gui.GuiButton;
@@ -11,7 +12,7 @@ import net.minecraft.util.EnumChatFormatting;
 import java.awt.*;
 import java.io.IOException;
 
-public class GuiServices extends GuiScreen {
+public class GuiServices extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
@@ -44,28 +45,27 @@ public class GuiServices extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
-        if (button.id == 1) {
-            this.mc.displayGuiScreen(null);
-            this.mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Opening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'"));
-            SpotifyHandler.connectSpotify();
-        } else if (button.id == 0) {
-            this.mc.displayGuiScreen(new GuiMediaModSettings());
-        } else if (button.id == 2) {
-            SpotifyHandler.spotifyApi = null;
-            SpotifyHandler.logged = false;
+
+        switch (button.id) {
+            case 0:
+                this.mc.displayGuiScreen(new GuiMediaModSettings());
+                break;
+
+            case 1:
+                this.mc.displayGuiScreen(null);
+                this.mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Opening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'"));
+                SpotifyHandler.connectSpotify();
+                break;
+
+            case 2:
+                SpotifyHandler.spotifyApi = null;
+                SpotifyHandler.logged = false;
+                break;
         }
     }
 
     @Override
     public boolean doesGuiPauseGame() {
         return false;
-    }
-
-    private String getSuffix(boolean option, String label) {
-        return option ? (label + ": " + EnumChatFormatting.GREEN + "YES") : (label + ": " + EnumChatFormatting.RED + "NO");
-    }
-
-    private int getRowPos(int rowNumber) {
-        return 55 + rowNumber * 23;
     }
 }

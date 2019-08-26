@@ -2,12 +2,12 @@ package me.conorthedev.mediamod.gui;
 
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
+import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import static java.awt.Color.white;
 
-public class GuiPlayerSettings extends GuiScreen {
+public class GuiPlayerSettings extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
@@ -38,16 +38,23 @@ public class GuiPlayerSettings extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
-        if (button.id == 1) {
-            Settings.SHOW_ALBUM_ART = !Settings.SHOW_ALBUM_ART;
-            button.displayString = getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art");
-            Settings.saveConfig();
-        } else if (button.id == 2) {
-            Settings.AUTO_COLOR_SELECTION = !Settings.AUTO_COLOR_SELECTION;
-            button.displayString = getSuffix(Settings.AUTO_COLOR_SELECTION, "Auto Color Selection");
-            Settings.saveConfig();
-        } else if (button.id == 0) {
-            this.mc.displayGuiScreen(new GuiMediaModSettings());
+
+        switch (button.id) {
+            case 0:
+                mc.displayGuiScreen(new GuiMediaModSettings());
+                break;
+
+            case 1:
+                Settings.SHOW_ALBUM_ART = !Settings.SHOW_ALBUM_ART;
+                button.displayString = getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art");
+                Settings.saveConfig();
+                break;
+
+            case 2:
+                Settings.AUTO_COLOR_SELECTION = !Settings.AUTO_COLOR_SELECTION;
+                button.displayString = getSuffix(Settings.AUTO_COLOR_SELECTION, "Auto Color Selection");
+                Settings.saveConfig();
+                break;
         }
     }
 
@@ -73,13 +80,5 @@ public class GuiPlayerSettings extends GuiScreen {
             fontRendererObj.drawString("Song Name", width / 2 - 100 + 5, height / 2 - 15 + 6, -1);
             fontRendererObj.drawString("by Artist Name", width / 2 - 100 + 5, height / 2 - 15 + 15, white.darker().getRGB());
         }
-    }
-
-    private String getSuffix(boolean option, String label) {
-        return option ? (label + ": " + EnumChatFormatting.GREEN + "YES") : (label + ": " + EnumChatFormatting.RED + "NO");
-    }
-
-    private int getRowPos(int rowNumber) {
-        return 55 + rowNumber * 23;
     }
 }
