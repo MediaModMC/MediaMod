@@ -207,11 +207,8 @@ public class MediaMod {
 
         // Establish track metadata (name, artist, spotify id)
         String title = track.getName();
-        ArrayList<String> artistSimplifiedList = new ArrayList<>();
-
-        for (ArtistSimplified artist : track.getArtists()) {
-            artistSimplifiedList.add(artist.getName());
-        }
+        ArrayList<String> artistSimplifiedList =
+                Arrays.stream(track.getArtists()).map(ArtistSimplified::getName).collect(Collectors.toCollection(ArrayList::new));
 
         String artists = String.join(", ", artistSimplifiedList);
 
