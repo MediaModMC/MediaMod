@@ -1,15 +1,12 @@
 ## MediaMod
-View your currently playing song inside of Minecraft!
+View your currently playing Media inside of Minecraft!
+In beta at the moment, expect some bugs!
 
 ### Supported Services
 - Spotify
 
 ### Planned Services
-- Deezer
-- iTunes
-- Tidal
-- YouTube / YouTube Music
-- & more
+- YouTube, SoundCloud, etc. (using a browser extension)
 
 ### Credits
 - [ConorTheDev](https://twitter.com/ConorTheDev) - Developing the Mod
