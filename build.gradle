@@ -57,6 +57,7 @@ jar {
     from configurations.provided.asFileTree.files.collect {
         zipTree(it)
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 configurations {
