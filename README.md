@@ -1,7 +1,10 @@
 ## MediaMod
+![](https://img.shields.io/github/downloads/MediaModMC/MediaMod/v0.0.1/total) ![](https://img.shields.io/github/downloads/MediaModMC/MediaMod/v0.0.1/total)
+
+
 View your current song in Minecraft with support for services like Spotify, YouTube, SoundCloud & more!
 
-*psst, you should join our [discord server](https://discord.gg/VSMdaRX)*
+*psst, you should join our [discord server](https://discord.gg/VSMdaRX)
 
 ### About MediaMod
 MediaMod is a Minecraft Mod that shows your current song in Minecraft, it started as an idea in my head when Spotify changed their API so most Spotify Implementations no longer worked inside Minecraft! I decided to make a mod to support Spotify & other services
