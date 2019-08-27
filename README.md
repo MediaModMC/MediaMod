@@ -1,5 +1,5 @@
 ## MediaMod
-![](https://img.shields.io/github/downloads/MediaModMC/MediaMod/v0.0.1/total) ![](https://img.shields.io/github/downloads/MediaModMC/MediaMod/v0.0.1/total)
+![](https://img.shields.io/github/downloads/MediaModMC/MediaMod/v0.0.1/total)
 
 
 View your current song in Minecraft with support for services like Spotify, YouTube, SoundCloud & more!
