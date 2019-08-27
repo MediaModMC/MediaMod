@@ -32,7 +32,7 @@ allprojects {
 }
 
 dependencies {
-    provided 'com.github.thelinmichael:spotify-web-api-java:master-SNAPSHOT'
+    //provided 'com.github.thelinmichael:spotify-web-api-java:master-SNAPSHOT'
 }
 
 processResources

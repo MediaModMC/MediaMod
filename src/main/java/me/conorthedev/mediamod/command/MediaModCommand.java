@@ -1,6 +1,8 @@
 package me.conorthedev.mediamod.command;
 
 import me.conorthedev.mediamod.gui.GuiMediaModSettings;
+import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -38,6 +40,7 @@ public class MediaModCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         TickScheduler.INSTANCE.schedule(1, () -> Minecraft.getMinecraft().displayGuiScreen(new GuiMediaModSettings()));
+        System.out.println(SpotifyHandler.spotifyApi.getAccessToken());
     }
 
     @Override

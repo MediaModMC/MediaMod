@@ -1,23 +1,15 @@
 package me.conorthedev.mediamod;
 
-import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.miscellaneous.CurrentlyPlayingContext;
-import com.wrapper.spotify.model_objects.specification.Artist;
-import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
-import com.wrapper.spotify.model_objects.specification.Track;
 import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.media.MediaHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
-import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,22 +20,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.NumberFormat;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static java.awt.Color.white;
 
@@ -78,12 +64,14 @@ public class MediaMod {
      */
     private static final HashMap<BufferedImage, Color> avgColorCache = new HashMap<>();
 
+    /*
     /**
      * The current song
      *
      * @see CurrentlyPlayingContext
-     */
+
     private CurrentlyPlayingContext currentlyPlayingContext = null;
+    */
 
     /**
      * Fired when Minecraft is starting
@@ -126,6 +114,7 @@ public class MediaMod {
      * @param event - RenderGameOverlayEvent
      * @see RenderGameOverlayEvent
      */
+    /*
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent event) {
         if (first) {
@@ -157,7 +146,7 @@ public class MediaMod {
             }
         }
     }
-
+*/
     // The concatenated name length
     private int concatNameCount = 0;
     // If the tick is the first one for renderSpotify
@@ -168,6 +157,7 @@ public class MediaMod {
     /**
      * Renders the Spotify HUD
      */
+    /*
     private void renderSpotify() {
         // Initialize a font renderer
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
@@ -218,13 +208,6 @@ public class MediaMod {
         if (title.length() > 17) {
             // Concatenate the string if the length is larger than 17, it will appear like this:
             // Initial String: HELLO WORLD!
-            /*
-             HELLO WORLD
-             ELLO WORLD!
-             LLO WORLD!
-             LO WORLD!   H
-             O WORLD! HE
-            */
 
             // Set the concatenated title to the title + 3 spaces + the title
             AtomicInteger concatNameCount2 = new AtomicInteger(concatNameCount + 17);
@@ -255,13 +238,6 @@ public class MediaMod {
         if (artists.length() > 17) {
             // Concatenate the string if the length is larger than 17, it will appear like this:
             // Initial String: HELLO WORLD!
-            /*
-             HELLO WORLD
-             ELLO WORLD!
-             LLO WORLD!
-             LO WORLD!   H
-             O WORLD! HE
-            */
 
             // Set the concatenated title to the title + 3 spaces + the title
             AtomicInteger concatNameCount2 = new AtomicInteger(concatArtistCount + 17);
@@ -290,16 +266,6 @@ public class MediaMod {
         }
 
         // Get progress and duration in the Duration class
-       /* Duration progress = Duration.ofMillis(currentlyPlayingContext.getProgress_ms());
-        Duration duration = Duration.ofMillis(track.getDurationMs());
-
-        // Setup a number formatter for leading zeros
-        NumberFormat nf = NumberFormat.getInstance(Locale.UK);
-        nf.setMinimumIntegerDigits(2);
-
-        // Draw the time (pro:gress - dur:ation)
-        fontRenderer.drawString((progress.toMinutes() + ":" + nf.format(progress.minusMinutes(progress.toMinutes()).getSeconds())) + " - " + (duration.toMinutes() + ":" + nf.format(duration.minusMinutes(duration.toMinutes()).getSeconds())), textX, 33, -1);
-*/
         float percentComplete = (float) currentlyPlayingContext.getProgress_ms() / (float) track.getDurationMs();
 
         // Draw Progress Bar
@@ -322,6 +288,7 @@ public class MediaMod {
             GlStateManager.popMatrix();
         }
     }
+    */
 
     /**
      * Checks if a class exists by the class name

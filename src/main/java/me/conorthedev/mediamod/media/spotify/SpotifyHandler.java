@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.wrapper.spotify.SpotifyApi;
 import me.conorthedev.mediamod.MediaMod;
+import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
  * The main class for all Spotify-related things
  */
 public class SpotifyHandler {
-    private static HttpServer server = null;
-    public static SpotifyApi spotifyApi = null;
+    public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
+    private static HttpServer server = null;
 
     public static void connectSpotify() {
         if (server != null) {
@@ -46,11 +46,22 @@ public class SpotifyHandler {
             // Start the server
             server.start();
 
-            // Open the URL
-            Desktop desktop = Desktop.getDesktop();
-            desktop.browse(new URI("https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:1337%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
-        } catch (IOException | URISyntaxException e) {
+            attemptToOpenAuthURL();
+        } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void attemptToOpenAuthURL() {
+        Desktop desktop = Desktop.getDesktop();
+        String URL = "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:1337%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
+        try {
+            desktop.browse(new URI(URL));
+        } catch (URISyntaxException e) {
+            MediaMod.INSTANCE.LOGGER.fatal("Something has gone terribly wrong... SpotifyHandler:l59");
+            e.printStackTrace();
+        } catch (Exception e) {
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Failed to open browser with the Spotify Auth URL! Please go to this URL manually: " + URL));
         }
     }
 
@@ -91,14 +102,14 @@ public class SpotifyHandler {
             TokenAPIResponse tokenAPIResponse = g.fromJson(content.toString(), TokenAPIResponse.class);
 
             // Put into the Spotify API
-            spotifyApi = SpotifyApi.builder().setAccessToken(tokenAPIResponse.access_token).setRefreshToken(tokenAPIResponse.refresh_token).build();
+            spotifyApi = new SpotifyAPI(tokenAPIResponse.access_token, tokenAPIResponse.refresh_token);
 
             if (spotifyApi.getRefreshToken() != null) {
                 logged = true;
                 // Tell the user that they were logged in
                 Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN + "" + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
                 if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT) {
-                    Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + spotifyApi.getInformationAboutUsersCurrentPlayback().build().execute().getItem().getName() + " by " + spotifyApi.getInformationAboutUsersCurrentPlayback().build().execute().getItem().getArtists()[0].getName()));
+                    Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + spotifyApi.getCurrentTrack().item.name + " by " + spotifyApi.getCurrentTrack().item.album.artists[0].name));
                 }
             }
         } catch (Exception e) {
