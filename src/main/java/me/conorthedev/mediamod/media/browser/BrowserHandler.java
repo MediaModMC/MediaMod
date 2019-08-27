@@ -65,7 +65,7 @@ public class BrowserHandler implements IMediaHandler {
             throw new HandlerInitializationException(e);
         }
 
-        LOGGER.info("MediaHandler initialized and ready!");
+        LOGGER.info("Browser Handler initialized and ready!");
 
         INITIALIZED = true;
     }
