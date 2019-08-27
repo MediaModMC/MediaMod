@@ -22,7 +22,7 @@ public class ServiceHandler {
      *
      * @see org.apache.logging.log4j.Logger
      */
-    private final Logger LOGGER = LogManager.getLogger("MediaMod - MediaHandler");
+    private final Logger LOGGER = LogManager.getLogger("MediaMod - ServiceHandler");
 
     /**
      * List of Media Handlers registered
