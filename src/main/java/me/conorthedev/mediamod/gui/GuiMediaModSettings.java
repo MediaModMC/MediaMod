@@ -25,6 +25,11 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
         this.buttonList.add(new CustomButton(2, width / 2 - 100, getRowPos(2), getSuffix(Settings.ENABLED, "Enable Spotify")));
         this.buttonList.add(new CustomButton(3, width / 2 - 100, getRowPos(4), "Player Settings"));
         this.buttonList.add(new CustomButton(4, width / 2 - 100, getRowPos(5), "Services"));
+
+        buttonList.get(0).enabled = false;
+        buttonList.get(1).enabled = false;
+        buttonList.get(2).enabled = false;
+
         super.initGui();
     }
 
