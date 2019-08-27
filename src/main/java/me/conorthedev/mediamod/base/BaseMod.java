@@ -1,7 +1,6 @@
 package me.conorthedev.mediamod.base;
 
 import com.google.gson.JsonObject;
-import me.conorthedev.mediamod.MediaMod;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerLoginClient;
@@ -23,12 +22,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author ConorTheDev
  */
 public class BaseMod {
-    /**
-     * An instance of the mod class
-     *
-     * @see me.conorthedev.mediamod.MediaMod
-     */
-    public static final MediaMod MOD = MediaMod.INSTANCE;
 
     /**
      * Connects to analytics server
@@ -76,10 +69,8 @@ public class BaseMod {
                 manager.processReceivedPackets();
                 manager.checkDisconnected();
             }
-            if (successful.get()) {
-                return true;
-            }
-            return false;
+
+            return successful.get();
         } catch (IOException ex) {
             ex.printStackTrace();
             return false;

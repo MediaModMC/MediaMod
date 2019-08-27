@@ -135,7 +135,7 @@ public class DynamicTextureWrapper {
     }
 
     public static class WrappedResource {
-        public final ResourceLocation location;
+        final ResourceLocation location;
 
         WrappedResource(ResourceLocation location) {
             this.location = location;
@@ -143,7 +143,7 @@ public class DynamicTextureWrapper {
     }
 
     public static class WrappedImage {
-        public final BufferedImage image;
+        final BufferedImage image;
 
         WrappedImage(BufferedImage image) {
             this.image = image;
