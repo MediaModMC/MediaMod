@@ -10,5 +10,5 @@ In beta at the moment, expect some bugs!
 
 ### Credits
 - [ConorTheDev](https://twitter.com/ConorTheDev) - Developing the Mod
-- [thelinmichael](https://github.com/thelinmichael) - The Spotify API Implementation for Java
-- [KodingKing](https://twitter.com/KodingKing_) - fixing build issue
+- [KodingKing](https://twitter.com/KodingKing_) - Fixing a previous build issue
+- [asbyth](https://twitter.com/asbythh) - Code cleaning & optimizations
