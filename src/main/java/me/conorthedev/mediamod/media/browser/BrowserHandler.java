@@ -89,8 +89,9 @@ public class BrowserHandler implements IMediaHandler {
      */
     private static class ConnectionCallbackHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange t) {
+        public void handle(HttpExchange t) throws IOException {
             LOGGER.info("Established connection with MediaMod Browser Extension!");
+            t.sendResponseHeaders(200, 0);
         }
     }
 }

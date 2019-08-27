@@ -313,7 +313,7 @@ public class MediaMod {
         // Load Media Handlers
         ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
         serviceHandler.registerHandler(new BrowserHandler());
-        //serviceHandler.registerHandler(new SpotifyHandler());
+        serviceHandler.registerHandler(new SpotifyHandler());
 
         serviceHandler.initializeHandlers();
     }

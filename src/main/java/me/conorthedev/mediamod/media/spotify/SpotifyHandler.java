@@ -5,7 +5,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import me.conorthedev.mediamod.MediaMod;
+import me.conorthedev.mediamod.media.base.IMediaHandler;
+import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
+import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
@@ -25,32 +28,13 @@ import java.util.stream.Collectors;
 /**
  * The main class for all Spotify-related things
  */
-public class SpotifyHandler {
+public class SpotifyHandler implements IMediaHandler {
     public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
     private static HttpServer server = null;
 
     public static void connectSpotify() {
-        if (server != null) {
-            // Stop the server
-            server.stop(0);
-
-            server = null;
-        }
-
-        try {
-            // Create a HTTP Server for the Spotify API to call back to (http://localhost:1337)
-            server = HttpServer.create(new InetSocketAddress(1337), 0);
-            server.createContext("/callback", new SpotifyCallbackHandler());
-            server.setExecutor(null);
-
-            // Start the server
-            server.start();
-
-            attemptToOpenAuthURL();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        attemptToOpenAuthURL();
     }
 
     private static void attemptToOpenAuthURL() {
@@ -111,6 +95,42 @@ public class SpotifyHandler {
         } catch (Exception e) {
             MediaMod.INSTANCE.LOGGER.error("Error: " + e);
         }
+    }
+
+    @Override
+    public String getHandlerName() {
+        return "Spotify Handler";
+    }
+
+    @Override
+    public CurrentlyPlayingObject getCurrentTrack() {
+        try {
+            return spotifyApi.getCurrentTrack();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void initializeHandler() throws HandlerInitializationException {
+        // Create a HTTP Server for the Spotify API to call back to (http://localhost:1337)
+        try {
+            server = HttpServer.create(new InetSocketAddress(1337), 0);
+        } catch (IOException e) {
+            throw new HandlerInitializationException(e);
+        }
+
+        server.createContext("/callback", new SpotifyCallbackHandler());
+        server.setExecutor(null);
+
+        // Start the server
+        server.start();
+    }
+
+    @Override
+    public boolean handlerReady() {
+        return logged;
     }
 
     private static class SpotifyCallbackHandler implements HttpHandler {
