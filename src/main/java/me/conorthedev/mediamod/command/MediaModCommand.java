@@ -35,7 +35,6 @@ public class MediaModCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
         TickScheduler.INSTANCE.schedule(1, () -> Minecraft.getMinecraft().displayGuiScreen(new GuiMediaModSettings()));
-        System.out.println(SpotifyHandler.spotifyApi.getAccessToken());
     }
 
     @Override
