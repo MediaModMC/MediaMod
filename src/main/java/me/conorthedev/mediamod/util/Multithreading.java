@@ -19,6 +19,6 @@ public class Multithreading {
      * @param task Task to run
      */
     public static void runAsync(Runnable task) {
-        Multithreading.SERVICE.execute(task);
+        SERVICE.execute(task);
     }
 }

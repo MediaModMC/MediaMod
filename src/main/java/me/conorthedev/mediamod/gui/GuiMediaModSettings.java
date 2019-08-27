@@ -2,10 +2,10 @@ package me.conorthedev.mediamod.gui;
 
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
+import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.awt.*;
 import java.io.IOException;
@@ -15,7 +15,8 @@ import java.io.IOException;
  *
  * @see net.minecraft.client.gui.GuiScreen
  */
-public class GuiMediaModSettings extends GuiScreen {
+public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
+
     @Override
     public void initGui() {
         Settings.loadConfig();
@@ -38,22 +39,32 @@ public class GuiMediaModSettings extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        if (button.id == 0) {
-            Settings.ENABLED = !Settings.ENABLED;
-            button.displayString = getSuffix(Settings.ENABLED, "Enabled");
-            Settings.saveConfig();
-        } else if (button.id == 1) {
-            Settings.SHOW_PLAYER = !Settings.SHOW_PLAYER;
-            button.displayString = getSuffix(Settings.SHOW_PLAYER, "Show Player");
-            Settings.saveConfig();
-        } else if (button.id == 2) {
-            Settings.SPOTIFY = !Settings.SPOTIFY;
-            button.displayString = getSuffix(Settings.SPOTIFY, "Enable Spotify");
-            Settings.saveConfig();
-        } else if (button.id == 3) {
-            this.mc.displayGuiScreen(new GuiPlayerSettings());
-        } else if (button.id == 4) {
-            this.mc.displayGuiScreen(new GuiServices());
+        switch (button.id) {
+            case 0:
+                Settings.ENABLED = !Settings.ENABLED;
+                button.displayString = getSuffix(Settings.ENABLED, "Enabled");
+                Settings.saveConfig();
+                break;
+
+            case 1:
+                Settings.SHOW_PLAYER = !Settings.SHOW_PLAYER;
+                button.displayString = getSuffix(Settings.SHOW_PLAYER, "Show Player");
+                Settings.saveConfig();
+                break;
+
+            case 2:
+                Settings.SPOTIFY = !Settings.SPOTIFY;
+                button.displayString = getSuffix(Settings.SPOTIFY, "Enable Spotify");
+                Settings.saveConfig();
+                break;
+
+            case 3:
+                this.mc.displayGuiScreen(new GuiPlayerSettings());
+                break;
+
+            case 4:
+                this.mc.displayGuiScreen(new GuiServices());
+                break;
         }
 
         super.actionPerformed(button);
@@ -62,13 +73,5 @@ public class GuiMediaModSettings extends GuiScreen {
     @Override
     public boolean doesGuiPauseGame() {
         return false;
-    }
-
-    private String getSuffix(boolean option, String label) {
-        return option ? (label + ": " + EnumChatFormatting.GREEN + "YES") : (label + ": " + EnumChatFormatting.RED + "NO");
-    }
-
-    private int getRowPos(int rowNumber) {
-        return 55 + rowNumber * 23;
     }
 }

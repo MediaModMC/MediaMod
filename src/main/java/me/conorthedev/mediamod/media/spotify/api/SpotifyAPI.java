@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 /**
  * The MediaMod Implementation of the Spotify Web API in Java
@@ -53,13 +54,8 @@ public class SpotifyAPI {
         con.connect();
 
         // Read the output
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuilder content = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String content = in.lines().collect(Collectors.joining());
 
         // Close the input reader & the connection
         in.close();
@@ -68,7 +64,7 @@ public class SpotifyAPI {
         // Parse JSON
         Gson g = new Gson();
 
-        return g.fromJson(content.toString(), CurrentlyPlayingObject.class);
+        return g.fromJson(content, CurrentlyPlayingObject.class);
     }
 
     /**

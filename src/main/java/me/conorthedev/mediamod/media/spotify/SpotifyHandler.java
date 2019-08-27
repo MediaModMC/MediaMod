@@ -20,6 +20,7 @@ import java.net.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * The main class for all Spotify-related things
@@ -68,8 +69,8 @@ public class SpotifyHandler {
     private static void handleRequest(String code) {
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
         ses.scheduleAtFixedRate(() -> {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.BOLD + "INFO: " + EnumChatFormatting.RESET + EnumChatFormatting.RED + "Spotify Token Expired! Please login again in the GUI!"));
-            setLogged(false);
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "INFO: " + EnumChatFormatting.RESET + EnumChatFormatting.RED + "Spotify Token Expired! Please login again in the GUI!"));
+            logged = false;
         }, 1, 1, TimeUnit.HOURS);
 
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GRAY + "Exchanging authorization code for access token, this may take a moment..."));
@@ -85,13 +86,8 @@ public class SpotifyHandler {
             con.connect();
 
             // Read the output
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String content = in.lines().collect(Collectors.joining());
 
             // Close the input reader & the conncetion
             in.close();
@@ -99,7 +95,7 @@ public class SpotifyHandler {
 
             // Parse JSON
             Gson g = new Gson();
-            TokenAPIResponse tokenAPIResponse = g.fromJson(content.toString(), TokenAPIResponse.class);
+            TokenAPIResponse tokenAPIResponse = g.fromJson(content, TokenAPIResponse.class);
 
             // Put into the Spotify API
             spotifyApi = new SpotifyAPI(tokenAPIResponse.access_token, tokenAPIResponse.refresh_token);
@@ -107,18 +103,14 @@ public class SpotifyHandler {
             if (spotifyApi.getRefreshToken() != null) {
                 logged = true;
                 // Tell the user that they were logged in
-                Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN + "" + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
+                Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
                 if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT) {
-                    Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + spotifyApi.getCurrentTrack().item.name + " by " + spotifyApi.getCurrentTrack().item.album.artists[0].name));
+                    Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + spotifyApi.getCurrentTrack().item.name + " by " + spotifyApi.getCurrentTrack().item.album.artists[0].name));
                 }
             }
         } catch (Exception e) {
             MediaMod.INSTANCE.LOGGER.error("Error: " + e);
         }
-    }
-
-    private static void setLogged(boolean toSet) {
-        logged = toSet;
     }
 
     private static class SpotifyCallbackHandler implements HttpHandler {

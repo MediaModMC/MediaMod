@@ -9,12 +9,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import java.awt.*;
 
 public class CustomButton extends GuiButton {
+
     public CustomButton(int buttonId, int x, int y, String buttonText) {
         super(buttonId, x, y, buttonText);
-    }
-
-    public CustomButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
-        super(buttonId, x, y, widthIn, heightIn, buttonText);
     }
 
     @Override

@@ -5,7 +5,6 @@ import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.media.MediaHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
-import me.conorthedev.mediamod.media.spotify.api.artist.ArtistSimplified;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
 import me.conorthedev.mediamod.util.Metadata;
@@ -25,15 +24,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static java.awt.Color.white;
 
@@ -176,7 +176,7 @@ public class MediaMod {
             e.printStackTrace();
         }
 
-        if(Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
+        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             BufferedImage image = DynamicTextureWrapper.getImage(url);
             color = averageColor(image, 0, 0, image.getWidth(), image.getHeight()).getRGB();
 
@@ -189,11 +189,8 @@ public class MediaMod {
 
         // Establish track metadata (name, artist, spotify id)
         String title = track.name;
-        ArrayList<String> artistSimplifiedList = new ArrayList<>();
-
-        for (ArtistSimplified artist : track.album.artists) {
-            artistSimplifiedList.add(artist.name);
-        }
+        ArrayList<String> artistSimplifiedList = Arrays.stream(track.album.artists).map(artist ->
+                artist.name).collect(Collectors.toCollection(ArrayList::new));
 
         String artists = String.join(", ", artistSimplifiedList);
 
@@ -262,7 +259,7 @@ public class MediaMod {
 
         // Draw Progress Bar
         Gui.drawRect(textX, 33, textX + 90, 41, Color.darkGray.darker().getRGB());
-        if(Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
+        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color);
         } else {
             Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, Color.green.getRGB());
@@ -298,11 +295,14 @@ public class MediaMod {
         LOGGER.info("Attempting to register with analytics...");
 
         // Register with analytics
-        boolean successful = BaseMod.init();
-        if (successful) {
-            LOGGER.info("Successfully registered with analytics!");
-        } else {
-            LOGGER.error("Failed to register with analytics...");
+        if (Minecraft.getMinecraft().gameSettings.snooperEnabled) {
+            boolean successful = BaseMod.init();
+
+            if (successful) {
+                LOGGER.info("Successfully registered with analytics!");
+            } else {
+                LOGGER.error("Failed to register with analytics...");
+            }
         }
 
         // Load the config
