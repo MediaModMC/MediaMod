@@ -50,17 +50,15 @@ public class BrowserHandler implements IMediaHandler {
 
         try {
             LOGGER.info("Initializing Media Handler");
-            LOGGER.info("Starting server on port 1388");
 
             // Create a HTTP Server for the extension to send requests too (http://localhost:1388)
-
             server = HttpServer.create(new InetSocketAddress(1388), 0);
             server.setExecutor(null);
             server.createContext("/", new ConnectionCallbackHandler());
 
             // Start the server
             server.start();
-            LOGGER.info("Server started on port 3099");
+            LOGGER.info("Server started on port 1388");
         } catch (IOException e) {
             throw new HandlerInitializationException(e);
         }
