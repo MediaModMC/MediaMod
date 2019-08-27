@@ -167,9 +167,6 @@ public class SpotifyHandler implements IMediaHandler {
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
-
-            // Stop the server
-            server.stop(0);
         }
     }
 
