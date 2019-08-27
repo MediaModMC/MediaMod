@@ -12,7 +12,7 @@ import me.conorthedev.mediamod.media.spotify.api.track.Track;
 public class CurrentlyPlayingObject {
     //public CurrentlyPlayingContext context;
     //public int timestamp;
-    //public int progress_ms;
+    public int progress_ms;
     //public boolean is_playing;
     public Track item;
     //public String currently_playing_type;

@@ -12,7 +12,7 @@ public class Track {
     public Album album;
     //public String[] available_markets;
     //public int disc_number;
-    //public int duration_ms;
+    public int duration_ms;
     //public boolean explicit;
     //public ArrayListMultimap<String, String> external_ids;
     //public ArrayListMultimap<String, String> external_urls;

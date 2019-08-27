@@ -12,12 +12,12 @@ public class Album {
    // public String album_group;
    // public String album_type;
     public ArtistSimplified[] artists;
-   /* public String[] available_markets;
-    public ArrayListMultimap<String, String> external_urls;
-    public String href;
-    public String id;
+  // public String[] available_markets;
+  //  public ArrayListMultimap<String, String> external_urls;
+   // public String href;
+   // public String id;
     public AlbumImage[] images;
     public String name;
-    public String release_date;
-    public String release_date_precision;*/
+    //public String release_date;
+    //public String release_date_precision;
 }

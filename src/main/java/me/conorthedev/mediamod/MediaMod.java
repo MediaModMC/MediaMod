@@ -5,6 +5,9 @@ import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.media.MediaHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import me.conorthedev.mediamod.media.spotify.api.artist.ArtistSimplified;
+import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import me.conorthedev.mediamod.media.spotify.api.track.Track;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,7 +28,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +45,10 @@ import static java.awt.Color.white;
  */
 @Mod(name = Metadata.NAME, modid = Metadata.MODID, version = Metadata.VERSION)
 public class MediaMod {
+    /**
+     * Average Color Cache
+     */
+    private static final HashMap<BufferedImage, Color> avgColorCache = new HashMap<>();
     /**
      * An instance of this class to access non-static methods from other classes
      */
@@ -60,50 +68,11 @@ public class MediaMod {
     public boolean DEVELOPMENT_ENVIRONMENT = classExists("net.minecraft.client.Minecraft");
 
     /**
-     * Average Color Cache
-     */
-    private static final HashMap<BufferedImage, Color> avgColorCache = new HashMap<>();
-
-    /*
-    /**
      * The current song
      *
-     * @see CurrentlyPlayingContext
-
-    private CurrentlyPlayingContext currentlyPlayingContext = null;
-    */
-
-    /**
-     * Fired when Minecraft is starting
-     *
-     * @param event - FMLInitializationEvent
-     * @see FMLInitializationEvent
+     * @see me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject
      */
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
-        LOGGER.info("MediaMod starting...");
-
-        // Register event subscribers and commands
-        MinecraftForge.EVENT_BUS.register(this);
-        ClientCommandHandler.instance.registerCommand(new MediaModCommand());
-
-        LOGGER.info("Attempting to register with analytics...");
-
-        // Register with analytics
-        boolean successful = BaseMod.init();
-        if (successful) {
-            LOGGER.info("Successfully registered with analytics!");
-        } else {
-            LOGGER.error("Failed to register with analytics...");
-        }
-
-        // Load the config
-        LOGGER.info("Loading configuration...");
-        Settings.loadConfig();
-
-        // Initialize the MediaHandler
-        MediaHandler.INSTANCE.initializeMediaHandler();
-    }
+    private CurrentlyPlayingObject currentlyPlayingObject = null;
 
     // If the tick is the first one
     private boolean first = true;
@@ -114,7 +83,7 @@ public class MediaMod {
      * @param event - RenderGameOverlayEvent
      * @see RenderGameOverlayEvent
      */
-    /*
+
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent event) {
         if (first) {
@@ -130,23 +99,23 @@ public class MediaMod {
                     // Check if we are logged in
                     if (SpotifyHandler.logged) {
                         // Set the currentlyPlayingContext to the current song
-                        currentlyPlayingContext = SpotifyHandler.spotifyApi.getInformationAboutUsersCurrentPlayback().build().execute();
+                        currentlyPlayingObject = SpotifyHandler.spotifyApi.getCurrentTrack();
                     }
-                } catch (IOException | SpotifyWebApiException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }, 0, 3, TimeUnit.SECONDS);
         }
 
         // Check if we're logged in & the hotbar is being rendered
-        if (SpotifyHandler.logged && currentlyPlayingContext != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
+        if (SpotifyHandler.logged && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
             // Make sure there's no GUI screen being displayed
             if (Minecraft.getMinecraft().currentScreen == null) {
                 this.renderSpotify();
             }
         }
     }
-*/
+
     // The concatenated name length
     private int concatNameCount = 0;
     // If the tick is the first one for renderSpotify
@@ -154,10 +123,33 @@ public class MediaMod {
     // The concatenated artist name length
     private int concatArtistCount = 0;
 
+    private static Color averageColor(BufferedImage bi, int x0, int y0, int w, int h) {
+        if (avgColorCache.containsKey(bi)) {
+            return avgColorCache.get(bi);
+        } else {
+            int x1 = x0 + w;
+            int y1 = y0 + h;
+            long sumr = 0, sumg = 0, sumb = 0;
+            for (int x = x0; x < x1; x++) {
+                for (int y = y0; y < y1; y++) {
+                    Color pixel = new Color(bi.getRGB(x, y));
+                    sumr += pixel.getRed();
+                    sumg += pixel.getGreen();
+                    sumb += pixel.getBlue();
+                }
+            }
+            int num = w * h;
+            Color color = new Color((int) sumr / num, (int) sumg / num, (int) sumb / num);
+
+            avgColorCache.put(bi, color);
+            return color;
+        }
+    }
+
     /**
      * Renders the Spotify HUD
      */
-    /*
+
     private void renderSpotify() {
         // Initialize a font renderer
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
@@ -169,7 +161,7 @@ public class MediaMod {
         }
 
         // Track Metadata
-        Track track = currentlyPlayingContext.getItem();
+        Track track = currentlyPlayingObject.item;
 
         if (track == null) {
             Gui.drawRect(100, 5, 5, 25, Color.darkGray.getRGB());
@@ -179,7 +171,7 @@ public class MediaMod {
         int color = -1;
         URL url = null;
         try {
-            url = new URL(track.getAlbum().getImages()[0].getUrl());
+            url = new URL(track.album.images[0].url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -196,11 +188,11 @@ public class MediaMod {
         }
 
         // Establish track metadata (name, artist, spotify id)
-        String title = track.getName();
+        String title = track.name;
         ArrayList<String> artistSimplifiedList = new ArrayList<>();
 
-        for (ArtistSimplified artist : track.getArtists()) {
-            artistSimplifiedList.add(artist.getName());
+        for (ArtistSimplified artist : track.album.artists) {
+            artistSimplifiedList.add(artist.name);
         }
 
         String artists = String.join(", ", artistSimplifiedList);
@@ -266,7 +258,7 @@ public class MediaMod {
         }
 
         // Get progress and duration in the Duration class
-        float percentComplete = (float) currentlyPlayingContext.getProgress_ms() / (float) track.getDurationMs();
+        float percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
 
         // Draw Progress Bar
         Gui.drawRect(textX, 33, textX + 90, 41, Color.darkGray.darker().getRGB());
@@ -288,7 +280,38 @@ public class MediaMod {
             GlStateManager.popMatrix();
         }
     }
-    */
+
+    /**
+     * Fired when Minecraft is starting
+     *
+     * @param event - FMLInitializationEvent
+     * @see FMLInitializationEvent
+     */
+    @EventHandler
+    public void init(FMLInitializationEvent event) {
+        LOGGER.info("MediaMod starting...");
+
+        // Register event subscribers and commands
+        MinecraftForge.EVENT_BUS.register(this);
+        ClientCommandHandler.instance.registerCommand(new MediaModCommand());
+
+        LOGGER.info("Attempting to register with analytics...");
+
+        // Register with analytics
+        boolean successful = BaseMod.init();
+        if (successful) {
+            LOGGER.info("Successfully registered with analytics!");
+        } else {
+            LOGGER.error("Failed to register with analytics...");
+        }
+
+        // Load the config
+        LOGGER.info("Loading configuration...");
+        Settings.loadConfig();
+
+        // Initialize the MediaHandler
+        MediaHandler.INSTANCE.initializeMediaHandler();
+    }
 
     /**
      * Checks if a class exists by the class name
@@ -302,29 +325,6 @@ public class MediaMod {
             return true;
         } catch (ClassNotFoundException e) {
             return false;
-        }
-    }
-
-    private static Color averageColor(BufferedImage bi, int x0, int y0, int w, int h) {
-        if(avgColorCache.containsKey(bi)) {
-            return avgColorCache.get(bi);
-        } else {
-            int x1 = x0 + w;
-            int y1 = y0 + h;
-            long sumr = 0, sumg = 0, sumb = 0;
-            for (int x = x0; x < x1; x++) {
-                for (int y = y0; y < y1; y++) {
-                    Color pixel = new Color(bi.getRGB(x, y));
-                    sumr += pixel.getRed();
-                    sumg += pixel.getGreen();
-                    sumb += pixel.getBlue();
-                }
-            }
-            int num = w * h;
-            Color color = new Color((int) sumr / num, (int) sumg / num, (int) sumb / num);
-
-            avgColorCache.put(bi, color);
-            return color;
         }
     }
 }
