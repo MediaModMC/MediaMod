@@ -3,7 +3,8 @@ package me.conorthedev.mediamod;
 import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
-import me.conorthedev.mediamod.media.MediaHandler;
+import me.conorthedev.mediamod.media.base.ServiceHandler;
+import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
@@ -309,8 +310,12 @@ public class MediaMod {
         LOGGER.info("Loading configuration...");
         Settings.loadConfig();
 
-        // Initialize the MediaHandler
-        MediaHandler.INSTANCE.initializeMediaHandler();
+        // Load Media Handlers
+        ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
+        serviceHandler.registerHandler(new BrowserHandler());
+        //serviceHandler.registerHandler(new SpotifyHandler());
+
+        serviceHandler.initializeHandlers();
     }
 
     /**
