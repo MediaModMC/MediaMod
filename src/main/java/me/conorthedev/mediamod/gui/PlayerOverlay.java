@@ -144,6 +144,9 @@ public class PlayerOverlay {
             e.printStackTrace();
         }
 
+        // Draw the outline of the player
+        Gui.drawRect(152, 3, 3, 52, new Color(0, 0, 0, 75).getRGB());
+
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             BufferedImage image = DynamicTextureWrapper.getImage(url);
             color = averageColor(image, image.getWidth(), image.getHeight()).getRGB();
@@ -234,6 +237,9 @@ public class PlayerOverlay {
         }
 
         if (Settings.SHOW_ALBUM_ART) {
+            // Draw outline
+            Gui.drawRect(47, 8, 8, 47, new Color(0, 0, 0, 75).getRGB());
+
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1, 1);
 
