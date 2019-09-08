@@ -3,6 +3,7 @@ package me.conorthedev.mediamod.gui;
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
+import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -39,6 +40,9 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
+
+        this.drawString(this.fontRendererObj, "Developed by ConorTheDev", this.width - this.fontRendererObj.getStringWidth("Developed by ConorTheDev") - 2, this.height - 10, -1);
+        this.drawString(this.fontRendererObj, "Version " + Metadata.VERSION, this.width - this.fontRendererObj.getStringWidth("Version " + Metadata.VERSION) - 2, this.height - 20, -1);
 
         GlStateManager.pushMatrix();
         GlStateManager.color(1, 1, 1, 1);
