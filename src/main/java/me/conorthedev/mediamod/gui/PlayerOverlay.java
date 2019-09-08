@@ -9,6 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -132,7 +135,7 @@ public class PlayerOverlay {
             return;
         }
 
-        int color = -1;
+        Color color = Color.gray;
         URL url = null;
         try {
             url = new URL(track.album.images[0].url);
@@ -145,7 +148,7 @@ public class PlayerOverlay {
 
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             BufferedImage image = DynamicTextureWrapper.getImage(url);
-            color = averageColor(image, image.getWidth(), image.getHeight()).getRGB();
+            color = averageColor(image, image.getWidth(), image.getHeight());
 
             // Draw the background of the player
             Gui.drawRect(150, 5, 5, 50, averageColor(image, image.getWidth(), image.getHeight()).darker().getRGB());
@@ -225,9 +228,14 @@ public class PlayerOverlay {
         float percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
 
         // Draw Progress Bar
+        // Draw outline
+        //Gui.drawRect(textX + 11, 9, textX + 101, 42, new Color(0, 0, 0, 75).getRGB());
+
+        Gui.drawRect(textX - 1, 32, textX + 91, 42, new Color(0, 0, 0, 75).getRGB());
         Gui.drawRect(textX, 33, textX + 90, 41, Color.darkGray.darker().getRGB());
+
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
-            Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color);
+            drawGradientRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB(), color.darker().getRGB());
         } else {
             Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, Color.green.getRGB());
         }
@@ -246,5 +254,38 @@ public class PlayerOverlay {
             Gui.drawModalRectWithCustomSizedTexture(10, 10, 0, 0, 35, 35, 35, 35);
             GlStateManager.popMatrix();
         }
+    }
+
+    /**
+     * Draws a rectangle with a vertical gradient between the specified colors (ARGB format). Args : x1, y1, x2, y2,
+     * topColor, bottomColor
+     */
+    protected void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
+    {
+        float f = (float)(startColor >> 24 & 255) / 255.0F;
+        float f1 = (float)(startColor >> 16 & 255) / 255.0F;
+        float f2 = (float)(startColor >> 8 & 255) / 255.0F;
+        float f3 = (float)(startColor & 255) / 255.0F;
+        float f4 = (float)(endColor >> 24 & 255) / 255.0F;
+        float f5 = (float)(endColor >> 16 & 255) / 255.0F;
+        float f6 = (float)(endColor >> 8 & 255) / 255.0F;
+        float f7 = (float)(endColor & 255) / 255.0F;
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.shadeModel(7425);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        worldrenderer.pos(right, top, 1).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(left, top, 1).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(left, bottom, 1).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos(right, bottom, 1).color(f5, f6, f7, f4).endVertex();
+        tessellator.draw();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
     }
 }
