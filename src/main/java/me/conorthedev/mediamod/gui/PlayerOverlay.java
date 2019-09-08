@@ -87,30 +87,32 @@ public class PlayerOverlay {
      */
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent event) {
-        if (first) {
-            // Make sure that this is never ran again
-            first = false;
+        if(Settings.ENABLED) {
+            if (first) {
+                // Make sure that this is never ran again
+                first = false;
 
-            // Setup a ScheduledExecutorService to run every 3 seconds
-            ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-            exec.scheduleAtFixedRate(() -> {
-                try {
-                    // Check if we are logged in
-                    if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
-                        // Set the currentlyPlayingContext to the current song
-                        currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
+                // Setup a ScheduledExecutorService to run every 3 seconds
+                ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+                exec.scheduleAtFixedRate(() -> {
+                    try {
+                        // Check if we are logged in
+                        if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
+                            // Set the currentlyPlayingContext to the current song
+                            currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }, 0, 3, TimeUnit.SECONDS);
-        }
+                }, 0, 3, TimeUnit.SECONDS);
+            }
 
-        // Check if we're logged in & the hotbar is being rendered
-        if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
-            // Make sure there's no GUI screen being displayed
-            if (FMLClientHandler.instance().getClient().currentScreen == null) {
-                this.renderPlayer();
+            // Check if we're logged in & the hotbar is being rendered
+            if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
+                // Make sure there's no GUI screen being displayed
+                if (FMLClientHandler.instance().getClient().currentScreen == null) {
+                    this.renderPlayer();
+                }
             }
         }
     }

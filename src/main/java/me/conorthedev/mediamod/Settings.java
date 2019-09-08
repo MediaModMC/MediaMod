@@ -8,6 +8,7 @@ import java.io.File;
 
 public class Settings {
     private static final File configFile = new File(FMLClientHandler.instance().getClient().mcDataDir, "config/mediamod.config");
+
     public static boolean ENABLED;
     public static boolean SHOW_PLAYER;
     public static boolean MODERN_PLAYER_STYLE;
@@ -39,12 +40,16 @@ public class Settings {
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
+
         if (load) SHOW_PLAYER = showPlayerProperty.getBoolean();
         else showPlayerProperty.setValue(SHOW_PLAYER);
+
         if (load) MODERN_PLAYER_STYLE = modernPlayerProperty.getBoolean();
         else modernPlayerProperty.setValue(MODERN_PLAYER_STYLE);
+
         if (load) SHOW_ALBUM_ART = albumArtProperty.getBoolean();
         else albumArtProperty.setValue(SHOW_ALBUM_ART);
+
         if (load) AUTO_COLOR_SELECTION = autoColorProperty.getBoolean();
         else autoColorProperty.setValue(AUTO_COLOR_SELECTION);
     }

@@ -31,9 +31,6 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, "Player Settings"));
         this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 23, "Services"));
 
-        buttonList.get(0).enabled = false;
-        buttonList.get(1).enabled = false;
-
         super.initGui();
     }
 
