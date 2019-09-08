@@ -56,7 +56,7 @@ public class PlayerOverlay {
     // The concatenated artist name length
     private int concatArtistCount = 0;
 
-    private static Color averageColor(BufferedImage bi, int w, int h) {
+    public static Color averageColor(BufferedImage bi, int w, int h) {
         if (avgColorCache.containsKey(bi)) {
             return avgColorCache.get(bi);
         } else {
