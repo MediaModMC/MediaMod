@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -91,7 +92,7 @@ class GuiPlayerSettings extends GuiScreen implements IMediaGui {
             BufferedImage image = null;
 
             try {
-                image = ImageIO.read(mc.getResourceManager().getResource(new ResourceLocation("mediamod", "no_album_art.png")).getInputStream());
+                image = ImageIO.read(mc.getResourceManager().getResource(new ResourceLocation("mediamod", "mediamod.png")).getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,7 +126,7 @@ class GuiPlayerSettings extends GuiScreen implements IMediaGui {
             fontRendererObj.drawString("Song Name", textX, height / 2 - 15 + 6, -1);
             fontRendererObj.drawString("by Artist Name", textX, height / 2 - 15 + 15, white.darker().getRGB());
 
-            ResourceLocation albumResource = new ResourceLocation("mediamod", "no_album_art.png");
+            ResourceLocation albumResource = new ResourceLocation("mediamod", "mediamod.png");
 
             // Draw outline
             Gui.drawRect(width / 2 - 100 + 46, height / 2 - 11, width / 2 - 100 + 9, height / 2 + 26, new Color(0, 0, 0, 75).getRGB());
