@@ -2,7 +2,7 @@ package me.conorthedev.mediamod.base;
 
 import com.google.gson.Gson;
 import me.conorthedev.mediamod.util.Metadata;
-import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class BaseMod {
     public static boolean init() {
         try {
             // Create a conncetion
-            URL url = new URL(ENDPOINT + "/api/register/" + Minecraft.getMinecraft().getSession().getProfile().getId().toString() + "/" + Metadata.MODID + "/" + Metadata.VERSION);
+            URL url = new URL(ENDPOINT + "/api/register/" + FMLClientHandler.instance().getClient().getSession().getProfile().getId().toString() + "/" + Metadata.MODID + "/" + Metadata.VERSION);
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // Set the request method
@@ -53,8 +53,8 @@ public class BaseMod {
     }
 
     private static class RegisterReponse {
-        String uuid;
-        ModResponse[] mods;
+        final String uuid;
+        final ModResponse[] mods;
 
         RegisterReponse(String uuid, ModResponse[] mods) {
             this.uuid = uuid;
@@ -63,8 +63,8 @@ public class BaseMod {
     }
 
     private static class ModResponse {
-        String id;
-        String version;
+        final String id;
+        final String version;
 
         ModResponse(String id, String version) {
             this.id = id;

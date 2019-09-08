@@ -20,7 +20,7 @@ public class TickScheduler {
     /**
      * List of tasks to execute
      */
-    private List<Task> items = new ArrayList<>();
+    private final List<Task> items = new ArrayList<>();
 
     private TickScheduler() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -54,7 +54,7 @@ public class TickScheduler {
         /**
          * Task to execute
          */
-        private Runnable task;
+        private final Runnable task;
 
         private Task(int ticksLeft, Runnable runnable) {
             this.ticksLeft = ticksLeft;

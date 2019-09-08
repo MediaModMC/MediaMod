@@ -12,7 +12,7 @@ import net.minecraft.util.EnumChatFormatting;
 import java.awt.*;
 import java.io.IOException;
 
-public class GuiServices extends GuiScreen implements IMediaGui {
+class GuiServices extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));

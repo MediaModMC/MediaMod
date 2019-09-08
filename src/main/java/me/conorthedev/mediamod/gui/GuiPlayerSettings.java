@@ -2,10 +2,8 @@ package me.conorthedev.mediamod.gui;
 
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
-import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -15,7 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -23,7 +20,21 @@ import java.nio.ByteBuffer;
 import static java.awt.Color.white;
 import static me.conorthedev.mediamod.gui.PlayerOverlay.averageColor;
 
-public class GuiPlayerSettings extends GuiScreen implements IMediaGui {
+class GuiPlayerSettings extends GuiScreen implements IMediaGui {
+    private static ByteBuffer readImage(InputStream par1File) throws IOException {
+        BufferedImage bufferedimage = ImageIO.read(par1File);
+        int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), null, 0, bufferedimage.getWidth());
+        ByteBuffer bytebuffer = ByteBuffer.allocate(4 * aint.length);
+        int i = aint.length;
+
+        for (int k : aint) {
+            bytebuffer.putInt(k << 8 | k >> 24 & 255);
+        }
+
+        bytebuffer.flip();
+        return bytebuffer;
+    }
+
     @Override
     public void initGui() {
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
@@ -70,20 +81,6 @@ public class GuiPlayerSettings extends GuiScreen implements IMediaGui {
         return false;
     }
 
-    private static ByteBuffer readImage(InputStream par1File) throws IOException {
-        BufferedImage bufferedimage = ImageIO.read(par1File);
-        int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), null, 0, bufferedimage.getWidth());
-        ByteBuffer bytebuffer = ByteBuffer.allocate(4 * aint.length);
-        int i = aint.length;
-
-        for (int k : aint) {
-            bytebuffer.putInt(k << 8 | k >> 24 & 255);
-        }
-
-        bytebuffer.flip();
-        return bytebuffer;
-    }
-
     private void drawPlayer() {
         Color color = Color.gray;
 
@@ -94,12 +91,12 @@ public class GuiPlayerSettings extends GuiScreen implements IMediaGui {
             BufferedImage image = null;
 
             try {
-                image = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("mediamod", "no_album_art.png")).getInputStream());
+                image = ImageIO.read(mc.getResourceManager().getResource(new ResourceLocation("mediamod", "no_album_art.png")).getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if(image != null) {
+            if (image != null) {
                 color = averageColor(image, image.getWidth(), image.getHeight());
             }
 
@@ -137,7 +134,7 @@ public class GuiPlayerSettings extends GuiScreen implements IMediaGui {
             GlStateManager.color(1, 1, 1, 1);
 
             // Bind the texture for rendering
-            Minecraft.getMinecraft().getTextureManager().bindTexture(albumResource);
+            mc.getTextureManager().bindTexture(albumResource);
 
             // Render the album art as 35x35
             Gui.drawModalRectWithCustomSizedTexture(width / 2 - 100 + 10, height / 2 - 10, 0, 0, 35, 35, 35, 35);

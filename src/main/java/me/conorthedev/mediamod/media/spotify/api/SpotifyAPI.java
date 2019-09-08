@@ -18,12 +18,12 @@ public class SpotifyAPI {
     /**
      * The user's access token
      */
-    private String ACCESS_TOKEN;
+    private final String ACCESS_TOKEN;
 
     /**
      * The user's refresh token
      */
-    private String REFRESH_TOKEN;
+    private final String REFRESH_TOKEN;
 
     /**
      * Basic constructor for the SpotifyAPI

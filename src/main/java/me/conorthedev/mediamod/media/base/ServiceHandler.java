@@ -27,12 +27,12 @@ public class ServiceHandler {
     /**
      * List of Media Handlers registered
      */
-    private ArrayList<IMediaHandler> MEDIA_HANDLERS = new ArrayList<>();
+    private final ArrayList<IMediaHandler> MEDIA_HANDLERS = new ArrayList<>();
 
     /**
      * List of Media Handlers initalized
      */
-    private ArrayList<IMediaHandler> INITIALIED_HANDLERS = new ArrayList<>();
+    private final ArrayList<IMediaHandler> INITIALIED_HANDLERS = new ArrayList<>();
 
     /**
      * Register a Media Handler

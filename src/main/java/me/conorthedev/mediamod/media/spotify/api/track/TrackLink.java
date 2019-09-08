@@ -7,7 +7,7 @@ import com.google.common.collect.ArrayListMultimap;
  *
  * @see "https://developer.spotify.com/documentation/web-api/reference/object-model/#track-link"
  */
-public class TrackLink {
+class TrackLink {
     public ArrayListMultimap<String, String> external_urls;
     public String href;
     public String id;

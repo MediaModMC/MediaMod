@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
@@ -107,7 +108,7 @@ public class PlayerOverlay {
         // Check if we're logged in & the hotbar is being rendered
         if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
             // Make sure there's no GUI screen being displayed
-            if (Minecraft.getMinecraft().currentScreen == null) {
+            if (FMLClientHandler.instance().getClient().currentScreen == null) {
                 this.renderPlayer();
             }
         }
@@ -117,8 +118,12 @@ public class PlayerOverlay {
      * Renders the Player HUD
      */
     private void renderPlayer() {
+
+        // Fetch Minecraft instance
+        Minecraft mc = FMLClientHandler.instance().getClient();
+
         // Initialize a font renderer
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+        FontRenderer fontRenderer = mc.fontRendererObj;
 
         int textX = 10;
 
@@ -178,7 +183,7 @@ public class PlayerOverlay {
                 concatNameCount = 0;
 
             // Draw the string
-            Minecraft.getMinecraft().fontRendererObj.drawString(concatName.substring(concatNameCount, concatNameCount + 16), textX, 11, -1, false);
+            mc.fontRendererObj.drawString(concatName.substring(concatNameCount, concatNameCount + 16), textX, 11, -1, false);
 
             // Every 500ms add the
             if (ifirst) {
@@ -208,7 +213,7 @@ public class PlayerOverlay {
                 concatArtistCount = 0;
 
             // Draw the string
-            Minecraft.getMinecraft().fontRendererObj.drawString(concatName.substring(concatArtistCount, concatArtistCount + 16), textX, 20, white.darker().getRGB(), false);
+            mc.fontRendererObj.drawString(concatName.substring(concatArtistCount, concatArtistCount + 16), textX, 20, white.darker().getRGB(), false);
 
             // Every 500ms add the
             if (ifirst) {
@@ -248,7 +253,7 @@ public class PlayerOverlay {
             GlStateManager.color(1, 1, 1, 1);
 
             // Bind the texture for rendering
-            Minecraft.getMinecraft().getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(url));
+            mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(url));
 
             // Render the album art as 35x35
             Gui.drawModalRectWithCustomSizedTexture(10, 10, 0, 0, 35, 35, 35, 35);
@@ -260,16 +265,15 @@ public class PlayerOverlay {
      * Draws a rectangle with a vertical gradient between the specified colors (ARGB format). Args : x1, y1, x2, y2,
      * topColor, bottomColor
      */
-    protected void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
-    {
-        float f = (float)(startColor >> 24 & 255) / 255.0F;
-        float f1 = (float)(startColor >> 16 & 255) / 255.0F;
-        float f2 = (float)(startColor >> 8 & 255) / 255.0F;
-        float f3 = (float)(startColor & 255) / 255.0F;
-        float f4 = (float)(endColor >> 24 & 255) / 255.0F;
-        float f5 = (float)(endColor >> 16 & 255) / 255.0F;
-        float f6 = (float)(endColor >> 8 & 255) / 255.0F;
-        float f7 = (float)(endColor & 255) / 255.0F;
+    private void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
+        float f = (float) (startColor >> 24 & 255) / 255.0F;
+        float f1 = (float) (startColor >> 16 & 255) / 255.0F;
+        float f2 = (float) (startColor >> 8 & 255) / 255.0F;
+        float f3 = (float) (startColor & 255) / 255.0F;
+        float f4 = (float) (endColor >> 24 & 255) / 255.0F;
+        float f5 = (float) (endColor >> 16 & 255) / 255.0F;
+        float f6 = (float) (endColor >> 8 & 255) / 255.0F;
+        float f7 = (float) (endColor & 255) / 255.0F;
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
