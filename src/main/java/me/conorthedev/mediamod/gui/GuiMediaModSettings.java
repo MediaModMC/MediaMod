@@ -3,10 +3,12 @@ package me.conorthedev.mediamod.gui;
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
-import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.Multithreading;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 import java.io.IOException;
@@ -18,13 +20,15 @@ import java.io.IOException;
  */
 public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
 
+    private static final ResourceLocation headerResource = new ResourceLocation("mediamod", "header.png");
+
     @Override
     public void initGui() {
         Multithreading.runAsync(Settings::loadConfig);
-        this.buttonList.add(new CustomButton(0, width / 2 - 100, getRowPos(0), getSuffix(Settings.ENABLED, "Enabled")));
-        this.buttonList.add(new CustomButton(1, width / 2 - 100, getRowPos(1), getSuffix(Settings.ENABLED, "Show Player")));
-        this.buttonList.add(new CustomButton(2, width / 2 - 100, getRowPos(2), "Player Settings"));
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, getRowPos(3), "Services"));
+        this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, "Enabled")));
+        this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.ENABLED, "Show Player")));
+        this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, "Player Settings"));
+        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 23, "Services"));
 
         buttonList.get(0).enabled = false;
         buttonList.get(1).enabled = false;
@@ -35,9 +39,17 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
-        drawCenteredString(fontRendererObj, "MediaMod v" + Metadata.VERSION, width / 2, 10, Color.white.getRGB());
-        drawHorizontalLine(50, width - 50, 25, Color.white.getRGB());
-        drawCenteredString(fontRendererObj, "General Settings", width / 2, 35, Color.white.getRGB());
+
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1, 1, 1, 1);
+
+        // Bind the texture for rendering
+        mc.getTextureManager().bindTexture(headerResource);
+
+        // Render the album art as 35x35
+        Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
+        GlStateManager.popMatrix();
+
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
