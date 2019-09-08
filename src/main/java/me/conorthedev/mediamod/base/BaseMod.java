@@ -37,7 +37,7 @@ public class BaseMod {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String content = in.lines().collect(Collectors.joining());
 
-            // Close the input reader & the conncetion
+            // Close the input reader & the connection
             in.close();
             con.disconnect();
 
