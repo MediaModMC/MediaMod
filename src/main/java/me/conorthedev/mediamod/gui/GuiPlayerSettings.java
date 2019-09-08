@@ -33,7 +33,6 @@ class GuiPlayerSettings extends GuiScreen implements IMediaGui {
         drawCenteredString(fontRendererObj, "MediaMod v" + Metadata.VERSION, width / 2, 10, Color.white.getRGB());
         drawHorizontalLine(50, width - 50, 25, Color.white.getRGB());
         drawCenteredString(fontRendererObj, "Player Settings", width / 2, 35, Color.white.getRGB());
-        drawCenteredString(fontRendererObj, "Player Preview", width / 2, getRowPos(2) + 30, Color.white.getRGB());
 
         drawPlayer();
         super.drawScreen(mouseX, mouseY, partialTicks);
