@@ -16,7 +16,7 @@ public class GuiServices extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
-        if (!SpotifyHandler.logged) {
+        if (!SpotifyHandler.LOGGED) {
             this.buttonList.add(new CustomButton(1, width / 2 - 100, getRowPos(1), "Login to Spotify"));
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 75, "Logout of all"));
@@ -32,7 +32,7 @@ public class GuiServices extends GuiScreen implements IMediaGui {
         drawHorizontalLine(50, width - 50, 25, -1);
         drawCenteredString(fontRendererObj, "Services", width / 2, 35, -1);
 
-        if (!SpotifyHandler.logged) {
+        if (!SpotifyHandler.LOGGED) {
             drawCenteredString(fontRendererObj, "Spotify not logged in! Please login below", width / 2, 50, Color.red.getRGB());
         } else {
             drawCenteredString(fontRendererObj, "Connected Accounts:", width / 2, 50, Color.green.getRGB());
@@ -57,8 +57,8 @@ public class GuiServices extends GuiScreen implements IMediaGui {
                 break;
 
             case 2:
-                SpotifyHandler.spotifyApi = null;
-                SpotifyHandler.logged = false;
+                SpotifyHandler.SPOTIFY_API = null;
+                SpotifyHandler.LOGGED = false;
                 break;
         }
     }

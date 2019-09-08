@@ -6,9 +6,9 @@ import me.conorthedev.mediamod.gui.PlayerOverlay;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -59,7 +59,7 @@ public class MediaMod {
         LOGGER.info("Attempting to register with analytics...");
 
         // Register with analytics
-        if (Minecraft.getMinecraft().gameSettings.snooperEnabled) {
+        if (FMLClientHandler.instance().getClient().gameSettings.snooperEnabled) {
             boolean successful = BaseMod.init();
 
             if (successful) {

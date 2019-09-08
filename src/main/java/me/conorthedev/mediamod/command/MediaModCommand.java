@@ -2,9 +2,9 @@ package me.conorthedev.mediamod.command;
 
 import me.conorthedev.mediamod.gui.GuiMediaModSettings;
 import me.conorthedev.mediamod.util.TickScheduler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +33,7 @@ public class MediaModCommand extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        TickScheduler.INSTANCE.schedule(1, () -> Minecraft.getMinecraft().displayGuiScreen(new GuiMediaModSettings()));
+        TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
     }
 
     @Override

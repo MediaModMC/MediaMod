@@ -4,7 +4,6 @@ import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -27,10 +26,10 @@ public class GuiPlayerSettings extends GuiScreen implements IMediaGui {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
-        drawCenteredString(fontRendererObj, "MediaMod v" + Metadata.VERSION, width / 2, 10, Color.white.getRGB());
+        drawCenteredString(this.fontRendererObj, "MediaMod v" + Metadata.VERSION, width / 2, 10, Color.white.getRGB());
         drawHorizontalLine(50, width - 50, 25, Color.white.getRGB());
-        drawCenteredString(fontRendererObj, "Player Settings", width / 2, 35, Color.white.getRGB());
-        drawCenteredString(fontRendererObj, "Player Preview", width / 2, getRowPos(2) + 30, Color.white.getRGB());
+        drawCenteredString(this.fontRendererObj, "Player Settings", width / 2, 35, Color.white.getRGB());
+        drawCenteredString(this.fontRendererObj, "Player Preview", width / 2, getRowPos(2) + 30, Color.white.getRGB());
         drawPlayer();
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -63,21 +62,22 @@ public class GuiPlayerSettings extends GuiScreen implements IMediaGui {
     }
 
     private void drawPlayer() {
+
         Gui.drawRect(width / 2 - 100, height / 2 - 15, width / 2 + 100, height / 2 + 30, Color.darkGray.getRGB());
 
         if (Settings.SHOW_ALBUM_ART) {
-            fontRendererObj.drawString("Song Name", width / 2 - 100 + 50, height / 2 - 15 + 6, -1);
-            fontRendererObj.drawString("by Artist Name", width / 2 - 100 + 50, height / 2 - 15 + 15, white.darker().getRGB());
+            this.fontRendererObj.drawString("Song Name", width / 2 - 100 + 50, height / 2 - 15 + 6, -1);
+            this.fontRendererObj.drawString("by Artist Name", width / 2 - 100 + 50, height / 2 - 15 + 15, white.darker().getRGB());
 
             ResourceLocation albumResource = new ResourceLocation("mediamod", "no_album_art.png");
 
             // Bind the texture for rendering
-            Minecraft.getMinecraft().getTextureManager().bindTexture(albumResource);
+            this.mc.getTextureManager().bindTexture(albumResource);
             // Render the album art as 35x35
             Gui.drawModalRectWithCustomSizedTexture(width / 2 - 100 + 10, height / 2 - 10, 0, 0, 35, 35, 35, 35);
         } else {
-            fontRendererObj.drawString("Song Name", width / 2 - 100 + 5, height / 2 - 15 + 6, -1);
-            fontRendererObj.drawString("by Artist Name", width / 2 - 100 + 5, height / 2 - 15 + 15, white.darker().getRGB());
+            this.fontRendererObj.drawString("Song Name", width / 2 - 100 + 5, height / 2 - 15 + 6, -1);
+            this.fontRendererObj.drawString("by Artist Name", width / 2 - 100 + 5, height / 2 - 15 + 15, white.darker().getRGB());
         }
     }
 }

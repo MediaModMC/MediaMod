@@ -1,9 +1,9 @@
 package me.conorthedev.mediamod.gui.util;
 
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GLContext;
 
 import javax.imageio.ImageIO;
@@ -24,12 +24,12 @@ public class DynamicTextureWrapper {
     /**
      * Hashmap of album art textures
      */
-    private static final Map<URL, WrappedResource> urlTextures = new HashMap<>();
+    private static final Map<URL, WrappedResource> URL_TEXTURES = new HashMap<>();
 
     /**
      * Hash Map of album art images
      */
-    private static final Map<URL, WrappedImage> urlImages = new HashMap<>();
+    private static final Map<URL, WrappedImage> URL_IMAGES = new HashMap<>();
 
     /**
      * A fully transparent image
@@ -71,17 +71,17 @@ public class DynamicTextureWrapper {
             } catch (RuntimeException ignored) {
                 return;
             }
-            FULLY_TRANSPARENT_TEXTURE = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("no_album_art", new DynamicTexture(FULLY_TRANSPARENT_IMAGE));
+            FULLY_TRANSPARENT_TEXTURE = FMLClientHandler.instance().getClient().getTextureManager().getDynamicTextureLocation("no_album_art", new DynamicTexture(FULLY_TRANSPARENT_IMAGE));
             initialized = true;
         }
     }
 
     public static BufferedImage getImage(URL url) {
         init();
-        if (!urlImages.containsKey(url)) {
+        if (!URL_IMAGES.containsKey(url)) {
             queueImage(url);
         }
-        WrappedImage image = urlImages.get(url);
+        WrappedImage image = URL_IMAGES.get(url);
         if (image.image == null) {
             return FULLY_TRANSPARENT_IMAGE;
         }
@@ -96,17 +96,17 @@ public class DynamicTextureWrapper {
      */
     public static ResourceLocation getTexture(URL url) {
         init();
-        if (!urlTextures.containsKey(url)) {
-            urlTextures.put(url, new WrappedResource(null));
+        if (!URL_TEXTURES.containsKey(url)) {
+            URL_TEXTURES.put(url, new WrappedResource(null));
             queueImage(url);
         }
 
-        WrappedResource wr = urlTextures.get(url);
+        WrappedResource wr = URL_TEXTURES.get(url);
         if (wr.location == null) {
-            if (urlImages.get(url) != null && urlImages.get(url).image != null) {
-                DynamicTexture texture = new DynamicTexture(urlImages.get(url).image);
-                WrappedResource wr2 = new WrappedResource(Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(url.toString(), texture));
-                urlTextures.put(url, wr2);
+            if (URL_IMAGES.get(url) != null && URL_IMAGES.get(url).image != null) {
+                DynamicTexture texture = new DynamicTexture(URL_IMAGES.get(url).image);
+                WrappedResource wr2 = new WrappedResource(FMLClientHandler.instance().getClient().getTextureManager().getDynamicTextureLocation(url.toString(), texture));
+                URL_TEXTURES.put(url, wr2);
                 return wr2.location;
             } else {
                 return FULLY_TRANSPARENT_TEXTURE;
@@ -123,13 +123,13 @@ public class DynamicTextureWrapper {
      */
     private static void queueImage(URL url) {
         init();
-        urlImages.put(url, new WrappedImage(null));
+        URL_IMAGES.put(url, new WrappedImage(null));
         new Thread(() -> {
             try {
                 BufferedImage image = ImageIO.read(url);
-                urlImages.put(url, new WrappedImage(image));
+                URL_IMAGES.put(url, new WrappedImage(image));
             } catch (IOException e) {
-                urlImages.put(url, new WrappedImage(MISSING_IMAGE));
+                URL_IMAGES.put(url, new WrappedImage(MISSING_IMAGE));
             }
         }).start();
     }

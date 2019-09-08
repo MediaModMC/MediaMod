@@ -1,13 +1,13 @@
 package me.conorthedev.mediamod;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.io.File;
 
 public class Settings {
-    private static final File configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/mediamod.config");
+    private static final File configFile = new File(FMLClientHandler.instance().getClient().mcDataDir, "config/mediamod.config");
     public static boolean ENABLED;
     public static boolean SHOW_PLAYER;
     public static boolean SPOTIFY;
