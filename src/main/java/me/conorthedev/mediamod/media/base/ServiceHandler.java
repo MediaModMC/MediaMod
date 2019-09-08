@@ -30,6 +30,11 @@ public class ServiceHandler {
     private ArrayList<IMediaHandler> MEDIA_HANDLERS = new ArrayList<>();
 
     /**
+     * List of Media Handlers initalized
+     */
+    private ArrayList<IMediaHandler> INITIALIED_HANDLERS = new ArrayList<>();
+
+    /**
      * Register a Media Handler
      *
      * @param mediaHandler - Media Handler to register
@@ -47,10 +52,22 @@ public class ServiceHandler {
             LOGGER.info("Initializing Handler: " + handler.getHandlerName());
             try {
                 handler.initializeHandler();
+                INITIALIED_HANDLERS.add(handler);
             } catch (HandlerInitializationException e) {
                 LOGGER.error("Error whilst initializing handler: " + handler.getHandlerName());
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * Get the current Media Handler
+     */
+    public IMediaHandler getCurrentMediaHandler() {
+        if(INITIALIED_HANDLERS.size() > 0) {
+            return INITIALIED_HANDLERS.get(0);
+        } else {
+            return null;
         }
     }
 }

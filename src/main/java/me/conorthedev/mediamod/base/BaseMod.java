@@ -1,6 +1,8 @@
 package me.conorthedev.mediamod.base;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerLoginClient;
@@ -12,9 +14,14 @@ import net.minecraft.network.login.server.S00PacketDisconnect;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.ForgeVersion;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * A base mod used in all of ConorTheDev's Mods
@@ -22,58 +29,58 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author ConorTheDev
  */
 public class BaseMod {
+    public static final String ENDPOINT = "http://localhost:8080";
 
     /**
-     * Connects to analytics server
+     * Registers with api.conorthedev.me
      */
-    @SuppressWarnings("unchecked")
     public static boolean init() {
         try {
-            AtomicBoolean loopActive = new AtomicBoolean(true);
-            AtomicBoolean successful = new AtomicBoolean(false);
-            JsonObject data = new JsonObject();
-            data.addProperty("mod_id", Metadata.MODID);
-            data.addProperty("mod_version", Metadata.VERSION);
-            data.addProperty("mc_version", ForgeVersion.mcVersion);
-            NetworkManager manager = NetworkManager.createNetworkManagerAndConnect(InetAddress.getByName("auth.guildcapes.club"), 45918, true);
-            manager.sendPacket(new C00Handshake(89023, data.toString(), 45918, EnumConnectionState.LOGIN), (future) -> {
-                manager.setConnectionState(EnumConnectionState.LOGIN);
-                manager.setNetHandler(new NetHandlerLoginClient(manager, Minecraft.getMinecraft(), null) {
-                    @Override
-                    public void onDisconnect(IChatComponent reason) {
-                        if (!loopActive.get()) return;
-                        if (reason.getUnformattedText().equals("done")) {
-                            loopActive.set(false);
-                            successful.set(true);
-                        } else {
-                            System.err.println("Couldn't register with analytics: " + reason.getUnformattedText());
-                            loopActive.set(false);
-                        }
-                    }
+            // Create a conncetion
+            URL url = new URL(ENDPOINT + "/api/register/" + Minecraft.getMinecraft().getSession().getProfile().getId().toString() + "/" + Metadata.MODID + "/" + Metadata.VERSION);
 
-                    @Override
-                    public void handleDisconnect(S00PacketDisconnect packetIn) {
-                        if (packetIn.func_149603_c().getUnformattedText().equals("done")) {
-                            loopActive.set(false);
-                            successful.set(true);
-                        } else {
-                            System.err.println("Couldn't register with analytics: " + packetIn.func_149603_c().getUnformattedText());
-                            loopActive.set(false);
-                        }
-                        manager.closeChannel(packetIn.func_149603_c());
-                    }
-                });
-                manager.sendPacket(new C00PacketLoginStart(Minecraft.getMinecraft().getSession().getProfile()));
-            });
-            while (loopActive.get()) {
-                manager.processReceivedPackets();
-                manager.checkDisconnected();
-            }
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            // Set the request method
+            con.setRequestMethod("POST");
+            // Connect to the API
+            con.connect();
 
-            return successful.get();
+            // Read the output
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String content = in.lines().collect(Collectors.joining());
+
+            // Close the input reader & the conncetion
+            in.close();
+            con.disconnect();
+
+            // Parse JSON
+            Gson g = new Gson();
+            RegisterReponse registerReponse = g.fromJson(content, RegisterReponse.class);
+
+            return registerReponse.uuid != null;
         } catch (IOException ex) {
             ex.printStackTrace();
             return false;
+        }
+    }
+
+    private static class RegisterReponse {
+        String uuid;
+        ModResponse[] mods;
+
+        RegisterReponse(String uuid, ModResponse[] mods) {
+            this.uuid = uuid;
+            this.mods = mods;
+        }
+    }
+
+    private static class ModResponse {
+        String id;
+        String version;
+
+        ModResponse(String id, String version) {
+            this.id = id;
+            this.version = version;
         }
     }
 }

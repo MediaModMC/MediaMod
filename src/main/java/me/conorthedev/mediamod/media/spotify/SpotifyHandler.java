@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import me.conorthedev.mediamod.MediaMod;
+import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
@@ -60,7 +61,8 @@ public class SpotifyHandler implements IMediaHandler {
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GRAY + "Exchanging authorization code for access token, this may take a moment..."));
         try {
             // Create a conncetion
-            URL url = new URL("https://api.conorthedev.me/api/mediamod/spotify/token/" + code);
+            URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/token/" + code);
+
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // Set the request method
             con.setRequestMethod("GET");
@@ -82,7 +84,7 @@ public class SpotifyHandler implements IMediaHandler {
             TokenAPIResponse tokenAPIResponse = g.fromJson(content, TokenAPIResponse.class);
 
             // Put into the Spotify API
-            spotifyApi = new SpotifyAPI(tokenAPIResponse.access_token, tokenAPIResponse.refresh_token);
+            spotifyApi = new SpotifyAPI(tokenAPIResponse.accessToken, tokenAPIResponse.refreshToken);
 
             if (spotifyApi.getRefreshToken() != null) {
                 logged = true;
@@ -171,14 +173,14 @@ public class SpotifyHandler implements IMediaHandler {
     }
 
     private static class TokenAPIResponse {
-        String access_token;
-        int expires_in;
-        String refresh_token;
+        String accessToken;
+        int expiresIn;
+        String refreshToken;
 
         TokenAPIResponse(String access_token, int expires_in, String refresh_token) {
-            this.access_token = access_token;
-            this.expires_in = expires_in;
-            this.refresh_token = refresh_token;
+            this.accessToken = access_token;
+            this.expiresIn = expires_in;
+            this.refreshToken = refresh_token;
         }
     }
 }
