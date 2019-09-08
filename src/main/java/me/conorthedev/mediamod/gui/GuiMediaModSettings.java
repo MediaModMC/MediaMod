@@ -4,6 +4,7 @@ import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
+import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -19,16 +20,14 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
 
     @Override
     public void initGui() {
-        Settings.loadConfig();
+        Multithreading.runAsync(Settings::loadConfig);
         this.buttonList.add(new CustomButton(0, width / 2 - 100, getRowPos(0), getSuffix(Settings.ENABLED, "Enabled")));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, getRowPos(1), getSuffix(Settings.ENABLED, "Show Player")));
-        this.buttonList.add(new CustomButton(2, width / 2 - 100, getRowPos(2), getSuffix(Settings.ENABLED, "Enable Spotify")));
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, getRowPos(4), "Player Settings"));
-        this.buttonList.add(new CustomButton(4, width / 2 - 100, getRowPos(5), "Services"));
+        this.buttonList.add(new CustomButton(2, width / 2 - 100, getRowPos(2), "Player Settings"));
+        this.buttonList.add(new CustomButton(3, width / 2 - 100, getRowPos(3), "Services"));
 
         buttonList.get(0).enabled = false;
         buttonList.get(1).enabled = false;
-        buttonList.get(2).enabled = false;
 
         super.initGui();
     }
@@ -48,26 +47,20 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
             case 0:
                 Settings.ENABLED = !Settings.ENABLED;
                 button.displayString = getSuffix(Settings.ENABLED, "Enabled");
-                Settings.saveConfig();
+                Multithreading.runAsync(Settings::saveConfig);
                 break;
 
             case 1:
                 Settings.SHOW_PLAYER = !Settings.SHOW_PLAYER;
                 button.displayString = getSuffix(Settings.SHOW_PLAYER, "Show Player");
-                Settings.saveConfig();
+                Multithreading.runAsync(Settings::saveConfig);
                 break;
 
             case 2:
-                Settings.SPOTIFY = !Settings.SPOTIFY;
-                button.displayString = getSuffix(Settings.SPOTIFY, "Enable Spotify");
-                Settings.saveConfig();
-                break;
-
-            case 3:
                 this.mc.displayGuiScreen(new GuiPlayerSettings());
                 break;
 
-            case 4:
+            case 3:
                 this.mc.displayGuiScreen(new GuiServices());
                 break;
         }

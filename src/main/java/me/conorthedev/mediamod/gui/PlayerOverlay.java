@@ -74,6 +74,7 @@ public class PlayerOverlay {
             Color color = new Color((int) sumr / num, (int) sumg / num, (int) sumb / num);
 
             avgColorCache.put(bi, color);
+            System.gc();
             return color;
         }
     }
@@ -148,8 +149,10 @@ public class PlayerOverlay {
             e.printStackTrace();
         }
 
-        // Draw the outline of the player
-        Gui.drawRect(151, 4, 4, 51, new Color(0, 0, 0, 75).getRGB());
+        if(Settings.MODERN_PLAYER_STYLE) {
+            // Draw the outline of the player
+            Gui.drawRect(151, 4, 4, 51, new Color(0, 0, 0, 75).getRGB());
+        }
 
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             BufferedImage image = DynamicTextureWrapper.getImage(url);
@@ -234,20 +237,27 @@ public class PlayerOverlay {
 
         // Draw Progress Bar
         // Draw outline
-        //Gui.drawRect(textX + 11, 9, textX + 101, 42, new Color(0, 0, 0, 75).getRGB());
+        if(Settings.MODERN_PLAYER_STYLE) {
+            Gui.drawRect(textX - 1, 32, textX + 91, 42, new Color(0, 0, 0, 75).getRGB());
+        }
 
-        Gui.drawRect(textX - 1, 32, textX + 91, 42, new Color(0, 0, 0, 75).getRGB());
         Gui.drawRect(textX, 33, textX + 90, 41, Color.darkGray.darker().getRGB());
 
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
-            drawGradientRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB(), color.darker().getRGB());
+            if(Settings.MODERN_PLAYER_STYLE) {
+                drawGradientRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB(), color.darker().getRGB());
+            } else {
+                Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB());
+            }
         } else {
             Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, Color.green.getRGB());
         }
 
         if (Settings.SHOW_ALBUM_ART) {
-            // Draw outline
-            Gui.drawRect(46, 9, 9, 46, new Color(0, 0, 0, 75).getRGB());
+            if(Settings.MODERN_PLAYER_STYLE) {
+                // Draw outline
+                Gui.drawRect(46, 9, 9, 46, new Color(0, 0, 0, 75).getRGB());
+            }
 
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1, 1);
