@@ -64,7 +64,7 @@ public class ServiceHandler {
      * Get the current Media Handler
      */
     public IMediaHandler getCurrentMediaHandler() {
-        if(INITIALIED_HANDLERS.size() > 0) {
+        if (INITIALIED_HANDLERS.size() > 0) {
             return INITIALIED_HANDLERS.get(0);
         } else {
             return null;

@@ -9,8 +9,8 @@ import com.google.common.collect.ArrayListMultimap;
  */
 public class TrackLink {
     public ArrayListMultimap<String, String> external_urls;
-    public  String href;
+    public String href;
     public String id;
     public String type;
-    public  String uri;
+    public String uri;
 }

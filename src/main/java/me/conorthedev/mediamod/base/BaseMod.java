@@ -1,26 +1,14 @@
 package me.conorthedev.mediamod.base;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerLoginClient;
-import net.minecraft.network.EnumConnectionState;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.handshake.client.C00Handshake;
-import net.minecraft.network.login.client.C00PacketLoginStart;
-import net.minecraft.network.login.server.S00PacketDisconnect;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.common.ForgeVersion;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.URL;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**

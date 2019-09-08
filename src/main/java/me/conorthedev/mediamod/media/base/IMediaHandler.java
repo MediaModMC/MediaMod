@@ -8,7 +8,10 @@ import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
  */
 public interface IMediaHandler {
     String getHandlerName();
+
     CurrentlyPlayingObject getCurrentTrack();
+
     void initializeHandler() throws HandlerInitializationException;
+
     boolean handlerReady();
 }

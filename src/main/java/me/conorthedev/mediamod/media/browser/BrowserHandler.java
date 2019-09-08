@@ -43,7 +43,7 @@ public class BrowserHandler implements IMediaHandler {
      * Start the Media Handler, listen for requests from the extension, etc.
      */
     @Override
-    public void initializeHandler() throws HandlerInitializationException  {
+    public void initializeHandler() throws HandlerInitializationException {
         if (INITIALIZED) {
             LOGGER.warn("Attempt to initialize Media Handler when it was already initialized?");
         }

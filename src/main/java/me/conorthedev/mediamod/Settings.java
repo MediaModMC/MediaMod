@@ -7,13 +7,12 @@ import net.minecraftforge.common.config.Property;
 import java.io.File;
 
 public class Settings {
+    private static final File configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/mediamod.config");
     public static boolean ENABLED;
     public static boolean SHOW_PLAYER;
     public static boolean SPOTIFY;
     public static boolean SHOW_ALBUM_ART;
     public static boolean AUTO_COLOR_SELECTION;
-
-    private static final File configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/mediamod.config");
 
     public static void saveConfig() {
         MediaMod.INSTANCE.LOGGER.info("Saving configuration...");

@@ -40,6 +40,39 @@ public class PlayerOverlay {
 
     // If the tick is the first one
     private boolean first = true;
+    /**
+     * The current song
+     *
+     * @see me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject
+     */
+    private CurrentlyPlayingObject currentlyPlayingObject = null;
+    // The concatenated name length
+    private int concatNameCount = 0;
+    // If the tick is the first one for renderPlayer
+    private boolean ifirst = true;
+    // The concatenated artist name length
+    private int concatArtistCount = 0;
+
+    private static Color averageColor(BufferedImage bi, int w, int h) {
+        if (avgColorCache.containsKey(bi)) {
+            return avgColorCache.get(bi);
+        } else {
+            long sumr = 0, sumg = 0, sumb = 0;
+            for (int x = 0; x < w; x++) {
+                for (int y = 0; y < h; y++) {
+                    Color pixel = new Color(bi.getRGB(x, y));
+                    sumr += pixel.getRed();
+                    sumg += pixel.getGreen();
+                    sumb += pixel.getBlue();
+                }
+            }
+            int num = w * h;
+            Color color = new Color((int) sumr / num, (int) sumg / num, (int) sumb / num);
+
+            avgColorCache.put(bi, color);
+            return color;
+        }
+    }
 
     /**
      * Fired when a game overlay is being rendered
@@ -74,43 +107,6 @@ public class PlayerOverlay {
             if (Minecraft.getMinecraft().currentScreen == null) {
                 this.renderPlayer();
             }
-        }
-    }
-
-    /**
-     * The current song
-     *
-     * @see me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject
-     */
-    private CurrentlyPlayingObject currentlyPlayingObject = null;
-
-    // The concatenated name length
-    private int concatNameCount = 0;
-
-    // If the tick is the first one for renderPlayer
-    private boolean ifirst = true;
-
-    // The concatenated artist name length
-    private int concatArtistCount = 0;
-
-    private static Color averageColor(BufferedImage bi, int w, int h) {
-        if (avgColorCache.containsKey(bi)) {
-            return avgColorCache.get(bi);
-        } else {
-            long sumr = 0, sumg = 0, sumb = 0;
-            for (int x = 0; x < w; x++) {
-                for (int y = 0; y < h; y++) {
-                    Color pixel = new Color(bi.getRGB(x, y));
-                    sumr += pixel.getRed();
-                    sumg += pixel.getGreen();
-                    sumb += pixel.getBlue();
-                }
-            }
-            int num = w * h;
-            Color color = new Color((int) sumr / num, (int) sumg / num, (int) sumb / num);
-
-            avgColorCache.put(bi, color);
-            return color;
         }
     }
 

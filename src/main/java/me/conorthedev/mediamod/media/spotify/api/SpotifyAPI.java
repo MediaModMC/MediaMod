@@ -7,8 +7,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.stream.Collectors;
 
 /**
@@ -78,6 +76,7 @@ public class SpotifyAPI {
 
     /**
      * Get the user's refresh token
+     *
      * @return the defined refresh token
      */
     public String getRefreshToken() {
