@@ -54,10 +54,12 @@ public class PlayerOverlay {
     private int concatNameCount = 0;
     // If the tick is the first one for renderPlayer
     private boolean ifirst = true;
+    // If the tick is the first one for the artist rendering
+    private boolean artistFirst = true;
     // The concatenated artist name length
     private int concatArtistCount = 0;
 
-    public static Color averageColor(BufferedImage bi, int w, int h) {
+    private static Color averageColor(BufferedImage bi, int w, int h) {
         if (avgColorCache.containsKey(bi)) {
             return avgColorCache.get(bi);
         } else {
@@ -204,7 +206,7 @@ public class PlayerOverlay {
             fontRenderer.drawString(title, textX, 11, -1);
         }
 
-        if (artists.length() > 17) {
+        if (artists.length() > 15) {
             // Concatenate the string if the length is larger than 17, it will appear like this:
             // Initial String: HELLO WORLD!
 
@@ -221,8 +223,8 @@ public class PlayerOverlay {
             mc.fontRendererObj.drawString(concatName.substring(concatArtistCount, concatArtistCount + 16), textX, 20, white.darker().getRGB(), false);
 
             // Every 500ms add the
-            if (ifirst) {
-                ifirst = false;
+            if (artistFirst) {
+                artistFirst = false;
                 ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
                 exec.scheduleAtFixedRate(() -> {
                     concatArtistCount++;
