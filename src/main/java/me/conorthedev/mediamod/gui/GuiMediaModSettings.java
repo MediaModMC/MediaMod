@@ -1,17 +1,17 @@
 package me.conorthedev.mediamod.gui;
 
+import me.conorthedev.mediamod.MediaMod;
 import me.conorthedev.mediamod.Settings;
+import me.conorthedev.mediamod.gui.info.GuiTermsOfService;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
-import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -26,6 +26,11 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
         Settings.loadConfig();
+
+        if(!MediaMod.INSTANCE.getTOSAccepted()) {
+            this.mc.displayGuiScreen(new GuiTermsOfService());
+        }
+
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, "Enabled")));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.ENABLED, "Show Player")));
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, "Player Settings"));

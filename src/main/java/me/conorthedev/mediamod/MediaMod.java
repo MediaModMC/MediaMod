@@ -15,6 +15,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * The main class for MediaMod
  *
@@ -42,6 +45,11 @@ public class MediaMod {
     public final boolean DEVELOPMENT_ENVIRONMENT = classExists("net.minecraft.client.Minecraft");
 
     /**
+     * Path to the file verifying that the user has accepted the Terms of Service
+     */
+    private static final File TOS_ACCEPTED_FILE = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod/tosaccepted.lock");
+
+    /**
      * Fired when Minecraft is starting
      *
      * @param event - FMLInitializationEvent
@@ -56,10 +64,25 @@ public class MediaMod {
         MinecraftForge.EVENT_BUS.register(PlayerOverlay.INSTANCE);
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
 
-        LOGGER.info("Attempting to register with analytics...");
+        // Create the MediaMod Directory if it does not exist
+
+        File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
+
+        if(!MEDIAMOD_DIRECTORY.exists()) {
+            LOGGER.info("Creating necessary directories and files for first launch...");
+            boolean mkdir = MEDIAMOD_DIRECTORY.mkdir();
+
+            if(mkdir) {
+                LOGGER.info("Created necessary directories and files!");
+            } else {
+                LOGGER.fatal("Failed to create necessary directories and files!");
+            }
+        }
 
         // Register with analytics
-        if (FMLClientHandler.instance().getClient().gameSettings.snooperEnabled) {
+        if (FMLClientHandler.instance().getClient().gameSettings.snooperEnabled && getTOSAccepted()) {
+            LOGGER.info("Attempting to register with analytics...");
+
             boolean successful = BaseMod.init();
 
             if (successful) {
@@ -67,6 +90,8 @@ public class MediaMod {
             } else {
                 LOGGER.error("Failed to register with analytics...");
             }
+        } else {
+            LOGGER.info("Skipping registration with analytics!");
         }
 
         // Load the config
@@ -94,6 +119,23 @@ public class MediaMod {
             return true;
         } catch (ClassNotFoundException e) {
             return false;
+        }
+    }
+
+    public boolean getTOSAccepted() {
+        return TOS_ACCEPTED_FILE.exists();
+    }
+
+    public void setTOSAccepted() {
+        try {
+            boolean created = TOS_ACCEPTED_FILE.createNewFile();
+
+            if(!created) {
+                LOGGER.fatal("Failed to create TOSACCEPTED.lock!");
+            }
+        } catch (IOException e) {
+            LOGGER.fatal("Failed to create TOSACCEPTED.lock!");
+            e.printStackTrace();
         }
     }
 }
