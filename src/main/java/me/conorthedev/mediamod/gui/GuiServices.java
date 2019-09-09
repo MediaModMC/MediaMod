@@ -1,5 +1,6 @@
 package me.conorthedev.mediamod.gui;
 
+import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
@@ -15,12 +16,16 @@ import java.io.IOException;
 class GuiServices extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
+        Settings.loadConfig();
+
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
+
         if (!SpotifyHandler.logged) {
             this.buttonList.add(new CustomButton(1, width / 2 - 100, getRowPos(1), "Login to Spotify"));
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 75, "Logout of all"));
         }
+
         super.initGui();
     }
 
@@ -40,6 +45,11 @@ class GuiServices extends GuiScreen implements IMediaGui {
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Settings.saveConfig();
     }
 
     @Override

@@ -25,7 +25,7 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
 
     @Override
     public void initGui() {
-        Multithreading.runAsync(Settings::loadConfig);
+        Settings.loadConfig();
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, "Enabled")));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.ENABLED, "Show Player")));
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, "Player Settings"));
@@ -60,13 +60,11 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
             case 0:
                 Settings.ENABLED = !Settings.ENABLED;
                 button.displayString = getSuffix(Settings.ENABLED, "Enabled");
-                Multithreading.runAsync(Settings::saveConfig);
                 break;
 
             case 1:
                 Settings.SHOW_PLAYER = !Settings.SHOW_PLAYER;
                 button.displayString = getSuffix(Settings.SHOW_PLAYER, "Show Player");
-                Multithreading.runAsync(Settings::saveConfig);
                 break;
 
             case 2:
@@ -79,6 +77,11 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
         }
 
         super.actionPerformed(button);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Settings.saveConfig();
     }
 
     @Override

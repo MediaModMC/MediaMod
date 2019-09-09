@@ -19,6 +19,7 @@ import static java.awt.Color.white;
 class GuiPlayerSettings extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
+        Settings.loadConfig();
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, getRowPos(0), getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art")));
         this.buttonList.add(new CustomButton(2, width / 2 - 100, getRowPos(1), getSuffix(Settings.AUTO_COLOR_SELECTION, "Auto Color Selection")));
@@ -49,19 +50,16 @@ class GuiPlayerSettings extends GuiScreen implements IMediaGui {
             case 1:
                 Settings.SHOW_ALBUM_ART = !Settings.SHOW_ALBUM_ART;
                 button.displayString = getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art");
-                Multithreading.runAsync(Settings::saveConfig);
                 break;
 
             case 2:
                 Settings.AUTO_COLOR_SELECTION = !Settings.AUTO_COLOR_SELECTION;
                 button.displayString = getSuffix(Settings.AUTO_COLOR_SELECTION, "Auto Color Selection");
-                Multithreading.runAsync(Settings::saveConfig);
                 break;
 
             case 3:
                 Settings.MODERN_PLAYER_STYLE = !Settings.MODERN_PLAYER_STYLE;
                 button.displayString = getSuffix(Settings.MODERN_PLAYER_STYLE, "Modern Player");
-                Multithreading.runAsync(Settings::saveConfig);
                 break;
         }
     }
@@ -69,6 +67,11 @@ class GuiPlayerSettings extends GuiScreen implements IMediaGui {
     @Override
     public boolean doesGuiPauseGame() {
         return false;
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Settings.saveConfig();
     }
 
     private void drawPlayer() {
