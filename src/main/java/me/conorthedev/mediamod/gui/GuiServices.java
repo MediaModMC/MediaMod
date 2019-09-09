@@ -69,6 +69,7 @@ class GuiServices extends GuiScreen implements IMediaGui {
             case 2:
                 SpotifyHandler.spotifyApi = null;
                 SpotifyHandler.logged = false;
+                this.mc.displayGuiScreen(new GuiServices());
                 break;
         }
     }
