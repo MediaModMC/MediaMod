@@ -60,24 +60,27 @@ public class PlayerOverlay {
     private int concatArtistCount = 0;
 
     private static Color averageColor(BufferedImage bi, int w, int h) {
+        final Color[] color = {Color.gray};
         if (avgColorCache.containsKey(bi)) {
             return avgColorCache.get(bi);
         } else {
-            long sumr = 0, sumg = 0, sumb = 0;
-            for (int x = 0; x < w; x++) {
-                for (int y = 0; y < h; y++) {
-                    Color pixel = new Color(bi.getRGB(x, y));
-                    sumr += pixel.getRed();
-                    sumg += pixel.getGreen();
-                    sumb += pixel.getBlue();
+            new Thread(() -> {
+                long sumr = 0, sumg = 0, sumb = 0;
+                for (int x = 0; x < w; x++) {
+                    for (int y = 0; y < h; y++) {
+                        Color pixel = new Color(bi.getRGB(x, y));
+                        sumr += pixel.getRed();
+                        sumg += pixel.getGreen();
+                        sumb += pixel.getBlue();
+                    }
                 }
-            }
-            int num = w * h;
-            Color color = new Color((int) sumr / num, (int) sumg / num, (int) sumb / num);
+                int num = w * h;
+                color[0] = new Color((int) sumr / num, (int) sumg / num, (int) sumb / num);
 
-            avgColorCache.put(bi, color);
-            System.gc();
-            return color;
+                avgColorCache.put(bi, color[0]);
+            }).start();
+
+            return color[0];
         }
     }
 
@@ -89,7 +92,7 @@ public class PlayerOverlay {
      */
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent event) {
-        if(Settings.ENABLED) {
+        if (Settings.ENABLED) {
             if (first) {
                 // Make sure that this is never ran again
                 first = false;
@@ -153,7 +156,7 @@ public class PlayerOverlay {
             e.printStackTrace();
         }
 
-        if(Settings.MODERN_PLAYER_STYLE) {
+        if (Settings.MODERN_PLAYER_STYLE) {
             // Draw the outline of the player
             Gui.drawRect(151, 4, 4, 51, new Color(0, 0, 0, 75).getRGB());
         }
@@ -241,14 +244,14 @@ public class PlayerOverlay {
 
         // Draw Progress Bar
         // Draw outline
-        if(Settings.MODERN_PLAYER_STYLE) {
+        if (Settings.MODERN_PLAYER_STYLE) {
             Gui.drawRect(textX - 1, 32, textX + 91, 42, new Color(0, 0, 0, 75).getRGB());
         }
 
         Gui.drawRect(textX, 33, textX + 90, 41, Color.darkGray.darker().getRGB());
 
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
-            if(Settings.MODERN_PLAYER_STYLE) {
+            if (Settings.MODERN_PLAYER_STYLE) {
                 drawGradientRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB(), color.darker().getRGB());
             } else {
                 Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB());
@@ -258,7 +261,7 @@ public class PlayerOverlay {
         }
 
         if (Settings.SHOW_ALBUM_ART) {
-            if(Settings.MODERN_PLAYER_STYLE) {
+            if (Settings.MODERN_PLAYER_STYLE) {
                 // Draw outline
                 Gui.drawRect(46, 9, 9, 46, new Color(0, 0, 0, 75).getRGB());
             }
