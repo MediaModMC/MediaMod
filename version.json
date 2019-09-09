@@ -1,4 +1,5 @@
 {
-  "latestVersion": "v0.0.2",
+  "latestVersionInt": 2,
+  "latestVersionS": "0.0.2",
   "changelog": "MediaMod v0.0.2:\nThis is a test update!"
 }
