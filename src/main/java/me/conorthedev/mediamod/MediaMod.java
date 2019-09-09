@@ -6,12 +6,19 @@ import me.conorthedev.mediamod.gui.PlayerOverlay;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
+import me.conorthedev.mediamod.util.VersionChecker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,11 +75,11 @@ public class MediaMod {
 
         File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
 
-        if(!MEDIAMOD_DIRECTORY.exists()) {
+        if (!MEDIAMOD_DIRECTORY.exists()) {
             LOGGER.info("Creating necessary directories and files for first launch...");
             boolean mkdir = MEDIAMOD_DIRECTORY.mkdir();
 
-            if(mkdir) {
+            if (mkdir) {
                 LOGGER.info("Created necessary directories and files!");
             } else {
                 LOGGER.fatal("Failed to create necessary directories and files!");
@@ -94,6 +101,16 @@ public class MediaMod {
             LOGGER.info("Skipping registration with analytics!");
         }
 
+        // Check if MediaMod is up-to-date
+        LOGGER.info("Checking if MediaMod is up-to-date...");
+        VersionChecker.checkVersion();
+
+        if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
+            LOGGER.info("MediaMod is up-to-date!");
+        } else {
+            LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS + " Your Version: v" + Metadata.VERSION);
+        }
+
         // Load the config
         LOGGER.info("Loading Configuration...");
         Settings.loadConfig();
@@ -105,6 +122,25 @@ public class MediaMod {
 
         // Initialize the handlers
         serviceHandler.initializeHandlers();
+    }
+
+    private boolean firstLoad = true;
+
+    /**
+     * Fired when the world fires a tick
+     *
+     * @param event WorldTickEvent
+     * @see net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent
+     */
+    @SubscribeEvent
+    public void onWorldTick(TickEvent.WorldTickEvent event) {
+        if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION && Minecraft.getMinecraft().thePlayer != null) {
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " +
+                    "MediaMod is out of date!" +
+                    EnumChatFormatting.GRAY + "\nLatest Version: " + EnumChatFormatting.RESET + EnumChatFormatting.BOLD + "v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
+                    EnumChatFormatting.GRAY + "\nChangelog: " + EnumChatFormatting.RESET + EnumChatFormatting.BOLD + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog));
+            firstLoad = false;
+        }
     }
 
     /**
@@ -130,7 +166,7 @@ public class MediaMod {
         try {
             boolean created = TOS_ACCEPTED_FILE.createNewFile();
 
-            if(!created) {
+            if (!created) {
                 LOGGER.fatal("Failed to create TOSACCEPTED.lock!");
             }
         } catch (IOException e) {
