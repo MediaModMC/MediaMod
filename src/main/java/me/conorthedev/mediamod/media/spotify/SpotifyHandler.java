@@ -71,7 +71,7 @@ public class SpotifyHandler implements IMediaHandler {
             // Set the request method
             con.setRequestMethod("GET");
             // Set the user agent
-            con.setRequestProperty("user-agent", "SpotifyMod/1.0");
+            con.setRequestProperty("user-agent", "MediaMod/1.0");
             // Connect to the API
             con.connect();
 

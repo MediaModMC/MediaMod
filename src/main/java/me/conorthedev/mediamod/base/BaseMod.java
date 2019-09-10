@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @author ConorTheDev
  */
 public class BaseMod {
-    public static final String ENDPOINT = "http://localhost:8080";
+    public static final String ENDPOINT = "https://api.conorthedev.me";
 
     /**
      * Registers with api.conorthedev.me
@@ -30,6 +30,8 @@ public class BaseMod {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // Set the request method
             con.setRequestMethod("POST");
+            // Set the user agent
+            con.setRequestProperty("user-agent", "MediaMod/1.0");
             // Connect to the API
             con.connect();
 
