@@ -113,7 +113,7 @@ public class PlayerOverlay {
             }
 
             // Check if we're logged in & the hotbar is being rendered
-            if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
+            if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
                 // Make sure there's no GUI screen being displayed
                 if (FMLClientHandler.instance().getClient().currentScreen == null) {
                     this.renderPlayer();
