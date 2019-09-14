@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": ["MediaMod"],
   "credits": "",
-  "logoFile": "/assets/mediamod/mcmod_logo.png",
+  "logoFile": "/assets/mediamod/header.png",
   "screenshots": [],
   "dependencies": []
 }
