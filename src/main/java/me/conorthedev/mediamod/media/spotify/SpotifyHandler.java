@@ -94,12 +94,13 @@ public class SpotifyHandler implements IMediaHandler {
                 logged = true;
                 // Tell the user that they were logged in
                 mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
-                if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT) {
-                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + spotifyApi.getCurrentTrack().item.name + " by " + spotifyApi.getCurrentTrack().item.album.artists[0].name));
+                CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
+                if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
+                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
                 }
             }
         } catch (Exception e) {
-            MediaMod.INSTANCE.LOGGER.error("Error: " + e);
+            MediaMod.INSTANCE.LOGGER.error("Error: ", e);
         }
     }
 
