@@ -20,9 +20,6 @@ import java.io.IOException;
  * @see net.minecraft.client.gui.GuiScreen
  */
 public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
-
-    private static final ResourceLocation headerResource = new ResourceLocation("mediamod", "header.png");
-
     @Override
     public void initGui() {
         Settings.loadConfig();
@@ -50,7 +47,7 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
         GlStateManager.color(1, 1, 1, 1);
 
         // Bind the texture for rendering
-        mc.getTextureManager().bindTexture(headerResource);
+        mc.getTextureManager().bindTexture(this.headerResource);
 
         // Render the album art as 35x35
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
