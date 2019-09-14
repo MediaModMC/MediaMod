@@ -2,9 +2,11 @@ package me.conorthedev.mediamod.gui;
 
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
+import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
+import me.conorthedev.mediamod.util.PlayerStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -20,16 +22,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import static java.awt.Color.white;
 
 public class PlayerOverlay {
     /**
@@ -116,7 +112,7 @@ public class PlayerOverlay {
             if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
                 // Make sure there's no GUI screen being displayed
                 if (FMLClientHandler.instance().getClient().currentScreen == null) {
-                    this.renderPlayer();
+                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, PlayerStyle.MODERN, false);
                 }
             }
         }
@@ -125,8 +121,7 @@ public class PlayerOverlay {
     /**
      * Renders the Player HUD
      */
-    private void renderPlayer() {
-
+    /*private void renderPlayer() {
         // Fetch Minecraft instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -281,6 +276,93 @@ public class PlayerOverlay {
     /**
      * Draws a rectangle with a vertical gradient between the specified colors (ARGB format). Args : x1, y1, x2, y2,
      * topColor, bottomColor
+     */
+
+    /**
+     * Renders the media player on the screen
+     *
+     * @param cornerX - the x coordinate of the top left corner
+     * @param cornerY - the y coordinate of the top right corner
+     * @param style   - the style of the player
+     * @param testing - if it is a testing player i.e. in the settings menu
+     */
+    public void drawPlayer(int cornerX, int cornerY, PlayerStyle style, boolean testing) {
+        // Get a Minecraft Instance
+        Minecraft mc = FMLClientHandler.instance().getClient();
+
+        // Establish a FontRenderer
+        FontRenderer fontRenderer = mc.fontRendererObj;
+
+        // Track Metadata
+        Track track = currentlyPlayingObject.item;
+        String trackName = "Song Name";
+        String trackArtist = "by Artist";
+
+        if (!testing) {
+            // Get the track metadata
+            trackName = track.name;
+            trackArtist = track.album.artists[0].name;
+        }
+
+        // Set the X Position for the text to be rendered at
+        int textXPosition = 10;
+        if (Settings.SHOW_ALBUM_ART) {
+            // If the album art is being rendered we must move the text to the right
+            textXPosition = cornerX + 50;
+        }
+
+        // Variable stating if the style of the player is MODERN
+        boolean isModern = (style == PlayerStyle.MODERN);
+
+        if (isModern) {
+            // Draw the outline of the player
+            Gui.drawRect(cornerX + 151, cornerY + 4, cornerX + 4, cornerY + 51, new Color(0, 0, 0, 75).getRGB());
+        }
+
+        // Draw the player background
+        Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, Color.darkGray.getRGB());
+
+        // Draw the metadata of the track (title, artist, album art)
+        fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
+        fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
+
+        // Draw the album art
+        if (Settings.SHOW_ALBUM_ART) {
+            if (Settings.MODERN_PLAYER_STYLE) {
+                // Draw outline
+                Gui.drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());
+            }
+
+            // Setup OpenGL
+            GlStateManager.pushMatrix();
+            GlStateManager.color(1, 1, 1, 1);
+
+            // Bind the texture for rendering
+            if (testing) {
+                // Since it's a testing player we bind the MediaMod Logo
+                mc.getTextureManager().bindTexture(IMediaGui.iconResource);
+            } else {
+                try {
+                    mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(new URL(track.album.images[0].url)));
+                } catch (MalformedURLException ignored) {
+                }
+            }
+
+            // Render the album art as 35x35
+            Gui.drawModalRectWithCustomSizedTexture(cornerX + 10, cornerY + 10, 0, 0, 35, 35, 35, 35);
+            GlStateManager.popMatrix();
+        }
+    }
+
+    /**
+     * Draw a gradient background rectangle
+     *
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     * @param startColor
+     * @param endColor
      */
     private void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
         float f = (float) (startColor >> 24 & 255) / 255.0F;

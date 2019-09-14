@@ -23,6 +23,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
         this.buttonList.add(new CustomButton(1, width / 2 - 120, getRowPos(1), getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art")));
         this.buttonList.add(new CustomButton(2, width / 2 + 10, getRowPos(1), getSuffix(Settings.AUTO_COLOR_SELECTION, "Color Selection")));
         this.buttonList.add(new CustomButton(3, width / 2 - 120, getRowPos(2), getSuffix(Settings.MODERN_PLAYER_STYLE, "Modern Player")));
+        this.buttonList.add(new CustomButton(4, width / 2 + 10, getRowPos(2), "Position Player"));
 
         for (GuiButton button : buttonList) {
             if (button.id != 0) {
@@ -85,6 +86,9 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
             case 3:
                 Settings.MODERN_PLAYER_STYLE = !Settings.MODERN_PLAYER_STYLE;
                 button.displayString = getSuffix(Settings.MODERN_PLAYER_STYLE, "Modern Player");
+                break;
+            case 4:
+                this.mc.displayGuiScreen(new GuiPlayerPositioning());
                 break;
         }
     }

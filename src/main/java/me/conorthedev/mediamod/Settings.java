@@ -14,6 +14,8 @@ public class Settings {
     public static boolean MODERN_PLAYER_STYLE;
     public static boolean SHOW_ALBUM_ART;
     public static boolean AUTO_COLOR_SELECTION;
+    public static int PLAYER_X;
+    public static int PLAYER_Y;
 
     public static void saveConfig() {
         MediaMod.INSTANCE.LOGGER.info("Saving configuration...");
@@ -37,6 +39,8 @@ public class Settings {
         Property modernPlayerProperty = configuration.get("Player", "modernPlayer", true);
         Property albumArtProperty = configuration.get("Player", "showAlbumArt", true);
         Property autoColorProperty = configuration.get("Player", "automaticColorSelection", true);
+        Property playerXProperty = configuration.get("Player", "playerX", 5);
+        Property playerYProperty = configuration.get("Player", "playerY", 5);
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
@@ -52,5 +56,11 @@ public class Settings {
 
         if (load) AUTO_COLOR_SELECTION = autoColorProperty.getBoolean();
         else autoColorProperty.setValue(AUTO_COLOR_SELECTION);
+
+        if (load) PLAYER_X = playerXProperty.getInt();
+        else playerXProperty.setValue(PLAYER_X);
+
+        if (load) PLAYER_Y = playerYProperty.getInt();
+        else playerYProperty.setValue(PLAYER_Y);
     }
 }

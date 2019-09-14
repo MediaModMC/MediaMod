@@ -7,9 +7,7 @@ import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.io.IOException;
 
@@ -39,18 +37,10 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
 
+        this.drawHeader(width, height);
+
         this.drawString(this.fontRendererObj, "Developed by ConorTheDev", this.width - this.fontRendererObj.getStringWidth("Developed by ConorTheDev") - 2, this.height - 10, -1);
         this.drawString(this.fontRendererObj, "Version " + Metadata.VERSION, this.width - this.fontRendererObj.getStringWidth("Version " + Metadata.VERSION) - 2, this.height - 20, -1);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.color(1, 1, 1, 1);
-
-        // Bind the texture for rendering
-        mc.getTextureManager().bindTexture(this.headerResource);
-
-        // Render the album art as 35x35
-        Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
-        GlStateManager.popMatrix();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
