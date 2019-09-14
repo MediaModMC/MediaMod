@@ -1,6 +1,4 @@
-## MediaMod
-![](https://img.shields.io/github/downloads/MediaModMC/MediaMod/v0.0.1/total)
-
+<img src="https://raw.githubusercontent.com/MediaModMC/MediaMod/master/src/main/resources/assets/mediamod/header.png">
 
 View your current song in Minecraft with support for services like Spotify, YouTube, SoundCloud & more!
 
