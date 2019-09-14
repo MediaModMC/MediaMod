@@ -25,3 +25,5 @@ MediaMod is a Minecraft Mod that shows your current song in Minecraft, it starte
 
 ### For Developers
 If you want to contribute to MediaMod, take a look at [CONTRIBUTING.md](https://github.com/MediaModMC/MediaMod/blob/master/CONTRIBUTING.md) before you make a pull request
+
+If you are using IntelliJ IDEA (which is recommended) to fix resources not loading in a Development Environment, open ``Settings > Build, Execution, Deployment > Build Tools > Gradle`` and set 'Run and Build using:' to `IntellIJ`
