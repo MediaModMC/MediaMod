@@ -1,6 +1,7 @@
 package me.conorthedev.mediamod.gui.info;
 
 import me.conorthedev.mediamod.MediaMod;
+import me.conorthedev.mediamod.gui.GuiMediaModSettings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import net.minecraft.client.gui.GuiButton;
@@ -38,7 +39,7 @@ public class GuiTermsOfService extends GuiScreen implements IMediaGui {
         switch (button.id) {
             case 0:
                 MediaMod.INSTANCE.setTOSAccepted();
-                this.mc.displayGuiScreen(null);
+                this.mc.displayGuiScreen(new GuiMediaModSettings());
                 break;
 
             case 1:
