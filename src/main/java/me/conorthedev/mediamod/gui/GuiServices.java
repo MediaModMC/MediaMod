@@ -5,8 +5,10 @@ import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -21,9 +23,9 @@ class GuiServices extends GuiScreen implements IMediaGui {
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
 
         if (!SpotifyHandler.logged) {
-            this.buttonList.add(new CustomButton(1, width / 2 - 100, getRowPos(1), "Login to Spotify"));
+            this.buttonList.add(new CustomButton(1,width / 2 - 100, height / 2 - 35, "Login to Spotify"));
         } else {
-            this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 75, "Logout of all"));
+            this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, "Logout of all"));
         }
 
         super.initGui();
@@ -33,15 +35,20 @@ class GuiServices extends GuiScreen implements IMediaGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
 
-        drawCenteredString(fontRendererObj, "MediaMod v" + Metadata.VERSION, width / 2, 10, -1);
-        drawHorizontalLine(50, width - 50, 25, -1);
-        drawCenteredString(fontRendererObj, "Services", width / 2, 35, -1);
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1, 1, 1, 1);
+
+        // Bind the texture for rendering
+        mc.getTextureManager().bindTexture(this.headerResource);
+
+        // Render the header
+        Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
+        GlStateManager.popMatrix();
 
         if (!SpotifyHandler.logged) {
-            drawCenteredString(fontRendererObj, "Spotify not logged in! Please login below", width / 2, 50, Color.red.getRGB());
+            drawCenteredString(fontRendererObj, "Spotify not logged in! Please login below", width / 2, height / 2 - 53, Color.red.getRGB());
         } else {
-            drawCenteredString(fontRendererObj, "Connected Accounts:", width / 2, 50, Color.green.getRGB());
-            drawCenteredString(fontRendererObj, "Spotify", width / 2, 60, -1);
+            drawCenteredString(fontRendererObj, "Spotify is logged in!", width / 2, height / 2 - 53, Color.green.getRGB());
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);

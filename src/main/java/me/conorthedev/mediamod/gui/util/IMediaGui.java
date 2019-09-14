@@ -13,5 +13,4 @@ public interface IMediaGui {
     default int getRowPos(int rowNumber) {
         return 60 + rowNumber * 23;
     }
-
 }

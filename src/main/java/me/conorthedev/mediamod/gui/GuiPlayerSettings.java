@@ -49,8 +49,6 @@ class GuiPlayerSettings extends GuiScreen implements IMediaGui {
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, 15, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();
 
-       // drawCenteredString(fontRendererObj, "Player Settings", width / 2, 65, Color.white.getRGB());
-
         drawPlayer();
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
