@@ -3,14 +3,13 @@ package me.conorthedev.mediamod.gui;
 import me.conorthedev.mediamod.MediaMod;
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.info.GuiTermsOfService;
+import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
@@ -19,7 +18,7 @@ import java.io.IOException;
  *
  * @see net.minecraft.client.gui.GuiScreen
  */
-public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
+public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
     @Override
     public void initGui() {
         Settings.loadConfig();
@@ -54,6 +53,17 @@ public class GuiMediaModSettings extends GuiScreen implements IMediaGui {
         GlStateManager.popMatrix();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected String getButtonTooltip(int buttonId) {
+        switch (buttonId) {
+            case 0:
+                return "Disables the mod entirely (requires a restart to work fully)";
+            case 1:
+                return "Disable or Enable the Player HUD";
+        }
+        return null;
     }
 
     @Override
