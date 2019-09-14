@@ -12,7 +12,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -49,7 +48,7 @@ public class MediaMod {
     /**
      * Check if the user is in a development environment, this is used for DEBUG messages
      */
-    public final boolean DEVELOPMENT_ENVIRONMENT = classExists("net.minecraft.client.Minecraft");
+    public final boolean DEVELOPMENT_ENVIRONMENT = fieldExists(Minecraft.class, "theMinecraft");
 
     /**
      * Path to the file verifying that the user has accepted the Terms of Service
@@ -144,16 +143,17 @@ public class MediaMod {
     }
 
     /**
-     * Checks if a class exists by the class name
+     * Checks if a field exists by the field name
      *
-     * @param className - the class name including package (i.e. net.minecraft.client.Minecraft)
+     * @param clazz - the class the field can be in
+     * @param fieldName - the field name
      * @return boolean
      */
-    private boolean classExists(String className) {
+    private boolean fieldExists(Class<?> clazz, String fieldName) {
         try {
-            Class.forName(className);
+            clazz.getDeclaredField(fieldName);
             return true;
-        } catch (ClassNotFoundException e) {
+        } catch (NoSuchFieldException e) {
             return false;
         }
     }
