@@ -145,7 +145,7 @@ public class PlayerOverlay {
         // Track Name
         String trackName = "Song Name";
         // Track Artist
-        String trackArtist = "by Artist";
+        String trackArtist = "Artist";
         // URL of album art
         URL url = null;
         // Color of the album art
@@ -237,8 +237,10 @@ public class PlayerOverlay {
         Gui.drawRect(textXPosition, cornerY + 33, textXPosition + 90, cornerY + 41, Color.darkGray.darker().getRGB());
 
         // Get the percent complete
-        assert track != null;
-        float percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
+        float percentComplete = (float) 0.75;
+        if (track != null && !testing) {
+            percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
+        }
 
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
             if (Settings.MODERN_PLAYER_STYLE) {
@@ -284,6 +286,8 @@ public class PlayerOverlay {
     /**
      * Draws a rectangle with a vertical gradient between the specified colors (ARGB format).
      * Args: x1, y1, x2, y2, topColor, bottomColor
+     *
+     * @author ScottehBoeh
      */
     private void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
         float f = (float) (startColor >> 24 & 255) / 255.0F;
