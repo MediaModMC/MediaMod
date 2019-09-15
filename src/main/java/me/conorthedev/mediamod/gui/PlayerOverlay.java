@@ -39,22 +39,22 @@ public class PlayerOverlay {
      */
     private static final HashMap<BufferedImage, Color> avgColorCache = new HashMap<>();
 
-    // If the tick is the first one
+    /**
+     * If the current tick is the first tick being called
+     */
     private boolean first = true;
+
     /**
      * The current song
      *
      * @see me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject
      */
     private CurrentlyPlayingObject currentlyPlayingObject = null;
-    // The concatenated name length
+
+    /**
+     * The length of the concatinated song name
+     */
     private int concatNameCount = 0;
-    // If the tick is the first one for renderPlayer
-    private boolean ifirst = true;
-    // If the tick is the first one for the artist rendering
-    private boolean artistFirst = true;
-    // The concatenated artist name length
-    private int concatArtistCount = 0;
 
     private static Color averageColor(BufferedImage bi, int w, int h) {
         final Color[] color = {Color.gray};
@@ -119,166 +119,6 @@ public class PlayerOverlay {
         }
     }
 
-    /**
-     * Renders the Player HUD
-     */
-    /*private void renderPlayer() {
-        // Fetch Minecraft instance
-        Minecraft mc = FMLClientHandler.instance().getClient();
-
-        // Initialize a font renderer
-        FontRenderer fontRenderer = mc.fontRendererObj;
-
-        int textX = 10;
-
-        if (Settings.SHOW_ALBUM_ART) {
-            textX = 50;
-        }
-
-        // Track Metadata
-        Track track = currentlyPlayingObject.item;
-
-        if (track == null) {
-            Gui.drawRect(100, 5, 5, 25, Color.darkGray.getRGB());
-            fontRenderer.drawString("Not Playing", 50, 11, -1);
-            return;
-        }
-
-        Color color = Color.gray;
-        URL url = null;
-        try {
-            url = new URL(track.album.images[0].url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        if (Settings.MODERN_PLAYER_STYLE) {
-            // Draw the outline of the player
-            Gui.drawRect(151, 4, 4, 51, new Color(0, 0, 0, 75).getRGB());
-        }
-
-        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
-            BufferedImage image = DynamicTextureWrapper.getImage(url);
-            color = averageColor(image, image.getWidth(), image.getHeight());
-
-            // Draw the background of the player
-            Gui.drawRect(150, 5, 5, 50, averageColor(image, image.getWidth(), image.getHeight()).darker().getRGB());
-        } else {
-            // Draw the background of the player
-            Gui.drawRect(150, 5, 5, 50, Color.darkGray.getRGB());
-        }
-
-        // Establish track metadata (name, artist, etc)
-        String title = track.name;
-        ArrayList<String> artistSimplifiedList = Arrays.stream(track.album.artists).map(artist ->
-                artist.name).collect(Collectors.toCollection(ArrayList::new));
-
-        String artists = String.join(", ", artistSimplifiedList);
-
-        if (title.length() > 17) {
-            // Concatenate the string if the length is larger than 17, it will appear like this:
-            // Initial String: HELLO WORLD!
-
-            // Set the concatenated title to the title + 3 spaces + the title
-            AtomicInteger concatNameCount2 = new AtomicInteger(concatNameCount + 17);
-            String concatName = title + "    " + title;
-
-            // If the length of the next concatenated title is larger or equal to the current concatenated title, reset the
-            // name count to 0
-            if ((concatNameCount + 16) >= concatName.length())
-                concatNameCount = 0;
-
-            // Draw the string
-            mc.fontRendererObj.drawString(concatName.substring(concatNameCount, concatNameCount + 16), textX, 11, -1, false);
-
-            // Every 500ms add the
-            if (ifirst) {
-                ifirst = false;
-                ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-                exec.scheduleAtFixedRate(() -> {
-                    concatNameCount++;
-                    concatNameCount2.set(concatNameCount + 16);
-                }, 0, 500, TimeUnit.MILLISECONDS);
-            }
-        } else {
-            // The string is less than 17 characters, draw it normally
-            fontRenderer.drawString(title, textX, 11, -1);
-        }
-
-        if (artists.length() > 15) {
-            // Concatenate the string if the length is larger than 17, it will appear like this:
-            // Initial String: HELLO WORLD!
-
-            // Set the concatenated title to the title + 3 spaces + the title
-            AtomicInteger concatNameCount2 = new AtomicInteger(concatArtistCount + 17);
-            String concatName = "by " + artists + "    by " + artists;
-
-            // If the length of the next concatenated title is larger or equal to the current concatenated title, reset the
-            // name count to 0
-            if ((concatArtistCount + 16) >= concatName.length())
-                concatArtistCount = 0;
-
-            // Draw the string
-            mc.fontRendererObj.drawString(concatName.substring(concatArtistCount, concatArtistCount + 16), textX, 20, white.darker().getRGB(), false);
-
-            // Every 500ms add the
-            if (artistFirst) {
-                artistFirst = false;
-                ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-                exec.scheduleAtFixedRate(() -> {
-                    concatArtistCount++;
-                    concatNameCount2.set(concatArtistCount + 16);
-                }, 0, 500, TimeUnit.MILLISECONDS);
-            }
-        } else {
-            // The string is less than 17 characters, draw it normally
-            fontRenderer.drawString("by " + artists, textX, 20, white.darker().getRGB());
-        }
-
-        // Get progress and duration in the Duration class
-        float percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
-
-        // Draw Progress Bar
-        // Draw outline
-        if (Settings.MODERN_PLAYER_STYLE) {
-            Gui.drawRect(textX - 1, 32, textX + 91, 42, new Color(0, 0, 0, 75).getRGB());
-        }
-
-        Gui.drawRect(textX, 33, textX + 90, 41, Color.darkGray.darker().getRGB());
-
-        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
-            if (Settings.MODERN_PLAYER_STYLE) {
-                drawGradientRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB(), color.darker().getRGB());
-            } else {
-                Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, color.getRGB());
-            }
-        } else {
-            Gui.drawRect(textX, 33, (int) (textX + (90 * percentComplete)), 41, Color.green.getRGB());
-        }
-
-        if (Settings.SHOW_ALBUM_ART) {
-            if (Settings.MODERN_PLAYER_STYLE) {
-                // Draw outline
-                Gui.drawRect(46, 9, 9, 46, new Color(0, 0, 0, 75).getRGB());
-            }
-
-            GlStateManager.pushMatrix();
-            GlStateManager.color(1, 1, 1, 1);
-
-            // Bind the texture for rendering
-            mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(url));
-
-            // Render the album art as 35x35
-            Gui.drawModalRectWithCustomSizedTexture(10, 10, 0, 0, 35, 35, 35, 35);
-            GlStateManager.popMatrix();
-        }
-    }
-
-    /**
-     * Draws a rectangle with a vertical gradient between the specified colors (ARGB format). Args : x1, y1, x2, y2,
-     * topColor, bottomColor
-     */
-
     private boolean firstRun = true;
 
     /**
@@ -289,7 +129,7 @@ public class PlayerOverlay {
      * @param style   - the style of the player
      * @param testing - if it is a testing player i.e. in the settings menu
      */
-    public void drawPlayer(int cornerX, int cornerY, PlayerStyle style, boolean testing) {
+    void drawPlayer(int cornerX, int cornerY, PlayerStyle style, boolean testing) {
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -301,13 +141,25 @@ public class PlayerOverlay {
         if (currentlyPlayingObject != null) {
             track = currentlyPlayingObject.item;
         }
+
+        // Track Name
         String trackName = "Song Name";
+        // Track Artist
         String trackArtist = "by Artist";
+        // URL of album art
+        URL url = null;
+        // Color of the album art
+        Color color = Color.gray;
 
         if (!testing && track != null) {
             // Get the track metadata
             trackName = track.name;
             trackArtist = track.album.artists[0].name;
+            try {
+                url = new URL(track.album.images[0].url);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
 
         // Set the X Position for the text to be rendered at
@@ -325,8 +177,19 @@ public class PlayerOverlay {
             Gui.drawRect(cornerX + 151, cornerY + 4, cornerX + 4, cornerY + 51, new Color(0, 0, 0, 75).getRGB());
         }
 
-        // Draw the player background
-        Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, Color.darkGray.getRGB());
+        // Background
+        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART && !testing) {
+            // Get the image from the URL
+            BufferedImage image = DynamicTextureWrapper.getImage(url);
+            // Get the most common colour
+            color = averageColor(image, image.getWidth(), image.getHeight());
+
+            // Draw the background of the player
+            Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, color.darker().getRGB());
+        } else {
+            // Draw the background of the player
+            Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, Color.darkGray.getRGB());
+        }
 
         // Draw the metadata of the track (title, artist, album art)
         if (trackName.length() >= 19) {
@@ -356,8 +219,40 @@ public class PlayerOverlay {
             fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
         }
 
-        // Draw the artist name
-        fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
+        if (trackArtist.length() >= 18) {
+            // Draw the artist name
+            fontRenderer.drawString("by " + trackArtist.substring(0, 17), textXPosition, cornerY + 20, Color.white.darker().getRGB());
+        } else {
+            // Draw the artist name
+            fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
+        }
+
+        // Draw the progress bar
+        if (Settings.MODERN_PLAYER_STYLE) {
+            // Draw outline
+            Gui.drawRect(textXPosition - 1, cornerY + 32, textXPosition + 91, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
+        }
+
+        // Draw background
+        Gui.drawRect(textXPosition, cornerY + 33, textXPosition + 90, cornerY + 41, Color.darkGray.darker().getRGB());
+
+        // Get the percent complete
+        assert track != null;
+        float percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
+
+        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
+            if (Settings.MODERN_PLAYER_STYLE) {
+                // Draw the gradient styled progress bar
+                drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, color.getRGB(), color.darker().getRGB());
+            } else {
+                // Draw the normal progress bar
+                Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, color.getRGB());
+            }
+        } else {
+            // Draw the green progress bar
+            Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, Color.green.getRGB());
+        }
+
 
         // Draw the album art
         if (Settings.SHOW_ALBUM_ART) {
@@ -375,11 +270,8 @@ public class PlayerOverlay {
                 // Since it's a testing player we bind the MediaMod Logo
                 mc.getTextureManager().bindTexture(IMediaGui.iconResource);
             } else {
-                if (track != null) {
-                    try {
-                        mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(new URL(track.album.images[0].url)));
-                    } catch (MalformedURLException ignored) {
-                    }
+                if (url != null) {
+                    mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(url));
                 }
             }
 
@@ -390,14 +282,8 @@ public class PlayerOverlay {
     }
 
     /**
-     * Draw a gradient background rectangle
-     *
-     * @param left
-     * @param top
-     * @param right
-     * @param bottom
-     * @param startColor
-     * @param endColor
+     * Draws a rectangle with a vertical gradient between the specified colors (ARGB format).
+     * Args: x1, y1, x2, y2, topColor, bottomColor
      */
     private void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
         float f = (float) (startColor >> 24 & 255) / 255.0F;
