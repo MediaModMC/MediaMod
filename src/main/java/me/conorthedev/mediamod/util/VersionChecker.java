@@ -2,7 +2,6 @@ package me.conorthedev.mediamod.util;
 
 import com.google.gson.Gson;
 import me.conorthedev.mediamod.MediaMod;
-import me.conorthedev.mediamod.base.BaseMod;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -50,7 +49,7 @@ public class VersionChecker {
 
             VersionResponse versionResponse = g.fromJson(content, VersionResponse.class);
 
-            if(versionResponse.latestVersionInt > Metadata.VERSION_INT) {
+            if (versionResponse.latestVersionInt > Metadata.VERSION_INT) {
                 INSTANCE.IS_LATEST_VERSION = false;
                 INSTANCE.LATEST_VERSION_INFO = versionResponse;
             } else {

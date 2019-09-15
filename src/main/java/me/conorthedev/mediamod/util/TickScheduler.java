@@ -47,14 +47,13 @@ public class TickScheduler {
     private static class Task {
 
         /**
-         * Ticks left until the task executes
-         */
-        private int ticksLeft;
-
-        /**
          * Task to execute
          */
         private final Runnable task;
+        /**
+         * Ticks left until the task executes
+         */
+        private int ticksLeft;
 
         private Task(int ticksLeft, Runnable runnable) {
             this.ticksLeft = ticksLeft;

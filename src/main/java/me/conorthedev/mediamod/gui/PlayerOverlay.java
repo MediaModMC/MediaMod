@@ -54,6 +54,7 @@ public class PlayerOverlay {
      * The length of the concatinated song name
      */
     private int concatNameCount = 0;
+    private boolean firstRun = true;
 
     private static Color averageColor(BufferedImage bi, int w, int h) {
         final Color[] color = {Color.gray};
@@ -117,8 +118,6 @@ public class PlayerOverlay {
             }
         }
     }
-
-    private boolean firstRun = true;
 
     /**
      * Renders the media player on the screen

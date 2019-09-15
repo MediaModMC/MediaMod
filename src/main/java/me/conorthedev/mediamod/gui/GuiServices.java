@@ -4,7 +4,6 @@ import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
-import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,7 +22,7 @@ class GuiServices extends GuiScreen implements IMediaGui {
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
 
         if (!SpotifyHandler.logged) {
-            this.buttonList.add(new CustomButton(1,width / 2 - 100, height / 2 - 35, "Login to Spotify"));
+            this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, "Login to Spotify"));
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, "Logout of all"));
         }

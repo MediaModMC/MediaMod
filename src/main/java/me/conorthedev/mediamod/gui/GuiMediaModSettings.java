@@ -21,7 +21,7 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
     public void initGui() {
         Settings.loadConfig();
 
-        if(!MediaMod.INSTANCE.getTOSAccepted()) {
+        if (!MediaMod.INSTANCE.getTOSAccepted()) {
             this.mc.displayGuiScreen(new GuiTermsOfService());
         }
 

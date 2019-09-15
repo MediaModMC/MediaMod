@@ -33,27 +33,25 @@ import java.io.IOException;
 @Mod(name = Metadata.NAME, modid = Metadata.MODID, version = Metadata.VERSION)
 public class MediaMod {
     /**
+     * Path to the file verifying that the user has accepted the Terms of Service
+     */
+    private static final File TOS_ACCEPTED_FILE = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod/tosaccepted.lock");
+    /**
      * An instance of this class to access non-static methods from other classes
      */
     @Mod.Instance(Metadata.MODID)
     public static MediaMod INSTANCE;
-
     /**
      * Logger used to log info messages, debug messages, error messages & more
      *
      * @see org.apache.logging.log4j.Logger
      */
     public final Logger LOGGER = LogManager.getLogger("MediaMod");
-
     /**
      * Check if the user is in a development environment, this is used for DEBUG messages
      */
     public final boolean DEVELOPMENT_ENVIRONMENT = fieldExists(Minecraft.class, "theMinecraft");
-
-    /**
-     * Path to the file verifying that the user has accepted the Terms of Service
-     */
-    private static final File TOS_ACCEPTED_FILE = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod/tosaccepted.lock");
+    private boolean firstLoad = true;
 
     /**
      * Fired when Minecraft is starting
@@ -123,8 +121,6 @@ public class MediaMod {
         serviceHandler.initializeHandlers();
     }
 
-    private boolean firstLoad = true;
-
     /**
      * Fired when the world fires a tick
      *
@@ -145,7 +141,7 @@ public class MediaMod {
     /**
      * Checks if a field exists by the field name
      *
-     * @param clazz - the class the field can be in
+     * @param clazz     - the class the field can be in
      * @param fieldName - the field name
      * @return boolean
      */
