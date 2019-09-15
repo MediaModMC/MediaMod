@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerOverlay {
     /**
@@ -278,6 +279,8 @@ public class PlayerOverlay {
      * topColor, bottomColor
      */
 
+    private boolean firstRun = true;
+
     /**
      * Renders the media player on the screen
      *
@@ -294,11 +297,14 @@ public class PlayerOverlay {
         FontRenderer fontRenderer = mc.fontRendererObj;
 
         // Track Metadata
-        Track track = currentlyPlayingObject.item;
+        Track track = null;
+        if (currentlyPlayingObject != null) {
+            track = currentlyPlayingObject.item;
+        }
         String trackName = "Song Name";
         String trackArtist = "by Artist";
 
-        if (!testing) {
+        if (!testing && track != null) {
             // Get the track metadata
             trackName = track.name;
             trackArtist = track.album.artists[0].name;
@@ -323,7 +329,34 @@ public class PlayerOverlay {
         Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, Color.darkGray.getRGB());
 
         // Draw the metadata of the track (title, artist, album art)
-        fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
+        if (trackName.length() >= 19) {
+            String concatName = trackName + "    " + trackName;
+            AtomicInteger concatNameCount2 = new AtomicInteger(concatNameCount + 17);
+
+            if ((concatNameCount + 16) >= concatName.length()) {
+                concatNameCount = 0;
+                concatNameCount2.set(concatNameCount + 17);
+            }
+
+            if (firstRun) {
+                // Set the firstRun variable to false
+                firstRun = false;
+
+                ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+                exec.scheduleAtFixedRate(() -> {
+                    concatNameCount++;
+                    concatNameCount2.set(concatNameCount + 16);
+                }, 0, 500, TimeUnit.MILLISECONDS);
+            }
+
+            // String concatination for tracks
+            fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1);
+        } else {
+            // Draw the track name normally
+            fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
+        }
+
+        // Draw the artist name
         fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
 
         // Draw the album art
@@ -342,9 +375,11 @@ public class PlayerOverlay {
                 // Since it's a testing player we bind the MediaMod Logo
                 mc.getTextureManager().bindTexture(IMediaGui.iconResource);
             } else {
-                try {
-                    mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(new URL(track.album.images[0].url)));
-                } catch (MalformedURLException ignored) {
+                if (track != null) {
+                    try {
+                        mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(new URL(track.album.images[0].url)));
+                    } catch (MalformedURLException ignored) {
+                    }
                 }
             }
 

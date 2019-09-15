@@ -44,8 +44,12 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
                 break;
 
             case 1:
-                Settings.PLAYER_X = 5;
-                Settings.PLAYER_Y = 5;
+                this.currentX = 5;
+                this.currentY = 5;
+
+                Settings.PLAYER_X = this.currentX;
+                Settings.PLAYER_Y = this.currentY;
+                Settings.saveConfig();
                 break;
 
             case 2:
