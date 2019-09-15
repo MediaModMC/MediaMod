@@ -4,7 +4,6 @@ import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
-import me.conorthedev.mediamod.util.PlayerStyle;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.EnumChatFormatting;
@@ -33,7 +32,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         this.drawCenteredString(fontRendererObj, "Position the player by dragging it around, click reset to reset position.", width / 2, height - 120, -1);
 
         boolean testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
-        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, PlayerStyle.MODERN, testing);
+        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, Settings.MODERN_PLAYER_STYLE, testing);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -78,9 +77,6 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
             // It was the left click, change the position
             this.currentX = mouseX;
             this.currentY = mouseY;
-
-            // Redraw the player to make it look somewhat smooth
-            PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, PlayerStyle.MODERN, true);
         }
 
         // Call the super function

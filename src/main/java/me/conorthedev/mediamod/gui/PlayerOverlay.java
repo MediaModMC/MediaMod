@@ -6,7 +6,6 @@ import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
-import me.conorthedev.mediamod.util.PlayerStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -113,7 +112,7 @@ public class PlayerOverlay {
             if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
                 // Make sure there's no GUI screen being displayed
                 if (FMLClientHandler.instance().getClient().currentScreen == null) {
-                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, PlayerStyle.MODERN, false);
+                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false);
                 }
             }
         }
@@ -124,12 +123,12 @@ public class PlayerOverlay {
     /**
      * Renders the media player on the screen
      *
-     * @param cornerX - the x coordinate of the top left corner
-     * @param cornerY - the y coordinate of the top right corner
-     * @param style   - the style of the player
-     * @param testing - if it is a testing player i.e. in the settings menu
+     * @param cornerX  - the x coordinate of the top left corner
+     * @param cornerY  - the y coordinate of the top right corner
+     * @param isModern - if the player should be rendered as the modern style
+     * @param testing  - if it is a testing player i.e. in the settings menu
      */
-    void drawPlayer(int cornerX, int cornerY, PlayerStyle style, boolean testing) {
+    void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing) {
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -163,14 +162,11 @@ public class PlayerOverlay {
         }
 
         // Set the X Position for the text to be rendered at
-        int textXPosition = 10;
+        int textXPosition = cornerX + 10;
         if (Settings.SHOW_ALBUM_ART) {
             // If the album art is being rendered we must move the text to the right
             textXPosition = cornerX + 50;
         }
-
-        // Variable stating if the style of the player is MODERN
-        boolean isModern = (style == PlayerStyle.MODERN);
 
         if (isModern) {
             // Draw the outline of the player
