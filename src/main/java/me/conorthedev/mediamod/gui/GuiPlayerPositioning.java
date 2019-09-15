@@ -3,6 +3,7 @@ package me.conorthedev.mediamod.gui;
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
+import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.util.PlayerStyle;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -30,7 +31,9 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         super.drawDefaultBackground();
 
         this.drawCenteredString(fontRendererObj, "Position the player by dragging it around, click reset to reset position.", width / 2, height - 120, -1);
-        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, PlayerStyle.MODERN, true);
+
+        boolean testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
+        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, PlayerStyle.MODERN, testing);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
