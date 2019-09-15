@@ -4,15 +4,12 @@ import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
+import me.conorthedev.mediamod.media.base.ServiceHandler;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
 import java.io.IOException;
-
-import static java.awt.Color.white;
 
 class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
     @Override
@@ -48,7 +45,8 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, 15, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();
 
-        PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, true);
+        boolean testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
+        PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, testing);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -102,66 +100,5 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
     @Override
     public void onGuiClosed() {
         Settings.saveConfig();
-    }
-
-    private void drawPlayer() {
-        Color color = Color.gray;
-
-        if(Settings.MODERN_PLAYER_STYLE) {
-            // Draw the outline of the player
-            Gui.drawRect(width / 2 - 101, height / 2 + 19, width / 2 + 101, height / 2 + 66, new Color(0, 0, 0, 75).getRGB());
-        }
-
-        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
-            // Draw the background of the player
-            // Note: .darker()*2 because it just looks static otherwise
-            Gui.drawRect(width / 2 - 100, height / 2 + 20, width / 2 + 100, height / 2 + 65, color.darker().darker().getRGB());
-        } else {
-            // Draw the background of the player
-            Gui.drawRect(width / 2 - 100, height / 2 + 20, width / 2 + 100, height / 2 + 65, Color.darkGray.getRGB());
-        }
-
-        int textX = width / 2 - 100 + 50;
-
-        if(Settings.MODERN_PLAYER_STYLE) {
-            // Draw outline
-            Gui.drawRect(textX - 1, height / 2 + 45, textX + 101, height / 2 + 56, new Color(0, 0, 0, 75).getRGB());
-        }
-
-        Gui.drawRect(textX, height / 2 + 46, textX + 100, height / 2 + 55, Color.darkGray.darker().getRGB());
-
-        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
-            if(Settings.MODERN_PLAYER_STYLE) {
-                drawGradientRect(textX, height / 2 + 46, textX + 50, height / 2 + 55, color.getRGB(), color.darker().getRGB());
-            } else {
-                Gui.drawRect(textX, height / 2 + 46, textX + 50, height / 2 + 55, color.getRGB());
-            }
-        } else {
-            Gui.drawRect(textX, height / 2 + 13, textX + 50, height / 2 + 22, Color.green.getRGB());
-        }
-
-        if (Settings.SHOW_ALBUM_ART) {
-            fontRendererObj.drawString("Song Name", textX, height / 2 + 26, -1);
-            fontRendererObj.drawString("by Artist Name", textX, height / 2 + 35, white.darker().getRGB());
-
-            ResourceLocation albumResource = new ResourceLocation("mediamod", "mediamod.png");
-            if(Settings.MODERN_PLAYER_STYLE) {
-                // Draw outline
-                Gui.drawRect(width / 2 - 100 + 46, height / 2 + 24, width / 2 - 100 + 9, height / 2 + 61, new Color(0, 0, 0, 75).getRGB());
-            }
-
-            GlStateManager.pushMatrix();
-            GlStateManager.color(1, 1, 1, 1);
-
-            // Bind the texture for rendering
-            mc.getTextureManager().bindTexture(albumResource);
-
-            // Render the album art as 35x35
-            Gui.drawModalRectWithCustomSizedTexture(width / 2 - 90, height / 2 + 25, 0, 0, 35, 35, 35, 35);
-            GlStateManager.popMatrix();
-        } else {
-            fontRendererObj.drawString("Song Name", width / 2 - 100 + 5, height / 2 - 15 + 6, -1);
-            fontRendererObj.drawString("by Artist Name", width / 2 - 100 + 5, height / 2 - 15 + 15, white.darker().getRGB());
-        }
     }
 }
