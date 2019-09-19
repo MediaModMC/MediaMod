@@ -69,8 +69,6 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
                 this.currentZoom = slider.getValue();
 
                 Settings.PLAYER_ZOOM = this.currentZoom;
-
-                System.out.println(this.currentZoom + " | " + Settings.PLAYER_ZOOM);
                 break;
         }
     }
@@ -98,7 +96,6 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     @Override
     public void onGuiClosed() {
         Settings.saveConfig();
-        System.out.println(this.currentZoom + " | " + Settings.PLAYER_ZOOM);
         super.onGuiClosed();
     }
 }
