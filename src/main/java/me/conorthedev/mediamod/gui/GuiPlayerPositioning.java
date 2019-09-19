@@ -51,9 +51,12 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
             case 1:
                 this.currentX = 5;
                 this.currentY = 5;
+                this.currentZoom = 1.0;
 
                 Settings.PLAYER_X = this.currentX;
                 Settings.PLAYER_Y = this.currentY;
+                Settings.PLAYER_ZOOM = this.currentZoom;
+                this.mc.displayGuiScreen(new GuiPlayerPositioning());
                 break;
 
             case 2:
