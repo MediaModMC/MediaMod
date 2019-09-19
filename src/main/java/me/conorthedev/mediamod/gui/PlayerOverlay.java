@@ -138,7 +138,7 @@ public class PlayerOverlay {
             if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
                 // Make sure there's no GUI screen being displayed
                 if (FMLClientHandler.instance().getClient().currentScreen == null) {
-                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false);
+                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, true);
                 }
             }
         }
@@ -151,8 +151,9 @@ public class PlayerOverlay {
      * @param cornerY  - the y coordinate of the top right corner
      * @param isModern - if the player should be rendered as the modern style
      * @param testing  - if it is a testing player i.e. in the settings menu
+     * @param doScaling - weather or not the rendering code should scale it according to the user's settings
      */
-    void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing) {
+    void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, boolean doScaling) {
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -183,6 +184,11 @@ public class PlayerOverlay {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (doScaling) {
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(Settings.PLAYER_ZOOM, Settings.PLAYER_ZOOM, Settings.PLAYER_ZOOM);
         }
 
         // Set the X Position for the text to be rendered at
@@ -299,6 +305,10 @@ public class PlayerOverlay {
 
             // Render the album art as 35x35
             Gui.drawModalRectWithCustomSizedTexture(cornerX + 10, cornerY + 10, 0, 0, 35, 35, 35, 35);
+            GlStateManager.popMatrix();
+        }
+
+        if (doScaling) {
             GlStateManager.popMatrix();
         }
     }

@@ -7,12 +7,14 @@ import me.conorthedev.mediamod.media.base.ServiceHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.client.config.GuiSlider;
 
 import java.io.IOException;
 
 public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     private int currentX = Settings.PLAYER_X;
     private int currentY = Settings.PLAYER_Y;
+    private double currentZoom = Settings.PLAYER_ZOOM;
 
     @Override
     public void initGui() {
@@ -21,6 +23,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 83, EnumChatFormatting.GREEN + "Save"));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, height - 60, EnumChatFormatting.RED + "Reset"));
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 37, "Back"));
+        this.buttonList.add(new GuiSlider(3, width / 2 - 75, height - 105, "Scale: ", 1.0, 2.0, Settings.PLAYER_ZOOM, null));
 
         super.initGui();
     }
@@ -32,7 +35,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         this.drawCenteredString(fontRendererObj, "Position the player by dragging it around, click reset to reset position.", width / 2, height - 120, -1);
 
         boolean testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
-        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, Settings.MODERN_PLAYER_STYLE, testing);
+        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, Settings.MODERN_PLAYER_STYLE, testing, true);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -51,14 +54,20 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
                 Settings.PLAYER_X = this.currentX;
                 Settings.PLAYER_Y = this.currentY;
-                Settings.saveConfig();
                 break;
 
             case 2:
                 Settings.PLAYER_X = this.currentX;
                 Settings.PLAYER_Y = this.currentY;
-                Settings.saveConfig();
                 this.mc.displayGuiScreen(new GuiPlayerSettings());
+                break;
+            case 3:
+                GuiSlider slider = (GuiSlider) button;
+                this.currentZoom = slider.getValue();
+
+                Settings.PLAYER_ZOOM = this.currentZoom;
+
+                System.out.println(this.currentZoom + " | " + Settings.PLAYER_ZOOM);
                 break;
         }
     }
@@ -85,6 +94,8 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
     @Override
     public void onGuiClosed() {
+        Settings.saveConfig();
+        System.out.println(this.currentZoom + " | " + Settings.PLAYER_ZOOM);
         super.onGuiClosed();
     }
 }

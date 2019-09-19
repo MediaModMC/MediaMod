@@ -16,6 +16,7 @@ public class Settings {
     public static boolean AUTO_COLOR_SELECTION;
     public static int PLAYER_X;
     public static int PLAYER_Y;
+    public static double PLAYER_ZOOM;
 
     public static void saveConfig() {
         MediaMod.INSTANCE.LOGGER.info("Saving configuration...");
@@ -41,6 +42,7 @@ public class Settings {
         Property autoColorProperty = configuration.get("Player", "automaticColorSelection", true);
         Property playerXProperty = configuration.get("Player", "playerX", 5);
         Property playerYProperty = configuration.get("Player", "playerY", 5);
+        Property playerZoomProperty = configuration.get("Player", "playerZoom", 1.0);
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
@@ -62,5 +64,8 @@ public class Settings {
 
         if (load) PLAYER_Y = playerYProperty.getInt();
         else playerYProperty.setValue(PLAYER_Y);
+
+        if (load) PLAYER_ZOOM = playerZoomProperty.getDouble();
+        else playerZoomProperty.setValue(PLAYER_ZOOM);
     }
 }

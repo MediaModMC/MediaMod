@@ -46,7 +46,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
         GlStateManager.popMatrix();
 
         boolean testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
-        PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, testing);
+        PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, testing, true);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
