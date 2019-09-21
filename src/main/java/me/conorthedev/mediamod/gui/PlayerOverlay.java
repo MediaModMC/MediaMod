@@ -106,13 +106,9 @@ public class PlayerOverlay {
                 exec.scheduleAtFixedRate(() -> {
                     try {
                         // Check if we are ready
-                        System.out.println("READY: " + ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady());
                         if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
-                            // Set the currentlyPlayingContext to the current song
+                            this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
                         }
-                        this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
-                        System.out.println("SERVICE HANDLER TRACK: " + ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack());
-                        System.out.println("PLAYING OBJ: " + currentlyPlayingObject);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

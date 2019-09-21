@@ -110,9 +110,7 @@ public class BrowserHandler implements IMediaHandler {
             String requestBody = IOUtils.toString(t.getRequestBody());
 
             Gson g = new Gson();
-
             BrowserHandler.INSTANCE.currentTrack = g.fromJson(requestBody, CurrentlyPlayingObject.class);
-            System.out.println(BrowserHandler.INSTANCE.currentTrack.item.name + " by " + BrowserHandler.INSTANCE.currentTrack.item.album.artists[0].name);
 
             String response = "Success";
 
