@@ -16,8 +16,6 @@ import java.util.Map;
 
 /**
  * Multithreading resource getting
- *
- * @author Amplifiable
  */
 public class DynamicTextureWrapper {
 
