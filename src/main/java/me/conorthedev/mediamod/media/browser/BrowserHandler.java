@@ -123,7 +123,11 @@ public class BrowserHandler implements IMediaHandler {
                 return;
             }
 
-            if (object.item.album.images.length == 0) {
+            if (object.item.album.images == null || object.item.album.images.length == 0) {
+                return;
+            }
+
+            if (object.item.album.artists == null || object.item.album.artists.length == 0) {
                 return;
             }
 
