@@ -191,6 +191,10 @@ public class PlayerOverlay {
             // Get the most common colour
             color = averageColor(image, image.getWidth(), image.getHeight());
 
+            if (color.equals(Color.black)) {
+                color = Color.gray;
+            }
+
             // Draw the background of the player
             Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, color.darker().getRGB());
         } else {
