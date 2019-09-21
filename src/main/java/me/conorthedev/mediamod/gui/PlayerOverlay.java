@@ -1,6 +1,5 @@
 package me.conorthedev.mediamod.gui;
 
-import me.conorthedev.mediamod.MediaMod;
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
@@ -14,8 +13,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -108,27 +105,14 @@ public class PlayerOverlay {
                 ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
                 exec.scheduleAtFixedRate(() -> {
                     try {
-                        // Check if we are logged in
+                        // Check if we are ready
+                        System.out.println("READY: " + ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady());
                         if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
-                            if (currentlyPlayingObject != null) {
-                                // Set the previousPlayingObject to the "last / current" song
-                                previousPlayingObject = currentlyPlayingObject;
-                            }
-
                             // Set the currentlyPlayingContext to the current song
-                            currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
-
-                            if (!currentlyPlayingObject.item.name.equals(previousPlayingObject.item.name)) {
-                                // The song name changed
-                                if (currentlyPlayingObject.item.album.artists[0].name.equals("guardin")) {
-                                    // The artist's name is guardin
-                                    if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT) {
-                                        // We're in a development environment, send "nice guardin idiot" to the player
-                                        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.WHITE + "nice guardin idiot"));
-                                    }
-                                }
-                            }
                         }
+                        this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
+                        System.out.println("SERVICE HANDLER TRACK: " + ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack());
+                        System.out.println("PLAYING OBJ: " + currentlyPlayingObject);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -163,8 +147,8 @@ public class PlayerOverlay {
 
         // Track Metadata
         Track track = null;
-        if (currentlyPlayingObject != null) {
-            track = currentlyPlayingObject.item;
+        if (this.currentlyPlayingObject != null) {
+            track = this.currentlyPlayingObject.item;
         }
 
         // Track Name

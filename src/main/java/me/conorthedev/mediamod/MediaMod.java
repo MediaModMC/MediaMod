@@ -4,6 +4,7 @@ import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.gui.PlayerOverlay;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
+import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.VersionChecker;
@@ -114,7 +115,7 @@ public class MediaMod {
 
         // Load Media Handlers
         ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
-        //serviceHandler.registerHandler(new BrowserHandler());
+        serviceHandler.registerHandler(new BrowserHandler());
         serviceHandler.registerHandler(new SpotifyHandler());
 
         // Initialize the handlers

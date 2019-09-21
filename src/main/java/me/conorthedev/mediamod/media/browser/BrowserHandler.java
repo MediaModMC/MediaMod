@@ -1,15 +1,18 @@
 package me.conorthedev.mediamod.media.browser;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
 /**
@@ -34,10 +37,16 @@ public class BrowserHandler implements IMediaHandler {
      * If the handler has been initialized or not
      */
     private static Boolean INITIALIZED = false;
+
     /**
      * The MediaHandler Server
      */
     private HttpServer server = null;
+
+    /**
+     * The current track
+     */
+    public CurrentlyPlayingObject currentTrack;
 
     /**
      * Start the Media Handler, listen for requests from the extension, etc.
@@ -51,14 +60,14 @@ public class BrowserHandler implements IMediaHandler {
         try {
             LOGGER.info("Initializing Media Handler");
 
-            // Create a HTTP Server for the extension to send requests too (http://localhost:1338)
-            server = HttpServer.create(new InetSocketAddress(1338), 0);
+            // Create a HTTP Server for the extension to send requests to (http://localhost:9102)
+            server = HttpServer.create(new InetSocketAddress(9102), 0);
             server.setExecutor(null);
             server.createContext("/", new ConnectionCallbackHandler());
 
             // Start the server
             server.start();
-            LOGGER.info("Server started on port 1338");
+            LOGGER.info("Server started on port 9102");
         } catch (IOException e) {
             throw new HandlerInitializationException(e);
         }
@@ -75,13 +84,12 @@ public class BrowserHandler implements IMediaHandler {
 
     @Override
     public CurrentlyPlayingObject getCurrentTrack() {
-        // TODO
-        return null;
+        return BrowserHandler.INSTANCE.currentTrack;
     }
 
     @Override
     public boolean handlerReady() {
-        return INITIALIZED;
+        return BrowserHandler.INSTANCE.currentTrack != null;
     }
 
     /**
@@ -90,8 +98,29 @@ public class BrowserHandler implements IMediaHandler {
     private static class ConnectionCallbackHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
-            LOGGER.info("Established connection with MediaMod Browser Extension!");
-            t.sendResponseHeaders(200, 0);
+            t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
+            if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
+                t.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
+                t.sendResponseHeaders(204, -1);
+                return;
+            }
+
+            String requestBody = IOUtils.toString(t.getRequestBody());
+
+            Gson g = new Gson();
+
+            BrowserHandler.INSTANCE.currentTrack = g.fromJson(requestBody, CurrentlyPlayingObject.class);
+            System.out.println(BrowserHandler.INSTANCE.currentTrack.item.name + " by " + BrowserHandler.INSTANCE.currentTrack.item.album.artists[0].name);
+
+            String response = "Success";
+
+            t.sendResponseHeaders(200, response.length());
+
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
         }
     }
 }
