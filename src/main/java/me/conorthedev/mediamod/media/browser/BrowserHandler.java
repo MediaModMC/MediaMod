@@ -41,14 +41,9 @@ public class BrowserHandler implements IMediaHandler {
     private static Boolean INITIALIZED = false;
 
     /**
-     * The MediaHandler Server
-     */
-    private HttpServer server = null;
-
-    /**
      * The current track
      */
-    public CurrentlyPlayingObject currentTrack;
+    private CurrentlyPlayingObject currentTrack;
 
     /**
      * Start the Media Handler, listen for requests from the extension, etc.
@@ -63,7 +58,7 @@ public class BrowserHandler implements IMediaHandler {
             LOGGER.info("Initializing Media Handler");
 
             // Create a HTTP Server for the extension to send requests to (http://localhost:9102)
-            server = HttpServer.create(new InetSocketAddress(9102), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(9102), 0);
             server.setExecutor(null);
             server.createContext("/", new ConnectionCallbackHandler());
             server.createContext("/disconnect", new DisconnectionCallbackHandler());
@@ -115,7 +110,15 @@ public class BrowserHandler implements IMediaHandler {
             Gson g = new Gson();
             CurrentlyPlayingObject object = g.fromJson(requestBody, CurrentlyPlayingObject.class);
 
+            if (object.item == null) {
+                return;
+            }
+
             if (object.item.duration_ms == 0) {
+                return;
+            }
+
+            if (object.item.album == null) {
                 return;
             }
 
