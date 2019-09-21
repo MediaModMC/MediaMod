@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -123,7 +124,7 @@ public class PlayerOverlay {
                                     // The artist's name is guardin
                                     if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT) {
                                         // We're in a development environment, send "nice guardin idiot" to the player
-                                        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("nice guardin idiot"));
+                                        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.WHITE + "nice guardin idiot"));
                                     }
                                 }
                             }
