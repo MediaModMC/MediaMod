@@ -154,9 +154,10 @@ public class SpotifyHandler implements IMediaHandler {
                     "    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css\">\n" +
                     "    <script defer src=\"https://use.fontawesome.com/releases/v5.3.1/js/all.js\"></script>\n" +
                     "  </head>\n" +
-                    "  <body>\n" +
-                    "  <section class=\"section\">\n" +
+                    "  <body class=\"hero is-dark is-fullheight\">\n" +
+                    "  <section class=\"section has-text-centered\">\n" +
                     "    <div class=\"container\">\n" +
+                    "      <img src=\"https://raw.githubusercontent.com/MediaModMC/MediaMod/master/src/main/resources/assets/mediamod/header.png\" width=\"400px\">" + "\n" +
                     "      <h1 class=\"title\">\n" +
                     "        Success!\n" +
                     "      </h1>\n" +
