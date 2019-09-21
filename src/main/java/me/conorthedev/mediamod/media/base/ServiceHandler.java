@@ -65,9 +65,14 @@ public class ServiceHandler {
      */
     public IMediaHandler getCurrentMediaHandler() {
         if (INITIALIED_HANDLERS.size() > 0) {
-            return INITIALIED_HANDLERS.get(0);
+            for (IMediaHandler mediaHandler : INITIALIED_HANDLERS) {
+                if (mediaHandler.handlerReady()) {
+                    return mediaHandler;
+                }
+            }
         } else {
             return null;
         }
+        return null;
     }
 }
