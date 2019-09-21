@@ -1,12 +1,12 @@
 package me.conorthedev.mediamod.gui;
 
 import me.conorthedev.mediamod.Settings;
+import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -14,7 +14,7 @@ import net.minecraft.util.EnumChatFormatting;
 import java.awt.*;
 import java.io.IOException;
 
-class GuiServices extends GuiScreen implements IMediaGui {
+class GuiServices extends ButtonTooltip implements IMediaGui {
     @Override
     public void initGui() {
         Settings.loadConfig();
@@ -26,6 +26,8 @@ class GuiServices extends GuiScreen implements IMediaGui {
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, "Logout of all"));
         }
+
+        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, "Use Browser Extension")));
 
         super.initGui();
     }
@@ -54,6 +56,15 @@ class GuiServices extends GuiScreen implements IMediaGui {
     }
 
     @Override
+    protected String getButtonTooltip(int buttonId) {
+        if (buttonId == 3) {
+            return "Disables or Enables the Browser Extension";
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public void onGuiClosed() {
         Settings.saveConfig();
     }
@@ -76,6 +87,10 @@ class GuiServices extends GuiScreen implements IMediaGui {
                 SpotifyHandler.spotifyApi = null;
                 SpotifyHandler.logged = false;
                 this.mc.displayGuiScreen(new GuiServices());
+                break;
+            case 3:
+                Settings.EXTENSION_ENABLED = !Settings.EXTENSION_ENABLED;
+                button.displayString = getSuffix(Settings.EXTENSION_ENABLED, "Use Browser Extension");
                 break;
         }
     }

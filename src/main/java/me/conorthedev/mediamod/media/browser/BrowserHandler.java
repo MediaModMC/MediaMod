@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.album.AlbumImage;
@@ -87,7 +88,11 @@ public class BrowserHandler implements IMediaHandler {
 
     @Override
     public boolean handlerReady() {
-        return BrowserHandler.INSTANCE.currentTrack != null;
+        if (!Settings.EXTENSION_ENABLED) {
+            return false;
+        } else {
+            return BrowserHandler.INSTANCE.currentTrack != null;
+        }
     }
 
     /**
@@ -110,7 +115,7 @@ public class BrowserHandler implements IMediaHandler {
             Gson g = new Gson();
             CurrentlyPlayingObject object = g.fromJson(requestBody, CurrentlyPlayingObject.class);
 
-            if (object.item == null) {
+            if (object.item == null || !Settings.EXTENSION_ENABLED) {
                 return;
             }
 

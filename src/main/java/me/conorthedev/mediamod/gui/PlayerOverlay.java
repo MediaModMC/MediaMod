@@ -106,8 +106,10 @@ public class PlayerOverlay {
                 exec.scheduleAtFixedRate(() -> {
                     try {
                         // Check if we are ready
-                        if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
-                            this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
+                        if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null) {
+                            if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
+                                this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

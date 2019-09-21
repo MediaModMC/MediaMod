@@ -17,6 +17,7 @@ public class Settings {
     public static int PLAYER_X;
     public static int PLAYER_Y;
     public static double PLAYER_ZOOM;
+    public static boolean EXTENSION_ENABLED;
 
     public static void saveConfig() {
         MediaMod.INSTANCE.LOGGER.info("Saving configuration...");
@@ -43,6 +44,7 @@ public class Settings {
         Property playerXProperty = configuration.get("Player", "playerX", 5);
         Property playerYProperty = configuration.get("Player", "playerY", 5);
         Property playerZoomProperty = configuration.get("Player", "playerZoom", 1.0);
+        Property browserExtProperty = configuration.get("Player", "useBrowserExtension", true);
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
@@ -67,5 +69,8 @@ public class Settings {
 
         if (load) PLAYER_ZOOM = playerZoomProperty.getDouble();
         else playerZoomProperty.setValue(PLAYER_ZOOM);
+
+        if (load) EXTENSION_ENABLED = browserExtProperty.getBoolean();
+        else browserExtProperty.setValue(EXTENSION_ENABLED);
     }
 }

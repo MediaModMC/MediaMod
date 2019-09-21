@@ -34,7 +34,13 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
         this.drawCenteredString(fontRendererObj, "Position the player by dragging it around, click reset to reset position.", width / 2, height - 120, -1);
 
-        boolean testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
+        boolean testing;
+        if (ServiceHandler.INSTANCE.getCurrentMediaHandler() == null) {
+            testing = true;
+        } else {
+            testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
+        }
+
         PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, Settings.MODERN_PLAYER_STYLE, testing, true);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
