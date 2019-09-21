@@ -6,6 +6,8 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
+import me.conorthedev.mediamod.media.spotify.api.album.AlbumImage;
+import me.conorthedev.mediamod.media.spotify.api.artist.ArtistSimplified;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -110,9 +112,31 @@ public class BrowserHandler implements IMediaHandler {
             String requestBody = IOUtils.toString(t.getRequestBody());
 
             Gson g = new Gson();
+            CurrentlyPlayingObject object = g.fromJson(requestBody, CurrentlyPlayingObject.class);
+
+            if (object.item.album.images.length == 0) {
+                return;
+            }
+
+            if (object.item.album.artists.length == 0) {
+                return;
+            }
+
+            for (AlbumImage albumImage : object.item.album.images) {
+                if (albumImage == null) {
+                    return;
+                }
+            }
+
+            for (ArtistSimplified artistSimplified : object.item.album.artists) {
+                if (artistSimplified == null) {
+                    return;
+                }
+            }
+
             BrowserHandler.INSTANCE.currentTrack = g.fromJson(requestBody, CurrentlyPlayingObject.class);
 
-            String response = "Success";
+            String response = "OK";
 
             t.sendResponseHeaders(200, response.length());
 
