@@ -7,6 +7,7 @@ import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
+import me.conorthedev.mediamod.util.Multithreading;
 import me.conorthedev.mediamod.util.VersionChecker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
@@ -86,15 +87,17 @@ public class MediaMod {
 
         // Register with analytics
         if (FMLClientHandler.instance().getClient().gameSettings.snooperEnabled && getTOSAccepted()) {
-            LOGGER.info("Attempting to register with analytics...");
+            Multithreading.runAsync(() -> {
+                LOGGER.info("Attempting to register with analytics...");
 
-            boolean successful = BaseMod.init();
+                boolean successful = BaseMod.init();
 
-            if (successful) {
-                LOGGER.info("Successfully registered with analytics!");
-            } else {
-                LOGGER.error("Failed to register with analytics...");
-            }
+                if (successful) {
+                    LOGGER.info("Successfully registered with analytics!");
+                } else {
+                    LOGGER.error("Failed to register with analytics...");
+                }
+            });
         } else {
             LOGGER.info("Skipping registration with analytics!");
         }
