@@ -41,7 +41,7 @@ public class SpotifyHandler implements IMediaHandler {
 
     private static void attemptToOpenAuthURL() {
         Desktop desktop = Desktop.getDesktop();
-        String URL = "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:1337%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
+        String URL = "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
         try {
             desktop.browse(new URI(URL));
         } catch (URISyntaxException e) {
@@ -53,7 +53,6 @@ public class SpotifyHandler implements IMediaHandler {
     }
 
     private static void handleRequest(String code) {
-
         Minecraft mc = FMLClientHandler.instance().getClient();
 
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
@@ -121,9 +120,9 @@ public class SpotifyHandler implements IMediaHandler {
 
     @Override
     public void initializeHandler() throws HandlerInitializationException {
-        // Create a HTTP Server for the Spotify API to call back to (http://localhost:1337)
+        // Create a HTTP Server for the Spotify API to call back to (http://localhost:9103)
         try {
-            server = HttpServer.create(new InetSocketAddress(1337), 0);
+            server = HttpServer.create(new InetSocketAddress(9103), 0);
         } catch (IOException e) {
             throw new HandlerInitializationException(e);
         }
