@@ -66,6 +66,7 @@ public class BrowserHandler implements IMediaHandler {
             server = HttpServer.create(new InetSocketAddress(9102), 0);
             server.setExecutor(null);
             server.createContext("/", new ConnectionCallbackHandler());
+            server.createContext("/disconnect", new DisconnectionCallbackHandler());
 
             // Start the server
             server.start();
@@ -152,6 +153,26 @@ public class BrowserHandler implements IMediaHandler {
 
             t.sendResponseHeaders(200, response.length());
 
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    /**
+     * The disconnection callback handler
+     */
+    private static class DisconnectionCallbackHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            BrowserHandler.INSTANCE.currentTrack = null;
+            INITIALIZED = false;
+
+            t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
+            String response = "OK";
+
+            t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
