@@ -114,22 +114,34 @@ public class BrowserHandler implements IMediaHandler {
             Gson g = new Gson();
             CurrentlyPlayingObject object = g.fromJson(requestBody, CurrentlyPlayingObject.class);
 
+            if (object.item.duration_ms == 0) {
+                return;
+            }
+
+            if (object.item.name == null || object.item.name.trim().isEmpty()) {
+                return;
+            }
+
             if (object.item.album.images.length == 0) {
                 return;
             }
 
-            if (object.item.album.artists.length == 0) {
-                return;
-            }
-
             for (AlbumImage albumImage : object.item.album.images) {
-                if (albumImage == null) {
+                if (albumImage != null) {
+                    if (albumImage.url == null || albumImage.url.trim().isEmpty()) {
+                        return;
+                    }
+                } else {
                     return;
                 }
             }
 
             for (ArtistSimplified artistSimplified : object.item.album.artists) {
-                if (artistSimplified == null) {
+                if (artistSimplified != null) {
+                    if (artistSimplified.name == null || artistSimplified.name.trim().isEmpty()) {
+                        return;
+                    }
+                } else {
                     return;
                 }
             }
