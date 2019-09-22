@@ -18,7 +18,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;

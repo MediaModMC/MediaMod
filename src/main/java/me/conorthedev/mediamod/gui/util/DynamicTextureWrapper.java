@@ -7,7 +7,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GLContext;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;

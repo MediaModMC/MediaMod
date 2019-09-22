@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 class GuiServices extends ButtonTooltip implements IMediaGui {
