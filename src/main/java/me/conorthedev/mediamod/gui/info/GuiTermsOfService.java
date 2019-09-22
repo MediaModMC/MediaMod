@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSnooper;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 public class GuiTermsOfService extends GuiScreen implements IMediaGui {

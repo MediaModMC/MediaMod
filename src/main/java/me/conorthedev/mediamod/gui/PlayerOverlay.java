@@ -3,6 +3,7 @@ package me.conorthedev.mediamod.gui;
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
+import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
@@ -17,7 +18,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -96,7 +97,7 @@ public class PlayerOverlay {
      */
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent event) {
-        if (Settings.ENABLED) {
+        if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR && Settings.ENABLED) {
             if (first) {
                 // Make sure that this is never ran again
                 first = false;
@@ -118,7 +119,8 @@ public class PlayerOverlay {
             }
 
             // Check if we're logged in & the hotbar is being rendered
-            if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady() && currentlyPlayingObject != null && event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
+            IMediaHandler currentHandler = ServiceHandler.INSTANCE.getCurrentMediaHandler();
+            if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
                 // Make sure there's no GUI screen being displayed
                 if (FMLClientHandler.instance().getClient().currentScreen == null) {
                     this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, true);
@@ -130,10 +132,10 @@ public class PlayerOverlay {
     /**
      * Renders the media player on the screen
      *
-     * @param cornerX  - the x coordinate of the top left corner
-     * @param cornerY  - the y coordinate of the top right corner
-     * @param isModern - if the player should be rendered as the modern style
-     * @param testing  - if it is a testing player i.e. in the settings menu
+     * @param cornerX   - the x coordinate of the top left corner
+     * @param cornerY   - the y coordinate of the top right corner
+     * @param isModern  - if the player should be rendered as the modern style
+     * @param testing   - if it is a testing player i.e. in the settings menu
      * @param doScaling - weather or not the rendering code should scale it according to the user's settings
      */
     void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, boolean doScaling) {
@@ -152,7 +154,7 @@ public class PlayerOverlay {
         // Track Name
         String trackName = "Song Name";
         // Track Artist
-        String trackArtist = "Artist";
+        String trackArtist = null;
         // URL of album art
         URL url = null;
         // Color of the album art
@@ -161,11 +163,17 @@ public class PlayerOverlay {
         if (!testing && track != null) {
             // Get the track metadata
             trackName = track.name;
-            trackArtist = track.album.artists[0].name;
-            try {
-                url = new URL(track.album.images[0].url);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+            if (track.album != null) {
+                if (track.album.artists != null && track.album.artists.length > 0) {
+                    trackArtist = track.album.artists[0].name;
+                }
+                if (track.album.images != null && track.album.images.length > 0) {
+                    try {
+                        url = new URL(track.album.images[0].url);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
@@ -176,7 +184,7 @@ public class PlayerOverlay {
 
         // Set the X Position for the text to be rendered at
         int textXPosition = cornerX + 10;
-        if (Settings.SHOW_ALBUM_ART) {
+        if (Settings.SHOW_ALBUM_ART && url != null) {
             // If the album art is being rendered we must move the text to the right
             textXPosition = cornerX + 50;
         }
@@ -188,13 +196,14 @@ public class PlayerOverlay {
 
         // Background
         if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART && !testing) {
-            // Get the image from the URL
-            BufferedImage image = DynamicTextureWrapper.getImage(url);
-            // Get the most common colour
-            color = averageColor(image, image.getWidth(), image.getHeight());
+            if (url != null) {
+                BufferedImage image = DynamicTextureWrapper.getImage(url);
 
-            if (color.equals(Color.black)) {
-                color = Color.gray;
+                color = averageColor(image, image.getWidth(), image.getHeight());
+
+                if (color.equals(Color.black)) {
+                    color = Color.gray;
+                }
             }
 
             // Draw the background of the player
@@ -232,45 +241,46 @@ public class PlayerOverlay {
             fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
         }
 
-        if (trackArtist.length() >= 18) {
-            // Draw the artist name
-            fontRenderer.drawString("by " + trackArtist.substring(0, 17), textXPosition, cornerY + 20, Color.white.darker().getRGB());
-        } else {
-            // Draw the artist name
-            fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
+        if (trackArtist != null) {
+            if (trackArtist.length() >= 18) {
+                // Draw the artist name
+                fontRenderer.drawString("by " + trackArtist.substring(0, 17), textXPosition, cornerY + 20, Color.white.darker().getRGB());
+            } else {
+                // Draw the artist name
+                fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
+            }
         }
 
-        // Draw the progress bar
-        if (Settings.MODERN_PLAYER_STYLE) {
-            // Draw outline
-            Gui.drawRect(textXPosition - 1, cornerY + 32, textXPosition + 91, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
-        }
+        if (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0) {
+            // Draw the progress bar
+            if (Settings.MODERN_PLAYER_STYLE) {
+                // Draw outline
+                Gui.drawRect(textXPosition - 1, cornerY + 32, textXPosition + 91, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
+            }
 
-        // Draw background
-        Gui.drawRect(textXPosition, cornerY + 33, textXPosition + 90, cornerY + 41, Color.darkGray.darker().getRGB());
+            // Draw background
+            Gui.drawRect(textXPosition, cornerY + 33, textXPosition + 90, cornerY + 41, Color.darkGray.darker().getRGB());
 
-        // Get the percent complete
-        float percentComplete = (float) 0.75;
-        if (track != null && !testing) {
-            percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
-        }
+            // Get the percent complete
+            float percentComplete = (float) 0.75;
+            if (track != null && !testing) {
+                percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
+            }
 
-        if (Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART) {
+            Color displayColor = Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART ? color : Color.green;
+
             if (Settings.MODERN_PLAYER_STYLE) {
                 // Draw the gradient styled progress bar
-                drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, color.getRGB(), color.darker().getRGB());
+                drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB(), displayColor.darker().getRGB());
             } else {
                 // Draw the normal progress bar
-                Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, color.getRGB());
+                Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB());
             }
-        } else {
-            // Draw the green progress bar
-            Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, Color.green.getRGB());
         }
 
 
         // Draw the album art
-        if (Settings.SHOW_ALBUM_ART) {
+        if (Settings.SHOW_ALBUM_ART && currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0) {
             if (Settings.MODERN_PLAYER_STYLE) {
                 // Draw outline
                 Gui.drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());

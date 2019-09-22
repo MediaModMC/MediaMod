@@ -1,14 +1,16 @@
 package me.conorthedev.mediamod.media.browser;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import me.conorthedev.mediamod.Settings;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
-import me.conorthedev.mediamod.media.spotify.api.album.AlbumImage;
-import me.conorthedev.mediamod.media.spotify.api.artist.ArtistSimplified;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -112,56 +114,26 @@ public class BrowserHandler implements IMediaHandler {
 
             String requestBody = IOUtils.toString(t.getRequestBody());
 
-            Gson g = new Gson();
-            CurrentlyPlayingObject object = g.fromJson(requestBody, CurrentlyPlayingObject.class);
+            String response = "DENIED";
 
-            if (object.item == null || !Settings.EXTENSION_ENABLED) {
-                return;
-            }
+            JsonElement data = new JsonParser().parse(requestBody);
 
-            if (object.item.duration_ms == 0) {
-                return;
-            }
-
-            if (object.item.album == null) {
-                return;
-            }
-
-            if (object.item.name == null || object.item.name.trim().isEmpty()) {
-                return;
-            }
-
-            if (object.item.album.images == null || object.item.album.images.length == 0) {
-                return;
-            }
-
-            if (object.item.album.artists == null || object.item.album.artists.length == 0) {
-                return;
-            }
-
-            for (AlbumImage albumImage : object.item.album.images) {
-                if (albumImage != null) {
-                    if (albumImage.url == null || albumImage.url.trim().isEmpty()) {
-                        return;
+            if (data.isJsonObject()) {
+                JsonObject object = data.getAsJsonObject();
+                // These two things are crucial for rendering the player, while album and progress data isn't (we can just leave that out while rendering)
+                if (object.has("item") && object.get("item").isJsonObject() && Settings.EXTENSION_ENABLED) {
+                    JsonObject item = object.getAsJsonObject("item");
+                    if (item.has("name") && item.get("name").isJsonPrimitive() && item.getAsJsonPrimitive("name").isString() && !item.getAsJsonPrimitive("name").getAsString().trim().isEmpty()) {
+                        try {
+                            Gson g = new Gson();
+                            BrowserHandler.INSTANCE.currentTrack = g.fromJson(data, CurrentlyPlayingObject.class);
+                            response = "OK";
+                        } catch (JsonSyntaxException ignored) {
+                            // it'll send denied
+                        }
                     }
-                } else {
-                    return;
                 }
             }
-
-            for (ArtistSimplified artistSimplified : object.item.album.artists) {
-                if (artistSimplified != null) {
-                    if (artistSimplified.name == null || artistSimplified.name.trim().isEmpty()) {
-                        return;
-                    }
-                } else {
-                    return;
-                }
-            }
-
-            BrowserHandler.INSTANCE.currentTrack = g.fromJson(requestBody, CurrentlyPlayingObject.class);
-
-            String response = "OK";
 
             t.sendResponseHeaders(200, response.length());
 
