@@ -24,7 +24,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         if (!SpotifyHandler.logged) {
             this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, "Login to Spotify"));
         } else {
-            this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, "Logout of all"));
+            this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, "Logout of Spotify"));
         }
 
         this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, "Use Browser Extension")));
