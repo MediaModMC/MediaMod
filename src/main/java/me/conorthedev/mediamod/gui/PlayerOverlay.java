@@ -18,7 +18,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,13 +50,6 @@ public class PlayerOverlay {
      * @see me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject
      */
     private CurrentlyPlayingObject currentlyPlayingObject = null;
-
-    /**
-     * The previous song
-     *
-     * @see me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject
-     */
-    private CurrentlyPlayingObject previousPlayingObject = null;
 
     /**
      * The length of the concatinated song name
@@ -122,7 +115,7 @@ public class PlayerOverlay {
             IMediaHandler currentHandler = ServiceHandler.INSTANCE.getCurrentMediaHandler();
             if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
                 // Make sure there's no GUI screen being displayed
-                if (FMLClientHandler.instance().getClient().currentScreen == null) {
+                if (FMLClientHandler.instance().getClient().currentScreen == null && !Minecraft.getMinecraft().gameSettings.showDebugInfo) {
                     this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, true);
                 }
             }
