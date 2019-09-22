@@ -90,6 +90,10 @@ public class PlayerOverlay {
      */
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent event) {
+
+        // Get a Minecraft Instance
+        Minecraft mc = FMLClientHandler.instance().getClient();
+
         if (event.type.equals(RenderGameOverlayEvent.ElementType.HOTBAR) && Settings.ENABLED) {
             if (this.first) {
                 // Make sure that this is never ran again
@@ -115,7 +119,7 @@ public class PlayerOverlay {
             IMediaHandler currentHandler = ServiceHandler.INSTANCE.getCurrentMediaHandler();
             if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
                 // Make sure there's no GUI screen being displayed
-                if (FMLClientHandler.instance().getClient().currentScreen == null && !Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+                if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo) {
                     this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, true);
                 }
             }
@@ -132,6 +136,7 @@ public class PlayerOverlay {
      * @param doScaling - weather or not the rendering code should scale it according to the user's settings
      */
     void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, boolean doScaling) {
+
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
