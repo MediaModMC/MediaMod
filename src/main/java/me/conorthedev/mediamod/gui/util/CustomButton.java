@@ -24,7 +24,7 @@ public class CustomButton extends GuiButton {
                     mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width
                             && mouseY < this.yPosition + this.height;
 
-            Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, new Color(0, 0, 0, 175).getRGB());
+            Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, new Color(0, 0, 0, 175).getRGB());
 
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;

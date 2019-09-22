@@ -47,7 +47,7 @@ public class DynamicTextureWrapper {
     /**
      * If the DynamicTextureWrapper was initialized already
      */
-    private static boolean initialized;
+    private static boolean INITIALIZED;
 
     static {
         FULLY_TRANSPARENT_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -63,14 +63,14 @@ public class DynamicTextureWrapper {
      * Initialize key components
      */
     private static void init() {
-        if (!initialized) {
+        if (!INITIALIZED) {
             try {
                 GLContext.getCapabilities();
             } catch (RuntimeException ignored) {
                 return;
             }
             FULLY_TRANSPARENT_TEXTURE = FMLClientHandler.instance().getClient().getTextureManager().getDynamicTextureLocation("no_album_art", new DynamicTexture(FULLY_TRANSPARENT_IMAGE));
-            initialized = true;
+            INITIALIZED = true;
         }
     }
 
