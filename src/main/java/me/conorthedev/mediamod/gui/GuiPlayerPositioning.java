@@ -72,7 +72,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
                 break;
             case 3:
                 GuiSlider slider = (GuiSlider) button;
-                this.currentZoom = slider.getValue();
+                this.currentZoom = Math.round(slider.getValue() * 10) / 10.0;
 
                 Settings.PLAYER_ZOOM = this.currentZoom;
                 break;
@@ -92,7 +92,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         for (GuiButton button : this.buttonList) {
             if (button.isMouseOver() && button.id == 3) {
                 GuiSlider slider = (GuiSlider) button;
-                this.currentZoom = slider.getValue();
+                this.currentZoom = Math.round(slider.getValue() * 10) / 10.0;
 
                 Settings.PLAYER_ZOOM = this.currentZoom;
                 super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
