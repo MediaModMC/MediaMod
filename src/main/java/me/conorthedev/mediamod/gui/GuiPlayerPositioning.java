@@ -89,6 +89,21 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
      */
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        for (GuiButton button : this.buttonList) {
+            if (button.isMouseOver() && button.id == 3) {
+                GuiSlider slider = (GuiSlider) button;
+                this.currentZoom = slider.getValue();
+
+                Settings.PLAYER_ZOOM = this.currentZoom;
+                super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+                return;
+            } else if (button.isMouseOver()) {
+                // Call the super function
+                super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+                return;
+            }
+        }
+
         if (clickedMouseButton == 0) {
             // It was the left click, change the position
             this.currentX = mouseX;
