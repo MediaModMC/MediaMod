@@ -90,10 +90,14 @@ public class PlayerOverlay {
      */
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR && Settings.ENABLED) {
-            if (first) {
+
+        // Get a Minecraft Instance
+        Minecraft mc = FMLClientHandler.instance().getClient();
+
+        if (event.type.equals(RenderGameOverlayEvent.ElementType.HOTBAR) && Settings.ENABLED) {
+            if (this.first) {
                 // Make sure that this is never ran again
-                first = false;
+                this.first = false;
 
                 // Setup a ScheduledExecutorService to run every 3 seconds
                 ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
@@ -115,7 +119,7 @@ public class PlayerOverlay {
             IMediaHandler currentHandler = ServiceHandler.INSTANCE.getCurrentMediaHandler();
             if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
                 // Make sure there's no GUI screen being displayed
-                if (FMLClientHandler.instance().getClient().currentScreen == null && !Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+                if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo) {
                     this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, true);
                 }
             }
@@ -132,6 +136,7 @@ public class PlayerOverlay {
      * @param doScaling - weather or not the rendering code should scale it according to the user's settings
      */
     void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, boolean doScaling) {
+
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -235,67 +240,63 @@ public class PlayerOverlay {
         }
 
         if (trackArtist != null) {
-            if (trackArtist.length() >= 18) {
-                // Draw the artist name
-                fontRenderer.drawString("by " + trackArtist.substring(0, 17), textXPosition, cornerY + 20, Color.white.darker().getRGB());
-            } else {
-                // Draw the artist name
-                fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
-            }
+            fontRenderer.drawString("by " + ((trackArtist.length() >= 18) ? trackArtist.substring(0, 17) : trackArtist), textXPosition, cornerY + 20, Color.white.darker().getRGB());
         }
 
-        if (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0) {
-            // Draw the progress bar
-            if (Settings.MODERN_PLAYER_STYLE) {
-                // Draw outline
-                Gui.drawRect(textXPosition - 1, cornerY + 32, textXPosition + 91, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
-            }
+        if(currentlyPlayingObject != null) {
+            if (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0) {
+                // Draw the progress bar
+                if (Settings.MODERN_PLAYER_STYLE) {
+                    // Draw outline
+                    Gui.drawRect(textXPosition - 1, cornerY + 32, textXPosition + 91, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
+                }
 
-            // Draw background
-            Gui.drawRect(textXPosition, cornerY + 33, textXPosition + 90, cornerY + 41, Color.darkGray.darker().getRGB());
+                // Draw background
+                Gui.drawRect(textXPosition, cornerY + 33, textXPosition + 90, cornerY + 41, Color.darkGray.darker().getRGB());
 
-            // Get the percent complete
-            float percentComplete = (float) 0.75;
-            if (track != null && !testing) {
-                percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
-            }
+                // Get the percent complete
+                float percentComplete = (float) 0.75;
+                if (track != null && !testing) {
+                    percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
+                }
 
-            Color displayColor = Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART ? color : Color.green;
+                Color displayColor = Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART ? color : Color.green;
 
-            if (Settings.MODERN_PLAYER_STYLE) {
-                // Draw the gradient styled progress bar
-                drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB(), displayColor.darker().getRGB());
-            } else {
-                // Draw the normal progress bar
-                Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB());
-            }
-        }
-
-
-        // Draw the album art
-        if (Settings.SHOW_ALBUM_ART && currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0) {
-            if (Settings.MODERN_PLAYER_STYLE) {
-                // Draw outline
-                Gui.drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());
-            }
-
-            // Setup OpenGL
-            GlStateManager.pushMatrix();
-            GlStateManager.color(1, 1, 1, 1);
-
-            // Bind the texture for rendering
-            if (testing) {
-                // Since it's a testing player we bind the MediaMod Logo
-                mc.getTextureManager().bindTexture(IMediaGui.iconResource);
-            } else {
-                if (url != null) {
-                    mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(url));
+                if (Settings.MODERN_PLAYER_STYLE) {
+                    // Draw the gradient styled progress bar
+                    drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB(), displayColor.darker().getRGB());
+                } else {
+                    // Draw the normal progress bar
+                    Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB());
                 }
             }
 
-            // Render the album art as 35x35
-            Gui.drawModalRectWithCustomSizedTexture(cornerX + 10, cornerY + 10, 0, 0, 35, 35, 35, 35);
-            GlStateManager.popMatrix();
+
+            // Draw the album art
+            if (Settings.SHOW_ALBUM_ART && currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0) {
+                if (Settings.MODERN_PLAYER_STYLE) {
+                    // Draw outline
+                    Gui.drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());
+                }
+
+                // Setup OpenGL
+                GlStateManager.pushMatrix();
+                GlStateManager.color(1, 1, 1, 1);
+
+                // Bind the texture for rendering
+                if (testing) {
+                    // Since it's a testing player we bind the MediaMod Logo
+                    mc.getTextureManager().bindTexture(IMediaGui.iconResource);
+                } else {
+                    if (url != null) {
+                        mc.getTextureManager().bindTexture(DynamicTextureWrapper.getTexture(url));
+                    }
+                }
+
+                // Render the album art as 35x35
+                Gui.drawModalRectWithCustomSizedTexture(cornerX + 10, cornerY + 10, 0, 0, 35, 35, 35, 35);
+                GlStateManager.popMatrix();
+            }
         }
 
         if (doScaling) {
