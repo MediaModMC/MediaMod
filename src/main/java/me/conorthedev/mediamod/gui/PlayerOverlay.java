@@ -94,7 +94,7 @@ public class PlayerOverlay {
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        if (event.type.equals(RenderGameOverlayEvent.ElementType.HOTBAR) && Settings.ENABLED) {
+        if (event.type.equals(RenderGameOverlayEvent.ElementType.HOTBAR) && Settings.SHOW_PLAYER && Settings.ENABLED) {
             if (this.first) {
                 // Make sure that this is never ran again
                 this.first = false;

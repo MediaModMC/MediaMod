@@ -26,7 +26,7 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
         }
 
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, "Enabled")));
-        this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.ENABLED, "Show Player")));
+        this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.SHOW_PLAYER, "Show Player")));
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, "Player Settings"));
         this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 23, "Services"));
 
