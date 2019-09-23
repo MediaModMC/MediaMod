@@ -12,20 +12,19 @@ import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.Minecraft;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +51,13 @@ public class SpotifyHandler implements IMediaHandler {
             MediaMod.INSTANCE.LOGGER.fatal("Something has gone terribly wrong... SpotifyHandler:l59");
             e.printStackTrace();
         } catch (Exception e) {
-            FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Failed to open browser with the Spotify Auth URL! Please go to this URL manually: " + URL));
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Failed to open browser with the Spotify Auth URL!"));
+            IChatComponent urlComponent = new ChatComponentText(
+                    EnumChatFormatting.WHITE.toString() + EnumChatFormatting.BOLD + "Open URL");
+            urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
+            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(EnumChatFormatting.GRAY +
+                    "Click this to open the Spotify Auth URL")));
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(urlComponent);
         }
     }
 
