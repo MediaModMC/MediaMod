@@ -16,52 +16,29 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 version = "0.0.1"
 group = "me.conorthedev" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "MediaMod"
-targetCompatibility = 1.8
-sourceCompatibility = 1.8
+
+sourceCompatibility = targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
     mappings = "stable_22"
+    makeObfSourceJar = false
 }
 
-allprojects {
-    repositories {
-        //maven { url 'https://jitpack.io' }
-        mavenCentral()
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-}
 
-dependencies {
-    //provided 'com.github.thelinmichael:spotify-web-api-java:master-SNAPSHOT'
-}
-
-processResources
-        {
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
-
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-
-                // replace version and mcversion
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
-
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-
-jar {
-    from configurations.provided.asFileTree.files.collect {
-        zipTree(it)
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-configurations {
-    provided
-    compile.extendsFrom(provided)
 }
