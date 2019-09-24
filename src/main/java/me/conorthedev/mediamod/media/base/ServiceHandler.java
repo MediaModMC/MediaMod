@@ -32,7 +32,7 @@ public class ServiceHandler {
     /**
      * List of Media Handlers initalized
      */
-    private final ArrayList<IMediaHandler> INITIALIED_HANDLERS = new ArrayList<>();
+    private final ArrayList<IMediaHandler> INITIALIZED_HANDLERS = new ArrayList<>();
 
     /**
      * Register a Media Handler
@@ -52,7 +52,7 @@ public class ServiceHandler {
             LOGGER.info("Initializing Handler: " + handler.getHandlerName());
             try {
                 handler.initializeHandler();
-                INITIALIED_HANDLERS.add(handler);
+                INITIALIZED_HANDLERS.add(handler);
             } catch (HandlerInitializationException e) {
                 LOGGER.error("Error whilst initializing handler: " + handler.getHandlerName());
                 e.printStackTrace();
@@ -64,15 +64,10 @@ public class ServiceHandler {
      * Get the current Media Handler
      */
     public IMediaHandler getCurrentMediaHandler() {
-        if (INITIALIED_HANDLERS.size() > 0) {
-            for (IMediaHandler mediaHandler : INITIALIED_HANDLERS) {
-                if (mediaHandler.handlerReady()) {
-                    return mediaHandler;
-                }
-            }
+        if (INITIALIZED_HANDLERS.size() > 0) {
+            return INITIALIZED_HANDLERS.stream().filter(IMediaHandler::handlerReady).findFirst().orElse(null);
         } else {
             return null;
         }
-        return null;
     }
 }

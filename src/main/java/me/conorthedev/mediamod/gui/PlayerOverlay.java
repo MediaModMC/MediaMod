@@ -89,12 +89,12 @@ public class PlayerOverlay {
      * @see RenderGameOverlayEvent
      */
     @SubscribeEvent
-    public void onRender(RenderGameOverlayEvent event) {
+    public void onRender(RenderGameOverlayEvent.Post event) {
 
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        if (event.type.equals(RenderGameOverlayEvent.ElementType.HOTBAR) && Settings.SHOW_PLAYER && Settings.ENABLED) {
+        if (event.type.equals(RenderGameOverlayEvent.ElementType.EXPERIENCE) && Settings.SHOW_PLAYER && Settings.ENABLED) {
             if (this.first) {
                 // Make sure that this is never ran again
                 this.first = false;
@@ -232,7 +232,7 @@ public class PlayerOverlay {
                 }, 0, 500, TimeUnit.MILLISECONDS);
             }
 
-            // String concatination for tracks
+            // String concatenation for tracks
             fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1);
         } else {
             // Draw the track name normally
