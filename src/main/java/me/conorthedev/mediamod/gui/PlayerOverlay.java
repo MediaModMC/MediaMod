@@ -55,6 +55,8 @@ public class PlayerOverlay {
      * The length of the concatinated song name
      */
     private int concatNameCount = 0;
+    private int concatArtistCount = 0;
+    private boolean artistFirstRun = true;
     private boolean firstRun = true;
 
     private static Color averageColor(BufferedImage bi, int w, int h) {
@@ -240,7 +242,31 @@ public class PlayerOverlay {
         }
 
         if (trackArtist != null) {
-            fontRenderer.drawString("by " + ((trackArtist.length() >= 18) ? trackArtist.substring(0, 17) : trackArtist), textXPosition, cornerY + 20, Color.white.darker().getRGB());
+            if (("by" + trackArtist).length() >= 18) {
+                String concatName = ("by" + trackArtist) + "    " + ("by " + trackArtist);
+                AtomicInteger concatArtistCount2 = new AtomicInteger(concatArtistCount + 17);
+
+                if ((concatArtistCount + 16) >= concatName.length()) {
+                    concatArtistCount = 0;
+                    concatArtistCount2.set(concatArtistCount + 17);
+                }
+
+                if (artistFirstRun) {
+                    // Set the artistFirstRun variable to false
+                    artistFirstRun = false;
+
+                    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+                    exec.scheduleAtFixedRate(() -> {
+                        concatArtistCount++;
+                        concatArtistCount2.set(concatArtistCount + 16);
+                    }, 0, 500, TimeUnit.MILLISECONDS);
+                }
+
+                // String concatenation for tracks
+                fontRenderer.drawString(concatName.substring(concatArtistCount, concatArtistCount2.get()), textXPosition, cornerY + 20, Color.white.darker().getRGB());
+            } else {
+                fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
+            }
         }
 
         if(currentlyPlayingObject != null) {
