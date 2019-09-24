@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 
 class GuiServices extends ButtonTooltip implements IMediaGui {
@@ -80,7 +80,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
             case 1:
                 this.mc.displayGuiScreen(null);
                 this.mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Opening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'"));
-                SpotifyHandler.connectSpotify();
+                SpotifyHandler.INSTANCE.connectSpotify();
                 break;
 
             case 2:

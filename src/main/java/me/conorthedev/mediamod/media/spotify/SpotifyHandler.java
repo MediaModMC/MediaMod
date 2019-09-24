@@ -38,11 +38,18 @@ public class SpotifyHandler implements IMediaHandler {
     public static boolean logged = false;
     private static HttpServer server = null;
 
-    public static void connectSpotify() {
+    public static final SpotifyHandler INSTANCE = new SpotifyHandler();
+
+    public void connectSpotify() {
         attemptToOpenAuthURL();
     }
 
-    private static void attemptToOpenAuthURL() {
+    private void attemptToOpenAuthURL() {
+        try {
+            initializeHandler();
+        } catch (HandlerInitializationException e) {
+            e.printStackTrace();
+        }
         Desktop desktop = Desktop.getDesktop();
         String URL = "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
         try {
@@ -183,6 +190,8 @@ public class SpotifyHandler implements IMediaHandler {
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
+
+            server.stop(0);
         }
     }
 
