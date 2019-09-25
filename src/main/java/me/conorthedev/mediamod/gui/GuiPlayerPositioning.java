@@ -106,8 +106,8 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
         if (clickedMouseButton == 0) {
             // It was the left click, change the position
-            this.currentX = mouseX - 75;
-            this.currentY = mouseY - 25;
+            this.currentX = (int) (mouseX - (75 * Settings.PLAYER_ZOOM));
+            this.currentY = (int) (mouseY - (25 * Settings.PLAYER_ZOOM));
         }
 
         // Call the super function
