@@ -214,31 +214,60 @@ public class PlayerOverlay {
         }
 
         // Draw the metadata of the track (title, artist, album art)
-        if (trackName.length() >= 19) {
-            String concatName = trackName + "    " + trackName;
-            AtomicInteger concatNameCount2 = new AtomicInteger(concatNameCount + 17);
+        if (!Settings.SHOW_ALBUM_ART) {
+            if (trackName.length() >= 28) {
+                String concatName = trackName + "    " + trackName;
+                AtomicInteger concatNameCount2 = new AtomicInteger(concatNameCount + 26);
 
-            if ((concatNameCount + 16) >= concatName.length()) {
-                concatNameCount = 0;
-                concatNameCount2.set(concatNameCount + 17);
+                if ((concatNameCount + 26) >= concatName.length()) {
+                    concatNameCount = 0;
+                    concatNameCount2.set(concatNameCount + 26);
+                }
+
+                if (firstRun) {
+                    // Set the firstRun variable to false
+                    firstRun = false;
+
+                    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+                    exec.scheduleAtFixedRate(() -> {
+                        concatNameCount++;
+                        concatNameCount2.set(concatNameCount + 26);
+                    }, 0, 500, TimeUnit.MILLISECONDS);
+                }
+
+                // String concatenation for tracks
+                fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1);
+            } else {
+                // Draw the track name normally
+                fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
             }
-
-            if (firstRun) {
-                // Set the firstRun variable to false
-                firstRun = false;
-
-                ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-                exec.scheduleAtFixedRate(() -> {
-                    concatNameCount++;
-                    concatNameCount2.set(concatNameCount + 16);
-                }, 0, 500, TimeUnit.MILLISECONDS);
-            }
-
-            // String concatenation for tracks
-            fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1);
         } else {
-            // Draw the track name normally
-            fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
+            if (trackName.length() >= 19) {
+                String concatName = trackName + "    " + trackName;
+                AtomicInteger concatNameCount2 = new AtomicInteger(concatNameCount + 17);
+
+                if ((concatNameCount + 16) >= concatName.length()) {
+                    concatNameCount = 0;
+                    concatNameCount2.set(concatNameCount + 17);
+                }
+
+                if (firstRun) {
+                    // Set the firstRun variable to false
+                    firstRun = false;
+
+                    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+                    exec.scheduleAtFixedRate(() -> {
+                        concatNameCount++;
+                        concatNameCount2.set(concatNameCount + 16);
+                    }, 0, 500, TimeUnit.MILLISECONDS);
+                }
+
+                // String concatenation for tracks
+                fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1);
+            } else {
+                // Draw the track name normally
+                fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
+            }
         }
 
         if (trackArtist != null) {
@@ -269,16 +298,22 @@ public class PlayerOverlay {
             }
         }
 
-        if(currentlyPlayingObject != null) {
+        if (currentlyPlayingObject != null) {
             if (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0) {
+                int right = textXPosition + 91;
+                int progressMultiplier = 90;
+                if (!Settings.SHOW_ALBUM_ART) {
+                    right = textXPosition + 135;
+                    progressMultiplier = 135;
+                }
                 // Draw the progress bar
                 if (Settings.MODERN_PLAYER_STYLE) {
                     // Draw outline
-                    Gui.drawRect(textXPosition - 1, cornerY + 32, textXPosition + 91, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
+                    Gui.drawRect(textXPosition - 1, cornerY + 32, right, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
                 }
 
                 // Draw background
-                Gui.drawRect(textXPosition, cornerY + 33, textXPosition + 90, cornerY + 41, Color.darkGray.darker().getRGB());
+                Gui.drawRect(textXPosition, cornerY + 33, right - 1, cornerY + 41, Color.darkGray.darker().getRGB());
 
                 // Get the percent complete
                 float percentComplete = (float) 0.75;
@@ -290,10 +325,10 @@ public class PlayerOverlay {
 
                 if (Settings.MODERN_PLAYER_STYLE) {
                     // Draw the gradient styled progress bar
-                    drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB(), displayColor.darker().getRGB());
+                    drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (progressMultiplier * percentComplete)), cornerY + 41, displayColor.getRGB(), displayColor.darker().getRGB());
                 } else {
                     // Draw the normal progress bar
-                    Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (90 * percentComplete)), cornerY + 41, displayColor.getRGB());
+                    Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (progressMultiplier * percentComplete)), cornerY + 41, displayColor.getRGB());
                 }
             }
 
