@@ -52,7 +52,7 @@ public class PlayerOverlay {
     private CurrentlyPlayingObject currentlyPlayingObject = null;
 
     /**
-     * The length of the concatinated song name
+     * The length of the concatenated song name
      */
     private int concatNameCount = 0;
     private int concatArtistCount = 0;
@@ -117,7 +117,7 @@ public class PlayerOverlay {
                 }, 0, 3, TimeUnit.SECONDS);
             }
 
-            // Check if we're logged in & the hotbar is being rendered
+            // Make sure that a MediaHandler exists and is ready
             IMediaHandler currentHandler = ServiceHandler.INSTANCE.getCurrentMediaHandler();
             if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
                 // Make sure there's no GUI screen being displayed
