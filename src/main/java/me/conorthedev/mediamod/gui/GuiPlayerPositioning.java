@@ -14,7 +14,8 @@ import java.io.IOException;
 public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     private int currentX = Settings.PLAYER_X;
     private int currentY = Settings.PLAYER_Y;
-    private double currentZoom = Settings.PLAYER_ZOOM;
+    private GuiSlider slider = null;
+    private boolean dragging;
 
     @Override
     public void initGui() {
@@ -23,7 +24,11 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 83, EnumChatFormatting.GREEN + "Save"));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, height - 60, EnumChatFormatting.RED + "Reset"));
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 37, "Back"));
-        this.buttonList.add(new GuiSlider(3, width / 2 - 75, height - 105, "Scale: ", 1.0, 2.0, Settings.PLAYER_ZOOM, null));
+        this.buttonList.add(slider = new GuiSlider(3, width / 2 - 75, height - 105, 150, 20, "Scale: ", "", 0.1, 2.0, Settings.PLAYER_ZOOM, true, false, it -> {
+            // custom display string change stuff
+            it.displayString = it.dispString + (Math.round(it.getValue() * 10) / 10.0) + it.suffix;
+        }));
+        slider.updateSlider(); // call custom display string changer
 
         super.initGui();
     }
@@ -41,7 +46,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
             testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
         }
 
-        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, Settings.MODERN_PLAYER_STYLE, testing, true);
+        PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, Settings.MODERN_PLAYER_STYLE, testing, slider.getValue());
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -57,24 +62,19 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
             case 1:
                 this.currentX = 5;
                 this.currentY = 5;
-                this.currentZoom = 1.0;
+                slider.setValue(1.0);
 
                 Settings.PLAYER_X = this.currentX;
                 Settings.PLAYER_Y = this.currentY;
-                Settings.PLAYER_ZOOM = this.currentZoom;
+                Settings.PLAYER_ZOOM = 1.0;
                 this.mc.displayGuiScreen(new GuiPlayerPositioning());
                 break;
 
             case 2:
                 Settings.PLAYER_X = this.currentX;
                 Settings.PLAYER_Y = this.currentY;
+                Settings.PLAYER_ZOOM = slider.getValue();
                 this.mc.displayGuiScreen(new GuiPlayerSettings());
-                break;
-            case 3:
-                GuiSlider slider = (GuiSlider) button;
-                this.currentZoom = Math.round(slider.getValue() * 10) / 10.0;
-
-                Settings.PLAYER_ZOOM = this.currentZoom;
                 break;
         }
     }
@@ -89,22 +89,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
      */
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        for (GuiButton button : this.buttonList) {
-            if (button.isMouseOver() && button.id == 3) {
-                GuiSlider slider = (GuiSlider) button;
-                this.currentZoom = Math.round(slider.getValue() * 10) / 10.0;
-
-                Settings.PLAYER_ZOOM = this.currentZoom;
-                super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-                return;
-            } else if (button.isMouseOver()) {
-                // Call the super function
-                super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-                return;
-            }
-        }
-
-        if (clickedMouseButton == 0) {
+        if (dragging && clickedMouseButton == 0) {
             // It was the left click, change the position
             this.currentX = (int) (mouseX - (75 * Settings.PLAYER_ZOOM));
             this.currentY = (int) (mouseY - (25 * Settings.PLAYER_ZOOM));
@@ -112,6 +97,25 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
         // Call the super function
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (mouseButton == 0) {
+            for (GuiButton button : this.buttonList) {
+                if (button.isMouseOver()) {
+                    return;
+                }
+            }
+            dragging = true;
+        }
+    }
+
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        dragging = false;
     }
 
     @Override
