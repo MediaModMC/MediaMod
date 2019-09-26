@@ -52,7 +52,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
             testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
         }
 
-        PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, testing, false);
+        PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, testing, 1.0);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

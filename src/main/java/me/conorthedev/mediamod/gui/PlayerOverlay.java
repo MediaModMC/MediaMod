@@ -122,7 +122,7 @@ public class PlayerOverlay {
             if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
                 // Make sure there's no GUI screen being displayed
                 if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo) {
-                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, true);
+                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
                 }
             }
         }
@@ -135,9 +135,9 @@ public class PlayerOverlay {
      * @param cornerY   - the y coordinate of the top right corner
      * @param isModern  - if the player should be rendered as the modern style
      * @param testing   - if it is a testing player i.e. in the settings menu
-     * @param doScaling - weather or not the rendering code should scale it according to the user's settings
+     * @param scale     - the scale to use
      */
-    void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, boolean doScaling) {
+    void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, double scale) {
 
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
@@ -177,10 +177,8 @@ public class PlayerOverlay {
             }
         }
 
-        if (doScaling) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(Settings.PLAYER_ZOOM, Settings.PLAYER_ZOOM, Settings.PLAYER_ZOOM);
-        }
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, scale);
 
         // Set the X Position for the text to be rendered at
         int textXPosition = cornerX + 10;
@@ -360,9 +358,7 @@ public class PlayerOverlay {
             }
         }
 
-        if (doScaling) {
-            GlStateManager.popMatrix();
-        }
+        GlStateManager.popMatrix();
     }
 
     /**
