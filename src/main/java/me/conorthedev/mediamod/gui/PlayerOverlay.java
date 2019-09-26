@@ -269,8 +269,8 @@ public class PlayerOverlay {
         }
 
         if (trackArtist != null) {
-            if (("by" + trackArtist).length() >= 18) {
-                String concatName = ("by" + trackArtist) + "    " + ("by " + trackArtist);
+            if (("by " + trackArtist).length() >= 18) {
+                String concatName = ("by " + trackArtist) + "    " + ("by " + trackArtist);
                 AtomicInteger concatArtistCount2 = new AtomicInteger(concatArtistCount + 17);
 
                 if ((concatArtistCount + 16) >= concatName.length()) {
