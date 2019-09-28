@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import me.conorthedev.mediamod.MediaMod;
 import me.conorthedev.mediamod.base.BaseMod;
+import me.conorthedev.mediamod.media.base.AbstractMediaHandler;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
@@ -18,6 +19,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -33,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * The main class for all Spotify-related things
  */
-public class SpotifyHandler implements IMediaHandler {
+public class SpotifyHandler extends AbstractMediaHandler {
     public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
     private static HttpServer server = null;
@@ -127,7 +130,16 @@ public class SpotifyHandler implements IMediaHandler {
     @Override
     public CurrentlyPlayingObject getCurrentTrack() {
         try {
-            return spotifyApi.getCurrentTrack();
+            CurrentlyPlayingObject object = spotifyApi.getCurrentTrack();
+            lastProgressUpdate = System.currentTimeMillis();
+            if (object != null) {
+                lastProgressMs = object.progress_ms;
+                paused = object.is_playing;
+            } else {
+                lastProgressMs = 0;
+                paused = true;
+            }
+            return object;
         } catch (Exception e) {
             e.printStackTrace();
         }

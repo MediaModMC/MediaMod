@@ -22,6 +22,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerOverlay {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("mm:ss");
+
     /**
      * An instance of this class
      */
@@ -154,7 +159,7 @@ public class PlayerOverlay {
         // Track Name
         String trackName = "Song Name";
         // Track Artist
-        String trackArtist = null;
+        String trackArtist = "Artist Name";
         // URL of album art
         URL url = null;
         // Color of the album art
@@ -182,7 +187,7 @@ public class PlayerOverlay {
 
         // Set the X Position for the text to be rendered at
         int textXPosition = cornerX + 10;
-        if (Settings.SHOW_ALBUM_ART && url != null) {
+        if (Settings.SHOW_ALBUM_ART && (testing || url != null)) {
             // If the album art is being rendered we must move the text to the right
             textXPosition = cornerX + 50;
         }
@@ -212,7 +217,7 @@ public class PlayerOverlay {
         }
 
         // Draw the metadata of the track (title, artist, album art)
-        if (!Settings.SHOW_ALBUM_ART) {
+        if (!(Settings.SHOW_ALBUM_ART && (testing || url != null))) {
             if (trackName.length() >= 28) {
                 String concatName = trackName + "    " + trackName;
                 AtomicInteger concatNameCount2 = new AtomicInteger(concatNameCount + 26);
@@ -296,43 +301,49 @@ public class PlayerOverlay {
             }
         }
 
-        if (currentlyPlayingObject != null) {
-            if (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0) {
+        if (testing || currentlyPlayingObject != null) {
+            if (testing || (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0)) {
                 int right = textXPosition + 91;
                 int progressMultiplier = 90;
-                if (!Settings.SHOW_ALBUM_ART) {
+                if (!(Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0)))) {
                     right = textXPosition + 135;
                     progressMultiplier = 135;
                 }
                 // Draw the progress bar
                 if (Settings.MODERN_PLAYER_STYLE) {
                     // Draw outline
-                    Gui.drawRect(textXPosition - 1, cornerY + 32, right, cornerY + 42, new Color(0, 0, 0, 75).getRGB());
+                    Gui.drawRect(textXPosition - 1, cornerY + 30, right, cornerY + 43, new Color(0, 0, 0, 75).getRGB());
                 }
 
                 // Draw background
-                Gui.drawRect(textXPosition, cornerY + 33, right - 1, cornerY + 41, Color.darkGray.darker().getRGB());
+                Gui.drawRect(textXPosition, cornerY + 31, right - 1, cornerY + 42, Color.darkGray.darker().getRGB());
 
                 // Get the percent complete
                 float percentComplete = (float) 0.75;
-                if (track != null && !testing) {
-                    percentComplete = (float) currentlyPlayingObject.progress_ms / (float) track.duration_ms;
+                if (track != null && ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && !testing) {
+                    percentComplete = (float) ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs() / (float) track.duration_ms;
                 }
 
                 Color displayColor = Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART ? color : Color.green;
-
                 if (Settings.MODERN_PLAYER_STYLE) {
                     // Draw the gradient styled progress bar
-                    drawGradientRect(textXPosition, cornerY + 33, (int) (textXPosition + (progressMultiplier * percentComplete)), cornerY + 41, displayColor.getRGB(), displayColor.darker().getRGB());
+                    drawGradientRect(textXPosition, cornerY + 31, (textXPosition + (progressMultiplier * percentComplete)), cornerY + 42, displayColor.getRGB(), displayColor.darker().getRGB());
                 } else {
                     // Draw the normal progress bar
-                    Gui.drawRect(textXPosition, cornerY + 33, (int) (textXPosition + (progressMultiplier * percentComplete)), cornerY + 41, displayColor.getRGB());
+                    drawRect(textXPosition, cornerY + 31, (textXPosition + (progressMultiplier * percentComplete)), cornerY + 42, displayColor.getRGB());
                 }
+
+                int progressMs = track == null || ServiceHandler.INSTANCE.getCurrentMediaHandler() == null ? 45000 : ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs();
+                int durationMs = track == null ? 60000 : track.duration_ms;
+                String str = formatTime(durationMs);
+                int color2 = getComplementaryColor(displayColor);
+                fontRenderer.drawString(formatTime(progressMs), textXPosition + 1, cornerY + 33, color2, false);
+                fontRenderer.drawString(str, right - (fontRenderer.getStringWidth(str) + 2), cornerY + 33, color2, false);
             }
 
 
             // Draw the album art
-            if (Settings.SHOW_ALBUM_ART && currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0) {
+            if (Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0))) {
                 if (Settings.MODERN_PLAYER_STYLE) {
                     // Draw outline
                     Gui.drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());
@@ -361,13 +372,58 @@ public class PlayerOverlay {
         GlStateManager.popMatrix();
     }
 
+    public static int getComplementaryColor(Color colorToInvert) {
+        double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
+        return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
+    }
+
+    private static String formatTime(int milliseconds) {
+        return DATE_FORMAT.format(Date.from(Instant.ofEpochMilli(milliseconds)));
+    }
+
+    public static void drawRect(double left, double top, double right, double bottom, int color)
+    {
+        if (left < right)
+        {
+            double i = left;
+            left = right;
+            right = i;
+        }
+
+        if (top < bottom)
+        {
+            double j = top;
+            top = bottom;
+            bottom = j;
+        }
+
+        float f3 = (float)(color >> 24 & 255) / 255.0F;
+        float f = (float)(color >> 16 & 255) / 255.0F;
+        float f1 = (float)(color >> 8 & 255) / 255.0F;
+        float f2 = (float)(color & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(f, f1, f2, f3);
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(left, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, top, 0.0D).endVertex();
+        worldrenderer.pos(left, top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+
     /**
      * Draws a rectangle with a vertical gradient between the specified colors (ARGB format).
      * Args: x1, y1, x2, y2, topColor, bottomColor
      *
      * @author ScottehBoeh
      */
-    private void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
+    private void drawGradientRect(double left, double top, double right, double bottom, int startColor, int endColor) {
         float f = (float) (startColor >> 24 & 255) / 255.0F;
         float f1 = (float) (startColor >> 16 & 255) / 255.0F;
         float f2 = (float) (startColor >> 8 & 255) / 255.0F;
@@ -384,10 +440,10 @@ public class PlayerOverlay {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(right, top, 1).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos(left, top, 1).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos(left, bottom, 1).color(f5, f6, f7, f4).endVertex();
-        worldrenderer.pos(right, bottom, 1).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos(right, top, 0).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(left, bottom, 0).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos(right, bottom, 0).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
         GlStateManager.shadeModel(7424);
         GlStateManager.disableBlend();

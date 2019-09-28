@@ -14,4 +14,6 @@ public interface IMediaHandler {
     void initializeHandler() throws HandlerInitializationException;
 
     boolean handlerReady();
+
+    int getEstimatedProgressMs();
 }
