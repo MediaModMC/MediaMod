@@ -7,7 +7,6 @@ import com.sun.net.httpserver.HttpServer;
 import me.conorthedev.mediamod.MediaMod;
 import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.media.base.AbstractMediaHandler;
-import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
@@ -19,8 +18,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -49,10 +46,13 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
     private void attemptToOpenAuthURL() {
         try {
-            initializeHandler();
+            if (server != null) {
+                initializeHandler();
+            }
         } catch (HandlerInitializationException e) {
             e.printStackTrace();
         }
+
         Desktop desktop = Desktop.getDesktop();
         String URL = "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
         try {
@@ -160,6 +160,27 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
         // Start the server
         server.start();
+    }
+
+    public void updateProgress() {
+        if (SpotifyHandler.INSTANCE.getCurrentTrack() != null) {
+            SpotifyHandler.INSTANCE.paused = !SpotifyHandler.INSTANCE.getCurrentTrack().is_playing;
+            SpotifyHandler.INSTANCE.durationMs = SpotifyHandler.INSTANCE.getCurrentTrack().item.duration_ms;
+            SpotifyHandler.INSTANCE.lastProgressMs = SpotifyHandler.INSTANCE.getCurrentTrack().progress_ms;
+        } else {
+            SpotifyHandler.INSTANCE.paused = true;
+            SpotifyHandler.INSTANCE.durationMs = 0;
+            SpotifyHandler.INSTANCE.lastProgressMs = 0;
+        }
+    }
+
+    @Override
+    public int getEstimatedProgressMs() {
+        if (!this.equals(INSTANCE)) {
+            return INSTANCE.getEstimatedProgressMs();
+        } else {
+            return super.getEstimatedProgressMs();
+        }
     }
 
     @Override
