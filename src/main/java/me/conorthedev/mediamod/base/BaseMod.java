@@ -45,20 +45,20 @@ public class BaseMod {
 
             // Parse JSON
             Gson g = new Gson();
-            RegisterReponse registerReponse = g.fromJson(content, RegisterReponse.class);
+            RegisterResponse registerResponse = g.fromJson(content, RegisterResponse.class);
 
-            return registerReponse.uuid != null;
+            return registerResponse.uuid != null;
         } catch (IOException ex) {
             ex.printStackTrace();
             return false;
         }
     }
 
-    private static class RegisterReponse {
+    private static class RegisterResponse {
         final String uuid;
         final ModResponse[] mods;
 
-        RegisterReponse(String uuid, ModResponse[] mods) {
+        RegisterResponse(String uuid, ModResponse[] mods) {
             this.uuid = uuid;
             this.mods = mods;
         }
