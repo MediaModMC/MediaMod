@@ -69,7 +69,8 @@ public class DynamicTextureWrapper {
             } catch (RuntimeException ignored) {
                 return;
             }
-            FULLY_TRANSPARENT_TEXTURE = FMLClientHandler.instance().getClient().getTextureManager().getDynamicTextureLocation("no_album_art", new DynamicTexture(FULLY_TRANSPARENT_IMAGE));
+            FULLY_TRANSPARENT_TEXTURE = FMLClientHandler.instance().getClient().getTextureManager().getDynamicTextureLocation(
+                    "mediamod", new DynamicTexture(FULLY_TRANSPARENT_IMAGE));
             INITIALIZED = true;
         }
     }
