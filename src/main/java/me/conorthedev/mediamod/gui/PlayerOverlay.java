@@ -136,11 +136,11 @@ public class PlayerOverlay {
     /**
      * Renders the media player on the screen
      *
-     * @param cornerX   - the x coordinate of the top left corner
-     * @param cornerY   - the y coordinate of the top right corner
-     * @param isModern  - if the player should be rendered as the modern style
-     * @param testing   - if it is a testing player i.e. in the settings menu
-     * @param scale     - the scale to use
+     * @param cornerX  - the x coordinate of the top left corner
+     * @param cornerY  - the y coordinate of the top right corner
+     * @param isModern - if the player should be rendered as the modern style
+     * @param testing  - if it is a testing player i.e. in the settings menu
+     * @param scale    - the scale to use
      */
     void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, double scale) {
 
@@ -381,26 +381,23 @@ public class PlayerOverlay {
         return DATE_FORMAT.format(Date.from(Instant.ofEpochMilli(milliseconds)));
     }
 
-    public static void drawRect(double left, double top, double right, double bottom, int color)
-    {
-        if (left < right)
-        {
+    public static void drawRect(double left, double top, double right, double bottom, int color) {
+        if (left < right) {
             double i = left;
             left = right;
             right = i;
         }
 
-        if (top < bottom)
-        {
+        if (top < bottom) {
             double j = top;
             top = bottom;
             bottom = j;
         }
 
-        float f3 = (float)(color >> 24 & 255) / 255.0F;
-        float f = (float)(color >> 16 & 255) / 255.0F;
-        float f1 = (float)(color >> 8 & 255) / 255.0F;
-        float f2 = (float)(color & 255) / 255.0F;
+        float f3 = (float) (color >> 24 & 255) / 255.0F;
+        float f = (float) (color >> 16 & 255) / 255.0F;
+        float f1 = (float) (color >> 8 & 255) / 255.0F;
+        float f2 = (float) (color & 255) / 255.0F;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         GlStateManager.enableBlend();
