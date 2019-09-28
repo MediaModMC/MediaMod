@@ -1,6 +1,6 @@
 package me.conorthedev.mediamod.gui;
 
-import me.conorthedev.mediamod.Settings;
+import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.ServiceHandler;

@@ -2,6 +2,7 @@ package me.conorthedev.mediamod;
 
 import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
+import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.PlayerOverlay;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;

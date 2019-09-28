@@ -8,8 +8,8 @@ import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import me.conorthedev.mediamod.Settings;
-import me.conorthedev.mediamod.media.base.IMediaHandler;
+import me.conorthedev.mediamod.config.Settings;
+import me.conorthedev.mediamod.media.base.AbstractMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import org.apache.commons.io.IOUtils;
@@ -25,7 +25,7 @@ import java.net.InetSocketAddress;
  *
  * @author ConorTheDev
  */
-public class BrowserHandler implements IMediaHandler {
+public class BrowserHandler extends AbstractMediaHandler {
     /**
      * Instance of the MediaHandler
      */
@@ -97,6 +97,15 @@ public class BrowserHandler implements IMediaHandler {
         }
     }
 
+    @Override
+    public int getEstimatedProgressMs() {
+        if (!this.equals(INSTANCE)) {
+            return INSTANCE.getEstimatedProgressMs();
+        } else {
+            return super.getEstimatedProgressMs();
+        }
+    }
+
     /**
      * The connection callback handler
      */
@@ -127,6 +136,16 @@ public class BrowserHandler implements IMediaHandler {
                         try {
                             Gson g = new Gson();
                             BrowserHandler.INSTANCE.currentTrack = g.fromJson(data, CurrentlyPlayingObject.class);
+                            BrowserHandler.INSTANCE.lastProgressUpdate = System.currentTimeMillis();
+                            if (BrowserHandler.INSTANCE.currentTrack != null) {
+                                BrowserHandler.INSTANCE.paused = !BrowserHandler.INSTANCE.currentTrack.is_playing;
+                                BrowserHandler.INSTANCE.durationMs = BrowserHandler.INSTANCE.currentTrack.item.duration_ms;
+                                BrowserHandler.INSTANCE.lastProgressMs = BrowserHandler.INSTANCE.currentTrack.progress_ms;
+                            } else {
+                                BrowserHandler.INSTANCE.paused = true;
+                                BrowserHandler.INSTANCE.durationMs = 0;
+                                BrowserHandler.INSTANCE.lastProgressMs = 0;
+                            }
                             response = "OK";
                         } catch (JsonSyntaxException ignored) {
                             // it'll send denied

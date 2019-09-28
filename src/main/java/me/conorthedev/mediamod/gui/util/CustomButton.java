@@ -14,6 +14,10 @@ public class CustomButton extends GuiButton {
         super(buttonId, x, y, buttonText);
     }
 
+    public CustomButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+        super(buttonId, x, y, widthIn, heightIn, buttonText);
+    }
+
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
