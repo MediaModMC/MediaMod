@@ -1,7 +1,7 @@
 package me.conorthedev.mediamod.gui;
 
 import me.conorthedev.mediamod.MediaMod;
-import me.conorthedev.mediamod.Settings;
+import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.info.GuiTermsOfService;
 import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.CustomButton;

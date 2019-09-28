@@ -1,5 +1,6 @@
-package me.conorthedev.mediamod;
+package me.conorthedev.mediamod.config;
 
+import me.conorthedev.mediamod.MediaMod;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -18,6 +19,7 @@ public class Settings {
     public static int PLAYER_Y;
     public static double PLAYER_ZOOM;
     public static boolean EXTENSION_ENABLED;
+    public static ProgressStyle PROGRESS_STYLE;
 
     public static void saveConfig() {
         MediaMod.INSTANCE.LOGGER.info("Saving configuration...");
@@ -45,9 +47,13 @@ public class Settings {
         Property playerYProperty = configuration.get("Player", "playerY", 5);
         Property playerZoomProperty = configuration.get("Player", "playerZoom", 1.0);
         Property browserExtProperty = configuration.get("Player", "useBrowserExtension", true);
+        Property progressStyleProperty = configuration.get("Player", "progressStyle", ProgressStyle.BAR_AND_NUMBERS_NEW.name());
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
+
+        if (load) PROGRESS_STYLE = ProgressStyle.valueOf(progressStyleProperty.getString());
+        else progressStyleProperty.setValue(PROGRESS_STYLE.name());
 
         if (load) SHOW_PLAYER = showPlayerProperty.getBoolean();
         else showPlayerProperty.setValue(SHOW_PLAYER);

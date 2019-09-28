@@ -1,6 +1,7 @@
 package me.conorthedev.mediamod.gui;
 
-import me.conorthedev.mediamod.Settings;
+import me.conorthedev.mediamod.config.ProgressStyle;
+import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
@@ -306,41 +307,55 @@ public class PlayerOverlay {
         if (testing || currentlyPlayingObject != null) {
             if (testing || (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0)) {
                 int right = textXPosition + 91;
+                int offset = 91;
                 int progressMultiplier = 90;
                 if (!(Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0)))) {
                     right = textXPosition + 135;
+                    offset = 135;
                     progressMultiplier = 135;
                 }
-                // Draw the progress bar
-                if (Settings.MODERN_PLAYER_STYLE) {
-                    // Draw outline
-                    Gui.drawRect(textXPosition - 1, cornerY + 30, right, cornerY + 43, new Color(0, 0, 0, 75).getRGB());
-                }
-
-                // Draw background
-                Gui.drawRect(textXPosition, cornerY + 31, right - 1, cornerY + 42, Color.darkGray.darker().getRGB());
-
-                // Get the percent complete
-                float percentComplete = (float) 0.75;
-                if (track != null && ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && !testing) {
-                    percentComplete = (float) ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs() / (float) track.duration_ms;
-                }
-
                 Color displayColor = Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART ? color : Color.green;
-                if (Settings.MODERN_PLAYER_STYLE) {
-                    // Draw the gradient styled progress bar
-                    drawGradientRect(textXPosition, cornerY + 31, (textXPosition + (progressMultiplier * percentComplete)), cornerY + 42, displayColor.getRGB(), displayColor.darker().getRGB());
-                } else {
-                    // Draw the normal progress bar
-                    drawRect(textXPosition, cornerY + 31, (textXPosition + (progressMultiplier * percentComplete)), cornerY + 42, displayColor.getRGB());
+
+                if (Settings.PROGRESS_STYLE != ProgressStyle.NUMBERS_ONLY) {
+                    int progressTop = cornerY + 30;
+                    int progressBottom = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 39 : cornerY + 43;
+                    // Draw the progress bar
+                    if (Settings.MODERN_PLAYER_STYLE) {
+                        // Draw outline
+                        Gui.drawRect(textXPosition - 1, progressTop, right, progressBottom, new Color(0, 0, 0, 75).getRGB());
+                    }
+
+                    // Draw background
+                    Gui.drawRect(textXPosition, progressTop + 1, right - 1, progressBottom - 1, Color.darkGray.darker().getRGB());
+
+                    // Get the percent complete
+                    float percentComplete = (float) 0.75;
+                    if (track != null && ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && !testing) {
+                        percentComplete = (float) ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs() / (float) track.duration_ms;
+                    }
+                    if (Settings.MODERN_PLAYER_STYLE) {
+                        // Draw the gradient styled progress bar
+                        drawGradientRect(textXPosition, progressTop + 1, (textXPosition + (progressMultiplier * percentComplete)), progressBottom - 1, displayColor.getRGB(), displayColor.darker().getRGB());
+                    } else {
+                        // Draw the normal progress bar
+                        drawRect(textXPosition, progressTop + 1, (textXPosition + (progressMultiplier * percentComplete)), progressBottom - 1, displayColor.getRGB());
+                    }
                 }
 
-                int progressMs = track == null || ServiceHandler.INSTANCE.getCurrentMediaHandler() == null ? 45000 : ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs();
-                int durationMs = track == null ? 60000 : track.duration_ms;
-                String str = formatTime(durationMs);
-                int color2 = getComplementaryColor(displayColor);
-                fontRenderer.drawString(formatTime(progressMs), textXPosition + 1, cornerY + 33, color2, false);
-                fontRenderer.drawString(str, right - (fontRenderer.getStringWidth(str) + 2), cornerY + 33, color2, false);
+                if (Settings.PROGRESS_STYLE != ProgressStyle.BAR_ONLY) {
+                    int progressMs = track == null || ServiceHandler.INSTANCE.getCurrentMediaHandler() == null ? 45000 : ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs();
+                    int durationMs = track == null ? 60000 : track.duration_ms;
+                    int color2 = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_NEW ? getComplementaryColor(displayColor) : Color.white.darker().getRGB();
+                    int y = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 41 : cornerY + 33;
+                    if (Settings.PROGRESS_STYLE != ProgressStyle.NUMBERS_ONLY) {
+                        String str = formatTime(durationMs);
+                        fontRenderer.drawString(formatTime(progressMs), textXPosition + 1, y, color2, false);
+                        fontRenderer.drawString(str, right - (fontRenderer.getStringWidth(str) + 2), y, color2, false);
+                    } else {
+                        String str = formatTime(progressMs) + " / " + formatTime(durationMs);
+                        fontRenderer.drawString(str, textXPosition + (offset / 2.f) - (fontRenderer.getStringWidth(str) / 2.f), y, color2, false);
+                    }
+                }
             }
 
 
