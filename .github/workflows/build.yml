@@ -1,4 +1,4 @@
-name: Build MediaMod for Hyperium
+name: Build MediaMod for Minecraft Forge
 
 on: [push]
 
