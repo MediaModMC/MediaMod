@@ -139,7 +139,7 @@ public class BrowserHandler extends AbstractMediaHandler {
                             BrowserHandler.INSTANCE.currentTrack = g.fromJson(data, CurrentlyPlayingObject.class);
                             BrowserHandler.INSTANCE.lastProgressUpdate = System.currentTimeMillis();
                             if (BrowserHandler.INSTANCE.currentTrack != null) {
-                                BrowserHandler.INSTANCE.paused = BrowserHandler.INSTANCE.currentTrack.is_playing;
+                                BrowserHandler.INSTANCE.paused = !BrowserHandler.INSTANCE.currentTrack.is_playing;
                                 BrowserHandler.INSTANCE.durationMs = BrowserHandler.INSTANCE.currentTrack.item.duration_ms;
                                 BrowserHandler.INSTANCE.lastProgressMs = BrowserHandler.INSTANCE.currentTrack.progress_ms;
                             } else {

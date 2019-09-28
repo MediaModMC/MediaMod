@@ -134,7 +134,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
             lastProgressUpdate = System.currentTimeMillis();
             if (object != null) {
                 lastProgressMs = object.progress_ms;
-                paused = object.is_playing;
+                paused = !object.is_playing;
             } else {
                 lastProgressMs = 0;
                 paused = true;

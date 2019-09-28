@@ -147,6 +147,8 @@ public class PlayerOverlay {
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
+        mc.mcProfiler.startSection("mediamod_player");
+
         // Establish a FontRenderer
         FontRenderer fontRenderer = mc.fontRendererObj;
 
@@ -370,6 +372,7 @@ public class PlayerOverlay {
         }
 
         GlStateManager.popMatrix();
+        mc.mcProfiler.endSection();
     }
 
     public static int getComplementaryColor(Color colorToInvert) {
