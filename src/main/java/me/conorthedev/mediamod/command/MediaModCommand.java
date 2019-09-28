@@ -1,48 +1,30 @@
 package me.conorthedev.mediamod.command;
 
+import cc.hyperium.Hyperium;
+import cc.hyperium.commands.BaseCommand;
 import me.conorthedev.mediamod.gui.GuiMediaModSettings;
-import me.conorthedev.mediamod.util.TickScheduler;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * The client-side command to open the MediaMod GUI
- *
- * @see net.minecraft.command.ICommand
- */
-public class MediaModCommand extends CommandBase {
-
+public class MediaModCommand implements BaseCommand {
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "mediamod";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage() {
         return "/mediamod";
+    }
+
+    @Override
+    public void onExecute(String[] args) {
+        Hyperium.INSTANCE.getHandlers().getGuiDisplayHandler().setDisplayNextTick(new GuiMediaModSettings());
     }
 
     @Override
     public List<String> getCommandAliases() {
         return Arrays.asList("media", "mm");
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) {
-        TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
-    }
-
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
-        return true;
-    }
-
-    @Override
-    public int getRequiredPermissionLevel() {
-        return -1;
     }
 }

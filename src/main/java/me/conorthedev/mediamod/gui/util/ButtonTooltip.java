@@ -1,18 +1,14 @@
 package me.conorthedev.mediamod.gui.util;
 
+import cc.hyperium.mixins.client.gui.IMixinGuiButton;
+import cc.hyperium.utils.ChatColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 
-/**
- * For tooltip stuff
- *
- * @author Asbyth
- * https://github.com/asbyth/Patcher/blob/master/src/main/java/dev/asbyth/patcher/gui/helpers/ButtonTooltip.java
- */
 public abstract class ButtonTooltip extends GuiScreen {
+
     private static final int lineHeight = 11;
     private long mouseOverTime = 0;
     private long prevSystemTime = -1;
@@ -185,12 +181,12 @@ public abstract class ButtonTooltip extends GuiScreen {
     }
 
     private void renderTooltipButtonMouseOverEffect(GuiButton button) {
-        mc.fontRendererObj.drawStringWithShadow(EnumChatFormatting.YELLOW + "?", button.xPosition + button.getButtonWidth() - 8, button.yPosition + 2, 16777215);
+        mc.fontRendererObj.drawStringWithShadow(ChatColor.YELLOW + "?", button.xPosition + button.getButtonWidth() - 8, button.yPosition + 2, 16777215);
     }
 
     private boolean isButtonHoveredOver(int mouseX, int mouseY, GuiButton button) {
         if (mouseX >= button.xPosition && mouseX <= button.xPosition + button.getButtonWidth() && mouseY >= button.yPosition) {
-            return mouseY <= button.yPosition + button.height;
+            return mouseY <= button.yPosition + ((IMixinGuiButton) button).getHeight();
         }
 
         return false;

@@ -1,33 +1,34 @@
 package me.conorthedev.mediamod.gui;
 
+import cc.hyperium.Hyperium;
+import cc.hyperium.utils.ChatColor;
 import me.conorthedev.mediamod.config.ProgressStyle;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.ButtonTooltip;
-import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.io.IOException;
 
 class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
+
     @Override
     public void initGui() {
-        Settings.loadConfig();
-        this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
+        this.buttonList.add(new GuiButton(0, width / 2 - 100, height - 50, "Back"));
 
-        this.buttonList.add(new CustomButton(1, width / 2 - 120, getRowPos(0), getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art")));
-        this.buttonList.add(new CustomButton(2, width / 2 + 10, getRowPos(0), getSuffix(Settings.AUTO_COLOR_SELECTION, "Color Selection")));
-        this.buttonList.add(new CustomButton(3, width / 2 - 120, getRowPos(1), getSuffix(Settings.MODERN_PLAYER_STYLE, "Modern Player")));
-        this.buttonList.add(new CustomButton(4, width / 2 + 10, getRowPos(1), "Position Player"));
-        this.buttonList.add(new CustomButton(5, width / 2 - 120, getRowPos(2), 250, 20, "Progress Style: " + EnumChatFormatting.GREEN + Settings.PROGRESS_STYLE.getDisplay()));
+        this.buttonList.add(new GuiButton(1, width / 2 - 120, getRowPos(0), getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art")));
+        this.buttonList.add(new GuiButton(2, width / 2 + 10, getRowPos(0), getSuffix(Settings.AUTO_COLOR_SELECTION, "Color Selection")));
+        this.buttonList.add(new GuiButton(3, width / 2 - 120, getRowPos(1), getSuffix(Settings.MODERN_PLAYER_STYLE, "Modern Player")));
+        this.buttonList.add(new GuiButton(4, width / 2 + 10, getRowPos(1), "Position Player"));
+        this.buttonList.add(new GuiButton(5, width / 2 - 120, getRowPos(2), 250, 20, "Progress Style: "
+                + ChatColor.GREEN + Settings.PROGRESS_STYLE.getDisplay()));
 
         for (GuiButton button : buttonList) {
             if (button.id != 0 && button.id != 5) {
-                button.width = 120;
+                button.setWidth(120);
             }
         }
 
@@ -104,11 +105,13 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
                 break;
             case 5:
                 int nextIndex = Settings.PROGRESS_STYLE.ordinal() + 1;
+
                 if (nextIndex >= ProgressStyle.values().length) {
                     nextIndex = 0;
                 }
+
                 Settings.PROGRESS_STYLE = ProgressStyle.values()[nextIndex];
-                button.displayString = "Progress Style: " + EnumChatFormatting.GREEN + Settings.PROGRESS_STYLE.getDisplay();
+                button.displayString = "Progress Style: " + ChatColor.GREEN + Settings.PROGRESS_STYLE.getDisplay();
                 break;
         }
     }
@@ -120,6 +123,6 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
 
     @Override
     public void onGuiClosed() {
-        Settings.saveConfig();
+        Hyperium.CONFIG.save();
     }
 }

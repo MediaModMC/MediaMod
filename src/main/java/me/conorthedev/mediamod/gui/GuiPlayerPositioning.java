@@ -1,17 +1,18 @@
 package me.conorthedev.mediamod.gui;
 
+import cc.hyperium.Hyperium;
+import cc.hyperium.utils.ChatColor;
 import me.conorthedev.mediamod.config.Settings;
-import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiSlider;
 
 import java.io.IOException;
 
 public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
+
     private int currentX = Settings.PLAYER_X;
     private int currentY = Settings.PLAYER_Y;
     private GuiSlider slider = null;
@@ -19,12 +20,11 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
     @Override
     public void initGui() {
-        Settings.loadConfig();
-
-        this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 83, EnumChatFormatting.GREEN + "Save"));
-        this.buttonList.add(new CustomButton(1, width / 2 - 100, height - 60, EnumChatFormatting.RED + "Reset"));
-        this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 37, "Back"));
-        this.buttonList.add(slider = new GuiSlider(3, width / 2 - 75, height - 105, 150, 20, "Scale: ", "", 0.1, 2.0, Settings.PLAYER_ZOOM, true, false, it -> {
+        buttonList.add(new GuiButton(2, width / 2 - 100, height - 83, ChatColor.GREEN + "Save"));
+        buttonList.add(new GuiButton(1, width / 2 - 100, height - 60, ChatColor.RED + "Reset"));
+        buttonList.add(new GuiButton(0, width / 2 - 100, height - 37, "Back"));
+        buttonList.add(slider = new GuiSlider(3, width / 2 - 75, height - 105, 150, 20,
+                "Scale: ", "", 0.1, 2.0, Settings.PLAYER_ZOOM, true, false, it -> {
             // custom display string change stuff
             it.displayString = it.dispString + (Math.round(it.getValue() * 10) / 10.0) + it.suffix;
         }));
@@ -37,7 +37,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
 
-        this.drawCenteredString(fontRendererObj, "Position the player by dragging it around, click reset to reset position.", width / 2, height - 120, -1);
+        drawCenteredString(fontRendererObj, "Position the player by dragging it around, click reset to reset position.", width / 2, height - 120, -1);
 
         boolean testing;
         if (ServiceHandler.INSTANCE.getCurrentMediaHandler() == null) {
@@ -56,25 +56,25 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         super.actionPerformed(button);
         switch (button.id) {
             case 0:
-                this.mc.displayGuiScreen(new GuiPlayerSettings());
+                mc.displayGuiScreen(new GuiPlayerSettings());
                 break;
 
             case 1:
-                this.currentX = 5;
-                this.currentY = 5;
+                currentX = 5;
+                currentY = 5;
                 slider.setValue(1.0);
 
-                Settings.PLAYER_X = this.currentX;
-                Settings.PLAYER_Y = this.currentY;
+                Settings.PLAYER_X = currentX;
+                Settings.PLAYER_Y = currentY;
                 Settings.PLAYER_ZOOM = 1.0;
-                this.mc.displayGuiScreen(new GuiPlayerPositioning());
+                mc.displayGuiScreen(new GuiPlayerPositioning());
                 break;
 
             case 2:
-                Settings.PLAYER_X = this.currentX;
-                Settings.PLAYER_Y = this.currentY;
+                Settings.PLAYER_X = currentX;
+                Settings.PLAYER_Y = currentY;
                 Settings.PLAYER_ZOOM = slider.getValue();
-                this.mc.displayGuiScreen(new GuiPlayerSettings());
+                mc.displayGuiScreen(new GuiPlayerSettings());
                 break;
         }
     }
@@ -91,8 +91,8 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         if (dragging && clickedMouseButton == 0) {
             // It was the left click, change the position
-            this.currentX = (int) (mouseX - (75 * Settings.PLAYER_ZOOM));
-            this.currentY = (int) (mouseY - (25 * Settings.PLAYER_ZOOM));
+            currentX = (int) (mouseX - (75 * Settings.PLAYER_ZOOM));
+            currentY = (int) (mouseY - (25 * Settings.PLAYER_ZOOM));
         }
 
         // Call the super function
@@ -103,7 +103,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         if (mouseButton == 0) {
-            for (GuiButton button : this.buttonList) {
+            for (GuiButton button : buttonList) {
                 if (button.isMouseOver()) {
                     return;
                 }
@@ -120,7 +120,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
     @Override
     public void onGuiClosed() {
-        Settings.saveConfig();
+        Hyperium.CONFIG.save();
         super.onGuiClosed();
     }
 }

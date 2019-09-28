@@ -1,44 +1,39 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+apply plugin: 'java'
 
-version = "1.0.0"
-group = "me.conorthedev" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "MediaMod"
+group 'me.conorthedev'
+version '1.0.0'
 
 sourceCompatibility = targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
-    runDir = "run"
+    version = "1.8.9"
+    tweakClass = "cc.hyperium.launch.HyperiumTweaker"
     mappings = "stable_22"
+    runDir = 'run'
     makeObfSourceJar = false
 }
 
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        // replace version and mcversion
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
+dependencies {
+     compile 'com.github.HyperiumClient:Hyperium:master-SNAPSHOT'
 }

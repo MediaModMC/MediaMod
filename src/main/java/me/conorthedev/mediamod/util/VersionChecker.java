@@ -10,43 +10,21 @@ import java.net.URL;
 import java.util.stream.Collectors;
 
 public class VersionChecker {
-    /**
-     * An instance of this class
-     */
     public static final VersionChecker INSTANCE = new VersionChecker();
-
-    /**
-     * If the mod is up to date
-     */
-    public boolean IS_LATEST_VERSION = false;
-
-    /**
-     * If the mod isn't up to date, this will contain the latest version's information
-     */
-    public VersionResponse LATEST_VERSION_INFO = null;
+    public boolean IS_LATEST_VERSION;
+    public VersionResponse LATEST_VERSION_INFO;
 
     public static void checkVersion() {
         try {
-            // Create a conncetion
             URL url = new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version.json");
-
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            // Set the request method
             con.setRequestMethod("GET");
-            // Connect to the API
             con.connect();
-
-            // Read the output
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String content = in.lines().collect(Collectors.joining());
-
-            // Close the input reader & the connection
-            in.close();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String content = reader.lines().collect(Collectors.joining());
+            reader.close();
             con.disconnect();
-
-            // Parse JSON
             Gson g = new Gson();
-
             VersionResponse versionResponse = g.fromJson(content, VersionResponse.class);
 
             if (versionResponse.latestVersionInt > Metadata.VERSION_INT) {
@@ -61,13 +39,13 @@ public class VersionChecker {
     }
 
     public static class VersionResponse {
-        public String latestVersionS;
-        public int latestVersionInt;
+        public String latestVersionString;
+        int latestVersionInt;
         public String changelog;
 
-        VersionResponse(int latestVersionInt, String latestVersionS, String changelog) {
+        public VersionResponse(String latestVersionString, int latestVersionInt, String changelog) {
+            this.latestVersionString = latestVersionString;
             this.latestVersionInt = latestVersionInt;
-            this.latestVersionS = latestVersionS;
             this.changelog = changelog;
         }
     }

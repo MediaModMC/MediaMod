@@ -2,7 +2,7 @@ package me.conorthedev.mediamod.base;
 
 import com.google.gson.Gson;
 import me.conorthedev.mediamod.util.Metadata;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraft.client.Minecraft;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class BaseMod {
     public static boolean init() {
         try {
             // Create a conncetion
-            URL url = new URL(ENDPOINT + "/api/register/" + FMLClientHandler.instance().getClient().getSession().getProfile().getId().toString() + "/" + Metadata.MODID + "/" + Metadata.VERSION);
+            URL url = new URL(ENDPOINT + "/api/register/" + Minecraft.getMinecraft().getSession().getProfile().getId().toString() + "/" + Metadata.MODID + "/" + Metadata.VERSION);
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // Set the request method
@@ -45,20 +45,20 @@ public class BaseMod {
 
             // Parse JSON
             Gson g = new Gson();
-            RegisterResponse registerResponse = g.fromJson(content, RegisterResponse.class);
+            RegisterReponse registerReponse = g.fromJson(content, RegisterReponse.class);
 
-            return registerResponse.uuid != null;
+            return registerReponse.uuid != null;
         } catch (IOException ex) {
             ex.printStackTrace();
             return false;
         }
     }
 
-    private static class RegisterResponse {
+    private static class RegisterReponse {
         final String uuid;
         final ModResponse[] mods;
 
-        RegisterResponse(String uuid, ModResponse[] mods) {
+        RegisterReponse(String uuid, ModResponse[] mods) {
             this.uuid = uuid;
             this.mods = mods;
         }

@@ -1,5 +1,7 @@
 package me.conorthedev.mediamod.media.spotify;
 
+import cc.hyperium.mods.sk1ercommon.Multithreading;
+import cc.hyperium.utils.ChatColor;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -10,14 +12,11 @@ import me.conorthedev.mediamod.media.base.AbstractMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
-import me.conorthedev.mediamod.util.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -52,7 +51,6 @@ public class SpotifyHandler extends AbstractMediaHandler {
         } catch (HandlerInitializationException e) {
             e.printStackTrace();
         }
-
         Desktop desktop = Desktop.getDesktop();
         String URL = "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
         try {
@@ -61,26 +59,31 @@ public class SpotifyHandler extends AbstractMediaHandler {
             MediaMod.INSTANCE.LOGGER.fatal("Something has gone terribly wrong... SpotifyHandler:l59");
             e.printStackTrace();
         } catch (Exception e) {
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Failed to open browser with the Spotify Auth URL!"));
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
+                    + "Failed to open browser with the Spotify Auth URL!"));
             IChatComponent urlComponent = new ChatComponentText(
-                    EnumChatFormatting.WHITE.toString() + EnumChatFormatting.BOLD + "Open URL");
+                    ChatColor.WHITE.toString() + ChatColor.BOLD + "Open URL");
             urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
-            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(EnumChatFormatting.GRAY +
+            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.GRAY +
                     "Click this to open the Spotify Auth URL")));
             Minecraft.getMinecraft().thePlayer.addChatComponentMessage(urlComponent);
         }
     }
 
     private static void handleRequest(String code) {
-        Minecraft mc = FMLClientHandler.instance().getClient();
+        Minecraft mc = Minecraft.getMinecraft();
 
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
         ses.scheduleAtFixedRate(() -> {
-            FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "INFO: " + EnumChatFormatting.RESET + EnumChatFormatting.RED + "Spotify Token Expired! Please login again in the GUI!"));
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(
+                    ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] " + ChatColor.DARK_GRAY.toString()
+                            + ChatColor.BOLD + "INFO: " + ChatColor.RESET + ChatColor.RED + "Spotify Token Expired! Please login again in the GUI!"));
             logged = false;
         }, 1, 1, TimeUnit.HOURS);
 
-        FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GRAY + "Exchanging authorization code for access token, this may take a moment..."));
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(
+                ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] " + ChatColor.GRAY +
+                        "Exchanging authorization code for access token, this may take a moment..."));
         try {
             // Create a conncetion
             URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/token/" + code);
@@ -111,10 +114,10 @@ public class SpotifyHandler extends AbstractMediaHandler {
             if (spotifyApi.getRefreshToken() != null) {
                 logged = true;
                 // Tell the user that they were logged in
-                mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
+                mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] " + ChatColor.GREEN.toString() + ChatColor.BOLD + "SUCCESS! " + ChatColor.RESET + ChatColor.WHITE + "Logged into Spotify!"));
                 CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
                 if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
-                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
+                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] " + ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "DEBUG: " + ChatColor.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
                 }
             }
         } catch (Exception e) {
@@ -162,6 +165,11 @@ public class SpotifyHandler extends AbstractMediaHandler {
         server.start();
     }
 
+    @Override
+    public boolean handlerReady() {
+        return logged;
+    }
+
     public void updateProgress() {
         if (SpotifyHandler.INSTANCE.getCurrentTrack() != null) {
             SpotifyHandler.INSTANCE.paused = !SpotifyHandler.INSTANCE.getCurrentTrack().is_playing;
@@ -183,16 +191,12 @@ public class SpotifyHandler extends AbstractMediaHandler {
         }
     }
 
-    @Override
-    public boolean handlerReady() {
-        return logged;
-    }
-
     private static class SpotifyCallbackHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
             // Handle the req
-            Multithreading.runAsync(() -> handleRequest(t.getRequestURI().toString().replace("/callback/?code=", "").substring(0, t.getRequestURI().toString().replace("/callback/?code=", "").length() - 18)));
+            Multithreading.runAsync(() -> handleRequest(t.getRequestURI().toString().replace("/callback/?code=",
+                    "").substring(0, t.getRequestURI().toString().replace("/callback/?code=", "").length() - 18)));
 
             String response = "<!DOCTYPE html>\n" +
                     "<html>\n" +

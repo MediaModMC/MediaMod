@@ -32,8 +32,8 @@ public class SpotifyAPI {
      * @param refreshToken the value to set REFRESH_TOKEN
      */
     public SpotifyAPI(String accessToken, String refreshToken) {
-        this.ACCESS_TOKEN = accessToken;
-        this.REFRESH_TOKEN = refreshToken;
+        ACCESS_TOKEN = accessToken;
+        REFRESH_TOKEN = refreshToken;
     }
 
     /**

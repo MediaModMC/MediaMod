@@ -1,5 +1,7 @@
 package me.conorthedev.mediamod.gui;
 
+import cc.hyperium.event.InvokeEvent;
+import cc.hyperium.event.RenderHUDEvent;
 import me.conorthedev.mediamod.config.ProgressStyle;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
@@ -16,9 +18,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -91,19 +91,13 @@ public class PlayerOverlay {
         }
     }
 
-    /**
-     * Fired when a game overlay is being rendered
-     *
-     * @param event - RenderGameOverlayEvent
-     * @see RenderGameOverlayEvent
-     */
-    @SubscribeEvent
-    public void onRender(RenderGameOverlayEvent.Post event) {
+    @InvokeEvent
+    public void onRender(RenderHUDEvent event) {
 
         // Get a Minecraft Instance
-        Minecraft mc = FMLClientHandler.instance().getClient();
+        Minecraft mc = Minecraft.getMinecraft();
 
-        if (event.type.equals(RenderGameOverlayEvent.ElementType.EXPERIENCE) && Settings.SHOW_PLAYER && Settings.ENABLED) {
+        if (Settings.SHOW_PLAYER && Settings.ENABLED) {
             if (this.first) {
                 // Make sure that this is never ran again
                 this.first = false;
@@ -150,7 +144,7 @@ public class PlayerOverlay {
     void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, double scale) {
 
         // Get a Minecraft Instance
-        Minecraft mc = FMLClientHandler.instance().getClient();
+        Minecraft mc = Minecraft.getMinecraft();
 
         mc.mcProfiler.startSection("mediamod_player");
 
@@ -339,7 +333,8 @@ public class PlayerOverlay {
                     }
                     if (Settings.MODERN_PLAYER_STYLE) {
                         // Draw the gradient styled progress bar
-                        drawGradientRect(textXPosition, progressTop + 1, (textXPosition + (progressMultiplier * percentComplete)), progressBottom - 1, displayColor.getRGB(), displayColor.darker().getRGB());
+                        drawGradientRect(textXPosition, progressTop + 1, (textXPosition + (progressMultiplier * percentComplete)),
+                                progressBottom - 1, displayColor.getRGB(), displayColor.darker().getRGB());
                     } else {
                         // Draw the normal progress bar
                         drawRect(textXPosition, progressTop + 1, (textXPosition + (progressMultiplier * percentComplete)), progressBottom - 1, displayColor.getRGB());
@@ -347,7 +342,8 @@ public class PlayerOverlay {
                 }
 
                 if (Settings.PROGRESS_STYLE != ProgressStyle.BAR_ONLY) {
-                    int progressMs = track == null || ServiceHandler.INSTANCE.getCurrentMediaHandler() == null ? 45000 : ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs();
+                    int progressMs = track == null || ServiceHandler.INSTANCE.getCurrentMediaHandler() == null ? 45000 :
+                            ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs();
                     int durationMs = track == null ? 60000 : track.duration_ms;
                     int color2 = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_NEW ? getComplementaryColor(displayColor) : Color.white.darker().getRGB();
                     int y = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 41 : cornerY + 33;
@@ -394,7 +390,7 @@ public class PlayerOverlay {
         mc.mcProfiler.endSection();
     }
 
-    public static int getComplementaryColor(Color colorToInvert) {
+    private static int getComplementaryColor(Color colorToInvert) {
         double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
         return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
     }
@@ -403,7 +399,7 @@ public class PlayerOverlay {
         return DATE_FORMAT.format(Date.from(Instant.ofEpochMilli(milliseconds)));
     }
 
-    public static void drawRect(double left, double top, double right, double bottom, int color) {
+    private static void drawRect(double left, double top, double right, double bottom, int color) {
         if (left < right) {
             double i = left;
             left = right;
@@ -424,9 +420,9 @@ public class PlayerOverlay {
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
         worldrenderer.pos(left, bottom, 0.0D).endVertex();
         worldrenderer.pos(right, bottom, 0.0D).endVertex();
         worldrenderer.pos(right, top, 0.0D).endVertex();
@@ -454,17 +450,17 @@ public class PlayerOverlay {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.shadeModel(7425);
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
         worldrenderer.pos(right, top, 0).color(f1, f2, f3, f).endVertex();
         worldrenderer.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
         worldrenderer.pos(left, bottom, 0).color(f5, f6, f7, f4).endVertex();
         worldrenderer.pos(right, bottom, 0).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
-        GlStateManager.shadeModel(7424);
+        GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();

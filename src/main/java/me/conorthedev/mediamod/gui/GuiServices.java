@@ -1,15 +1,14 @@
 package me.conorthedev.mediamod.gui;
 
+import cc.hyperium.Hyperium;
+import cc.hyperium.utils.ChatColor;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.ButtonTooltip;
-import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.awt.*;
 import java.io.IOException;
@@ -17,17 +16,15 @@ import java.io.IOException;
 class GuiServices extends ButtonTooltip implements IMediaGui {
     @Override
     public void initGui() {
-        Settings.loadConfig();
-
-        this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
+        buttonList.add(new GuiButton(0, width / 2 - 100, height - 50, "Back"));
 
         if (!SpotifyHandler.logged) {
-            this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, "Login to Spotify"));
+            buttonList.add(new GuiButton(1, width / 2 - 100, height / 2 - 35, "Login to Spotify"));
         } else {
-            this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, "Logout of Spotify"));
+            buttonList.add(new GuiButton(2, width / 2 - 100, height / 2 - 35, "Logout of Spotify"));
         }
 
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, "Use Browser Extension")));
+        buttonList.add(new GuiButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, "Use Browser Extension")));
 
         super.initGui();
     }
@@ -39,11 +36,9 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         GlStateManager.pushMatrix();
         GlStateManager.color(1, 1, 1, 1);
 
-        // Bind the texture for rendering
-        mc.getTextureManager().bindTexture(this.headerResource);
+        mc.getTextureManager().bindTexture(headerResource);
 
-        // Render the header
-        Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
+        drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();
 
         if (!SpotifyHandler.logged) {
@@ -66,7 +61,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
     @Override
     public void onGuiClosed() {
-        Settings.saveConfig();
+        Hyperium.CONFIG.save();
     }
 
     @Override
@@ -74,19 +69,20 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         super.actionPerformed(button);
         switch (button.id) {
             case 0:
-                this.mc.displayGuiScreen(new GuiMediaModSettings());
+                mc.displayGuiScreen(new GuiMediaModSettings());
                 break;
 
             case 1:
-                this.mc.displayGuiScreen(null);
-                this.mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Opening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'"));
+                mc.displayGuiScreen(null);
+                mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
+                        + "Opening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'"));
                 SpotifyHandler.INSTANCE.connectSpotify();
                 break;
 
             case 2:
                 SpotifyHandler.spotifyApi = null;
                 SpotifyHandler.logged = false;
-                this.mc.displayGuiScreen(new GuiServices());
+                mc.displayGuiScreen(new GuiServices());
                 break;
             case 3:
                 Settings.EXTENSION_ENABLED = !Settings.EXTENSION_ENABLED;
