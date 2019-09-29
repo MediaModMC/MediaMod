@@ -9,6 +9,7 @@ import me.conorthedev.mediamod.media.base.ServiceHandler;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.io.IOException;
@@ -17,13 +18,13 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
     @Override
     public void initGui() {
         Settings.loadConfig();
-        this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
+        this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, I18n.format("menu.guiplayerpositioning.buttons.back.name")));
 
-        this.buttonList.add(new CustomButton(1, width / 2 - 120, getRowPos(0), getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art")));
-        this.buttonList.add(new CustomButton(2, width / 2 + 10, getRowPos(0), getSuffix(Settings.AUTO_COLOR_SELECTION, "Color Selection")));
-        this.buttonList.add(new CustomButton(3, width / 2 - 120, getRowPos(1), getSuffix(Settings.MODERN_PLAYER_STYLE, "Modern Player")));
-        this.buttonList.add(new CustomButton(4, width / 2 + 10, getRowPos(1), "Position Player"));
-        this.buttonList.add(new CustomButton(5, width / 2 - 120, getRowPos(2), 250, 20, "Progress Style: " + EnumChatFormatting.GREEN + Settings.PROGRESS_STYLE.getDisplay()));
+        this.buttonList.add(new CustomButton(1, width / 2 - 120, getRowPos(0), getSuffix(Settings.SHOW_ALBUM_ART, I18n.format("menu.guiplayersettings.buttons.showAlbumArt.name"))));
+        this.buttonList.add(new CustomButton(2, width / 2 + 10, getRowPos(0), getSuffix(Settings.AUTO_COLOR_SELECTION, I18n.format("menu.guiplayersettings.buttons.colorSelection.name"))));
+        this.buttonList.add(new CustomButton(3, width / 2 - 120, getRowPos(1), getSuffix(Settings.MODERN_PLAYER_STYLE, I18n.format("menu.guiplayersettings.buttons.modernPlayer.name"))));
+        this.buttonList.add(new CustomButton(4, width / 2 + 10, getRowPos(1), I18n.format("menu.guiplayersettings.buttons.position.name")));
+        this.buttonList.add(new CustomButton(5, width / 2 - 120, getRowPos(2), 250, 20, I18n.format("menu.guiplayersettings.buttons.progressStyle.name") + EnumChatFormatting.GREEN + Settings.PROGRESS_STYLE.getDisplay()));
 
         for (GuiButton button : buttonList) {
             if (button.id != 0 && button.id != 5) {
@@ -64,15 +65,15 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
     protected String getButtonTooltip(int buttonId) {
         switch (buttonId) {
             case 1:
-                return "Toggling this OFF will disable album art, this affects auto colour selection";
+                return I18n.format("menu.guiplayersettings.buttons.showAlbumArt.tooltip");
             case 2:
-                return "Sets the background colour of the player to the most prominent colour in the album art";
+                return I18n.format("menu.guiplayersettings.buttons.colorSelection.tooltip");
             case 3:
-                return "Enables a new player design that involves gradients and shadows, designed by ScottehBoeh";
+                return I18n.format("menu.guiplayersettings.buttons.modernPlayer.tooltip");
             case 4:
-                return "Move and resize the player";
+                return I18n.format("menu.guiplayersettings.buttons.position.tooltip");
             case 5:
-                return "Cycles through progress display styles";
+                return I18n.format("menu.guiplayersettings.buttons.progressStyle.tooltip");
         }
         return null;
     }
@@ -87,17 +88,17 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
 
             case 1:
                 Settings.SHOW_ALBUM_ART = !Settings.SHOW_ALBUM_ART;
-                button.displayString = getSuffix(Settings.SHOW_ALBUM_ART, "Show Album Art");
+                button.displayString = getSuffix(Settings.SHOW_ALBUM_ART, I18n.format("menu.guiplayersettings.buttons.showAlbumArt.name"));
                 break;
 
             case 2:
                 Settings.AUTO_COLOR_SELECTION = !Settings.AUTO_COLOR_SELECTION;
-                button.displayString = getSuffix(Settings.AUTO_COLOR_SELECTION, "Color Selection");
+                button.displayString = getSuffix(Settings.AUTO_COLOR_SELECTION, I18n.format("menu.guiplayersettings.buttons.colorSelection.name"));
                 break;
 
             case 3:
                 Settings.MODERN_PLAYER_STYLE = !Settings.MODERN_PLAYER_STYLE;
-                button.displayString = getSuffix(Settings.MODERN_PLAYER_STYLE, "Modern Player");
+                button.displayString = getSuffix(Settings.MODERN_PLAYER_STYLE, I18n.format("menu.guiplayersettings.buttons.modernPlayer.name"));
                 break;
             case 4:
                 this.mc.displayGuiScreen(new GuiPlayerPositioning());
@@ -108,7 +109,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
                     nextIndex = 0;
                 }
                 Settings.PROGRESS_STYLE = ProgressStyle.values()[nextIndex];
-                button.displayString = "Progress Style: " + EnumChatFormatting.GREEN + Settings.PROGRESS_STYLE.getDisplay();
+                button.displayString = I18n.format("menu.guiplayersettings.buttons.progressStyle.name") + EnumChatFormatting.GREEN + Settings.PROGRESS_STYLE.getDisplay();
                 break;
         }
     }

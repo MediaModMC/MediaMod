@@ -8,6 +8,7 @@ import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.util.Metadata;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 
 import java.io.IOException;
 
@@ -25,10 +26,10 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
             this.mc.displayGuiScreen(new GuiTermsOfService());
         }
 
-        this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, "Enabled")));
-        this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.SHOW_PLAYER, "Show Player")));
-        this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, "Player Settings"));
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 23, "Services"));
+        this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, I18n.format("menu.guimediamod.buttons.enabled.name"))));
+        this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.SHOW_PLAYER, I18n.format("menu.guimediamod.buttons.showPlayer.name"))));
+        this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
+        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 23, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
 
         super.initGui();
     }
@@ -39,8 +40,8 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
 
         this.drawHeader(width, height);
 
-        this.drawString(this.fontRendererObj, "Developed by ConorTheDev", this.width - this.fontRendererObj.getStringWidth("Developed by ConorTheDev") - 2, this.height - 10, -1);
-        this.drawString(this.fontRendererObj, "Version " + Metadata.VERSION, this.width - this.fontRendererObj.getStringWidth("Version " + Metadata.VERSION) - 2, this.height - 20, -1);
+        this.drawString(this.fontRendererObj, I18n.format("menu.guimediamod.text.author.name"), this.width - this.fontRendererObj.getStringWidth(I18n.format("menu.guimediamod.text.author.name")) - 2, this.height - 10, -1);
+        this.drawString(this.fontRendererObj, I18n.format("menu.guimediamod.text.version.name") + " " + Metadata.VERSION, this.width - this.fontRendererObj.getStringWidth("Version " + Metadata.VERSION) - 2, this.height - 20, -1);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -49,9 +50,9 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
     protected String getButtonTooltip(int buttonId) {
         switch (buttonId) {
             case 0:
-                return "Disables the mod entirely (requires a restart to work fully)";
+                return I18n.format("menu.guimediamod.buttons.enabled.tooltip");
             case 1:
-                return "Disable or Enable the Player HUD";
+                return I18n.format("menu.guimediamod.buttons.showPlayer.tooltip");
         }
         return null;
     }
@@ -61,12 +62,12 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
         switch (button.id) {
             case 0:
                 Settings.ENABLED = !Settings.ENABLED;
-                button.displayString = getSuffix(Settings.ENABLED, "Enabled");
+                button.displayString = getSuffix(Settings.ENABLED, I18n.format("menu.guimediamod.buttons.enabled.name"));
                 break;
 
             case 1:
                 Settings.SHOW_PLAYER = !Settings.SHOW_PLAYER;
-                button.displayString = getSuffix(Settings.SHOW_PLAYER, "Show Player");
+                button.displayString = getSuffix(Settings.SHOW_PLAYER, I18n.format("menu.guimediamod.buttons.showPlayer.name"));
                 break;
 
             case 2:

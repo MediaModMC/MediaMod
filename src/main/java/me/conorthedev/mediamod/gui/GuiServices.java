@@ -8,6 +8,7 @@ import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -19,15 +20,15 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
     public void initGui() {
         Settings.loadConfig();
 
-        this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, "Back"));
+        this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, I18n.format("menu.guiplayerpositioning.buttons.back.name")));
 
         if (!SpotifyHandler.logged) {
-            this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, "Login to Spotify"));
+            this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.loginSpotify.name")));
         } else {
-            this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, "Logout of Spotify"));
+            this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.logoutSpotify.name")));
         }
 
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, "Use Browser Extension")));
+        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name"))));
 
         super.initGui();
     }
@@ -47,9 +48,9 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         GlStateManager.popMatrix();
 
         if (!SpotifyHandler.logged) {
-            drawCenteredString(fontRendererObj, "Spotify not logged in! Please login below", width / 2, height / 2 - 53, Color.red.getRGB());
+            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
         } else {
-            drawCenteredString(fontRendererObj, "Spotify is logged in!", width / 2, height / 2 - 53, Color.green.getRGB());
+            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -58,7 +59,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
     @Override
     protected String getButtonTooltip(int buttonId) {
         if (buttonId == 3) {
-            return "Disables or Enables the Browser Extension";
+            return I18n.format("menu.guiservices.buttons.useBrowserExt.tooltip");
         } else {
             return null;
         }
@@ -90,7 +91,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                 break;
             case 3:
                 Settings.EXTENSION_ENABLED = !Settings.EXTENSION_ENABLED;
-                button.displayString = getSuffix(Settings.EXTENSION_ENABLED, "Use Browser Extension");
+                button.displayString = getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name"));
                 break;
         }
     }

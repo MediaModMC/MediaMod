@@ -7,6 +7,7 @@ import me.conorthedev.mediamod.gui.util.IMediaGui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSnooper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.awt.Color;
@@ -17,12 +18,12 @@ public class GuiTermsOfService extends GuiScreen implements IMediaGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
 
-        drawCenteredString(fontRendererObj, EnumChatFormatting.BOLD + "Terms of Service", width / 2, 10, -1);
-        drawCenteredString(fontRendererObj, "When using MediaMod & my other mods, your UUID, the current mod identifier", width / 2, 25, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, "and mod version are stored for analytical purposes.", width / 2, 34, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, "This info will not be shared. If you press close, you agree to", width / 2, 43, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, "this data being collected if you want to disable this: click \"Snooper Settings\"", width / 2, 51, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, "below and disable Snooper for Minecraft.", width / 2, 59, Color.red.getRGB());
+        drawCenteredString(fontRendererObj, EnumChatFormatting.BOLD + I18n.format("menu.guitermsofservice.text.title.name"), width / 2, 10, -1);
+        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line1"), width / 2, 25, Color.red.getRGB());
+        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line2"), width / 2, 34, Color.red.getRGB());
+        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line3"), width / 2, 43, Color.red.getRGB());
+        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line4"), width / 2, 51, Color.red.getRGB());
+        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line5"), width / 2, 59, Color.red.getRGB());
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -30,8 +31,8 @@ public class GuiTermsOfService extends GuiScreen implements IMediaGui {
     @Override
     public void initGui() {
         super.initGui();
-        this.buttonList.add(new CustomButton(0, width / 2 - 205, 100, "Close"));
-        this.buttonList.add(new CustomButton(1, width / 2 + 5, 100, "Snooper Settings"));
+        this.buttonList.add(new CustomButton(0, width / 2 - 205, 100, I18n.format("menu.guitermsofservice.buttons.agree.text")));
+        this.buttonList.add(new CustomButton(1, width / 2 + 5, 100, I18n.format("menu.guitermsofservice.buttons.snooperSettings.text")));
     }
 
     @Override

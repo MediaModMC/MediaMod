@@ -1,0 +1,61 @@
+# GUIs
+
+## GuiMediaModSettings
+### Buttons
+menu.guimediamod.buttons.enabled.name=Enabled
+menu.guimediamod.buttons.enabled.tooltip=Disables / Enables the mod entirely (requires a restart to work fully)
+
+menu.guimediamod.buttons.showPlayer.name=Show Player
+menu.guimediamod.buttons.showPlayer.tooltip=Disables / Enables the player from showing on your screen
+
+menu.guimediamod.buttons.playerSettings.name=Player Settings
+
+menu.guimediamod.buttons.servicesSettings.name=Services
+
+### Other Text
+menu.guimediamod.text.author.name=Developed by ConorTheDev
+menu.guimediamod.text.version.name=Version
+
+## GuiPlayerSettings
+menu.guiplayersettings.buttons.showAlbumArt.name=Show Album Art
+menu.guiplayersettings.buttons.showAlbumArt.tooltip=Toggling this OFF will disable album art, this affects auto colour selection
+
+menu.guiplayersettings.buttons.colorSelection.name=Color Selection
+menu.guiplayersettings.buttons.colorSelection.tooltip=Sets the background colour of the player to the most prominent colour in the album art
+
+menu.guiplayersettings.buttons.modernPlayer.name=Modern Player
+menu.guiplayersettings.buttons.modernPlayer.tooltip=Enables a new player design that involves gradients and shadows, designed by ScottehBoeh
+
+menu.guiplayersettings.buttons.position.name=Position Player
+menu.guiplayersettings.buttons.position.tooltip=Move and resize the player
+
+menu.guiplayersettings.buttons.progressStyle.name=Progress Style:
+menu.guiplayersettings.buttons.progressStyle.tooltip=Cycles through progress display styles
+
+## GuiPlayerPositioning
+menu.guiplayerpositioning.buttons.save.name=Save
+menu.guiplayerpositioning.buttons.reset.name=Reset
+menu.guiplayerpositioning.buttons.back.name=Back
+menu.guiplayerpositioning.buttons.slider.prefix=Scale:
+
+menu.guiplayerpositioning.text.info.name=Position the player by dragging it around, click reset to reset position.
+
+## GuiServices
+menu.guiservices.buttons.loginSpotify.name=Login to Spotify
+menu.guiservices.buttons.logoutSpotify.name=Logout of Spotify
+menu.guiservices.buttons.useBrowserExt.name=Use Browser Extension
+menu.guiservices.buttons.useBrowserExt.tooltip=Disables or Enables the Browser Extension
+
+menu.guiservices.text.spotifyNotLogged.name=Spotify not logged in! Please login below
+menu.guiservices.text.spotifyLogged.name=Spotify is logged in!
+
+## GuiTermsOfService
+menu.guitermsofservice.text.title.name=Terms of Service
+menu.guitermsofservice.text.description.line1=When using MediaMod & my other mods, your UUID, the current mod identifier
+menu.guitermsofservice.text.description.line2=and mod version are stored for analytical purposes.
+menu.guitermsofservice.text.description.line3=This info will not be shared. If you press close, you agree to
+menu.guitermsofservice.text.description.line4=this data being collected if you want to disable this: click "Snooper Settings"
+menu.guitermsofservice.text.description.line5=below and disable Snooper for Minecraft.
+
+menu.guitermsofservice.buttons.agree.text=I Agree
+menu.guitermsofservice.buttons.snooperSettings.text=Snooper Settings
