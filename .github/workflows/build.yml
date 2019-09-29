@@ -30,4 +30,4 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       run: |
         COMMIT_DESCRIPTION=$(git log --pretty=format:"%s by %cn (%D)" -n 1)
-        curl -d "{\"content\":\"Successfully built $COMMIT_DESCRIPTION\"}" -H "Content-Type: application/json" "$DISCORD_WEBHOOK"
+        curl -H "Content-Type: application/json" -X POST -d '{"embeds": [{"title": "Build Successful","color": 3066993, "description": "Successfully built ``$COMMIT_DESCRIPTION``"}]}' $DISCORD_WEBHOOK
