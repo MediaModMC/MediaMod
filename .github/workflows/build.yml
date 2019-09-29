@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - name: Discord notification
@@ -13,7 +13,7 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@master
       with:
-        args: ':timer: Building latest commit on ${{ matrix.os }}'
+        args: ':timer: Building latest commit on Ubuntu 18.04'
     - uses: actions/checkout@v1
     - name: set up JDK 1.8
       uses: actions/setup-java@v1
