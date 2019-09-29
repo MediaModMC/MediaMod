@@ -15,8 +15,8 @@ public class Settings {
     public static boolean MODERN_PLAYER_STYLE;
     public static boolean SHOW_ALBUM_ART;
     public static boolean AUTO_COLOR_SELECTION;
-    public static int PLAYER_X;
-    public static int PLAYER_Y;
+    public static double PLAYER_X;
+    public static double PLAYER_Y;
     public static double PLAYER_ZOOM;
     public static boolean EXTENSION_ENABLED;
     public static ProgressStyle PROGRESS_STYLE;
@@ -43,8 +43,8 @@ public class Settings {
         Property modernPlayerProperty = configuration.get("Player", "modernPlayer", true);
         Property albumArtProperty = configuration.get("Player", "showAlbumArt", true);
         Property autoColorProperty = configuration.get("Player", "automaticColorSelection", true);
-        Property playerXProperty = configuration.get("Player", "playerX", 5);
-        Property playerYProperty = configuration.get("Player", "playerY", 5);
+        Property playerXProperty = configuration.get("Player", "playerX", 5.0);
+        Property playerYProperty = configuration.get("Player", "playerY", 5.0);
         Property playerZoomProperty = configuration.get("Player", "playerZoom", 1.0);
         Property browserExtProperty = configuration.get("Player", "useBrowserExtension", true);
         Property progressStyleProperty = configuration.get("Player", "progressStyle", ProgressStyle.BAR_AND_NUMBERS_NEW.name());
@@ -67,10 +67,10 @@ public class Settings {
         if (load) AUTO_COLOR_SELECTION = autoColorProperty.getBoolean();
         else autoColorProperty.setValue(AUTO_COLOR_SELECTION);
 
-        if (load) PLAYER_X = playerXProperty.getInt();
+        if (load) PLAYER_X = playerXProperty.getDouble();
         else playerXProperty.setValue(PLAYER_X);
 
-        if (load) PLAYER_Y = playerYProperty.getInt();
+        if (load) PLAYER_Y = playerYProperty.getDouble();
         else playerYProperty.setValue(PLAYER_Y);
 
         if (load) PLAYER_ZOOM = playerZoomProperty.getDouble();
