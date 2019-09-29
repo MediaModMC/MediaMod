@@ -44,6 +44,59 @@ public class SpotifyHandler extends AbstractMediaHandler {
         attemptToOpenAuthURL();
     }
 
+    private static void handleRequest(String code) {
+        Minecraft mc = FMLClientHandler.instance().getClient();
+
+        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+        ses.scheduleAtFixedRate(() -> {
+            if (logged) {
+                INSTANCE.refreshSpotify();
+            }
+        }, 59, 59, TimeUnit.MINUTES);
+
+        FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GRAY + "Exchanging authorization code for access token, this may take a moment..."));
+        try {
+            // Create a connection
+            //BaseMod.ENDPOINT
+            URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/token/" + code);
+
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            // Set the request method
+            con.setRequestMethod("GET");
+            // Set the user agent
+            con.setRequestProperty("user-agent", "MediaMod/1.0");
+            // Connect to the API
+            con.connect();
+
+            // Read the output
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String content = in.lines().collect(Collectors.joining());
+
+            // Close the input reader & the connection
+            in.close();
+            con.disconnect();
+
+            // Parse JSON
+            Gson g = new Gson();
+            TokenAPIResponse tokenAPIResponse = g.fromJson(content, TokenAPIResponse.class);
+
+            // Put into the Spotify API
+            spotifyApi = new SpotifyAPI(tokenAPIResponse.accessToken, tokenAPIResponse.refreshToken);
+
+            if (spotifyApi.getRefreshToken() != null) {
+                logged = true;
+                // Tell the user that they were logged in
+                mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
+                CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
+                if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
+                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
+                }
+            }
+        } catch (Exception e) {
+            MediaMod.INSTANCE.LOGGER.error("Error: ", e);
+        }
+    }
+
     private void attemptToOpenAuthURL() {
         try {
             if (server != null) {
@@ -71,54 +124,48 @@ public class SpotifyHandler extends AbstractMediaHandler {
         }
     }
 
-    private static void handleRequest(String code) {
+    public void refreshSpotify() {
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(() -> {
-            FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "INFO: " + EnumChatFormatting.RESET + EnumChatFormatting.RED + "Spotify Token Expired! Please login again in the GUI!"));
-            logged = false;
-        }, 1, 1, TimeUnit.HOURS);
+        if (logged && SpotifyHandler.spotifyApi.getRefreshToken() != null) {
+            FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "INFO: " + EnumChatFormatting.RESET + EnumChatFormatting.BLUE + "Attempting to refresh access token..."));
+            try {
+                URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/refresh/" + spotifyApi.getRefreshToken());
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                // Set the request method
+                con.setRequestMethod("GET");
+                // Set the user agent
+                con.setRequestProperty("user-agent", "MediaMod/1.0");
+                // Connect to the API
+                con.connect();
 
-        FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GRAY + "Exchanging authorization code for access token, this may take a moment..."));
-        try {
-            // Create a conncetion
-            URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/token/" + code);
+                // Read the output
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String content = in.lines().collect(Collectors.joining());
 
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            // Set the request method
-            con.setRequestMethod("GET");
-            // Set the user agent
-            con.setRequestProperty("user-agent", "MediaMod/1.0");
-            // Connect to the API
-            con.connect();
+                // Close the input reader & the connection
+                in.close();
+                con.disconnect();
 
-            // Read the output
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String content = in.lines().collect(Collectors.joining());
+                // Parse JSON
+                Gson g = new Gson();
+                RefreshResponse refreshResponse = g.fromJson(content, RefreshResponse.class);
 
-            // Close the input reader & the conncetion
-            in.close();
-            con.disconnect();
+                // Put into the Spotify API
+                spotifyApi = new SpotifyAPI(refreshResponse.accessToken, spotifyApi.getRefreshToken());
 
-            // Parse JSON
-            Gson g = new Gson();
-            TokenAPIResponse tokenAPIResponse = g.fromJson(content, TokenAPIResponse.class);
-
-            // Put into the Spotify API
-            spotifyApi = new SpotifyAPI(tokenAPIResponse.accessToken, tokenAPIResponse.refreshToken);
-
-            if (spotifyApi.getRefreshToken() != null) {
-                logged = true;
-                // Tell the user that they were logged in
-                mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
-                CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
-                if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
-                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
+                if (spotifyApi.getRefreshToken() != null) {
+                    logged = true;
+                    // Tell the user that they were logged in
+                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
+                    CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
+                    if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
+                        mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            MediaMod.INSTANCE.LOGGER.error("Error: ", e);
         }
     }
 
@@ -237,6 +284,16 @@ public class SpotifyHandler extends AbstractMediaHandler {
             this.accessToken = access_token;
             this.expiresIn = expires_in;
             this.refreshToken = refresh_token;
+        }
+    }
+
+    private static class RefreshResponse {
+        final String accessToken;
+        final int expiresIn;
+
+        RefreshResponse(String access_token, int expires_in) {
+            this.accessToken = access_token;
+            this.expiresIn = expires_in;
         }
     }
 }
