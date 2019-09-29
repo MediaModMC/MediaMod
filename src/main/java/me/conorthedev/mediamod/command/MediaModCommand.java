@@ -1,6 +1,7 @@
 package me.conorthedev.mediamod.command;
 
 import me.conorthedev.mediamod.gui.GuiMediaModSettings;
+import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
