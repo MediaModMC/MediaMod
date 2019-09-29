@@ -15,11 +15,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -221,9 +222,9 @@ public class PlayerOverlay {
         }
 
         // Track Name
-        String trackName = "Song Name";
+        String trackName = I18n.format("player.text.song_name");
         // Track Artist
-        String trackArtist = "Artist Name";
+        String trackArtist = I18n.format("player.text.artist_name");
         // URL of album art
         URL url = null;
         // Color of the album art
@@ -338,14 +339,18 @@ public class PlayerOverlay {
             }
         }
 
-        if (trackArtist != null) {
-            if (("by " + trackArtist).length() >= 18) {
-                String concatName = ("by " + trackArtist) + "    " + ("by " + trackArtist);
-                AtomicInteger concatArtistCount2 = new AtomicInteger(concatArtistCount + 17);
+        String by = I18n.format("player.text.by") + " ";
 
-                if ((concatArtistCount + 16) >= concatName.length()) {
+        int max = Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject != null && currentlyPlayingObject.item != null && currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0)) ? 18 : 30;
+
+        if (trackArtist != null) {
+            if ((by + trackArtist).length() >= max) {
+                String concatName = (by + trackArtist) + "    " + (by + trackArtist);
+                AtomicInteger concatArtistCount2 = new AtomicInteger(concatArtistCount + max - 1);
+
+                if ((concatArtistCount + max - 2) >= concatName.length()) {
                     concatArtistCount = 0;
-                    concatArtistCount2.set(concatArtistCount + 17);
+                    concatArtistCount2.set(concatArtistCount + max - 1);
                 }
 
                 if (artistFirstRun) {
@@ -355,14 +360,14 @@ public class PlayerOverlay {
                     ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
                     exec.scheduleAtFixedRate(() -> {
                         concatArtistCount++;
-                        concatArtistCount2.set(concatArtistCount + 16);
+                        concatArtistCount2.set(concatArtistCount + max - 2);
                     }, 0, 500, TimeUnit.MILLISECONDS);
                 }
 
                 // String concatenation for tracks
                 fontRenderer.drawString(concatName.substring(concatArtistCount, concatArtistCount2.get()), textXPosition, cornerY + 20, Color.white.darker().getRGB(), false);
             } else {
-                fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB(), false);
+                fontRenderer.drawString(by + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB(), false);
             }
         }
 

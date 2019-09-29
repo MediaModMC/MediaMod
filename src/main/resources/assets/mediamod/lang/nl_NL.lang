@@ -1,0 +1,73 @@
+# GUIs
+
+## GuiMediaModSettings
+### Buttons
+menu.guimediamod.buttons.enabled.name=Geactiveerd
+menu.guimediamod.buttons.enabled.tooltip=Deactiveert / Activeert de hele mod (moet opnieuw opgestart worden om volledig te werken)
+
+menu.guimediamod.buttons.showPlayer.name=Speler zichtbaar
+menu.guimediamod.buttons.showPlayer.tooltip=Maakt de speler zichtbaar of onzichtbaar
+
+menu.guimediamod.buttons.playerSettings.name=Spelerinstellingen
+
+menu.guimediamod.buttons.servicesSettings.name=Diensten
+
+menu.guimediamod.buttons.yes=JA
+menu.guimediamod.buttons.no=NEE
+
+### Other Text
+menu.guimediamod.text.author.name=Ontwikkeld door ConorTheDev
+menu.guimediamod.text.version.name=Versie
+
+## GuiPlayerSettings
+menu.guiplayersettings.buttons.showAlbumArt.name=Toon de albumafbeelding
+menu.guiplayersettings.buttons.showAlbumArt.tooltip=Dit uitzetten zal de albumafbeelding onzichtbaar maken, dit beïnvloedt automatische kleurenselectie
+
+menu.guiplayersettings.buttons.colorSelection.name=Kleurenselectie
+menu.guiplayersettings.buttons.colorSelection.tooltip=Maakt de achtergrondkleur van de speler de meest voorkomende kleur in de albumafbeelding
+
+menu.guiplayersettings.buttons.modernPlayer.name=Moderne speler
+menu.guiplayersettings.buttons.modernPlayer.tooltip=Schakelt een nieuw spelerontwerp in dat kleurverlopen en schaduwen heeft, ontworpen door ScottehBoeh
+
+menu.guiplayersettings.buttons.position.name=Verplaats speler
+menu.guiplayersettings.buttons.position.tooltip=Verplaats, verklein en vergroot de speler
+
+menu.guiplayersettings.buttons.progressStyle.name=Voortgangsstijl:
+menu.guiplayersettings.buttons.progressStyle.tooltip=Selecteert voortgangweergavestijlen
+
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Voortgangsbalk en tekst (nieuwe versie)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Voortgangsbalk en tekst (oude versie)
+menu.guiplayersettings.buttons.progressStyle.bar_only=Voortgangsbalk
+menu.guiplayersettings.buttons.progressStyle.numbers_only=Tekst
+
+## GuiPlayerPositioning
+menu.guiplayerpositioning.buttons.save.name=Opslaan
+menu.guiplayerpositioning.buttons.reset.name=Reset
+menu.guiplayerpositioning.buttons.back.name=Terug
+menu.guiplayerpositioning.buttons.slider.prefix=Schaal:
+
+menu.guiplayerpositioning.text.info.name=Verplaats de speler door hem rond te slepen, klik op reset om de positie te resetten.
+
+## GuiServices
+menu.guiservices.buttons.loginSpotify.name=Inloggen bij Spotify
+menu.guiservices.buttons.logoutSpotify.name=Uitloggen bij Spotify
+menu.guiservices.buttons.useBrowserExt.name=Gebruik browserextensie
+menu.guiservices.buttons.useBrowserExt.tooltip=Schakelt de browserextensie in of uit
+
+menu.guiservices.text.spotifyNotLogged.name=U bent niet ingelogd bij Spotify! Log astublieft hieronder in.
+menu.guiservices.text.spotifyLogged.name=U bent ingelogd bij Spotify!
+
+## GuiTermsOfService
+menu.guitermsofservice.text.title.name=Servicevoorwaarden
+menu.guitermsofservice.text.description.line1=Wanneer u MediaMod & mijn andere mods gebruikt, worden je UUID, de huidige mod ID
+menu.guitermsofservice.text.description.line2=en modversie opgeslagen voor statistische doeleinden.
+menu.guitermsofservice.text.description.line3=Deze informatie zal niet gedeeld worden. Als u op sluiten drukt, gaat u akkoord
+menu.guitermsofservice.text.description.line4=met het verzamelen van deze informatie. Als u dit wil uitzetten: Klik op "Dataverzameling"
+menu.guitermsofservice.text.description.line5=hieronder en zet "Dataverzameling Toestaan" uit.
+
+menu.guitermsofservice.buttons.agree.text=Ik ga akkoord
+menu.guitermsofservice.buttons.snooperSettings.text=Dataverzameling
+
+player.text.by=door
+player.text.song_name=Titel lied
+player.text.artist_name=Naam kunstenaar

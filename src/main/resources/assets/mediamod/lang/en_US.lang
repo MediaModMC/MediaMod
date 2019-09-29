@@ -12,6 +12,9 @@ menu.guimediamod.buttons.playerSettings.name=Player Settings
 
 menu.guimediamod.buttons.servicesSettings.name=Services
 
+menu.guimediamod.buttons.yes=YES
+menu.guimediamod.buttons.no=NO
+
 ### Other Text
 menu.guimediamod.text.author.name=Developed by ConorTheDev
 menu.guimediamod.text.version.name=Version
@@ -31,6 +34,11 @@ menu.guiplayersettings.buttons.position.tooltip=Move and resize the player
 
 menu.guiplayersettings.buttons.progressStyle.name=Progress Style:
 menu.guiplayersettings.buttons.progressStyle.tooltip=Cycles through progress display styles
+
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Progress bar and text (new)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Progress bar and text (old)
+menu.guiplayersettings.buttons.progressStyle.bar_only=Progress bar
+menu.guiplayersettings.buttons.progressStyle.numbers_only=Text
 
 ## GuiPlayerPositioning
 menu.guiplayerpositioning.buttons.save.name=Save
@@ -59,3 +67,7 @@ menu.guitermsofservice.text.description.line5=below and disable Snooper for Mine
 
 menu.guitermsofservice.buttons.agree.text=I Agree
 menu.guitermsofservice.buttons.snooperSettings.text=Snooper Settings
+
+player.text.by=by
+player.text.song_name=Song Name
+player.text.artist_name=Artist Name
