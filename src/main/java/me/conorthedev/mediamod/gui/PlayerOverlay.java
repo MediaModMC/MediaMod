@@ -19,7 +19,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,13 +33,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerOverlay {
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("mm:ss");
-
     /**
      * An instance of this class
      */
     public static final PlayerOverlay INSTANCE = new PlayerOverlay();
-
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("mm:ss");
     /**
      * Average Color Cache
      */
@@ -90,6 +88,64 @@ public class PlayerOverlay {
         }
     }
 
+    public static void drawModalRectWithCustomSizedTexture(double x, double y, float u, float v, double width, double height, float textureWidth, float textureHeight) {
+        float f = 1.0F / textureWidth;
+        float f1 = 1.0F / textureHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(x, y + height, 0.0D).tex(u * f, (v + (float) height) * f1).endVertex();
+        worldrenderer.pos(x + width, y + height, 0.0D).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
+        worldrenderer.pos(x + width, y, 0.0D).tex((u + (float) width) * f, v * f1).endVertex();
+        worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
+        tessellator.draw();
+    }
+
+    public static int getComplementaryColor(Color colorToInvert) {
+        if (colorToInvert == Color.gray || colorToInvert == Color.green) {
+            return Color.WHITE.getRGB();
+        }
+        double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
+        return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
+    }
+
+    private static String formatTime(int milliseconds) {
+        return DATE_FORMAT.format(Date.from(Instant.ofEpochMilli(milliseconds)));
+    }
+
+    public static void drawRect(double left, double top, double right, double bottom, int color) {
+        if (left < right) {
+            double i = left;
+            left = right;
+            right = i;
+        }
+
+        if (top < bottom) {
+            double j = top;
+            top = bottom;
+            bottom = j;
+        }
+
+        float f3 = (float) (color >> 24 & 255) / 255.0F;
+        float f = (float) (color >> 16 & 255) / 255.0F;
+        float f1 = (float) (color >> 8 & 255) / 255.0F;
+        float f2 = (float) (color & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(f, f1, f2, f3);
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(left, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, top, 0.0D).endVertex();
+        worldrenderer.pos(left, top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+
     /**
      * Fired when a game overlay is being rendered
      *
@@ -135,31 +191,6 @@ public class PlayerOverlay {
                 }
             }
         }
-    }
-
-    public static void drawModalRectWithCustomSizedTexture(double x, double y, float u, float v, double width, double height, float textureWidth, float textureHeight) {
-        float f = 1.0F / textureWidth;
-        float f1 = 1.0F / textureHeight;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos(x, y + height, 0.0D).tex(u * f, (v + (float) height) * f1).endVertex();
-        worldrenderer.pos(x + width, y + height, 0.0D).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
-        worldrenderer.pos(x + width, y, 0.0D).tex((u + (float) width) * f, v * f1).endVertex();
-        worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
-        tessellator.draw();
-    }
-
-    public static int getComplementaryColor(Color colorToInvert) {
-        if (colorToInvert == Color.gray || colorToInvert == Color.green) {
-            return Color.WHITE.getRGB();
-        }
-        double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
-        return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
-    }
-
-    private static String formatTime(int milliseconds) {
-        return DATE_FORMAT.format(Date.from(Instant.ofEpochMilli(milliseconds)));
     }
 
     /**
@@ -419,39 +450,6 @@ public class PlayerOverlay {
 
         GlStateManager.popMatrix();
         mc.mcProfiler.endSection();
-    }
-
-    public static void drawRect(double left, double top, double right, double bottom, int color) {
-        if (left < right) {
-            double i = left;
-            left = right;
-            right = i;
-        }
-
-        if (top < bottom) {
-            double j = top;
-            top = bottom;
-            bottom = j;
-        }
-
-        float f3 = (float) (color >> 24 & 255) / 255.0F;
-        float f = (float) (color >> 16 & 255) / 255.0F;
-        float f1 = (float) (color >> 8 & 255) / 255.0F;
-        float f2 = (float) (color & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(left, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, top, 0.0D).endVertex();
-        worldrenderer.pos(left, top, 0.0D).endVertex();
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
     }
 
     /**

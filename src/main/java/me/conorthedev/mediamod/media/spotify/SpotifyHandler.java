@@ -35,15 +35,10 @@ import java.util.stream.Collectors;
  * The main class for all Spotify-related things
  */
 public class SpotifyHandler extends AbstractMediaHandler {
+    public static final SpotifyHandler INSTANCE = new SpotifyHandler();
     public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
     private static HttpServer server = null;
-
-    public static final SpotifyHandler INSTANCE = new SpotifyHandler();
-
-    public void connectSpotify() {
-        attemptToOpenAuthURL();
-    }
 
     private static void handleRequest(String code) {
         Minecraft mc = FMLClientHandler.instance().getClient();
@@ -98,6 +93,10 @@ public class SpotifyHandler extends AbstractMediaHandler {
         } catch (Exception e) {
             MediaMod.INSTANCE.LOGGER.error("Error: ", e);
         }
+    }
+
+    public void connectSpotify() {
+        attemptToOpenAuthURL();
     }
 
     private void attemptToOpenAuthURL() {
