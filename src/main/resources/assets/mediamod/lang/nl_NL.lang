@@ -62,8 +62,8 @@ menu.guitermsofservice.text.title.name=Servicevoorwaarden
 menu.guitermsofservice.text.description.line1=Wanneer u MediaMod & mijn andere mods gebruikt, worden je UUID, de huidige mod ID
 menu.guitermsofservice.text.description.line2=en modversie opgeslagen voor statistische doeleinden.
 menu.guitermsofservice.text.description.line3=Deze informatie zal niet gedeeld worden. Als u op sluiten drukt, gaat u akkoord
-menu.guitermsofservice.text.description.line4=met het verzamelen van deze informatie. Als u dit wil uitzetten: Klik op "Dataverzameling"
-menu.guitermsofservice.text.description.line5=hieronder en zet "Dataverzameling Toestaan" uit.
+menu.guitermsofservice.text.description.line4=met het verzamelen van deze informatie. Als u dit wil uitzetten: Klik hieronder
+menu.guitermsofservice.text.description.line5=op "Dataverzameling" en zet "Dataverzameling Toestaan" uit.
 
 menu.guitermsofservice.buttons.agree.text=Ik ga akkoord
 menu.guitermsofservice.buttons.snooperSettings.text=Dataverzameling
