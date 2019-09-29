@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @author ConorTheDev
  */
 public class BaseMod {
-    public static final String ENDPOINT = "http://localhost:3000";
+    public static final String ENDPOINT = "https://api.conorthedev.me";
 
     /**
      * Registers with api.conorthedev.me
