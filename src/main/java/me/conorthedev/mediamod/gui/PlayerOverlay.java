@@ -151,6 +151,9 @@ public class PlayerOverlay {
     }
 
     public static int getComplementaryColor(Color colorToInvert) {
+        if (colorToInvert == Color.gray) {
+            return Color.WHITE.getRGB();
+        }
         double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
         return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
     }
