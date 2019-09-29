@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Download JDK 1.8 # actions/setup-java@v1 doesn't download it correctly, so we download it manually and pass the file to setup-java
       run: |
-        wget -O jdk.tar.gz https://cdn.azul.com/zulu/bin/zulu8.40.0.25-ca-jdk8.0.222-linux_x64.tar.gz
+        wget -O jdk.tar.gz https://cdn.azul.com/zulu/bin/zulu8.40.0.25-ca-jdk8.0.222-linux_x64.tar.gz -o /dev/null
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
@@ -25,3 +25,9 @@ jobs:
         jdkFile: jdk.tar.gz
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Discord notification 2
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      run: |
+        COMMIT_DESCRIPTION=$(git log --pretty=format:"%s by %cn (%D)" -n 1)
+        curl -d "{\"content\":\"Successfully built $COMMIT_DESCRIPTION\"}" -H "Content-Type: application/json" "$DISCORD_WEBHOOK"
