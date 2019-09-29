@@ -20,6 +20,7 @@ public class Settings {
     public static double PLAYER_ZOOM;
     public static boolean EXTENSION_ENABLED;
     public static ProgressStyle PROGRESS_STYLE;
+    public static String REFRESH_TOKEN;
 
     public static void saveConfig() {
         MediaMod.INSTANCE.LOGGER.info("Saving configuration...");
@@ -48,6 +49,10 @@ public class Settings {
         Property playerZoomProperty = configuration.get("Player", "playerZoom", 1.0);
         Property browserExtProperty = configuration.get("Player", "useBrowserExtension", true);
         Property progressStyleProperty = configuration.get("Player", "progressStyle", ProgressStyle.BAR_AND_NUMBERS_NEW.name());
+        Property refreshTokenProperty = configuration.get("Spotify", "refreshToken", "");
+
+        if (load) REFRESH_TOKEN = refreshTokenProperty.getString();
+        else refreshTokenProperty.setValue(REFRESH_TOKEN);
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
