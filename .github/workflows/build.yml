@@ -25,8 +25,8 @@ jobs:
           jdkFile: jdk.tar.gz
       - name: Build with Gradle
         run: ./gradlew build
-      - name: Release
-          uses: softprops/action-gh-release@v1
+      - name: Release Beta Build
+        uses: softprops/action-gh-release@v1
           with:
             files: .build/libs/MediaMod-1.1.0.jar
             prerelease: true
