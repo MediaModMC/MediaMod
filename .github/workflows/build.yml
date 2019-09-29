@@ -27,13 +27,13 @@ jobs:
         run: ./gradlew build
       - name: Release Beta Build
         uses: softprops/action-gh-release@v1
-          with:
-            files: .build/libs/MediaMod-1.1.0.jar
-            prerelease: true
-            body: "## MediaMod Beta\n🚀 This is a beta build! If you encounter bugs, please report them!\n*Automatically built by the CI System*"
-            name: "MediaMod Beta Build"
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_SECRET }}
+        with:
+          files: .build/libs/MediaMod-1.1.0.jar
+          prerelease: true
+          body: "## MediaMod Beta\n🚀 This is a beta build! If you encounter bugs, please report them!\n*Automatically built by the CI System*"
+          name: "MediaMod Beta Build"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_SECRET }}
       - name: Discord notification 2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
