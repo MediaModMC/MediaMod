@@ -71,3 +71,6 @@ menu.guitermsofservice.buttons.snooperSettings.text=Dataverzameling
 player.text.by=door
 player.text.song_name=Titel lied
 player.text.artist_name=Naam kunstenaar
+
+key.categories.mediamod=MediaMod besturing
+key.disableKeybind=Speler uitzetten
