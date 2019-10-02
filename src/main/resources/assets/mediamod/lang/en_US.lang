@@ -59,3 +59,7 @@ menu.guitermsofservice.text.description.line5=below and disable Snooper for Mine
 
 menu.guitermsofservice.buttons.agree.text=I Agree
 menu.guitermsofservice.buttons.snooperSettings.text=Snooper Settings
+
+# Keybinds
+key.categories.mediamod=MediaMod Keybinds
+key.disableKeybind=Disable Player

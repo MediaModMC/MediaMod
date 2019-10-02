@@ -4,6 +4,8 @@ import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.PlayerOverlay;
+import me.conorthedev.mediamod.keybinds.KeybindInputHandler;
+import me.conorthedev.mediamod.keybinds.KeybindManager;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
@@ -19,6 +21,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
@@ -39,22 +42,41 @@ public class MediaMod {
      * Path to the file verifying that the user has accepted the Terms of Service
      */
     private static final File TOS_ACCEPTED_FILE = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod/tosaccepted.lock");
+
     /**
      * An instance of this class to access non-static methods from other classes
      */
     @Mod.Instance(Metadata.MODID)
     public static MediaMod INSTANCE;
+
     /**
      * Logger used to log info messages, debug messages, error messages & more
      *
      * @see org.apache.logging.log4j.Logger
      */
     public final Logger LOGGER = LogManager.getLogger("MediaMod");
+
     /**
      * Check if the user is in a development environment, this is used for DEBUG messages
      */
     public final boolean DEVELOPMENT_ENVIRONMENT = fieldExists(Minecraft.class, "theMinecraft");
+
     private boolean firstLoad = true;
+
+    /**
+     * Fired before Minecraft starts
+     *
+     * @param event - FMLPreInitializationEvent
+     * @see FMLPreInitializationEvent
+     */
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        // Register Keybinds
+        KeybindManager.INSTANCE.register();
+
+        // Register the keybind handler
+        MinecraftForge.EVENT_BUS.register(new KeybindInputHandler());
+    }
 
     /**
      * Fired when Minecraft is starting
