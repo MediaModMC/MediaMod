@@ -1,0 +1,70 @@
+# GUIs
+
+## GuiMediaModSettings
+### Buttons
+menu.guimediamod.buttons.enabled.name=Cumasaithe
+menu.guimediamod.buttons.enabled.tooltip=Díchumasaigh / Cumasaíonn an modhnú go hiomlán (éilíonn atosú chun oibriú go hiomlán)
+
+menu.guimediamod.buttons.showPlayer.name=Taispeáin Imreoir
+menu.guimediamod.buttons.showPlayer.tooltip=Díchumasaigh / Cumasaíonn sé ar chumas an imreora taispeáint ar do scáileán
+
+menu.guimediamod.buttons.playerSettings.name=Socruithe Imreoir
+
+menu.guimediamod.buttons.servicesSettings.name=Seirbhísí
+
+### Other Text
+menu.guimediamod.text.author.name=Forbartha ag ConorTheDev
+menu.guimediamod.text.version.name=Leagan
+
+## GuiPlayerSettings
+menu.guiplayersettings.buttons.showAlbumArt.name=Taispeáin Ealaín Albam
+menu.guiplayersettings.buttons.showAlbumArt.tooltip=Cuirfidh sé seo ealaín albam ar ceal má dhéanann tú é seo a dhíchumasú
+
+menu.guiplayersettings.buttons.colorSelection.name=Roghnú Dath
+menu.guiplayersettings.buttons.colorSelection.tooltip=Leagann dath cúlra an imreora ar an dath is suntasaí san ealaín albam
+
+menu.guiplayersettings.buttons.modernPlayer.name=Imreoir Nua-Aimseartha
+menu.guiplayersettings.buttons.modernPlayer.tooltip=Cumasaíonn dearadh nua imreoirí a bhfuil grádáin agus scáthanna i gceist leis, atá deartha ag ScottehBoeh
+
+menu.guiplayersettings.buttons.position.name=Post Imreoir
+menu.guiplayersettings.buttons.position.tooltip=Bog agus athraigh an t-imreoir
+
+menu.guiplayersettings.buttons.progressStyle.name=Stíl Dul Chun Cinn:
+menu.guiplayersettings.buttons.progressStyle.tooltip=Rothair trí stíleanna taispeána dul chun cinn
+
+## GuiPlayerPositioning
+menu.guiplayerpositioning.buttons.save.name=Sábháil
+menu.guiplayerpositioning.buttons.reset.name=Athshocraigh
+menu.guiplayerpositioning.buttons.back.name=Ar ais
+menu.guiplayerpositioning.buttons.slider.prefix=Scála:
+
+menu.guiplayerpositioning.text.info.name=Socraigh an t-imreoir trí é a tharraingt timpeall, cliceáil athshocrú chun an suíomh a athshocrú.
+
+## GuiServices
+menu.guiservices.buttons.loginSpotify.name=Logáil isteach chun Spotify
+menu.guiservices.buttons.logoutSpotify.name=Logáil amach as Spotify
+menu.guiservices.buttons.useBrowserExt.name=Úsáid Síneadh Brabhsálaí
+menu.guiservices.buttons.useBrowserExt.tooltip=Díchumasaíonn nó Cumasaíonn síneadh an bhrabhsálaí
+
+menu.guiservices.text.spotifyNotLogged.name=Níl Spotify logáilte isteach! Le do thoil logáil isteach thíos
+menu.guiservices.text.spotifyLogged.name=Tá Spotify logáilte isteach!
+
+## GuiTermsOfService
+menu.guitermsofservice.text.title.name=Tearmaí Seirbhís
+menu.guitermsofservice.text.description.line1=Nuair a úsáideann MediaMod & mo mhodhanna eile, do UUID, an t-aitheantóir mod reatha
+menu.guitermsofservice.text.description.line2=agus déantar leagan modhnú a stóráil chun críocha anailíseacha.
+menu.guitermsofservice.text.description.line3=Ní roinnfear an fhaisnéis seo. Má bhrúnn tú gar, aontaíonn tú leis
+menu.guitermsofservice.text.description.line4=na sonraí seo á bhailiú más mian leat é a dhíchumasú: cliceáil "Snooper Settings"
+menu.guitermsofservice.text.description.line5=thíos agus díchumasaigh Snooper do Minecraft.
+
+menu.guitermsofservice.buttons.agree.text=Aontaím
+menu.guitermsofservice.buttons.snooperSettings.text=Socruithe Snooper
+
+# Player
+player.text.by=ó
+player.text.song_name=Teideal Amhrán
+player.text.artist_name=Ainm an Ealaíontóra
+
+# Keybinds
+key.categories.mediamod=Chónaisceann Eochair MediaMod
+key.disableKeybind=Díchumasaigh Imreoir
