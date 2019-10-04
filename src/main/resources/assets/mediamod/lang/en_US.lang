@@ -18,10 +18,10 @@ menu.guimediamod.text.version.name=Version
 
 ## GuiPlayerSettings
 menu.guiplayersettings.buttons.showAlbumArt.name=Show Album Art
-menu.guiplayersettings.buttons.showAlbumArt.tooltip=Toggling this OFF will disable album art, this affects auto colour selection
+menu.guiplayersettings.buttons.showAlbumArt.tooltip=Toggling this OFF will disable album art, this affects auto color selection
 
 menu.guiplayersettings.buttons.colorSelection.name=Color Selection
-menu.guiplayersettings.buttons.colorSelection.tooltip=Sets the background colour of the player to the most prominent colour in the album art
+menu.guiplayersettings.buttons.colorSelection.tooltip=Sets the background color of the player to the most prominent color in the album art
 
 menu.guiplayersettings.buttons.modernPlayer.name=Modern Player
 menu.guiplayersettings.buttons.modernPlayer.tooltip=Enables a new player design that involves gradients and shadows, designed by ScottehBoeh
