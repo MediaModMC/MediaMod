@@ -105,7 +105,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
     private void attemptToOpenAuthURL() {
         try {
-            if (server != null) {
+            if (server == null) {
                 initializeHandler();
             }
         } catch (HandlerInitializationException e) {
@@ -192,7 +192,9 @@ public class SpotifyHandler extends AbstractMediaHandler {
             if (object != null) {
                 lastProgressMs = object.progress_ms;
                 paused = !object.is_playing;
+                durationMs = object.item.duration_ms;
             } else {
+                durationMs = 0;
                 lastProgressMs = 0;
                 paused = true;
             }
@@ -225,30 +227,9 @@ public class SpotifyHandler extends AbstractMediaHandler {
         server.start();
     }
 
-    public void updateProgress() {
-        if (SpotifyHandler.INSTANCE.getCurrentTrack() != null) {
-            SpotifyHandler.INSTANCE.paused = !SpotifyHandler.INSTANCE.getCurrentTrack().is_playing;
-            SpotifyHandler.INSTANCE.durationMs = SpotifyHandler.INSTANCE.getCurrentTrack().item.duration_ms;
-            SpotifyHandler.INSTANCE.lastProgressMs = SpotifyHandler.INSTANCE.getCurrentTrack().progress_ms;
-        } else {
-            SpotifyHandler.INSTANCE.paused = true;
-            SpotifyHandler.INSTANCE.durationMs = 0;
-            SpotifyHandler.INSTANCE.lastProgressMs = 0;
-        }
-    }
-
-    @Override
-    public int getEstimatedProgressMs() {
-        if (!this.equals(INSTANCE)) {
-            return INSTANCE.getEstimatedProgressMs();
-        } else {
-            return super.getEstimatedProgressMs();
-        }
-    }
-
     @Override
     public boolean handlerReady() {
-        return !paused;
+        return logged && !paused;
     }
 
     private static class SpotifyCallbackHandler implements HttpHandler {
