@@ -1,0 +1,68 @@
+# GUIs
+
+## GuiMediaModSettings
+### Buttons
+menu.guimediamod.buttons.enabled.name=Activé
+menu.guimediamod.buttons.enabled.tooltip=Activer / Désactiver le mod complètement (à besoin d’un redémarrage)
+
+menu.guimediamod.buttons.showPlayer.name=Montrer le lecteur
+menu.guimediamod.buttons.showPlayer.tooltip=Activer / Désactiver le fait de voir le lecteur
+
+menu.guimediamod.buttons.playerSettings.name=Réglages du lecteur
+
+menu.guimediamod.buttons.servicesSettings.name=Services
+
+### Other Text
+menu.guimediamod.text.author.name=Développé par  ConorTheDev
+menu.guimediamod.text.version.name=Version
+
+## GuiPlayerSettings
+menu.guiplayersettings.buttons.showAlbumArt.name=Voir l‘image de l‘album
+menu.guiplayersettings.buttons.showAlbumArt.tooltip=Désactiver  cette option va enlever l’image de l’album, cela va affecter la sélection automatique des couleurs
+
+menu.guiplayersettings.buttons.colorSelection.name=Sélection de la couleur
+menu.guiplayersettings.buttons.colorSelection.tooltip=Cela met la couleur de fond à la couleur importante.
+
+menu.guiplayersettings.buttons.modernPlayer.name=Lecteur Moderne
+menu.guiplayersettings.buttons.modernPlayer.tooltip=Active le nouveau lecteur qui utilise de meilleurs dégradés et ombres, designé par ScottehBoeh
+
+menu.guiplayersettings.buttons.position.name=Positionnement du lecteur
+menu.guiplayersettings.buttons.position.tooltip=Bouger et changer la taille du lecteur
+
+menu.guiplayersettings.buttons.progressStyle.name=Style de la barre de progression:
+menu.guiplayersettings.buttons.progressStyle.tooltip=Montre tous les types de barres de progression
+## GuiPlayerPositioning
+menu.guiplayerpositioning.buttons.save.name=Sauvegarder
+menu.guiplayerpositioning.buttons.reset.name=Remettre a zéro
+menu.guiplayerpositioning.buttons.back.name=Retour
+menu.guiplayerpositioning.buttons.slider.prefix=Taille:
+
+menu.guiplayerpositioning.text.info.name=Positionnez le lecteur en le déplaçant, appuyez sur Remettre a zéro pour remettre le lecteur à la position de départ.
+
+## GuiServices
+menu.guiservices.buttons.loginSpotify.name=Se connecter à Spotify
+menu.guiservices.buttons.logoutSpotify.name=Se déconnecter de Spotify
+menu.guiservices.buttons.useBrowserExt.name=Utiliser l‘extension du navigateur
+menu.guiservices.buttons.useBrowserExt.tooltip=Activer ou Désactiver l’extension du navigateur
+
+menu.guiservices.text.spotifyNotLogged.name=Vous n'êtes pas connecter dans Spotify! Veuillez vous connecter en-dessous
+menu.guiservices.text.spotifyLogged.name=Vous êtes connecté!
+
+## GuiTermsOfService
+menu.guitermsofservice.text.title.name=Conditions d'utilisations
+menu.guitermsofservice.text.description.line1=Quand vous utiliserez MediaMod et mes autres mods, votre UUID, l'identifieur du mod
+menu.guitermsofservice.text.description.line2=et la version du mod seront stocké pour des analyses.
+menu.guitermsofservice.text.description.line3=Ces informations ne seront pas communiquées à des tiers. Appuyez sur fermer si vous êtes en accord avec
+menu.guitermsofservice.text.description.line4=la collection des données sinon cliquez sur "Réglages de confidentialités"
+menu.guitermsofservice.text.description.line5=en-dessous et désactivez la collection des données.
+menu.guitermsofservice.buttons.agree.text=J'accepte
+menu.guitermsofservice.buttons.snooperSettings.text=Réglages de confidentialités
+
+# Player
+player.text.by=par
+player.text.song_name=Titre de la musique
+player.text.artist_name=Nom de l'artiste
+
+# Keybinds
+key.categories.mediamod=Raccourcis de MediaMod
+key.disableKeybind=Désactiver le lecteur
