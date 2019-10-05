@@ -6,7 +6,6 @@ import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
-import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
 import net.minecraft.client.Minecraft;
@@ -172,9 +171,6 @@ public class PlayerOverlay {
                         if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null) {
                             if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
                                 this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
-                                if (ServiceHandler.INSTANCE.getCurrentMediaHandler() instanceof SpotifyHandler) {
-                                    SpotifyHandler.INSTANCE.updateProgress();
-                                }
                             }
                         }
                     } catch (Exception e) {
