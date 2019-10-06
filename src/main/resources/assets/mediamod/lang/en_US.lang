@@ -76,3 +76,4 @@ player.text.artist_name=Artist Name
 # Keybinds
 key.categories.mediamod=MediaMod Keybinds
 key.disableKeybind=Disable Player
+key.menuKeybind=Open Menu

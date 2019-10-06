@@ -1,7 +1,6 @@
-# GUIs
 
-## GuiMediaModSettings
-### Buttons
+# # GuiMediaModSettings
+# ## Buttons
 menu.guimediamod.buttons.enabled.name=Cumasaithe
 menu.guimediamod.buttons.enabled.tooltip=Díchumasaigh / Cumasaíonn an modhnú go hiomlán (éilíonn atosú chun oibriú go hiomlán)
 
@@ -15,11 +14,11 @@ menu.guimediamod.buttons.servicesSettings.name=Seirbhísí
 menu.guimediamod.buttons.yes=TÁ
 menu.guimediamod.buttons.no=NÍL
 
-### Other Text
+# ## Other Text
 menu.guimediamod.text.author.name=Forbartha ag ConorTheDev
 menu.guimediamod.text.version.name=Leagan
 
-## GuiPlayerSettings
+# # GuiPlayerSettings
 menu.guiplayersettings.buttons.showAlbumArt.name=Taispeáin Ealaín Albam
 menu.guiplayersettings.buttons.showAlbumArt.tooltip=Cuirfidh sé seo ealaín albam ar ceal má dhéanann tú é seo a dhíchumasú
 
@@ -40,7 +39,7 @@ menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Barra dul chun 
 menu.guiplayersettings.buttons.progressStyle.bar_only=Dul chun cinn Bar Amháin
 menu.guiplayersettings.buttons.progressStyle.numbers_only=Téacs Amháin
 
-## GuiPlayerPositioning
+# # GuiPlayerPositioning
 menu.guiplayerpositioning.buttons.save.name=Sábháil
 menu.guiplayerpositioning.buttons.reset.name=Athshocraigh
 menu.guiplayerpositioning.buttons.back.name=Ar ais
@@ -48,7 +47,7 @@ menu.guiplayerpositioning.buttons.slider.prefix=Scála:
 
 menu.guiplayerpositioning.text.info.name=Socraigh an t-imreoir trí é a tharraingt timpeall, cliceáil athshocrú chun an suíomh a athshocrú.
 
-## GuiServices
+# # GuiServices
 menu.guiservices.buttons.loginSpotify.name=Logáil isteach chun Spotify
 menu.guiservices.buttons.logoutSpotify.name=Logáil amach as Spotify
 menu.guiservices.buttons.useBrowserExt.name=Úsáid Síneadh Brabhsálaí
@@ -57,7 +56,7 @@ menu.guiservices.buttons.useBrowserExt.tooltip=Díchumasaíonn nó Cumasaíonn s
 menu.guiservices.text.spotifyNotLogged.name=Níl Spotify logáilte isteach! Le do thoil logáil isteach thíos
 menu.guiservices.text.spotifyLogged.name=Tá Spotify logáilte isteach!
 
-## GuiTermsOfService
+# # GuiTermsOfService
 menu.guitermsofservice.text.title.name=Tearmaí Seirbhís
 menu.guitermsofservice.text.description.line1=Nuair a úsáideann MediaMod & mo mhodhanna eile, do UUID, an t-aitheantóir mod reatha
 menu.guitermsofservice.text.description.line2=agus déantar leagan modhnú a stóráil chun críocha anailíseacha.
@@ -76,3 +75,4 @@ player.text.artist_name=Ainm an Ealaíontóra
 # Keybinds
 key.categories.mediamod=Chónaisceann Eochair MediaMod
 key.disableKeybind=Díchumasaigh Imreoir
+key.menuKeybind=Roghchlár oscailte

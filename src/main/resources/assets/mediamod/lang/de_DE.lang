@@ -1,3 +1,4 @@
+
 # # GuiMediaModSettings
 # ## Buttons
 menu.guimediamod.buttons.enabled.name=Aktiviert
@@ -74,3 +75,4 @@ player.text.artist_name=Künstler-Name
 # Keybinds
 key.categories.mediamod=MediaMod Tastenkürzel
 key.disableKeybind=Player deaktivieren
+key.menuKeybind=Open Menu
