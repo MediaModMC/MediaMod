@@ -1,0 +1,76 @@
+# GUIs
+
+## GuiMediaModSettings
+### Buttons
+menu.guimediamod.buttons.enabled.name=Ativado
+menu.guimediamod.buttons.enabled.tooltip=Desativa / Ativa o mod completamente (requer uma reinicialização para funcionar totalmente)
+
+menu.guimediamod.buttons.showPlayer.name=Mostar Player de Música
+menu.guimediamod.buttons.showPlayer.tooltip=Desativa / Ativa a exibição do player de música na sua tela
+
+menu.guimediamod.buttons.playerSettings.name=Configurações do Player de Música
+menu.guimediamod.buttons.servicesSettings.name=Serviços
+
+menu.guimediamod.buttons.yes=SIM
+menu.guimediamod.buttons.no=NÃO
+
+### Other Text
+menu.guimediamod.text.author.name=Criado por ConorTheDev
+menu.guimediamod.text.version.name=Versão
+
+## GuiPlayerSettings
+menu.guiplayersettings.buttons.showAlbumArt.name=Mostrar Álbum de Arte
+menu.guiplayersettings.buttons.showAlbumArt.tooltip=Se você desabilitar essa opção a capa do álbum vai ser desabilitar também, afetando a seleção automática de cores
+
+menu.guiplayersettings.buttons.colorSelection.name=Seleção de Cadores
+menu.guiplayersettings.buttons.colorSelection.tooltip=Sets the background color of the player to the most prominent color in the album art
+
+menu.guiplayersettings.buttons.modernPlayer.name=Player de Música Moderno
+
+menu.guiplayersettings.buttons.modernPlayer.tooltip=Ativa um novo design de player de música que envolve gradientes e sombras, criado por ScottehBoeh
+
+menu.guiplayersettings.buttons.position.name=Posição do Player de Música
+menu.guiplayersettings.buttons.position.tooltip=Mover e redimensionar o player de música
+menu.guiplayersettings.buttons.progressStyle.name=Estilo de Progresso:
+menu.guiplayersettings.buttons.progressStyle.tooltip=Percorre os estilos de exibição de progresso
+
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Barra de progresso e texto (nova versão)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Barra de progresso e texto (versão antiga)
+menu.guiplayersettings.buttons.progressStyle.bar_only=Só a barra de progresso
+menu.guiplayersettings.buttons.progressStyle.numbers_only=Só o texto
+
+## GuiPlayerPositioning
+menu.guiplayerpositioning.buttons.save.name=Salvar
+menu.guiplayerpositioning.buttons.reset.name=Resetar
+menu.guiplayerpositioning.buttons.back.name=Voltar
+menu.guiplayerpositioning.buttons.slider.prefix=Escala:
+
+menu.guiplayerpositioning.text.info.name=Posicione o player de música arrastando-o, clique em redefinir para redefinir a posição.
+## GuiServices
+menu.guiservices.buttons.loginSpotify.name=Entre no Spotify
+menu.guiservices.buttons.logoutSpotify.name=Sair do Spotify
+menu.guiservices.buttons.useBrowserExt.name=Usar Extensão do Navegador
+menu.guiservices.buttons.useBrowserExt.tooltip=Desativa ou habilita a extensão do navegador
+menu.guiservices.text.spotifyNotLogged.name=Spotify não está logado! Faça o login abaixo
+menu.guiservices.text.spotifyLogged.name=Spotify está logado!
+
+## GuiTermsOfService
+menu.guitermsofservice.text.title.name=Termos de Serviço
+menu.guitermsofservice.text.description.line1=Ao usar o MediaMod e meus outros mods, seu UUID, o identificador do mod atual
+menu.guitermsofservice.text.description.line2=e a versão do mod são armazenadas para fins analíticos.
+menu.guitermsofservice.text.description.line3=Esta informação não será compartilhada. Se você pressionar fechar, você concorda em
+menu.guitermsofservice.text.description.line4=esses dados estão sendo coletados se você quiser desativar isso: clique em "Configurações do Snooper"
+menu.guitermsofservice.text.description.line5=abaixo e desabilite o Snooper para Minecraft.
+
+menu.guitermsofservice.buttons.agree.text=Eu concordo
+menu.guitermsofservice.buttons.snooperSettings.text=Configurações do Snooper
+
+# Player
+player.text.by=por
+player.text.song_name=Título da Música
+player.text.artist_name=Nome do Artista
+
+# Keybinds
+key.categories.mediamod=MediaMod Teclados
+key.disableKeybind=Desativar Player de Música
+key.menuKeybind=Abrir Menu
