@@ -10,8 +10,8 @@ menu.guimediamod.buttons.playerSettings.name=Réglages du lecteur
 
 menu.guimediamod.buttons.servicesSettings.name=Services
 
-menu.guimediamod.buttons.yes=Oui
-menu.guimediamod.buttons.no=Non
+menu.guimediamod.buttons.yes=OUI
+menu.guimediamod.buttons.no=NON
 
 ## Other Text
 menu.guimediamod.text.author.name=Développé par  ConorTheDev
