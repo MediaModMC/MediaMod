@@ -1,9 +1,10 @@
 package me.conorthedev.mediamod.keybinds;
 
 import me.conorthedev.mediamod.config.Settings;
+import me.conorthedev.mediamod.gui.GuiMediaModSettings;
+import me.conorthedev.mediamod.util.PlayerMessager;
+import me.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
@@ -21,15 +22,17 @@ public class KeybindInputHandler {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (KeybindManager.INSTANCE.disableKeybind.isPressed()) {
             if (!Settings.SHOW_PLAYER) {
-                Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.RESET + "Player Visible"));
-
+                PlayerMessager.sendMessage("Player Visible");
                 Settings.SHOW_PLAYER = true;
             } else {
-                Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.RESET + "Player Hidden"));
-
+                PlayerMessager.sendMessage("Player Hidden");
                 Settings.SHOW_PLAYER = false;
             }
             Settings.saveConfig();
+        }
+
+        if (KeybindManager.INSTANCE.menuKeybind.isPressed()) {
+            TickScheduler.INSTANCE.schedule(0, () -> Minecraft.getMinecraft().displayGuiScreen(new GuiMediaModSettings()));
         }
     }
 }

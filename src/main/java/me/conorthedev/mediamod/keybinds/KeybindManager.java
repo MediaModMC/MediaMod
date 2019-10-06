@@ -22,6 +22,13 @@ public class KeybindManager {
      */
     KeyBinding disableKeybind;
 
+    /**
+     * The KeyBinding class for the menu keybind
+     *
+     * @see KeyBinding
+     */
+    KeyBinding menuKeybind;
+
 
     /**
      * Fired when you want to register keybinds
@@ -31,6 +38,8 @@ public class KeybindManager {
     public void register() {
         // Initialize and declare keybid
         INSTANCE.disableKeybind = new KeyBinding("key.disableKeybind", Keyboard.KEY_P, "key.categories.mediamod");
-        ClientRegistry.registerKeyBinding(INSTANCE.disableKeybind);
+        INSTANCE.menuKeybind = new KeyBinding("key.menuKeybind", Keyboard.KEY_M, "key.categories.mediamod");
+        ClientRegistry.registerKeyBinding(disableKeybind);
+        ClientRegistry.registerKeyBinding(menuKeybind);
     }
 }

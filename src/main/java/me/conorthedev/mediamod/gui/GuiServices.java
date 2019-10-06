@@ -5,11 +5,11 @@ import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.awt.*;
@@ -80,7 +80,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
             case 1:
                 this.mc.displayGuiScreen(null);
-                this.mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Opening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'"));
+                PlayerMessager.sendMessage("&cOpening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'");
                 SpotifyHandler.INSTANCE.connectSpotify();
                 break;
 
@@ -89,6 +89,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                 SpotifyHandler.logged = false;
                 this.mc.displayGuiScreen(new GuiServices());
                 break;
+
             case 3:
                 Settings.EXTENSION_ENABLED = !Settings.EXTENSION_ENABLED;
                 button.displayString = getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name"));

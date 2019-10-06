@@ -11,10 +11,9 @@ import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.Multithreading;
+import me.conorthedev.mediamod.util.PlayerMessager;
 import me.conorthedev.mediamod.util.VersionChecker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -91,6 +90,7 @@ public class MediaMod {
         // Register event subscribers and commands
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PlayerOverlay.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(PlayerMessager.INSTANCE);
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
 
         // Create the MediaMod Directory if it does not exist
@@ -157,10 +157,9 @@ public class MediaMod {
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION && Minecraft.getMinecraft().thePlayer != null) {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " +
-                    "MediaMod is out of date!" +
-                    EnumChatFormatting.GRAY + "\nLatest Version: " + EnumChatFormatting.RESET + EnumChatFormatting.BOLD + "v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
-                    EnumChatFormatting.GRAY + "\nChangelog: " + EnumChatFormatting.RESET + EnumChatFormatting.BOLD + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog));
+            PlayerMessager.sendMessage("&cMediaMod is out of date!" +
+                    "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
+                    "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
             firstLoad = false;
         }
     }

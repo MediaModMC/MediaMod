@@ -11,25 +11,22 @@ import me.conorthedev.mediamod.media.base.AbstractMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import me.conorthedev.mediamod.util.ChatColor;
 import me.conorthedev.mediamod.util.Multithreading;
+import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -39,14 +36,13 @@ import java.util.stream.Collectors;
  * The main class for all Spotify-related things
  */
 public class SpotifyHandler extends AbstractMediaHandler {
+
     public static final SpotifyHandler INSTANCE = new SpotifyHandler();
     public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
     private static HttpServer server = null;
 
     private static void handleRequest(String code) {
-        Minecraft mc = FMLClientHandler.instance().getClient();
-
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
         ses.scheduleAtFixedRate(() -> {
             if (logged) {
@@ -54,7 +50,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
             }
         }, 59, 59, TimeUnit.MINUTES);
 
-        FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GRAY + "Exchanging authorization code for access token, this may take a moment..."));
+        PlayerMessager.sendMessage("&7Exchanging authorization code for access token, this may take a moment...");
         try {
             // Create a connection
             //BaseMod.ENDPOINT
@@ -88,10 +84,11 @@ public class SpotifyHandler extends AbstractMediaHandler {
                 Settings.REFRESH_TOKEN = spotifyApi.getRefreshToken();
                 Settings.saveConfig();
                 // Tell the user that they were logged in
-                mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
+                PlayerMessager.sendMessage("&a&lSUCCESS! &rLogged into Spotify!");
                 CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
+
                 if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
-                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
+                    PlayerMessager.sendMessage("&8&lDEBUG: &rCurrent Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name);
                 }
             }
         } catch (Exception e) {
@@ -120,13 +117,12 @@ public class SpotifyHandler extends AbstractMediaHandler {
             MediaMod.INSTANCE.LOGGER.fatal("Something has gone terribly wrong... SpotifyHandler:l59");
             e.printStackTrace();
         } catch (Exception e) {
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + "Failed to open browser with the Spotify Auth URL!"));
-            IChatComponent urlComponent = new ChatComponentText(
-                    EnumChatFormatting.WHITE.toString() + EnumChatFormatting.BOLD + "Open URL");
+            PlayerMessager.sendMessage("&cFailed to open browser with the Spotify Auth URL!");
+            IChatComponent urlComponent = new ChatComponentText(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
             urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
-            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(EnumChatFormatting.GRAY +
-                    "Click this to open the Spotify Auth URL")));
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(urlComponent);
+            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                    "&7Click this to open the Spotify Auth URL"))));
+            PlayerMessager.sendMessage(urlComponent);
         }
     }
 
@@ -135,8 +131,9 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
         if (logged && SpotifyHandler.spotifyApi.getRefreshToken() != null) {
             if (FMLClientHandler.instance().getClient().thePlayer != null) {
-                FMLClientHandler.instance().getClient().thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "INFO: " + EnumChatFormatting.RESET + EnumChatFormatting.BLUE + "Attempting to refresh access token..."));
+                PlayerMessager.sendMessage("&8INFO: &9Attempting to refresh access token...");
             }
+
             try {
                 URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/refresh/" + spotifyApi.getRefreshToken());
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -166,10 +163,11 @@ public class SpotifyHandler extends AbstractMediaHandler {
                     logged = true;
                     // Tell the user that they were logged in
                     if (mc.thePlayer != null) {
-                        mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.GREEN.toString() + EnumChatFormatting.BOLD + "SUCCESS! " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + "Logged into Spotify!"));
+                        PlayerMessager.sendMessage("&a&lSUCCESS! &rLogged into Spotify!");
                         CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
+
                         if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
-                            mc.thePlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[" + EnumChatFormatting.WHITE + "MediaMod" + EnumChatFormatting.RED + "] " + EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.BOLD + "DEBUG: " + EnumChatFormatting.RESET + "Current Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name));
+                            PlayerMessager.sendMessage("&8DEBUG: &rCurrent Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name);
                         }
                     }
                 }
