@@ -30,7 +30,7 @@ menu.guiplayersettings.buttons.modernPlayer.tooltip=Aktiviert ein neues Player-D
 menu.guiplayersettings.buttons.position.name=Player Positison
 menu.guiplayersettings.buttons.position.tooltip=Player verschieben und Größe ändern
 
-menu.guiplayersettings.buttons.progressStyle.name=Fortschritts-Stil
+menu.guiplayersettings.buttons.progressStyle.name=Fortschritts-Stil:
 menu.guiplayersettings.buttons.progressStyle.tooltip=Schaltet durch verschiende Fortschrittsstile
 
 menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Fortschrittsbalken und Text (neue Version)
