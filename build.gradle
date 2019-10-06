@@ -42,3 +42,13 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+task moveResources {
+    doLast {
+        ant.move file: "${buildDir}/resources/main",
+                todir: "${buildDir}/classes/java"
+    }
+}
+
+moveResources.dependsOn processResources
+classes.dependsOn moveResources
