@@ -68,9 +68,11 @@ menu.guitermsofservice.text.description.line5=op "Dataverzameling" en zet "Datav
 menu.guitermsofservice.buttons.agree.text=Ik ga akkoord
 menu.guitermsofservice.buttons.snooperSettings.text=Dataverzameling
 
+# Player
 player.text.by=door
 player.text.song_name=Titel lied
 player.text.artist_name=Naam kunstenaar
 
+# Keybinds
 key.categories.mediamod=MediaMod besturing
 key.disableKeybind=Speler uitzetten

@@ -1,7 +1,5 @@
-# GUIs
-
-## GuiMediaModSettings
-### Buttons
+# GuiMediaModSettings
+## Buttons
 menu.guimediamod.buttons.enabled.name=Activé
 menu.guimediamod.buttons.enabled.tooltip=Activer / Désactiver le mod complètement (à besoin d’un redémarrage)
 
@@ -12,11 +10,14 @@ menu.guimediamod.buttons.playerSettings.name=Réglages du lecteur
 
 menu.guimediamod.buttons.servicesSettings.name=Services
 
-### Other Text
+menu.guimediamod.buttons.yes=OUI
+menu.guimediamod.buttons.no=NON
+
+## Other Text
 menu.guimediamod.text.author.name=Développé par ConorTheDev
 menu.guimediamod.text.version.name=Version
 
-## GuiPlayerSettings
+##GuiPlayerSettings
 menu.guiplayersettings.buttons.showAlbumArt.name=Voir l‘image de l‘album
 menu.guiplayersettings.buttons.showAlbumArt.tooltip=Désactiver  cette option va enlever l’image de l’album, cela va affecter la sélection automatique des couleurs
 
@@ -31,7 +32,13 @@ menu.guiplayersettings.buttons.position.tooltip=Bouger et changer la taille du l
 
 menu.guiplayersettings.buttons.progressStyle.name=Style de la barre de progression:
 menu.guiplayersettings.buttons.progressStyle.tooltip=Montre tous les types de barres de progression
-## GuiPlayerPositioning
+
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Barre de progression et texte (nouvelle version)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Barre de progression et texte (ancienne version)
+menu.guiplayersettings.buttons.progressStyle.bar_only=Barre de progression uniquement
+menu.guiplayersettings.buttons.progressStyle.numbers_only=Texte seulement
+
+# # GuiPlayerPositioning
 menu.guiplayerpositioning.buttons.save.name=Sauvegarder
 menu.guiplayerpositioning.buttons.reset.name=Remettre a zéro
 menu.guiplayerpositioning.buttons.back.name=Retour
@@ -55,6 +62,7 @@ menu.guitermsofservice.text.description.line2=et la version du mod seront stock�
 menu.guitermsofservice.text.description.line3=Ces informations ne seront pas communiquées à des tiers. Appuyez sur fermer si vous êtes en accord avec
 menu.guitermsofservice.text.description.line4=la collection des données sinon cliquez sur "Réglages de confidentialités"
 menu.guitermsofservice.text.description.line5=en-dessous et désactivez la collection des données.
+
 menu.guitermsofservice.buttons.agree.text=J'accepte
 menu.guitermsofservice.buttons.snooperSettings.text=Réglages de confidentialités
 

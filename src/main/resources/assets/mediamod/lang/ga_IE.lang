@@ -12,6 +12,9 @@ menu.guimediamod.buttons.playerSettings.name=Socruithe Imreoir
 
 menu.guimediamod.buttons.servicesSettings.name=Seirbhísí
 
+menu.guimediamod.buttons.yes=TÁ
+menu.guimediamod.buttons.no=NÍL
+
 ### Other Text
 menu.guimediamod.text.author.name=Forbartha ag ConorTheDev
 menu.guimediamod.text.version.name=Leagan
@@ -31,6 +34,11 @@ menu.guiplayersettings.buttons.position.tooltip=Bog agus athraigh an t-imreoir
 
 menu.guiplayersettings.buttons.progressStyle.name=Stíl Dul Chun Cinn:
 menu.guiplayersettings.buttons.progressStyle.tooltip=Rothair trí stíleanna taispeána dul chun cinn
+
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Barra dul chun cinn agus téacs (leagan nua)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Barra dul chun cinn agus téacs (seanleagan)
+menu.guiplayersettings.buttons.progressStyle.bar_only=Dul chun cinn Bar Amháin
+menu.guiplayersettings.buttons.progressStyle.numbers_only=Téacs Amháin
 
 ## GuiPlayerPositioning
 menu.guiplayerpositioning.buttons.save.name=Sábháil
