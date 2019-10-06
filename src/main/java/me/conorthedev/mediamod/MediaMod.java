@@ -1,10 +1,7 @@
 package me.conorthedev.mediamod;
 
 import cc.hyperium.Hyperium;
-import cc.hyperium.event.EventBus;
-import cc.hyperium.event.InitializationEvent;
-import cc.hyperium.event.InvokeEvent;
-import cc.hyperium.event.WorldChangeEvent;
+import cc.hyperium.event.*;
 import cc.hyperium.internal.addons.IAddon;
 import cc.hyperium.mods.sk1ercommon.Multithreading;
 import cc.hyperium.utils.ChatColor;
@@ -12,6 +9,7 @@ import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.PlayerOverlay;
+import me.conorthedev.mediamod.keybinds.KeybindManager;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
@@ -90,6 +88,8 @@ public class MediaMod implements IAddon {
         serviceHandler.registerHandler(new BrowserHandler());
         serviceHandler.registerHandler(new SpotifyHandler());
         serviceHandler.initializeHandlers();
+
+        KeybindManager.INSTANCE.register();
     }
 
     @InvokeEvent

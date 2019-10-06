@@ -56,7 +56,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
             testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
         }
 
-        PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, testing, 1.0);
+        PlayerOverlay.INSTANCE.drawPlayer((width >> 1) - 80, (height >> 1) + 10, Settings.MODERN_PLAYER_STYLE, testing, 1.0);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -65,9 +65,9 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
     protected String getButtonTooltip(int buttonId) {
         switch (buttonId) {
             case 1:
-                return "Toggling this OFF will disable album art, this affects auto colour selection";
+                return "Toggling this OFF will disable album art, this affects auto color selection";
             case 2:
-                return "Sets the background colour of the player to the most prominent colour in the album art";
+                return "Sets the background color of the player to the most prominent color in the album art";
             case 3:
                 return "Enables a new player design that involves gradients and shadows, designed by ScottehBoeh";
             case 4:

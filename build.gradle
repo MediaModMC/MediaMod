@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 apply plugin: 'java'
 
 group 'me.conorthedev'
-version '1.0.0'
+version '1.1.0'
 
 sourceCompatibility = targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'

@@ -13,8 +13,10 @@ import java.io.IOException;
 
 public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
-    private int currentX = Settings.PLAYER_X;
-    private int currentY = Settings.PLAYER_Y;
+    private double currentX = Settings.PLAYER_X;
+    private double currentY = Settings.PLAYER_Y;
+    private double offsetX = -1;
+    private double offsetY = -1;
     private GuiSlider slider = null;
     private boolean dragging;
 
@@ -91,8 +93,8 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         if (dragging && clickedMouseButton == 0) {
             // It was the left click, change the position
-            currentX = (int) (mouseX - (75 * Settings.PLAYER_ZOOM));
-            currentY = (int) (mouseY - (25 * Settings.PLAYER_ZOOM));
+            this.currentX = (mouseX + (offsetX));
+            this.currentY = (mouseY + (offsetY));
         }
 
         // Call the super function
@@ -109,6 +111,8 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
                 }
             }
             dragging = true;
+            offsetX = currentX - mouseX;
+            offsetY = currentY - mouseY;
         }
     }
 

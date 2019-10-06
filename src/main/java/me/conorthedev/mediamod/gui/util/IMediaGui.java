@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public interface IMediaGui {
-    ResourceLocation iconResource = new ResourceLocation("mediamod", "mediamod.png");
-    ResourceLocation headerResource = new ResourceLocation("mediamod", "header.png");
+    ResourceLocation iconResource = new ResourceLocation("textures/mediamod", "mediamod.png");
+    ResourceLocation headerResource = new ResourceLocation("textures/mediamod", "header.png");
 
     default String getSuffix(boolean option, String label) {
         return option ? (label + ": " + ChatColor.GREEN + "YES") : (label + ": " + ChatColor.RED + "NO");

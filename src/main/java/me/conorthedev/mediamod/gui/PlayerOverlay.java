@@ -13,7 +13,6 @@ import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -91,6 +90,65 @@ public class PlayerOverlay {
         }
     }
 
+    private static void drawModalRectWithCustomSizedTexture(double x, double y, float u, float v, double width, double height, float textureWidth, float textureHeight) {
+        float f = 1.0F / textureWidth;
+        float f1 = 1.0F / textureHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(x, y + height, 0.0D).tex(u * f, (v + (float) height) * f1).endVertex();
+        worldrenderer.pos(x + width, y + height, 0.0D).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
+        worldrenderer.pos(x + width, y, 0.0D).tex((u + (float) width) * f, v * f1).endVertex();
+        worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
+        tessellator.draw();
+    }
+
+    private static int getComplementaryColor(Color colorToInvert) {
+        if (colorToInvert == Color.gray || colorToInvert == Color.green) {
+            return Color.WHITE.getRGB();
+        }
+
+        double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
+        return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
+    }
+
+    private static String formatTime(int milliseconds) {
+        return DATE_FORMAT.format(Date.from(Instant.ofEpochMilli(milliseconds)));
+    }
+
+    public static void drawRect(double left, double top, double right, double bottom, int color) {
+        if (left < right) {
+            double i = left;
+            left = right;
+            right = i;
+        }
+
+        if (top < bottom) {
+            double j = top;
+            top = bottom;
+            bottom = j;
+        }
+
+        float f3 = (float) (color >> 24 & 255) / 255.0F;
+        float f = (float) (color >> 16 & 255) / 255.0F;
+        float f1 = (float) (color >> 8 & 255) / 255.0F;
+        float f2 = (float) (color & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GlStateManager.color(f, f1, f2, f3);
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(left, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, top, 0.0D).endVertex();
+        worldrenderer.pos(left, top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+
     @InvokeEvent
     public void onRender(RenderHUDEvent event) {
 
@@ -110,9 +168,6 @@ public class PlayerOverlay {
                         if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null) {
                             if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
                                 this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
-                                if (ServiceHandler.INSTANCE.getCurrentMediaHandler() instanceof SpotifyHandler) {
-                                    SpotifyHandler.INSTANCE.updateProgress();
-                                }
                             }
                         }
                     } catch (Exception e) {
@@ -135,13 +190,15 @@ public class PlayerOverlay {
     /**
      * Renders the media player on the screen
      *
-     * @param cornerX  - the x coordinate of the top left corner
-     * @param cornerY  - the y coordinate of the top right corner
+     * @param x        - the x coordinate of the top left corner
+     * @param y        - the y coordinate of the top right corner
      * @param isModern - if the player should be rendered as the modern style
      * @param testing  - if it is a testing player i.e. in the settings menu
      * @param scale    - the scale to use
      */
-    void drawPlayer(int cornerX, int cornerY, boolean isModern, boolean testing, double scale) {
+    void drawPlayer(double x, double y, boolean isModern, boolean testing, double scale) {
+        float cornerX = -75.5f;
+        float cornerY = -25.5f;
 
         // Get a Minecraft Instance
         Minecraft mc = Minecraft.getMinecraft();
@@ -184,10 +241,11 @@ public class PlayerOverlay {
         }
 
         GlStateManager.pushMatrix();
+        GlStateManager.translate(x - cornerX, y - cornerY, 0);
         GlStateManager.scale(scale, scale, scale);
 
         // Set the X Position for the text to be rendered at
-        int textXPosition = cornerX + 10;
+        float textXPosition = cornerX + 10;
         if (Settings.SHOW_ALBUM_ART && (testing || url != null)) {
             // If the album art is being rendered we must move the text to the right
             textXPosition = cornerX + 50;
@@ -195,7 +253,7 @@ public class PlayerOverlay {
 
         if (isModern) {
             // Draw the outline of the player
-            Gui.drawRect(cornerX + 151, cornerY + 4, cornerX + 4, cornerY + 51, new Color(0, 0, 0, 75).getRGB());
+            drawRect(cornerX + 151, cornerY + 4, cornerX + 4, cornerY + 51, new Color(0, 0, 0, 75).getRGB());
         }
 
         // Background
@@ -211,10 +269,10 @@ public class PlayerOverlay {
             }
 
             // Draw the background of the player
-            Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, color.darker().getRGB());
+            drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, color.darker().getRGB());
         } else {
             // Draw the background of the player
-            Gui.drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, Color.darkGray.getRGB());
+            drawRect(cornerX + 150, cornerY + 5, cornerX + 5, cornerY + 50, Color.darkGray.getRGB());
         }
 
         // Draw the metadata of the track (title, artist, album art)
@@ -240,10 +298,10 @@ public class PlayerOverlay {
                 }
 
                 // String concatenation for tracks
-                fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1);
+                fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1, false);
             } else {
                 // Draw the track name normally
-                fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
+                fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1, false);
             }
         } else {
             if (trackName.length() >= 19) {
@@ -267,10 +325,10 @@ public class PlayerOverlay {
                 }
 
                 // String concatenation for tracks
-                fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1);
+                fontRenderer.drawString(concatName.substring(concatNameCount, concatNameCount2.get()), textXPosition, cornerY + 11, -1, false);
             } else {
                 // Draw the track name normally
-                fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1);
+                fontRenderer.drawString(trackName, textXPosition, cornerY + 11, -1, false);
             }
         }
 
@@ -296,15 +354,16 @@ public class PlayerOverlay {
                 }
 
                 // String concatenation for tracks
-                fontRenderer.drawString(concatName.substring(concatArtistCount, concatArtistCount2.get()), textXPosition, cornerY + 20, Color.white.darker().getRGB());
+                fontRenderer.drawString(concatName.substring(concatArtistCount, concatArtistCount2.get()), textXPosition, cornerY + 20,
+                        Color.white.darker().getRGB(), false);
             } else {
-                fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB());
+                fontRenderer.drawString("by " + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB(), false);
             }
         }
 
         if (testing || currentlyPlayingObject != null) {
             if (testing || (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0)) {
-                int right = textXPosition + 91;
+                float right = textXPosition + 91;
                 int offset = 91;
                 int progressMultiplier = 90;
                 if (!(Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0)))) {
@@ -315,16 +374,16 @@ public class PlayerOverlay {
                 Color displayColor = Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART ? color : Color.green;
 
                 if (Settings.PROGRESS_STYLE != ProgressStyle.NUMBERS_ONLY) {
-                    int progressTop = cornerY + 30;
-                    int progressBottom = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 39 : cornerY + 43;
+                    float progressTop = cornerY + 30;
+                    float progressBottom = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 39 : cornerY + 43;
                     // Draw the progress bar
                     if (Settings.MODERN_PLAYER_STYLE) {
                         // Draw outline
-                        Gui.drawRect(textXPosition - 1, progressTop, right, progressBottom, new Color(0, 0, 0, 75).getRGB());
+                        drawRect(textXPosition - 1, progressTop, right, progressBottom, new Color(0, 0, 0, 75).getRGB());
                     }
 
                     // Draw background
-                    Gui.drawRect(textXPosition, progressTop + 1, right - 1, progressBottom - 1, Color.darkGray.darker().getRGB());
+                    drawRect(textXPosition, progressTop + 1, right - 1, progressBottom - 1, Color.darkGray.darker().getRGB());
 
                     // Get the percent complete
                     float percentComplete = (float) 0.75;
@@ -346,14 +405,14 @@ public class PlayerOverlay {
                             ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs();
                     int durationMs = track == null ? 60000 : track.duration_ms;
                     int color2 = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_NEW ? getComplementaryColor(displayColor) : Color.white.darker().getRGB();
-                    int y = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 41 : cornerY + 33;
+                    float y2 = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 41 : cornerY + 33;
                     if (Settings.PROGRESS_STYLE != ProgressStyle.NUMBERS_ONLY) {
                         String str = formatTime(durationMs);
-                        fontRenderer.drawString(formatTime(progressMs), textXPosition + 1, y, color2, false);
-                        fontRenderer.drawString(str, right - (fontRenderer.getStringWidth(str) + 2), y, color2, false);
+                        fontRenderer.drawString(formatTime(progressMs), textXPosition + 1, y2, color2, false);
+                        fontRenderer.drawString(str, right - (fontRenderer.getStringWidth(str) + 2), y2, color2, false);
                     } else {
                         String str = formatTime(progressMs) + " / " + formatTime(durationMs);
-                        fontRenderer.drawString(str, textXPosition + (offset / 2.f) - (fontRenderer.getStringWidth(str) / 2.f), y, color2, false);
+                        fontRenderer.drawString(str, textXPosition + (offset / 2.f) - (fontRenderer.getStringWidth(str) / 2.f), y2, color2, false);
                     }
                 }
             }
@@ -363,7 +422,7 @@ public class PlayerOverlay {
             if (Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0))) {
                 if (Settings.MODERN_PLAYER_STYLE) {
                     // Draw outline
-                    Gui.drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());
+                    drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());
                 }
 
                 // Setup OpenGL
@@ -381,55 +440,13 @@ public class PlayerOverlay {
                 }
 
                 // Render the album art as 35x35
-                Gui.drawModalRectWithCustomSizedTexture(cornerX + 10, cornerY + 10, 0, 0, 35, 35, 35, 35);
+                drawModalRectWithCustomSizedTexture(cornerX + 10, cornerY + 10, 0, 0, 35, 35, 35, 35);
                 GlStateManager.popMatrix();
             }
         }
 
         GlStateManager.popMatrix();
         mc.mcProfiler.endSection();
-    }
-
-    private static int getComplementaryColor(Color colorToInvert) {
-        double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
-        return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
-    }
-
-    private static String formatTime(int milliseconds) {
-        return DATE_FORMAT.format(Date.from(Instant.ofEpochMilli(milliseconds)));
-    }
-
-    private static void drawRect(double left, double top, double right, double bottom, int color) {
-        if (left < right) {
-            double i = left;
-            left = right;
-            right = i;
-        }
-
-        if (top < bottom) {
-            double j = top;
-            top = bottom;
-            bottom = j;
-        }
-
-        float f3 = (float) (color >> 24 & 255) / 255.0F;
-        float f = (float) (color >> 16 & 255) / 255.0F;
-        float f1 = (float) (color >> 8 & 255) / 255.0F;
-        float f2 = (float) (color & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(left, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, top, 0.0D).endVertex();
-        worldrenderer.pos(left, top, 0.0D).endVertex();
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
     }
 
     /**
