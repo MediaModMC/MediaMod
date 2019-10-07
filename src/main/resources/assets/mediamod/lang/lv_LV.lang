@@ -1,0 +1,79 @@
+# GUIs
+
+## GuiMediaModSettings
+### Buttons
+menu.guimediamod.buttons.enabled.name=Ieslēgts
+menu.guimediamod.buttons.enabled.tooltip=Izslēdz / Ieslēdz modu pilnīebā (nepieciešams restartēt lai strādātu pilnībā)
+
+menu.guimediamod.buttons.showPlayer.name=Parādīt atskaņotāju
+menu.guimediamod.buttons.showPlayer.tooltip=Izslēdz / Ieslēdz atskaņotāju uz tava akrāna
+
+menu.guimediamod.buttons.playerSettings.name=Atskaņotāja iestatijumi
+
+menu.guimediamod.buttons.servicesSettings.name=Servisi
+
+menu.guimediamod.buttons.yes=Jā
+menu.guimediamod.buttons.no=Nē
+
+### Other Text
+menu.guimediamod.text.author.name=Taisījis ConorTheDev
+menu.guimediamod.text.version.name=Versija
+
+## GuiPlayerSettings
+menu.guiplayersettings.buttons.showAlbumArt.name=Parādīt albuma stilu
+menu.guiplayersettings.buttons.showAlbumArt.tooltip=Ieslēdzot šo izslēgsies albūma stils, šis efekts arī darbojas uz automātisku krāsu izvēles
+
+menu.guiplayersettings.buttons.colorSelection.name=Krāsu izvēle
+menu.guiplayersettings.buttons.colorSelection.tooltip=Uzliek aizmugures krāsu atskaņotājam uz viss redzemāko krāsu albūma mākslā
+
+menu.guiplayersettings.buttons.modernPlayer.name=Modernajs atskaņotājs
+menu.guiplayersettings.buttons.modernPlayer.tooltip=Ieslēdz jaunu atskaņotāja disainy kas pieliek ēnas un citas lietas, Dizainētājs ScottehBoeh
+
+menu.guiplayersettings.buttons.position.name=Pozicjonē atskaņotāju
+menu.guiplayersettings.buttons.position.tooltip=Kustini un parveido atskaņotāju
+
+menu.guiplayersettings.buttons.progressStyle.name=Progresa stils:
+menu.guiplayersettings.buttons.progressStyle.tooltip=Cikle starp progresa stiliem
+
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Progresa līnija un teksts (jaunā versija)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Progresa līnija un teksts (vecā versija)
+menu.guiplayersettings.buttons.progressStyle.bar_only=Tikaik progresa līnija
+menu.guiplayersettings.buttons.progressStyle.numbers_only=Tikai teksts
+
+## GuiPlayerPositioning
+menu.guiplayerpositioning.buttons.save.name=Saglabāt
+menu.guiplayerpositioning.buttons.reset.name=Restartēt
+menu.guiplayerpositioning.buttons.back.name=Atpakaļ
+menu.guiplayerpositioning.buttons.slider.prefix=Mērogs:
+
+menu.guiplayerpositioning.text.info.name=Pozicjonē atskaņotāju velkot to apkārtl, spied restartēt lai restartētu pozīciju
+
+## GuiServices
+menu.guiservices.buttons.loginSpotify.name=Pieslēgties spotify
+menu.guiservices.buttons.logoutSpotify.name=Atslēdzies no spotify
+menu.guiservices.buttons.useBrowserExt.name=Izmantot pārlūka paplašinājumu
+menu.guiservices.buttons.useBrowserExt.tooltip=Ieslēdz vai izslēdz pārlūka paplašinājumu
+
+menu.guiservices.text.spotifyNotLogged.name=Nēsi pieslēdzies spotify. Lūdzu pieslēdzies spotify
+menu.guiservices.text.spotifyLogged.name=Pieslēgts spotify!
+
+## GuiTermsOfService
+menu.guitermsofservice.text.title.name=Servisa noteikumi
+menu.guitermsofservice.text.description.line1=Kad izmanto MediaMod un manus citus modus, tavs uuid, pasreizējais modu noteicējs
+menu.guitermsofservice.text.description.line2=Un modu versija ir saglabāta pētijumu noklūkā.
+menu.guitermsofservice.text.description.line3=Šī informācija netiks dalīta. ja tu spied aizvēt, tu piekrīti
+menu.guitermsofservice.text.description.line4=šaj informācija tikt kolektotaj, ja tu gribi to izslēgt: spied "Snooper Settings" this data being collected if you want to disable this: click "Snooper Settings"
+menu.guitermsofservice.text.description.line5=un izslēdz snoopers minecrafta.
+
+menu.guitermsofservice.buttons.agree.text=Es piekrītu
+menu.guitermsofservice.buttons.snooperSettings.text=Snooper Settings
+
+# Player
+player.text.by=no
+player.text.song_name=Dziesmas Nosaukums
+player.text.artist_name=Izpildītāja Vārds
+
+# Keybinds
+key.categories.mediamod=MediaMod taustiņu atslēgas
+key.disableKeybind=Izlēdz atskaņotāju
+key.menuKeybind=Atvērt izvēlni
