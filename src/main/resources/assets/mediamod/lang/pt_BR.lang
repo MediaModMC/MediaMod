@@ -5,7 +5,7 @@
 menu.guimediamod.buttons.enabled.name=Ativado
 menu.guimediamod.buttons.enabled.tooltip=Desativa / Ativa o mod completamente (requer uma reinicialização para funcionar totalmente)
 
-menu.guimediamod.buttons.showPlayer.name=Mostar Player de Música
+menu.guimediamod.buttons.showPlayer.name=Mostrar Player de Música
 menu.guimediamod.buttons.showPlayer.tooltip=Desativa / Ativa a exibição do player de música na sua tela
 
 menu.guimediamod.buttons.playerSettings.name=Configurações do Player de Música
