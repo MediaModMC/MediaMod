@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public interface IMediaGui {
-    ResourceLocation iconResource = new ResourceLocation("textures/mediamod", "mediamod.png");
-    ResourceLocation headerResource = new ResourceLocation("textures/mediamod", "header.png");
+    ResourceLocation iconResource = new ResourceLocation("textures/mediamod.png");
+    ResourceLocation headerResource = new ResourceLocation( "textures/header.png");
 
     default String getSuffix(boolean option, String label) {
         return option ? (label + ": " + ChatColor.GREEN + "YES") : (label + ": " + ChatColor.RED + "NO");
@@ -22,7 +22,7 @@ public interface IMediaGui {
         GlStateManager.pushMatrix();
         GlStateManager.color(1, 1, 1, 1);
 
-        Minecraft.getMinecraft().getTextureManager().bindTexture(this.headerResource);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(headerResource);
 
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();

@@ -8,7 +8,6 @@ import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.base.IMediaHandler;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
-import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.media.spotify.api.track.Track;
 import net.minecraft.client.Minecraft;
