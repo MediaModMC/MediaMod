@@ -1,10 +1,12 @@
 package me.conorthedev.mediamod;
 
 import cc.hyperium.Hyperium;
-import cc.hyperium.event.*;
+import cc.hyperium.event.EventBus;
+import cc.hyperium.event.InitializationEvent;
+import cc.hyperium.event.InvokeEvent;
+import cc.hyperium.event.WorldChangeEvent;
 import cc.hyperium.internal.addons.IAddon;
 import cc.hyperium.mods.sk1ercommon.Multithreading;
-import cc.hyperium.utils.ChatColor;
 import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.config.Settings;
@@ -14,9 +16,9 @@ import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
+import me.conorthedev.mediamod.util.PlayerMessager;
 import me.conorthedev.mediamod.util.VersionChecker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ChatComponentText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +79,7 @@ public class MediaMod implements IAddon {
         if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
             LOGGER.info("MediaMod is up-to-date!");
         } else {
-            LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionString
+            LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS
             + " Your version: v" + Metadata.VERSION);
         }
 
@@ -95,9 +97,8 @@ public class MediaMod implements IAddon {
     @InvokeEvent
     public void worldChange(WorldChangeEvent event) {
         if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION & Minecraft.getMinecraft().thePlayer != null) {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
-                    "&c[&fMediaMod&c] MediaMod is out of date!&7\nLatest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionString +
-                    "&7\nChangelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog)));
+            PlayerMessager.sendMessage("MediaMod is out of date!&7\nLatest version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
+                    "&7\nChangelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
             firstLoad = false;
         }
     }

@@ -12,6 +12,7 @@ import me.conorthedev.mediamod.media.base.AbstractMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -39,8 +40,6 @@ public class SpotifyHandler extends AbstractMediaHandler {
     private static HttpServer server = null;
 
     private static void handleRequest(String code) {
-        Minecraft mc = Minecraft.getMinecraft();
-
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
         ses.scheduleAtFixedRate(() -> {
             if (logged) {
@@ -48,8 +47,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
             }
         }, 59, 59, TimeUnit.MINUTES);
 
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
-                + ChatColor.GRAY + "Exchanging authorization code for access token, this may take a moment..."));
+        PlayerMessager.sendMessage("&7Exchanging authorization code for access token, this may take a moment...");
         try {
             // Create a connection
             //BaseMod.ENDPOINT
@@ -81,13 +79,10 @@ public class SpotifyHandler extends AbstractMediaHandler {
             if (spotifyApi.getRefreshToken() != null) {
                 logged = true;
                 // Tell the user that they were logged in
-                mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
-                        + ChatColor.GREEN.toString() + ChatColor.BOLD + "SUCCESS! " + ChatColor.RESET + ChatColor.WHITE + "Logged into Spotify!"));
+                PlayerMessager.sendMessage("&a&lSUCCESS! &rLogged into Spotify!");
                 CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
                 if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
-                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
-                            + ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "DEBUG: " + ChatColor.RESET + "Current Song: " + currentTrack.item.name + " by "
-                            + currentTrack.item.album.artists[0].name));
+                    PlayerMessager.sendMessage("&8&lDEBUG: &rCurrent Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name);
                 }
             }
         } catch (Exception e) {
@@ -123,16 +118,13 @@ public class SpotifyHandler extends AbstractMediaHandler {
             urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
             urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.GRAY +
                     "Click this to open the Spotify Auth URL")));
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(urlComponent);
+            PlayerMessager.sendMessage(urlComponent);
         }
     }
 
     private void refreshSpotify() {
-        Minecraft mc = Minecraft.getMinecraft();
-
         if (logged && SpotifyHandler.spotifyApi.getRefreshToken() != null) {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
-                    + ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "INFO: " + ChatColor.RESET + ChatColor.BLUE + "Attempting to refresh access token..."));
+            PlayerMessager.sendMessage("&8&lINFO: &9Attempting to refresh access token...");
             try {
                 URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/refresh/" + spotifyApi.getRefreshToken());
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -161,13 +153,10 @@ public class SpotifyHandler extends AbstractMediaHandler {
                 if (spotifyApi.getRefreshToken() != null) {
                     logged = true;
                     // Tell the user that they were logged in
-                    mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
-                            + ChatColor.GREEN.toString() + ChatColor.BOLD + "SUCCESS! " + ChatColor.RESET + ChatColor.WHITE + "Logged into Spotify!"));
+                    PlayerMessager.sendMessage("&a&lSUCCESS! &rLogged into Spotify!");
                     CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
                     if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
-                        mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
-                                + ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "DEBUG: " + ChatColor.RESET + "Current Song: " + currentTrack.item.name + " by "
-                                + currentTrack.item.album.artists[0].name));
+                        PlayerMessager.sendMessage("&8&lDEBUG: &rCurrent Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name);
                     }
                 }
             } catch (Exception e) {

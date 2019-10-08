@@ -1,14 +1,13 @@
 package me.conorthedev.mediamod.gui;
 
 import cc.hyperium.Hyperium;
-import cc.hyperium.utils.ChatColor;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ChatComponentText;
 
 import java.awt.*;
 import java.io.IOException;
@@ -74,8 +73,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
             case 1:
                 mc.displayGuiScreen(null);
-                mc.thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.RED + "[" + ChatColor.WHITE + "MediaMod" + ChatColor.RED + "] "
-                        + "Opening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'"));
+                PlayerMessager.sendMessage("&cOpening browser with instructions on what to do, when it opens, log in with your Spotify Account and press 'Agree'");
                 SpotifyHandler.INSTANCE.connectSpotify();
                 break;
 
