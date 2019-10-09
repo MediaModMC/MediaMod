@@ -94,7 +94,6 @@ public class MediaMod {
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
 
         // Create the MediaMod Directory if it does not exist
-
         File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
 
         if (!MEDIAMOD_DIRECTORY.exists()) {
