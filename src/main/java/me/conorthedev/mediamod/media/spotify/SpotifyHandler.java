@@ -118,7 +118,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
             urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
             urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.GRAY +
                     "Click this to open the Spotify Auth URL")));
-            PlayerMessager.sendMessage(urlComponent);
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(urlComponent);
         }
     }
 
