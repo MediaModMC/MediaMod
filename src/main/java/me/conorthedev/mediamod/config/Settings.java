@@ -13,4 +13,5 @@ public class Settings {
     @ConfigOpt public static double PLAYER_ZOOM = 1;
     @ConfigOpt public static boolean EXTENSION_ENABLED;
     @ConfigOpt public static ProgressStyle PROGRESS_STYLE = ProgressStyle.BAR_AND_NUMBERS_NEW;
+    @ConfigOpt public static String REFRESH_TOKEN = "";
 }
