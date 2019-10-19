@@ -4,15 +4,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 public interface IMediaGui {
     ResourceLocation iconResource = new ResourceLocation("mediamod", "mediamod.png");
     ResourceLocation headerResource = new ResourceLocation("mediamod", "header.png");
 
     default String getSuffix(boolean option, String label) {
-        return option ? (label + ": " + EnumChatFormatting.GREEN + I18n.format("menu.guimediamod.buttons.yes")) : (label + ": " + EnumChatFormatting.RED + I18n.format("menu.guimediamod.buttons.no"));
+        return option ? (label + ": " + TextFormatting.GREEN + I18n.format("menu.guimediamod.buttons.yes")) : (label + ": " + TextFormatting.RED + I18n.format("menu.guimediamod.buttons.no"));
     }
 
     default int getRowPos(int rowNumber) {

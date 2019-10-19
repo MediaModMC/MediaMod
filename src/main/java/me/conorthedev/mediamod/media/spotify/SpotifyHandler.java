@@ -15,10 +15,10 @@ import me.conorthedev.mediamod.util.ChatColor;
 import me.conorthedev.mediamod.util.Multithreading;
 import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.awt.*;
@@ -119,9 +119,9 @@ public class SpotifyHandler extends AbstractMediaHandler {
             e.printStackTrace();
         } catch (Exception e) {
             PlayerMessager.sendMessage("&cFailed to open browser with the Spotify Auth URL!");
-            IChatComponent urlComponent = new ChatComponentText(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
-            urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
-            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+            ITextComponent urlComponent = new TextComponentString(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
+            urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
+            urlComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(ChatColor.translateAlternateColorCodes('&',
                     "&7Click this to open the Spotify Auth URL"))));
             PlayerMessager.sendMessage(urlComponent);
         }
@@ -131,7 +131,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         Minecraft mc = FMLClientHandler.instance().getClient();
 
         if (logged && SpotifyHandler.spotifyApi.getRefreshToken() != null) {
-            if (FMLClientHandler.instance().getClient().thePlayer != null) {
+            if (FMLClientHandler.instance().getClient().player != null) {
                 PlayerMessager.sendMessage("&8INFO: &9Attempting to refresh access token...");
             }
 
@@ -163,7 +163,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
                 if (spotifyApi.getRefreshToken() != null) {
                     logged = true;
                     // Tell the user that they were logged in
-                    if (mc.thePlayer != null) {
+                    if (mc.player != null) {
                         PlayerMessager.sendMessage("&a&lSUCCESS! &rLogged into Spotify!");
                         CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
 

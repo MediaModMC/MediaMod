@@ -1,11 +1,14 @@
 package me.conorthedev.mediamod.command;
 
+import mcp.MethodsReturnNonnullByDefault;
 import me.conorthedev.mediamod.gui.GuiMediaModSettings;
 import me.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,30 +17,32 @@ import java.util.List;
  *
  * @see net.minecraft.command.ICommand
  */
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class MediaModCommand extends CommandBase {
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "mediamod";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "/mediamod";
     }
 
     @Override
-    public List<String> getCommandAliases() {
+    public List<String> getAliases() {
         return Arrays.asList("media", "mm");
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return true;
     }
 

@@ -6,8 +6,10 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.*;
 
+@ParametersAreNonnullByDefault
 public class CustomButton extends GuiButton {
 
     public CustomButton(int buttonId, int x, int y, String buttonText) {
@@ -19,16 +21,16 @@ public class CustomButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            FontRenderer fontrenderer = mc.fontRendererObj;
+            FontRenderer fontrenderer = mc.fontRenderer;
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             this.hovered =
-                    mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width
-                            && mouseY < this.yPosition + this.height;
+                    mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
+                            && mouseY < this.y + this.height;
 
-            Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, new Color(0, 0, 0, 175).getRGB());
+            Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, new Color(0, 0, 0, 175).getRGB());
 
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
@@ -39,7 +41,7 @@ public class CustomButton extends GuiButton {
                 j = new Color(180, 180, 180).getRGB();
             }
 
-            drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+            drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, j);
         }
     }
 }

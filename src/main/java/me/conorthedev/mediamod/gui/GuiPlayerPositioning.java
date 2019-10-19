@@ -7,7 +7,7 @@ import me.conorthedev.mediamod.media.base.ServiceHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiSlider;
 
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     public void initGui() {
         Settings.loadConfig();
 
-        this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 83, EnumChatFormatting.GREEN + I18n.format("menu.guiplayerpositioning.buttons.save.name")));
-        this.buttonList.add(new CustomButton(1, width / 2 - 100, height - 60, EnumChatFormatting.RED + I18n.format("menu.guiplayerpositioning.buttons.reset.name")));
+        this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 83, TextFormatting.GREEN + I18n.format("menu.guiplayerpositioning.buttons.save.name")));
+        this.buttonList.add(new CustomButton(1, width / 2 - 100, height - 60, TextFormatting.RED + I18n.format("menu.guiplayerpositioning.buttons.reset.name")));
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 37, I18n.format("menu.guiplayerpositioning.buttons.back.name")));
         this.buttonList.add(slider = new GuiSlider(3, width / 2 - 75, height - 105, 150, 20, I18n.format("menu.guiplayerpositioning.buttons.slider.prefix") + " ", "", 0.1, 2.0, Settings.PLAYER_ZOOM, true, false, it -> {
             // custom display string change stuff
@@ -40,7 +40,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
 
-        this.drawCenteredString(fontRendererObj, I18n.format("menu.guiplayerpositioning.text.info.name"), width / 2, height - 120, -1);
+        this.drawCenteredString(fontRenderer, I18n.format("menu.guiplayerpositioning.text.info.name"), width / 2, height - 120, -1);
 
         boolean testing;
         if (ServiceHandler.INSTANCE.getCurrentMediaHandler() == null) {

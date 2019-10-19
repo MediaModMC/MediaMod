@@ -2,8 +2,8 @@ package me.conorthedev.mediamod.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -13,7 +13,7 @@ public class PlayerMessager {
 
     public static final PlayerMessager INSTANCE = new PlayerMessager();
     private static final ConcurrentLinkedQueue<String> queuedMessages = new ConcurrentLinkedQueue<>();
-    private static final ConcurrentLinkedQueue<IChatComponent> messages = new ConcurrentLinkedQueue<>();
+    private static final ConcurrentLinkedQueue<ITextComponent> messages = new ConcurrentLinkedQueue<>();
 
     private PlayerMessager() {
         TickScheduler.INSTANCE.schedule(0, this::check);
@@ -23,19 +23,19 @@ public class PlayerMessager {
         queuedMessages.add(chat);
     }
 
-    private void check() {
-        if (!queuedMessages.isEmpty()) {
-            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-            if (player != null && queuedMessages.peek() != null) {
-                String poll = queuedMessages.poll();
-                sendMessage(poll);
-            }
-        }
+    public static void sendMessage(ITextComponent message) {
+        if (message == null) message = new TextComponentString("");
+        messages.add(message);
     }
 
-    public static void sendMessage(IChatComponent message) {
-        if (message == null) message = new ChatComponentText("");
-        messages.add(message);
+    public static void sendMessage(String message, boolean header) {
+        if (message == null) return;
+        if (header) {
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(ChatColor.translateAlternateColorCodes('&',
+                    "&c[&fMediaMod&c]&r " + message)));
+        } else {
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(ChatColor.translateAlternateColorCodes('&', message)));
+        }
     }
 
     public static void sendMessage(String message) {
@@ -43,24 +43,24 @@ public class PlayerMessager {
         sendMessage(ChatColor.translateAlternateColorCodes('&', message), true);
     }
 
-    public static void sendMessage(String message, boolean header) {
-        if (message == null) return;
-        if (header) {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
-                    "&c[&fMediaMod&c]&r " + message)));
-        } else {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&', message)));
+    private void check() {
+        if (!queuedMessages.isEmpty()) {
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
+            if (player != null && queuedMessages.peek() != null) {
+                String poll = queuedMessages.poll();
+                sendMessage(poll);
+            }
         }
     }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if (Minecraft.getMinecraft().thePlayer == null) {
+        if (Minecraft.getMinecraft().player == null) {
             return;
         }
 
         while (!messages.isEmpty()) {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(messages.poll());
+            Minecraft.getMinecraft().player.sendMessage(messages.poll());
         }
 
         while (!queuedMessages.isEmpty()) {

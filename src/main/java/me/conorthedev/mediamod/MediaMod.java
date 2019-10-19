@@ -155,7 +155,7 @@ public class MediaMod {
      */
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION && Minecraft.getMinecraft().thePlayer != null) {
+        if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION && Minecraft.getMinecraft().player != null) {
             PlayerMessager.sendMessage("&cMediaMod is out of date!" +
                     "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
                     "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);

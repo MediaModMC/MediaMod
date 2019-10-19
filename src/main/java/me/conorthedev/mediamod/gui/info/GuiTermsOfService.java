@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSnooper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.io.IOException;
@@ -18,12 +18,12 @@ public class GuiTermsOfService extends GuiScreen implements IMediaGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
 
-        drawCenteredString(fontRendererObj, EnumChatFormatting.BOLD + I18n.format("menu.guitermsofservice.text.title.name"), width / 2, 10, -1);
-        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line1"), width / 2, 25, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line2"), width / 2, 34, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line3"), width / 2, 43, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line4"), width / 2, 51, Color.red.getRGB());
-        drawCenteredString(fontRendererObj, I18n.format("menu.guitermsofservice.text.description.line5"), width / 2, 59, Color.red.getRGB());
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + I18n.format("menu.guitermsofservice.text.title.name"), width / 2, 10, -1);
+        drawCenteredString(fontRenderer, I18n.format("menu.guitermsofservice.text.description.line1"), width / 2, 25, Color.red.getRGB());
+        drawCenteredString(fontRenderer, I18n.format("menu.guitermsofservice.text.description.line2"), width / 2, 34, Color.red.getRGB());
+        drawCenteredString(fontRenderer, I18n.format("menu.guitermsofservice.text.description.line3"), width / 2, 43, Color.red.getRGB());
+        drawCenteredString(fontRenderer, I18n.format("menu.guitermsofservice.text.description.line4"), width / 2, 51, Color.red.getRGB());
+        drawCenteredString(fontRenderer, I18n.format("menu.guitermsofservice.text.description.line5"), width / 2, 59, Color.red.getRGB());
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

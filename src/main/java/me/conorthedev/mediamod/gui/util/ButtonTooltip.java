@@ -2,7 +2,7 @@ package me.conorthedev.mediamod.gui.util;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 
@@ -99,13 +99,13 @@ public abstract class ButtonTooltip extends GuiScreen {
         int lineCount = 0;
 
         for (String s : tooltipArray) {
-            mc.fontRendererObj.drawStringWithShadow(s, tooltipX + 2, tooltipY + 2 + lineCount * lineHeight, 16777215);
+            mc.fontRenderer.drawStringWithShadow(s, tooltipX + 2, tooltipY + 2 + lineCount * lineHeight, 16777215);
             lineCount++;
         }
     }
 
     private int getTooltipHeight(String[] tooltipArray) {
-        int tooltipHeight = mc.fontRendererObj.FONT_HEIGHT - 2;
+        int tooltipHeight = mc.fontRenderer.FONT_HEIGHT - 2;
 
         if (tooltipArray.length > 1) {
             tooltipHeight += (tooltipArray.length - 1) * lineHeight;
@@ -118,7 +118,7 @@ public abstract class ButtonTooltip extends GuiScreen {
         int longestWidth = 0;
 
         for (String s : tooltipArray) {
-            int width = mc.fontRendererObj.getStringWidth(s);
+            int width = mc.fontRenderer.getStringWidth(s);
 
             if (width > longestWidth) {
                 longestWidth = width;
@@ -139,7 +139,7 @@ public abstract class ButtonTooltip extends GuiScreen {
             String[] tooltipWords = section.split(" ");
 
             for (String tooltipWord : tooltipWords) {
-                int lineWidthWithNextWord = mc.fontRendererObj.getStringWidth(selectedTooltip + tooltipWord);
+                int lineWidthWithNextWord = mc.fontRenderer.getStringWidth(selectedTooltip + tooltipWord);
 
                 if (lineWidthWithNextWord > 250) {
                     tooltips.add(selectedTooltip.toString().trim());
@@ -185,12 +185,12 @@ public abstract class ButtonTooltip extends GuiScreen {
     }
 
     private void renderTooltipButtonMouseOverEffect(GuiButton button) {
-        mc.fontRendererObj.drawStringWithShadow(EnumChatFormatting.YELLOW + "?", button.xPosition + button.getButtonWidth() - 8, button.yPosition + 2, 16777215);
+        mc.fontRenderer.drawStringWithShadow(TextFormatting.YELLOW + "?", button.x + button.getButtonWidth() - 8, button.y + 2, 16777215);
     }
 
     private boolean isButtonHoveredOver(int mouseX, int mouseY, GuiButton button) {
-        if (mouseX >= button.xPosition && mouseX <= button.xPosition + button.getButtonWidth() && mouseY >= button.yPosition) {
-            return mouseY <= button.yPosition + button.height;
+        if (mouseX >= button.x && mouseX <= button.x + button.getButtonWidth() && mouseY >= button.y) {
+            return mouseY <= button.y + button.height;
         }
 
         return false;
@@ -199,7 +199,7 @@ public abstract class ButtonTooltip extends GuiScreen {
     private void renderTooltipButtonEffect() {
         for (GuiButton guiButton : buttonList) {
             if (getButtonTooltip(guiButton.id) != null) {
-                mc.fontRendererObj.drawStringWithShadow("?", guiButton.xPosition + guiButton.getButtonWidth() - 8, guiButton.yPosition + 2, 16777215);
+                mc.fontRenderer.drawStringWithShadow("?", guiButton.x + guiButton.getButtonWidth() - 8, guiButton.y + 2, 16777215);
             }
         }
     }

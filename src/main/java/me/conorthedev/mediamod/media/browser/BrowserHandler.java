@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The class which receives data from the browser extension
@@ -117,7 +118,7 @@ public class BrowserHandler extends AbstractMediaHandler {
                 return;
             }
 
-            String requestBody = IOUtils.toString(t.getRequestBody());
+            String requestBody = IOUtils.toString(t.getRequestBody(), StandardCharsets.UTF_8);
 
             String response = "DENIED";
 

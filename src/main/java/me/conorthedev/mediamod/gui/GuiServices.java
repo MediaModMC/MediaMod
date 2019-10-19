@@ -10,7 +10,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.awt.*;
 import java.io.IOException;
@@ -48,9 +47,9 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         GlStateManager.popMatrix();
 
         if (!SpotifyHandler.logged) {
-            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
+            drawCenteredString(fontRenderer, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
         } else {
-            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
+            drawCenteredString(fontRenderer, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
