@@ -40,6 +40,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
     public static final SpotifyHandler INSTANCE = new SpotifyHandler();
     public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
+    private boolean hasListenedToSong = false;
     private static HttpServer server = null;
 
     private static void handleRequest(String code) {
@@ -126,7 +127,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         }
     }
 
-    public void refreshSpotify() {
+    private void refreshSpotify() {
         Minecraft mc = FMLClientHandler.instance().getClient();
 
         if (logged && SpotifyHandler.spotifyApi.getRefreshToken() != null) {
@@ -191,10 +192,11 @@ public class SpotifyHandler extends AbstractMediaHandler {
                 lastProgressMs = object.progress_ms;
                 paused = !object.is_playing;
                 durationMs = object.item.duration_ms;
+                hasListenedToSong = true;
             } else {
                 durationMs = 0;
                 lastProgressMs = 0;
-                paused = true;
+                if (hasListenedToSong) paused = true;
             }
             return object;
         } catch (Exception e) {
