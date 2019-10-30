@@ -51,11 +51,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
     @Override
     protected String getButtonTooltip(int buttonId) {
-        if (buttonId == 3) {
-            return "Disables or Enables the Browser Extension";
-        } else {
-            return null;
-        }
+        return buttonId == 3 ? "Disables or Enables the Browser Extension" : null;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package me.conorthedev.mediamod.gui;
 
 import cc.hyperium.event.InvokeEvent;
-import cc.hyperium.event.RenderHUDEvent;
+import cc.hyperium.event.render.RenderHUDEvent;
 import me.conorthedev.mediamod.config.ProgressStyle;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
@@ -103,10 +103,7 @@ public class PlayerOverlay {
     }
 
     private static int getComplementaryColor(Color colorToInvert) {
-        if (colorToInvert == Color.gray || colorToInvert == Color.green) {
-            return Color.WHITE.getRGB();
-        }
-
+        if (colorToInvert == Color.gray || colorToInvert == Color.green) return Color.WHITE.getRGB();
         double y = (299 * colorToInvert.getRed() + 587 * colorToInvert.getGreen() + 114 * colorToInvert.getBlue()) / 1000.0;
         return y >= 128 ? Color.BLACK.getRGB() : Color.WHITE.getRGB();
     }
@@ -175,13 +172,11 @@ public class PlayerOverlay {
                 }, 0, 3, TimeUnit.SECONDS);
             }
 
-            // Make sure that a MediaHandler exists and is ready
             IMediaHandler currentHandler = ServiceHandler.INSTANCE.getCurrentMediaHandler();
-            if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
+            // Make sure that a MediaHandler exists and is ready
+            if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null && mc.currentScreen == null && !mc.gameSettings.showDebugInfo) {
                 // Make sure there's no GUI screen being displayed
-                if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo) {
-                    this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
-                }
+                this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
             }
         }
     }

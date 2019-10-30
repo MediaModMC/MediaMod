@@ -193,11 +193,8 @@ public abstract class ButtonTooltip extends GuiScreen {
     }
 
     private void renderTooltipButtonEffect() {
-        for (GuiButton guiButton : buttonList) {
-            if (getButtonTooltip(guiButton.id) != null) {
-                mc.fontRendererObj.drawStringWithShadow("?", guiButton.xPosition + guiButton.getButtonWidth() - 8, guiButton.yPosition + 2, 16777215);
-            }
-        }
+        buttonList.stream().filter(guiButton -> getButtonTooltip(guiButton.id) != null).forEach(guiButton ->
+                mc.fontRendererObj.drawStringWithShadow("?", guiButton.xPosition + guiButton.getButtonWidth() - 8, guiButton.yPosition + 2, 16777215));
     }
 
     protected abstract String getButtonTooltip(int buttonId);

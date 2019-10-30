@@ -110,6 +110,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
                     return;
                 }
             }
+
             dragging = true;
             offsetX = currentX - mouseX;
             offsetY = currentY - mouseY;

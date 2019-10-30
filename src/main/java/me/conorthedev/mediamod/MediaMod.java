@@ -2,9 +2,9 @@ package me.conorthedev.mediamod;
 
 import cc.hyperium.Hyperium;
 import cc.hyperium.event.EventBus;
-import cc.hyperium.event.InitializationEvent;
 import cc.hyperium.event.InvokeEvent;
-import cc.hyperium.event.WorldChangeEvent;
+import cc.hyperium.event.client.InitializationEvent;
+import cc.hyperium.event.world.WorldChangeEvent;
 import cc.hyperium.internal.addons.IAddon;
 import cc.hyperium.mods.sk1ercommon.Multithreading;
 import me.conorthedev.mediamod.base.BaseMod;
@@ -80,7 +80,7 @@ public class MediaMod implements IAddon {
             LOGGER.info("MediaMod is up-to-date!");
         } else {
             LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS
-            + " Your version: v" + Metadata.VERSION);
+                    + " Your version: v" + Metadata.VERSION);
         }
 
         LOGGER.info("Loading Configuration...");

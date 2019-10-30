@@ -26,11 +26,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
         this.buttonList.add(new GuiButton(5, width / 2 - 120, getRowPos(2), 250, 20, "Progress Style: "
                 + ChatColor.GREEN + Settings.PROGRESS_STYLE.getDisplay()));
 
-        for (GuiButton button : buttonList) {
-            if (button.id != 0 && button.id != 5) {
-                button.setWidth(120);
-            }
-        }
+        buttonList.stream().filter(button -> button.id != 0 && button.id != 5).forEach(button -> button.setWidth(120));
 
         super.initGui();
     }
@@ -49,12 +45,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, 2, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();
 
-        boolean testing;
-        if (ServiceHandler.INSTANCE.getCurrentMediaHandler() == null) {
-            testing = true;
-        } else {
-            testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
-        }
+        boolean testing = ServiceHandler.INSTANCE.getCurrentMediaHandler() == null || !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
 
         PlayerOverlay.INSTANCE.drawPlayer((width >> 1) - 80, (height >> 1) + 10, Settings.MODERN_PLAYER_STYLE, testing, 1.0);
 
