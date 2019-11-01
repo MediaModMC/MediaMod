@@ -2,5 +2,6 @@
   "name":"MediaMod - Addon",
   "version":"1.1.0",
   "mainClass":"me.conorthedev.mediamod.MediaMod",
-  "desc":"Get integration for your favourite streaming services right in Minecraft"
+  "desc":"Get integration for your favourite streaming services right in Minecraft",
+  "versionCode": "1.0"
 }
