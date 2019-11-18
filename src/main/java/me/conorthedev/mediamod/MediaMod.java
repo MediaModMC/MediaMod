@@ -15,9 +15,6 @@ import me.conorthedev.mediamod.keybinds.KeybindManager;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
-import me.conorthedev.mediamod.util.Metadata;
-import me.conorthedev.mediamod.util.PlayerMessager;
-import me.conorthedev.mediamod.util.VersionChecker;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,16 +70,6 @@ public class MediaMod implements IAddon {
             LOGGER.info("Skipping registration with analytics!");
         }
 
-        LOGGER.info("Checking if MediaMod is up-to-date...");
-        VersionChecker.checkVersion();
-
-        if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
-            LOGGER.info("MediaMod is up-to-date!");
-        } else {
-            LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS
-                    + " Your version: v" + Metadata.VERSION);
-        }
-
         LOGGER.info("Loading Configuration...");
         Hyperium.CONFIG.register(new Settings());
 
@@ -96,9 +83,7 @@ public class MediaMod implements IAddon {
 
     @InvokeEvent
     public void worldChange(WorldChangeEvent event) {
-        if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION & Minecraft.getMinecraft().thePlayer != null) {
-            PlayerMessager.sendMessage("MediaMod is out of date!&7\nLatest version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
-                    "&7\nChangelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
+        if (firstLoad && Minecraft.getMinecraft().thePlayer != null) {
             firstLoad = false;
         }
     }
