@@ -108,7 +108,7 @@ public class BrowserHandler extends AbstractMediaHandler {
     private static class ConnectionCallbackHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
-            t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            t.getResponseHeaders().add("Access-Control-Allow-Origin", "http://localhost:9102");
 
             if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
                 t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
