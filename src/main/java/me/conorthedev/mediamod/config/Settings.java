@@ -21,6 +21,7 @@ public class Settings {
     public static boolean EXTENSION_ENABLED;
     public static ProgressStyle PROGRESS_STYLE;
     public static String REFRESH_TOKEN;
+    public static String DISCORD_ID;
 
     public static void saveConfig() {
         MediaMod.INSTANCE.LOGGER.info("Saving configuration...");
@@ -50,6 +51,7 @@ public class Settings {
         Property browserExtProperty = configuration.get("Player", "useBrowserExtension", true);
         Property progressStyleProperty = configuration.get("Player", "progressStyle", ProgressStyle.BAR_AND_NUMBERS_NEW.name());
         Property refreshTokenProperty = configuration.get("Spotify", "refreshToken", "");
+        Property discordIdProperty = configuration.get("Fire", "discordId", "");
 
         if (load) REFRESH_TOKEN = refreshTokenProperty.getString();
         else refreshTokenProperty.setValue(REFRESH_TOKEN);
@@ -83,5 +85,8 @@ public class Settings {
 
         if (load) EXTENSION_ENABLED = browserExtProperty.getBoolean();
         else browserExtProperty.setValue(EXTENSION_ENABLED);
+
+        if (load) DISCORD_ID = discordIdProperty.getString();
+        else discordIdProperty.setValue(DISCORD_ID);
     }
 }

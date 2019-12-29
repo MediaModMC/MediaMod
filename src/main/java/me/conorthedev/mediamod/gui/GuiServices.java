@@ -4,6 +4,7 @@ import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.util.ButtonTooltip;
 import me.conorthedev.mediamod.gui.util.CustomButton;
 import me.conorthedev.mediamod.gui.util.IMediaGui;
+import me.conorthedev.mediamod.media.fire.FireHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.gui.Gui;
@@ -52,6 +53,11 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         } else {
             drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
         }
+        if (!FireHandler.logged) {
+            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.fireNotLogged.name"), width / 2, height / 2 - 43, Color.red.getRGB());
+        } else {
+            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.fireLogged.name"), width / 2, height / 2 - 43, Color.green.getRGB());
+        }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -93,6 +99,17 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
             case 3:
                 Settings.EXTENSION_ENABLED = !Settings.EXTENSION_ENABLED;
                 button.displayString = getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name"));
+                break;
+            case 4:
+                this.mc.displayGuiScreen(null);
+                PlayerMessager.sendMessage("&cOpening browser with instructions on what to do, when it opens log in with your Discord Account and press 'Connect'");
+                FireHandler.INSTANCE.connectFire();
+                break;
+
+            case 5:
+                FireHandler.fireApi = null;
+                FireHandler.logged = false;
+                this.mc.displayGuiScreen(new GuiServices());
                 break;
         }
     }

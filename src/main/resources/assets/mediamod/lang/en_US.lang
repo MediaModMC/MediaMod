@@ -51,11 +51,15 @@ menu.guiplayerpositioning.text.info.name=Position the player by dragging it arou
 ## GuiServices
 menu.guiservices.buttons.loginSpotify.name=Login to Spotify
 menu.guiservices.buttons.logoutSpotify.name=Logout of Spotify
+menu.guiservices.buttons.loginFire.name=Login to Fire
+menu.guiservices.buttons.logoutFire.name=Logout of Fire
 menu.guiservices.buttons.useBrowserExt.name=Use Browser Extension
 menu.guiservices.buttons.useBrowserExt.tooltip=Disables or Enables the Browser Extension
 
 menu.guiservices.text.spotifyNotLogged.name=Spotify not logged in! Please login below
 menu.guiservices.text.spotifyLogged.name=Spotify is logged in!
+menu.guiservices.text.fireNotLogged.name=Fire not logged in! Please login below
+menu.guiservices.text.fireLogged.name=Fire is logged in!
 
 ## GuiTermsOfService
 menu.guitermsofservice.text.title.name=Terms of Service

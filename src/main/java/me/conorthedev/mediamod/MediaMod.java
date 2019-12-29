@@ -8,6 +8,7 @@ import me.conorthedev.mediamod.keybinds.KeybindInputHandler;
 import me.conorthedev.mediamod.keybinds.KeybindManager;
 import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;
+import me.conorthedev.mediamod.media.fire.FireHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.Multithreading;
@@ -142,6 +143,7 @@ public class MediaMod {
         ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
         serviceHandler.registerHandler(new BrowserHandler());
         serviceHandler.registerHandler(new SpotifyHandler());
+        serviceHandler.registerHandler(new FireHandler());
 
         // Initialize the handlers
         serviceHandler.initializeHandlers();

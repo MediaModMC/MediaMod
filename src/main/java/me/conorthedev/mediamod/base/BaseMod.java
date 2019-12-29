@@ -78,7 +78,7 @@ public class BaseMod {
                 throw new AuthenticationException("Failed to authenticate with Mojang: " + authContent);
             }
 
-            // Create a conncetion
+            // Create a connection
             URL url = new URL(ENDPOINT + "/mediamod/analytics/register/" + FMLClientHandler.instance().getClient().getSession().getUsername() + "/" + Metadata.MODID + "/" + Metadata.VERSION);
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -102,7 +102,7 @@ public class BaseMod {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String content = in.lines().collect(Collectors.joining());
 
-            // Close the input reader & the conncetion
+            // Close the input reader & the connection
             in.close();
             con.disconnect();
 
