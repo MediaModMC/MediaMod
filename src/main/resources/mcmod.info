@@ -3,8 +3,8 @@
     "modid": "mediamod",
     "name": "MediaMod",
     "description": "Get integration for your favourite streaming services right in Minecraft",
-    "version": "1.1",
-    "mcversion": "1.8.9",
+    "version": "1.2",
+    "mcversion": "1.12.2",
     "url": "https://mediamod.conorthedev.me/",
     "updateUrl": "",
     "authorList": [
