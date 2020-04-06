@@ -1,5 +1,6 @@
 package me.conorthedev.mediamod;
 
+import club.sk1er.modcore.ModCoreInstaller;
 import java.io.File;
 import java.io.IOException;
 import me.conorthedev.mediamod.command.MediaModCommand;
@@ -12,6 +13,7 @@ import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.PlayerMessager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -77,6 +79,7 @@ public class MediaMod {
      */
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
         LOGGER.info("MediaMod starting...");
 
         // Register event subscribers and commands
