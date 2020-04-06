@@ -6,8 +6,6 @@ import cc.hyperium.event.InvokeEvent;
 import cc.hyperium.event.client.InitializationEvent;
 import cc.hyperium.event.world.WorldChangeEvent;
 import cc.hyperium.internal.addons.IAddon;
-import cc.hyperium.mods.sk1ercommon.Multithreading;
-import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.PlayerOverlay;
@@ -53,21 +51,6 @@ public class MediaMod implements IAddon {
             } else {
                 LOGGER.fatal("Failed to create necessary directories and files!");
             }
-        }
-
-        if (Minecraft.getMinecraft().gameSettings.snooperEnabled && isTOSAccepted()) {
-            Multithreading.runAsync(() -> {
-                LOGGER.info("Attempting to register with analytics...");
-                boolean successful = BaseMod.init();
-
-                if (successful) {
-                    LOGGER.info("Successfully registered with analytics!");
-                } else {
-                    LOGGER.error("Failed to register with analytics...");
-                }
-            });
-        } else {
-            LOGGER.info("Skipping registration with analytics!");
         }
 
         LOGGER.info("Loading Configuration...");

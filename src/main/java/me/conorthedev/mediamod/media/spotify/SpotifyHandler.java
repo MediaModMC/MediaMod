@@ -14,6 +14,7 @@ import me.conorthedev.mediamod.media.base.AbstractMediaHandler;
 import me.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
@@ -55,13 +56,13 @@ public class SpotifyHandler extends AbstractMediaHandler {
         try {
             // Create a connection
             //BaseMod.ENDPOINT
-            URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/token/" + code);
+            URL url = new URL(BaseMod.ENDPOINT + "/api/spotify/token/" + code);
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // Set the request method
             con.setRequestMethod("GET");
             // Set the user agent
-            con.setRequestProperty("user-agent", "MediaMod/1.0");
+            con.setRequestProperty("user-agent", "MediaMod/" + Metadata.VERSION);
             // Connect to the API
             con.connect();
 
@@ -111,18 +112,18 @@ public class SpotifyHandler extends AbstractMediaHandler {
         }
 
         Desktop desktop = Desktop.getDesktop();
-        String URL = "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
+        String URL = "https://accounts.spotify.com/authorize?client_id=aa1ff6ce24c74e3c8b8e2a7790c7ab56&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
         try {
             desktop.browse(new URI(URL));
         } catch (URISyntaxException e) {
-            MediaMod.INSTANCE.LOGGER.fatal("Something has gone terribly wrong... SpotifyHandler:l59");
+            MediaMod.INSTANCE.LOGGER.fatal("Something has gone terribly wrong... SpotifyHandler:l119");
             e.printStackTrace();
         } catch (Exception e) {
             PlayerMessager.sendMessage("&cFailed to open browser with the Spotify Auth URL!");
             IChatComponent urlComponent = new ChatComponentText(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
-            urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=4d33df7152bb4e2dac57167eeaafdf45&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
+            urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://accounts.spotify.com/authorize?client_id=aa1ff6ce24c74e3c8b8e2a7790c7ab56&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09"));
             urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
-                    "&7Click this to open the Spotify Auth URL"))));
+                    "&7Click here to open the Spotify Auth URL"))));
             Minecraft.getMinecraft().thePlayer.addChatComponentMessage(urlComponent);
         }
     }
@@ -136,12 +137,12 @@ public class SpotifyHandler extends AbstractMediaHandler {
             }
 
             try {
-                URL url = new URL(BaseMod.ENDPOINT + "/api/mediamod/spotify/refresh/" + spotifyApi.getRefreshToken());
+                URL url = new URL(BaseMod.ENDPOINT + "/api/spotify/refresh/" + spotifyApi.getRefreshToken());
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 // Set the request method
                 con.setRequestMethod("GET");
                 // Set the user agent
-                con.setRequestProperty("user-agent", "MediaMod/1.0");
+                con.setRequestProperty("user-agent", "MediaMod/" + Metadata.VERSION);
                 // Connect to the API
                 con.connect();
 
