@@ -1,6 +1,5 @@
 package me.conorthedev.mediamod;
 
-import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.PlayerOverlay;
@@ -10,7 +9,6 @@ import me.conorthedev.mediamod.media.base.ServiceHandler;
 import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
-import me.conorthedev.mediamod.util.Multithreading;
 import me.conorthedev.mediamod.util.PlayerMessager;
 import me.conorthedev.mediamod.util.VersionChecker;
 import net.minecraft.client.Minecraft;
@@ -105,23 +103,6 @@ public class MediaMod {
             } else {
                 LOGGER.fatal("Failed to create necessary directories and files!");
             }
-        }
-
-        // Register with analytics
-        if (FMLClientHandler.instance().getClient().gameSettings.snooperEnabled && getTOSAccepted()) {
-            Multithreading.runAsync(() -> {
-                LOGGER.info("Attempting to register with analytics...");
-
-                boolean successful = BaseMod.init();
-
-                if (successful) {
-                    LOGGER.info("Successfully registered with analytics!");
-                } else {
-                    LOGGER.error("Failed to register with analytics...");
-                }
-            });
-        } else {
-            LOGGER.info("Skipping registration with analytics!");
         }
 
         // Check if MediaMod is up-to-date

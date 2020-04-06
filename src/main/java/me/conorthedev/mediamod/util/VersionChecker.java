@@ -27,13 +27,13 @@ public class VersionChecker {
 
     public static void checkVersion() {
         try {
-            // Create a conncetion
-            URL url = new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version.json");
+            // Create a connection
+            URL url = new URL("https://raw.githubusercontent.com/Sk1erLLC/MediaMod/master/version.json");
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // Set the request method
             con.setRequestMethod("GET");
-            // Connect to the API
+            // Connect
             con.connect();
 
             // Read the output
