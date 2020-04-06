@@ -1,5 +1,7 @@
 package me.conorthedev.mediamod;
 
+import java.io.File;
+import java.io.IOException;
 import me.conorthedev.mediamod.command.MediaModCommand;
 import me.conorthedev.mediamod.config.Settings;
 import me.conorthedev.mediamod.gui.PlayerOverlay;
@@ -10,8 +12,7 @@ import me.conorthedev.mediamod.media.browser.BrowserHandler;
 import me.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import me.conorthedev.mediamod.util.Metadata;
 import me.conorthedev.mediamod.util.PlayerMessager;
-import me.conorthedev.mediamod.util.VersionChecker;
-import net.minecraft.client.Minecraft;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -19,13 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * The main class for MediaMod
@@ -56,9 +52,7 @@ public class MediaMod {
     /**
      * Check if the user is in a development environment, this is used for DEBUG messages
      */
-    public final boolean DEVELOPMENT_ENVIRONMENT = fieldExists(Minecraft.class, "theMinecraft");
-
-    private boolean firstLoad = true;
+    public final boolean DEVELOPMENT_ENVIRONMENT = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
     /**
      * Fired before Minecraft starts
@@ -105,16 +99,6 @@ public class MediaMod {
             }
         }
 
-        // Check if MediaMod is up-to-date
-        LOGGER.info("Checking if MediaMod is up-to-date...");
-        VersionChecker.checkVersion();
-
-        if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
-            LOGGER.info("MediaMod is up-to-date!");
-        } else {
-            LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS + " Your Version: v" + Metadata.VERSION);
-        }
-
         // Load the config
         LOGGER.info("Loading Configuration...");
         Settings.loadConfig();
@@ -126,38 +110,6 @@ public class MediaMod {
 
         // Initialize the handlers
         serviceHandler.initializeHandlers();
-    }
-
-    /**
-     * Fired when the world fires a tick
-     *
-     * @param event WorldTickEvent
-     * @see net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent
-     */
-    @SubscribeEvent
-    public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION && Minecraft.getMinecraft().thePlayer != null) {
-            PlayerMessager.sendMessage("&cMediaMod is out of date!" +
-                    "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
-                    "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
-            firstLoad = false;
-        }
-    }
-
-    /**
-     * Checks if a field exists by the field name
-     *
-     * @param clazz     - the class the field can be in
-     * @param fieldName - the field name
-     * @return boolean
-     */
-    private boolean fieldExists(Class<?> clazz, String fieldName) {
-        try {
-            clazz.getDeclaredField(fieldName);
-            return true;
-        } catch (NoSuchFieldException e) {
-            return false;
-        }
     }
 
     public boolean getTOSAccepted() {

@@ -5,6 +5,8 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+
+        flatDir dirs: 'libs'
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
@@ -13,7 +15,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.2"
+version = "1.3"
 group = "me.conorthedev" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "MediaMod"
 
@@ -25,6 +27,10 @@ minecraft {
     runDir = "run"
     mappings = "stable_22"
     makeObfSourceJar = false
+}
+
+dependencies {
+    provided files("libs/modcore.jar")
 }
 
 processResources {
@@ -40,6 +46,14 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes "FMLCorePlugin": "club.sk1er.modcore.MediaModTweaker",
+                "ModSide": "CLIENT",
+                "FMLCorePluginContainsFMLMod": "Yes, yes it does"
     }
 }
 

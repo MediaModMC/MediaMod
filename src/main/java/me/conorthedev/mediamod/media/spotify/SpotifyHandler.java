@@ -1,9 +1,24 @@
 package me.conorthedev.mediamod.media.spotify;
 
+import club.sk1er.mods.core.util.Multithreading;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import java.awt.Desktop;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import me.conorthedev.mediamod.MediaMod;
 import me.conorthedev.mediamod.base.BaseMod;
 import me.conorthedev.mediamod.config.Settings;
@@ -13,7 +28,6 @@ import me.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import me.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import me.conorthedev.mediamod.util.ChatColor;
 import me.conorthedev.mediamod.util.Metadata;
-import me.conorthedev.mediamod.util.Multithreading;
 import me.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
@@ -21,17 +35,6 @@ import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
-
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * The main class for all Spotify-related things
@@ -251,7 +254,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
                     "  <body class=\"hero is-dark is-fullheight\">\n" +
                     "  <section class=\"section has-text-centered\">\n" +
                     "    <div class=\"container\">\n" +
-                    "      <img src=\"https://raw.githubusercontent.com/MediaModMC/MediaMod/master/src/main/resources/assets/mediamod/header.png\" width=\"400px\">" + "\n" +
+                    "      <img src=\"https://raw.githubusercontent.com/Sk1erLLC/MediaMod/master/src/main/resources/assets/mediamod/header.png\" width=\"400px\">" + "\n" +
                     "      <h1 class=\"title\">\n" +
                     "        Success!\n" +
                     "      </h1>\n" +
