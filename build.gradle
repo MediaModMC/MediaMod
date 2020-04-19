@@ -1,0 +1,82 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://files.minecraftforge.net/maven'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+group 'dev.cbyrne.mediamod'
+version '1.3.0'
+archivesBaseName = "MediaMod"
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+    mappings = "stable_22"
+    makeObfSourceJar = false
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+configurations {
+    embed
+    implementation.extendsFrom embed
+}
+
+dependencies {
+    embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    embed "org.jetbrains.kotlin:kotlin-reflect:1.3.61"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    configurations.embed.each {
+        from (project.zipTree(it))
+    }
+}
+
+task moveResources {
+    doLast {
+        ant.move file: "$buildDir/resources/main",
+                todir: "$buildDir/classes/java"
+    }
+}
+
+moveResources.dependsOn processResources
+classes.dependsOn moveResources
