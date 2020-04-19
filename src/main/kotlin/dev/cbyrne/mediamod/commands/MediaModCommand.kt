@@ -4,7 +4,7 @@ import dev.cbyrne.mediamod.MediaMod
 import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender
 
-class MediaModCommand: CommandBase() {
+object MediaModCommand: CommandBase() {
     override fun getCommandName() = "mediamod"
     override fun getCommandUsage(sender: ICommandSender?) = "/mediamod"
     override fun canCommandSenderUseCommand(sender: ICommandSender?) = true
