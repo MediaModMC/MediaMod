@@ -30,7 +30,7 @@ object MediaMod {
         MinecraftForge.EVENT_BUS.register(this)
 
         // Register the MediaMod command
-        ClientCommandHandler.instance.registerCommand(MediaModCommand())
+        ClientCommandHandler.instance.registerCommand(MediaModCommand)
 
         // Check if our data directory exists
         dataDirectory.takeIf { !it.exists() }?.let {
