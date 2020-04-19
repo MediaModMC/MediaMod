@@ -2,6 +2,9 @@ package dev.cbyrne.mediamod
 
 import dev.cbyrne.mediamod.commands.MediaModCommand
 import dev.cbyrne.mediamod.keybinds.KeybindManager
+import dev.cbyrne.mediamod.services.ServiceManager
+import dev.cbyrne.mediamod.services.impl.SpotifyService
+import dev.cbyrne.mediamod.utils.PlayerMessager
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
@@ -28,21 +31,21 @@ object MediaMod {
 
         // Subscribe to events
         MinecraftForge.EVENT_BUS.register(this)
+        MinecraftForge.EVENT_BUS.register(PlayerMessager)
 
         // Register the MediaMod command
         ClientCommandHandler.instance.registerCommand(MediaModCommand)
 
-        // Check if our data directory exists
-        dataDirectory.takeIf { !it.exists() }?.let {
-            logger.info("Creating data directory")
-            dataDirectory.takeIf { it.mkdir() }?.let {
-                logger.info("Created data directory")
-            } ?: logger.error("Failed to create data directory")
-        } ?: logger.info("Data directory already exists!")
+        // Create data directory
+        dataDirectory.takeIf { it.mkdir() }?.let {
+            logger.info("Created data directory")
+        } ?: logger.error("Unable to create data directory, does it already exist?")
 
         // todo: load config
-        // todo: load service handlers
-        // todo: init service handlers
+
+        ServiceManager.services.add(SpotifyService())
+        ServiceManager.initializeServices()
+
         logger.info("MediaMod initialized!")
     }
 }
