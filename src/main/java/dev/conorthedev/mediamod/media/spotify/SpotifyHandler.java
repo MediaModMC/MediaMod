@@ -1,6 +1,7 @@
 package dev.conorthedev.mediamod.media.spotify;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -228,14 +229,15 @@ public class SpotifyHandler extends AbstractMediaHandler {
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
-
-            server.stop(0);
         }
     }
 
     private static class TokenAPIResponse {
+        @SerializedName("access_token")
         final String accessToken;
+        @SerializedName("expires_in")
         final int expiresIn;
+        @SerializedName("refresh_token")
         final String refreshToken;
 
         TokenAPIResponse(String access_token, int expires_in, String refresh_token) {
@@ -246,7 +248,9 @@ public class SpotifyHandler extends AbstractMediaHandler {
     }
 
     private static class RefreshResponse {
+        @SerializedName("access_token")
         final String accessToken;
+        @SerializedName("expires_in")
         final int expiresIn;
 
         RefreshResponse(String access_token, int expires_in) {
