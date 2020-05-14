@@ -1,9 +1,9 @@
 package dev.conorthedev.mediamod.keybinds;
 
-import dev.conorthedev.mediamod.util.PlayerMessager;
-import dev.conorthedev.mediamod.util.TickScheduler;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.GuiMediaModSettings;
+import dev.conorthedev.mediamod.util.PlayerMessager;
+import dev.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;

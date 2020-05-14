@@ -1,9 +1,9 @@
 package dev.conorthedev.mediamod.gui;
 
+import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.util.CustomButton;
 import dev.conorthedev.mediamod.gui.util.IMediaGui;
 import dev.conorthedev.mediamod.media.base.ServiceHandler;
-import dev.conorthedev.mediamod.config.Settings;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;

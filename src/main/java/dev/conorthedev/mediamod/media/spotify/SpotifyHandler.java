@@ -1,18 +1,16 @@
 package dev.conorthedev.mediamod.media.spotify;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import dev.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.media.base.AbstractMediaHandler;
+import dev.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import dev.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
 import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import dev.conorthedev.mediamod.util.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -20,15 +18,14 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * The main class for all Spotify-related things
@@ -38,8 +35,8 @@ public class SpotifyHandler extends AbstractMediaHandler {
     public static final SpotifyHandler INSTANCE = new SpotifyHandler();
     public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
-    private boolean hasListenedToSong = false;
     private static HttpServer server = null;
+    private boolean hasListenedToSong = false;
 
     private static void handleRequest(String code) {
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
@@ -52,7 +49,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         PlayerMessager.sendMessage("&7Exchanging authorization code for access token, this may take a moment...");
         try {
             TokenAPIResponse tokenAPIResponse = WebRequest.requestToMediaMod(WebRequestType.GET, "spotify/getToken?code=" + code, TokenAPIResponse.class);
-            if(tokenAPIResponse == null) {
+            if (tokenAPIResponse == null) {
                 MediaMod.INSTANCE.LOGGER.error("Error: tokenAPIResponse is null");
                 PlayerMessager.sendMessage("&8&lDEBUG: &rFailed to login to Spotify!");
                 return;
@@ -115,7 +112,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
             try {
                 RefreshResponse refreshResponse = WebRequest.requestToMediaMod(WebRequestType.GET, "spotify/refreshToken?token=" + spotifyApi.getAccessToken(), RefreshResponse.class);
-                if(refreshResponse == null) {
+                if (refreshResponse == null) {
                     MediaMod.INSTANCE.LOGGER.error("Error: tokenAPIResponse is null");
                     PlayerMessager.sendMessage("&8&lDEBUG: &rFailed to login to Spotify!");
                     return;
@@ -169,13 +166,12 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
     @Override
     public void initializeHandler() throws HandlerInitializationException {
-        // If the refresh token is stored, try to refresh
         if (!Settings.REFRESH_TOKEN.isEmpty()) {
             logged = true;
             spotifyApi = new SpotifyAPI(null, Settings.REFRESH_TOKEN);
             refreshSpotify();
         }
-        // Create a HTTP Server for the Spotify API to call back to (http://localhost:9103)
+
         try {
             server = HttpServer.create(new InetSocketAddress(9103), 0);
         } catch (IOException e) {
@@ -184,8 +180,6 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
         server.createContext("/callback", new SpotifyCallbackHandler());
         server.setExecutor(null);
-
-        // Start the server
         server.start();
     }
 
@@ -197,7 +191,6 @@ public class SpotifyHandler extends AbstractMediaHandler {
     private static class SpotifyCallbackHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
-            // Handle the req
             Multithreading.runAsync(() -> handleRequest(t.getRequestURI().toString().replace("/callback/?code=", "").substring(0, t.getRequestURI().toString().replace("/callback/?code=", "").length() - 18)));
 
             String response = "<!DOCTYPE html>\n" +

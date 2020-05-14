@@ -19,20 +19,6 @@ public class PlayerMessager {
         TickScheduler.INSTANCE.schedule(0, this::check);
     }
 
-    public void queue(String chat) {
-        queuedMessages.add(chat);
-    }
-
-    private void check() {
-        if (!queuedMessages.isEmpty()) {
-            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-            if (player != null && queuedMessages.peek() != null) {
-                String poll = queuedMessages.poll();
-                sendMessage(poll);
-            }
-        }
-    }
-
     public static void sendMessage(IChatComponent message) {
         if (message == null) message = new ChatComponentText("");
         messages.add(message);
@@ -50,6 +36,20 @@ public class PlayerMessager {
                     "&c[&fMediaMod&c]&r " + message)));
         } else {
             Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&', message)));
+        }
+    }
+
+    public void queue(String chat) {
+        queuedMessages.add(chat);
+    }
+
+    private void check() {
+        if (!queuedMessages.isEmpty()) {
+            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+            if (player != null && queuedMessages.peek() != null) {
+                String poll = queuedMessages.poll();
+                sendMessage(poll);
+            }
         }
     }
 

@@ -1,11 +1,11 @@
 package dev.conorthedev.mediamod.gui;
 
-import dev.conorthedev.mediamod.gui.util.IMediaGui;
-import dev.conorthedev.mediamod.media.base.IMediaHandler;
-import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.config.ProgressStyle;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
+import dev.conorthedev.mediamod.gui.util.IMediaGui;
+import dev.conorthedev.mediamod.media.base.IMediaHandler;
+import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import dev.conorthedev.mediamod.media.spotify.api.track.Track;
 import net.minecraft.client.Minecraft;
@@ -19,7 +19,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -367,7 +367,7 @@ public class PlayerOverlay {
             }
         }
 
-        if (testing || currentlyPlayingObject != null) {
+        if (testing || (currentlyPlayingObject != null && currentlyPlayingObject.item != null)) {
             if (testing || (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0)) {
                 float right = textXPosition + 91;
                 int offset = 91;

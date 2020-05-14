@@ -1,7 +1,7 @@
 package dev.conorthedev.mediamod.command;
 
-import dev.conorthedev.mediamod.util.TickScheduler;
 import dev.conorthedev.mediamod.gui.GuiMediaModSettings;
+import dev.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.fml.client.FMLClientHandler;
