@@ -67,10 +67,7 @@ public class MediaMod {
      */
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        // Register Keybinds
         KeybindManager.INSTANCE.register();
-
-        // Register the keybind handler
         MinecraftForge.EVENT_BUS.register(new KeybindInputHandler());
     }
 
@@ -104,7 +101,6 @@ public class MediaMod {
             }
         }
 
-        // Check if MediaMod is up-to-date
         LOGGER.info("Checking if MediaMod is up-to-date...");
         VersionChecker.checkVersion();
 
@@ -114,7 +110,6 @@ public class MediaMod {
             LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS + " Your Version: v" + Metadata.VERSION);
         }
 
-        // Load the config
         LOGGER.info("Loading Configuration...");
         Settings.loadConfig();
 
