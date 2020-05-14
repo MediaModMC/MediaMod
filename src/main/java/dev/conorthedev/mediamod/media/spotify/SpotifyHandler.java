@@ -51,7 +51,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
             TokenAPIResponse tokenAPIResponse = WebRequest.requestToMediaMod(WebRequestType.GET, "spotify/getToken?code=" + code, TokenAPIResponse.class);
             if (tokenAPIResponse == null) {
                 MediaMod.INSTANCE.LOGGER.error("Error: tokenAPIResponse is null");
-                PlayerMessager.sendMessage("&8&lDEBUG: &rFailed to login to Spotify!");
+                PlayerMessager.sendMessage("&c&lERROR: &rFailed to login to Spotify!");
                 return;
             }
             spotifyApi = new SpotifyAPI(tokenAPIResponse.accessToken, tokenAPIResponse.refreshToken);
@@ -70,7 +70,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         } catch (Exception e) {
             logged = false;
             MediaMod.INSTANCE.LOGGER.error("Error: " + e.getMessage());
-            PlayerMessager.sendMessage("&8&lDEBUG: &rFailed to login to Spotify!");
+            PlayerMessager.sendMessage("&c&lERROR: &rFailed to login to Spotify!");
         }
     }
 
