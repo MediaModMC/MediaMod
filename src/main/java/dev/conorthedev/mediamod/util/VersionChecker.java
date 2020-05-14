@@ -1,13 +1,9 @@
 package dev.conorthedev.mediamod.util;
 
-import com.google.gson.Gson;
 import dev.conorthedev.mediamod.MediaMod;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.stream.Collectors;
+import java.util.HashMap;
 
 public class VersionChecker {
     /**
@@ -27,27 +23,7 @@ public class VersionChecker {
 
     public static void checkVersion() {
         try {
-            // Create a conncetion
-            URL url = new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version.json");
-
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            // Set the request method
-            con.setRequestMethod("GET");
-            // Connect to the API
-            con.connect();
-
-            // Read the output
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String content = in.lines().collect(Collectors.joining());
-
-            // Close the input reader & the connection
-            in.close();
-            con.disconnect();
-
-            // Parse JSON
-            Gson g = new Gson();
-
-            VersionResponse versionResponse = g.fromJson(content, VersionResponse.class);
+            VersionResponse versionResponse = WebRequest.makeRequest(WebRequestType.GET, new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version.json"), VersionResponse.class, new HashMap<>());
 
             if (versionResponse.latestVersionInt > Metadata.VERSION_INT) {
                 INSTANCE.IS_LATEST_VERSION = false;

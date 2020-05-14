@@ -1,13 +1,11 @@
 package dev.conorthedev.mediamod.media.spotify.api;
 
-import com.google.gson.Gson;
 import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import dev.conorthedev.mediamod.util.WebRequest;
+import dev.conorthedev.mediamod.util.WebRequestType;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.stream.Collectors;
+import java.util.HashMap;
 
 /**
  * The MediaMod Implementation of the Spotify Web API in Java
@@ -42,27 +40,9 @@ public class SpotifyAPI {
      * @return CurrentlyPlayingObject
      */
     public CurrentlyPlayingObject getCurrentTrack() throws Exception {
-        String ENDPOINT = "https://api.spotify.com/v1/me/player/currently-playing";
-
-        URL url = new URL(ENDPOINT);
-
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("Authorization", "Bearer " + ACCESS_TOKEN);
-        con.connect();
-
-        // Read the output
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String content = in.lines().collect(Collectors.joining());
-
-        // Close the input reader & the connection
-        in.close();
-        con.disconnect();
-
-        // Parse JSON
-        Gson g = new Gson();
-
-        return g.fromJson(content, CurrentlyPlayingObject.class);
+        return WebRequest.makeRequest(WebRequestType.GET, new URL("https://api.spotify.com/v1/me/player/currently-playing"), CurrentlyPlayingObject.class, new HashMap<String, String>() {{
+            put("Authorization", "Bearer " + ACCESS_TOKEN);
+        }});
     }
 
     /**
