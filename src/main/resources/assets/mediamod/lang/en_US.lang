@@ -35,8 +35,8 @@ menu.guiplayersettings.buttons.position.tooltip=Move and resize the player
 menu.guiplayersettings.buttons.progressStyle.name=Progress Style:
 menu.guiplayersettings.buttons.progressStyle.tooltip=Cycles through progress display styles
 
-menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Progress bar and text (new version)
-menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Progress bar and text (old version)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Progress bar + text (new)
+menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Progress bar + text (old)
 menu.guiplayersettings.buttons.progressStyle.bar_only=Progress Bar Only
 menu.guiplayersettings.buttons.progressStyle.numbers_only=Text Only
 
