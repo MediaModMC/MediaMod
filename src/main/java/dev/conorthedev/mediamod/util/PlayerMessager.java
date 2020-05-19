@@ -20,17 +20,19 @@ public class PlayerMessager {
     }
 
     public static void sendMessage(IChatComponent message) {
+        if(Minecraft.getMinecraft().thePlayer == null) return;
         if (message == null) message = new ChatComponentText("");
         messages.add(message);
     }
 
     public static void sendMessage(String message) {
-        if (message == null) return;
+        if (message == null || Minecraft.getMinecraft().thePlayer == null) return;
         sendMessage(ChatColor.translateAlternateColorCodes('&', message), true);
     }
 
     public static void sendMessage(String message, boolean header) {
-        if (message == null) return;
+        if (message == null || Minecraft.getMinecraft().thePlayer == null) return;
+
         if (header) {
             Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
                     "&c[&fMediaMod&c]&r " + message)));
