@@ -1,6 +1,7 @@
 package dev.conorthedev.mediamod;
 
 import dev.conorthedev.mediamod.command.MediaModCommand;
+import dev.conorthedev.mediamod.command.MediaModUpdateCommand;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.PlayerOverlay;
 import dev.conorthedev.mediamod.keybinds.KeybindInputHandler;
@@ -8,10 +9,15 @@ import dev.conorthedev.mediamod.keybinds.KeybindManager;
 import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.browser.BrowserHandler;
 import dev.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import dev.conorthedev.mediamod.util.ChatColor;
 import dev.conorthedev.mediamod.util.Metadata;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import dev.conorthedev.mediamod.util.VersionChecker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -37,7 +43,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "http://localhost:3000";
+    public static final String ENDPOINT = "https://mediamodapi.cbyrne.dev/";
 
     /**
      * An instance of this class to access non-static methods from other classes
@@ -85,11 +91,11 @@ public class MediaMod {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PlayerOverlay.INSTANCE);
         MinecraftForge.EVENT_BUS.register(PlayerMessager.INSTANCE);
+
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
+        //ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
 
-        // Create the MediaMod Directory if it does not exist
         File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
-
         if (!MEDIAMOD_DIRECTORY.exists()) {
             LOGGER.info("Creating necessary directories and files for first launch...");
             boolean mkdir = MEDIAMOD_DIRECTORY.mkdir();
@@ -134,6 +140,12 @@ public class MediaMod {
             PlayerMessager.sendMessage("&cMediaMod is out of date!" +
                     "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
                     "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
+
+            /*IChatComponent urlComponent = new ChatComponentText(ChatColor.GRAY + "" + ChatColor.BOLD +  "Click this to automatically update now!");
+            urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
+            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                    "&7Runs /mediamodupdate"))));
+            PlayerMessager.sendMessage(urlComponent);*/
             firstLoad = false;
         }
     }

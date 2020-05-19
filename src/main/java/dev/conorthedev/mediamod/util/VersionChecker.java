@@ -40,11 +40,13 @@ public class VersionChecker {
         public String latestVersionS;
         public int latestVersionInt;
         public String changelog;
+        public String downloadURL;
 
-        VersionResponse(int latestVersionInt, String latestVersionS, String changelog) {
+        VersionResponse(int latestVersionInt, String latestVersionS, String changelog, String downloadURL) {
             this.latestVersionInt = latestVersionInt;
             this.latestVersionS = latestVersionS;
             this.changelog = changelog;
+            this.downloadURL = downloadURL;
         }
     }
 }
