@@ -51,6 +51,8 @@ menu.guiplayerpositioning.text.info.name=Position the player by dragging it arou
 ## GuiServices
 menu.guiservices.buttons.loginSpotify.name=Login to Spotify
 menu.guiservices.buttons.logoutSpotify.name=Logout of Spotify
+menu.guiservices.buttons.saveSpotifyToken.name=Save Spotify Token
+menu.guiservices.buttons.saveSpotifyToken.tooltip=With this enabled, Spotify will automatically login on a restart without having to authorize again. (This isn't harmful to your account, someone can't login to your account with this)
 menu.guiservices.buttons.useBrowserExt.name=Use Browser Extension
 menu.guiservices.buttons.useBrowserExt.tooltip=Disables or Enables the Browser Extension
 

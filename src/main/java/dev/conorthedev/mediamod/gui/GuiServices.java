@@ -25,6 +25,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
             this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.loginSpotify.name")));
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.logoutSpotify.name")));
+            this.buttonList.add(new CustomButton(4, width / 2 - 100, height / 2 + 15, getSuffix(Settings.SAVE_SPOTIFY_TOKEN, I18n.format("menu.guiservices.buttons.saveSpotifyToken.name"))));
         }
 
         this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name"))));
@@ -59,6 +60,8 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
     protected String getButtonTooltip(int buttonId) {
         if (buttonId == 3) {
             return I18n.format("menu.guiservices.buttons.useBrowserExt.tooltip");
+        } else if (buttonId == 4) {
+            return I18n.format("menu.guiservices.buttons.saveSpotifyToken.tooltip");
         } else {
             return null;
         }
@@ -92,6 +95,12 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
             case 3:
                 Settings.EXTENSION_ENABLED = !Settings.EXTENSION_ENABLED;
                 button.displayString = getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name"));
+                break;
+
+            case 4:
+                Settings.SAVE_SPOTIFY_TOKEN = !Settings.SAVE_SPOTIFY_TOKEN;
+                Settings.REFRESH_TOKEN = "";
+                button.displayString = getSuffix(Settings.SAVE_SPOTIFY_TOKEN, I18n.format("menu.guiservices.buttons.saveSpotifyToken.name"));
                 break;
         }
     }

@@ -15,6 +15,7 @@ public class Settings {
     public static boolean MODERN_PLAYER_STYLE;
     public static boolean SHOW_ALBUM_ART;
     public static boolean AUTO_COLOR_SELECTION;
+    public static boolean SAVE_SPOTIFY_TOKEN;
     public static double PLAYER_X;
     public static double PLAYER_Y;
     public static double PLAYER_ZOOM;
@@ -44,6 +45,7 @@ public class Settings {
         Property modernPlayerProperty = configuration.get("Player", "modernPlayer", true);
         Property albumArtProperty = configuration.get("Player", "showAlbumArt", true);
         Property autoColorProperty = configuration.get("Player", "automaticColorSelection", true);
+        Property saveSpotifyTokenProperty = configuration.get("General", "saveSpotifyToken", true);
         Property playerXProperty = configuration.get("Player", "playerX", 5.0);
         Property playerYProperty = configuration.get("Player", "playerY", 5.0);
         Property playerZoomProperty = configuration.get("Player", "playerZoom", 1.0);
@@ -51,8 +53,17 @@ public class Settings {
         Property progressStyleProperty = configuration.get("Player", "progressStyle", ProgressStyle.BAR_AND_NUMBERS_NEW.name());
         Property refreshTokenProperty = configuration.get("Spotify", "refreshToken", "");
 
+        if (load) SAVE_SPOTIFY_TOKEN = saveSpotifyTokenProperty.getBoolean();
+        else saveSpotifyTokenProperty.setValue(SAVE_SPOTIFY_TOKEN);
+
         if (load) REFRESH_TOKEN = refreshTokenProperty.getString();
-        else refreshTokenProperty.setValue(REFRESH_TOKEN);
+        else {
+            if(SAVE_SPOTIFY_TOKEN) {
+                refreshTokenProperty.setValue(REFRESH_TOKEN);
+            } else {
+                refreshTokenProperty.setValue("");
+            }
+        }
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
