@@ -22,8 +22,9 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
 
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, I18n.format("menu.guimediamod.buttons.enabled.name"))));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.SHOW_PLAYER, I18n.format("menu.guimediamod.buttons.showPlayer.name"))));
-        this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 23, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
+        this.buttonList.add(new CustomButton(4, width / 2 - 100, height / 2, getSuffix(Settings.ANNOUNCE_TRACKS, I18n.format("menu.guimediamod.buttons.announceTracks.name"))));
+        this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 + 23, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
+        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 47, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
 
         super.initGui();
     }
@@ -47,6 +48,8 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
                 return I18n.format("menu.guimediamod.buttons.enabled.tooltip");
             case 1:
                 return I18n.format("menu.guimediamod.buttons.showPlayer.tooltip");
+            case 4:
+                return I18n.format("menu.guimediamod.buttons.announceTracks.tooltip");
         }
         return null;
     }
@@ -70,6 +73,11 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
 
             case 3:
                 this.mc.displayGuiScreen(new GuiServices());
+                break;
+
+            case 4:
+                Settings.ANNOUNCE_TRACKS = !Settings.ANNOUNCE_TRACKS;
+                button.displayString = getSuffix(Settings.ANNOUNCE_TRACKS, I18n.format("menu.guimediamod.buttons.announceTracks.name"));
                 break;
         }
 

@@ -8,6 +8,9 @@ menu.guimediamod.buttons.enabled.tooltip=Disables / Enables the mod entirely (re
 menu.guimediamod.buttons.showPlayer.name=Show Player
 menu.guimediamod.buttons.showPlayer.tooltip=Disables / Enables the player from showing on your screen
 
+menu.guimediamod.buttons.announceTracks.name=Announce Tracks
+menu.guimediamod.buttons.announceTracks.tooltip=Sends a chat message with the track title whenever the current track is changed
+
 menu.guimediamod.buttons.playerSettings.name=Player Settings
 
 menu.guimediamod.buttons.servicesSettings.name=Services
@@ -72,7 +75,7 @@ menu.guitermsofservice.buttons.snooperSettings.text=Snooper Settings
 
 # Player
 player.text.by=by
-player.text.song_name=Song Title
+player.text.song_name=Track Title
 player.text.artist_name=Artist Name
 
 # Keybinds

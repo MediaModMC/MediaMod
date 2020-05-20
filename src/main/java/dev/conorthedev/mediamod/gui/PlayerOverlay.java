@@ -8,6 +8,8 @@ import dev.conorthedev.mediamod.media.base.IMediaHandler;
 import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import dev.conorthedev.mediamod.media.spotify.api.track.Track;
+import dev.conorthedev.mediamod.util.ChatColor;
+import dev.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -54,6 +56,13 @@ public class PlayerOverlay {
      * @see CurrentlyPlayingObject
      */
     private CurrentlyPlayingObject currentlyPlayingObject = null;
+
+    /**
+     * The previous song
+     *
+     * @see CurrentlyPlayingObject
+     */
+    private CurrentlyPlayingObject previousPlayingObject = null;
 
     /**
      * The length of the concatenated song name
@@ -154,7 +163,6 @@ public class PlayerOverlay {
      */
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
-
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -171,6 +179,10 @@ public class PlayerOverlay {
                         if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null) {
                             if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
                                 this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
+                                if(this.previousPlayingObject == null || !this.previousPlayingObject.item.name.equals(this.currentlyPlayingObject.item.name)) {
+                                    this.previousPlayingObject = this.currentlyPlayingObject;
+                                    if(Settings.ANNOUNCE_TRACKS) PlayerMessager.sendMessage(ChatColor.GRAY + "Current track: " + this.currentlyPlayingObject.item.name + " by "  + this.currentlyPlayingObject.item.album.artists[0].name, true);
+                                }
                             }
                         }
                     } catch (Exception e) {

@@ -16,6 +16,7 @@ public class Settings {
     public static boolean SHOW_ALBUM_ART;
     public static boolean AUTO_COLOR_SELECTION;
     public static boolean SAVE_SPOTIFY_TOKEN;
+    public static boolean ANNOUNCE_TRACKS;
     public static double PLAYER_X;
     public static double PLAYER_Y;
     public static double PLAYER_ZOOM;
@@ -46,6 +47,7 @@ public class Settings {
         Property albumArtProperty = configuration.get("Player", "showAlbumArt", true);
         Property autoColorProperty = configuration.get("Player", "automaticColorSelection", true);
         Property saveSpotifyTokenProperty = configuration.get("General", "saveSpotifyToken", true);
+        Property announceTracksProperty = configuration.get("Player", "announceTracks", true);
         Property playerXProperty = configuration.get("Player", "playerX", 5.0);
         Property playerYProperty = configuration.get("Player", "playerY", 5.0);
         Property playerZoomProperty = configuration.get("Player", "playerZoom", 1.0);
@@ -67,6 +69,9 @@ public class Settings {
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
+
+        if (load) ANNOUNCE_TRACKS = enabledProperty.getBoolean();
+        else announceTracksProperty.setValue(ANNOUNCE_TRACKS);
 
         if (load) PROGRESS_STYLE = ProgressStyle.valueOf(progressStyleProperty.getString());
         else progressStyleProperty.setValue(PROGRESS_STYLE.name());
