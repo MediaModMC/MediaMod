@@ -16,4 +16,12 @@ public interface IMediaHandler {
     boolean handlerReady();
 
     int getEstimatedProgressMs();
+
+    boolean supportsSkipping();
+
+    boolean supportsPausing();
+
+    boolean skipTrack();
+
+    boolean pausePlayTrack();
 }

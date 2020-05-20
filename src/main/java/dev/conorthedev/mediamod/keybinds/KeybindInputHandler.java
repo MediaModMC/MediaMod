@@ -1,7 +1,10 @@
 package dev.conorthedev.mediamod.keybinds;
 
+import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.GuiMediaModSettings;
+import dev.conorthedev.mediamod.media.base.ServiceHandler;
+import dev.conorthedev.mediamod.util.ChatColor;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import dev.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.client.Minecraft;
@@ -29,10 +32,35 @@ public class KeybindInputHandler {
                 Settings.SHOW_PLAYER = false;
             }
             Settings.saveConfig();
-        }
-
-        if (KeybindManager.INSTANCE.menuKeybind.isPressed()) {
+        } else if (KeybindManager.INSTANCE.menuKeybind.isPressed()) {
             TickScheduler.INSTANCE.schedule(0, () -> Minecraft.getMinecraft().displayGuiScreen(new GuiMediaModSettings()));
+        }
+        if(ServiceHandler.INSTANCE.getCurrentMediaHandler() != null) {
+            if (KeybindManager.INSTANCE.skipKeybind.isPressed()) {
+                if(!ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
+                    PlayerMessager.sendMessage(ChatColor.RED + "You can not skip when no services are playing music!", true);
+                } else {
+                    if(ServiceHandler.INSTANCE.getCurrentMediaHandler().supportsSkipping()) {
+                        if(ServiceHandler.INSTANCE.getCurrentMediaHandler().skipTrack()) {
+                            PlayerMessager.sendMessage(ChatColor.GREEN + "Song skipped!", true);
+                        }
+                    } else {
+                        PlayerMessager.sendMessage(ChatColor.RED + "This service does not support skipping songs", true);
+                    }
+                }
+            } else if (KeybindManager.INSTANCE.pausePlayKeybind.isPressed()) {
+                if(!ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
+                    PlayerMessager.sendMessage(ChatColor.RED + "You can't pause or resume a song when no services are playing music!", true);
+                } else {
+                    if(ServiceHandler.INSTANCE.getCurrentMediaHandler().supportsPausing()) {
+                        if(ServiceHandler.INSTANCE.getCurrentMediaHandler().pausePlayTrack()) {
+                            PlayerMessager.sendMessage(ChatColor.GREEN + "Song paused/resumed!", true);
+                        }
+                    } else {
+                        PlayerMessager.sendMessage(ChatColor.RED + "This service does not support pausing or resuming songs", true);
+                    }
+                }
+            }
         }
     }
 }

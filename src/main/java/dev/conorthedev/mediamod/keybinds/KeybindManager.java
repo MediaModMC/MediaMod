@@ -29,6 +29,19 @@ public class KeybindManager {
      */
     KeyBinding menuKeybind;
 
+    /**
+     * The KeyBinding class for the skip keybind
+     *
+     * @see KeyBinding
+     */
+    KeyBinding skipKeybind;
+
+    /**
+     * The KeyBinding class for the skip keybind
+     *
+     * @see KeyBinding
+     */
+    KeyBinding pausePlayKeybind;
 
     /**
      * Fired when you want to register keybinds
@@ -36,10 +49,15 @@ public class KeybindManager {
      * @see MediaMod#preInit(FMLPreInitializationEvent)
      */
     public void register() {
-        // Initialize and declare keybid
+        // Initialize and declare keybinds
         INSTANCE.disableKeybind = new KeyBinding("key.disableKeybind", Keyboard.KEY_P, "key.categories.mediamod");
         INSTANCE.menuKeybind = new KeyBinding("key.menuKeybind", Keyboard.KEY_M, "key.categories.mediamod");
+        INSTANCE.skipKeybind = new KeyBinding("key.skipKeybind", Keyboard.KEY_F, "key.categories.mediamod");
+        INSTANCE.pausePlayKeybind = new KeyBinding("key.pausePlayKeybind", Keyboard.KEY_N, "key.categories.mediamod");
+
         ClientRegistry.registerKeyBinding(disableKeybind);
         ClientRegistry.registerKeyBinding(menuKeybind);
+        ClientRegistry.registerKeyBinding(skipKeybind);
+        ClientRegistry.registerKeyBinding(pausePlayKeybind);
     }
 }

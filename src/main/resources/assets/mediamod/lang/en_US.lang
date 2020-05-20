@@ -77,3 +77,5 @@ player.text.artist_name=Artist Name
 key.categories.mediamod=MediaMod Keybinds
 key.disableKeybind=Disable Player
 key.menuKeybind=Open Menu
+key.pausePlayKeybind=Pause / Resume Track
+key.skipKeybind=Skip Track

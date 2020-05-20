@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
  * The main class for all Spotify-related things
  */
 public class SpotifyHandler extends AbstractMediaHandler {
-
     public static final SpotifyHandler INSTANCE = new SpotifyHandler();
     public static SpotifyAPI spotifyApi = null;
     public static boolean logged = false;
@@ -157,6 +156,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
                 lastProgressMs = 0;
                 if (hasListenedToSong) paused = true;
             }
+
             return object;
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,7 +185,27 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
     @Override
     public boolean handlerReady() {
-        return logged && !paused;
+        return logged;
+    }
+
+    @Override
+    public boolean supportsSkipping() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsPausing() {
+        return true;
+    }
+
+    @Override
+    public boolean skipTrack() {
+        return spotifyApi.skipTrack();
+    }
+
+    @Override
+    public boolean pausePlayTrack() {
+        return spotifyApi.pausePlayTrack();
     }
 
     private static class SpotifyCallbackHandler implements HttpHandler {

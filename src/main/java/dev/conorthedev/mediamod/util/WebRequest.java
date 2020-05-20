@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -47,40 +48,36 @@ public class WebRequest {
         return null;
     }
 
-    public static <T> T makeRequest(WebRequestType type, URL url, Class<T> toClass, HashMap<String, String> properties) {
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
+    public static <T> T makeRequest(WebRequestType type, URL url, Class<T> toClass, HashMap<String, String> properties) throws IOException {
+        HttpURLConnection connection;
+        BufferedReader reader;
 
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-            for (String key : properties.keySet()) {
-                String value = properties.get(key);
-                connection.setRequestProperty(key, value);
-            }
-            connection.connect();
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod(type.name());
+        connection.setRequestProperty("User-Agent", "MediaMod/1.0");
 
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String content = reader.lines().collect(Collectors.joining());
-
-            return new Gson().fromJson(content, toClass);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        for (String key : properties.keySet()) {
+            String value = properties.get(key);
+            connection.setRequestProperty(key, value);
         }
 
-        return null;
+        if(type == WebRequestType.POST || type == WebRequestType.PUT) {
+            connection.setDoOutput(true);
+            connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
+        }
+
+        connection.connect();
+
+        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String content = reader.lines().collect(Collectors.joining());
+
+        connection.disconnect();
+        reader.close();
+
+        if(toClass == null) {
+            return null;
+        }
+
+        return new Gson().fromJson(content, toClass);
     }
 }

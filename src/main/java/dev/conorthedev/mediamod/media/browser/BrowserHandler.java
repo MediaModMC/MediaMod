@@ -102,6 +102,26 @@ public class BrowserHandler extends AbstractMediaHandler {
         }
     }
 
+    @Override
+    public boolean supportsSkipping() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsPausing() {
+        return false;
+    }
+
+    @Override
+    public boolean skipTrack() {
+        return false;
+    }
+
+    @Override
+    public boolean pausePlayTrack() {
+        return false;
+    }
+
     /**
      * The connection callback handler
      */
