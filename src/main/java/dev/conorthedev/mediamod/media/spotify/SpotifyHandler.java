@@ -53,6 +53,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
                 PlayerMessager.sendMessage("&c&lERROR: &rFailed to login to Spotify!");
                 return;
             }
+
             spotifyApi = new SpotifyAPI(tokenAPIResponse.accessToken, tokenAPIResponse.refreshToken);
 
             if (spotifyApi.getRefreshToken() != null) {
@@ -104,24 +105,30 @@ public class SpotifyHandler extends AbstractMediaHandler {
     }
 
     private void refreshSpotify() {
-        if (logged && SpotifyHandler.spotifyApi.getRefreshToken() != null) {
+        if (spotifyApi.getRefreshToken() != null) {
             if (FMLClientHandler.instance().getClient().thePlayer != null) {
                 PlayerMessager.sendMessage("&8INFO: &9Attempting to refresh access token...");
+            } else {
+                MediaMod.INSTANCE.LOGGER.info("Attempting to refresh access token...");
             }
 
             try {
-                RefreshResponse refreshResponse = WebRequest.requestToMediaMod(WebRequestType.GET, "spotify/refreshToken?token=" + spotifyApi.getAccessToken(), RefreshResponse.class);
+                RefreshResponse refreshResponse = WebRequest.requestToMediaMod(WebRequestType.GET, "spotify/refreshToken?token=" + spotifyApi.getRefreshToken(), RefreshResponse.class);
+
                 if (refreshResponse == null) {
                     MediaMod.INSTANCE.LOGGER.error("Error: tokenAPIResponse is null");
                     PlayerMessager.sendMessage("&8&lDEBUG: &rFailed to login to Spotify!");
                     return;
                 }
+
                 spotifyApi = new SpotifyAPI(refreshResponse.accessToken, spotifyApi.getRefreshToken());
+
                 if (spotifyApi.getRefreshToken() != null) {
                     logged = true;
                     Settings.REFRESH_TOKEN = spotifyApi.getRefreshToken();
                     Settings.saveConfig();
                     PlayerMessager.sendMessage("&a&lSUCCESS! &rLogged into Spotify!");
+
                     CurrentlyPlayingObject currentTrack = spotifyApi.getCurrentTrack();
 
                     if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
@@ -146,6 +153,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         try {
             CurrentlyPlayingObject object = spotifyApi.getCurrentTrack();
             lastProgressUpdate = System.currentTimeMillis();
+
             if (object != null) {
                 lastProgressMs = object.progress_ms;
                 paused = !object.is_playing;
@@ -263,12 +271,17 @@ public class SpotifyHandler extends AbstractMediaHandler {
     private static class RefreshResponse {
         @SerializedName("access_token")
         final String accessToken;
+        @SerializedName("token_type")
+        final String tokenType;
         @SerializedName("expires_in")
         final int expiresIn;
+        final String scope;
 
-        RefreshResponse(String access_token, int expires_in) {
+        RefreshResponse(String access_token, int expires_in, String token_type, String scope) {
             this.accessToken = access_token;
             this.expiresIn = expires_in;
+            this.tokenType = token_type;
+            this.scope = scope;
         }
     }
 }

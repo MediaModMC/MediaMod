@@ -1,5 +1,6 @@
 package dev.conorthedev.mediamod.media.spotify.api;
 
+import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
 import dev.conorthedev.mediamod.util.*;
 
@@ -47,6 +48,7 @@ public class SpotifyAPI {
                 put("Authorization", "Bearer " + ACCESS_TOKEN);
             }});
         } catch (IOException e) {
+            MediaMod.INSTANCE.LOGGER.error("Failed to get current track! " + e.getMessage());
             PlayerMessager.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Failed to get current track!\n" + ChatColor.RED + "An error occurred: " + e.getMessage(), true);
         }
 

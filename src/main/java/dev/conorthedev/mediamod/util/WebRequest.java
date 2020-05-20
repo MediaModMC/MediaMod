@@ -2,6 +2,7 @@ package dev.conorthedev.mediamod.util;
 
 import com.google.gson.Gson;
 import dev.conorthedev.mediamod.MediaMod;
+import org.lwjgl.Sys;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class WebRequest {
     public static <T> T requestToMediaMod(WebRequestType type, String path, Class<T> toClass) throws IOException {
-        URL url = new URL(MediaMod.ENDPOINT + "/api/" + path);
+        URL url = new URL(MediaMod.ENDPOINT + "api/" + path);
 
         HttpURLConnection connection = null;
         BufferedReader reader = null;
