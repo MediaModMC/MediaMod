@@ -3,6 +3,7 @@ package dev.conorthedev.mediamod;
 import dev.conorthedev.mediamod.command.MediaModCommand;
 import dev.conorthedev.mediamod.command.MediaModUpdateCommand;
 import dev.conorthedev.mediamod.config.Settings;
+import dev.conorthedev.mediamod.core.CoreMod;
 import dev.conorthedev.mediamod.gui.PlayerOverlay;
 import dev.conorthedev.mediamod.keybinds.KeybindInputHandler;
 import dev.conorthedev.mediamod.keybinds.KeybindManager;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * The main class for MediaMod
@@ -43,7 +45,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "https://mediamodapi.cbyrne.dev/";
+    public static final String ENDPOINT = "http://0.0.0.0:3000/";
 
     /**
      * An instance of this class to access non-static methods from other classes
@@ -62,6 +64,11 @@ public class MediaMod {
      * Check if the user is in a development environment, this is used for DEBUG messages
      */
     public final boolean DEVELOPMENT_ENVIRONMENT = fieldExists(Minecraft.class, "theMinecraft");
+
+    /**
+     * A CoreMod instance which assists with analytics
+     */
+    private final CoreMod coreMod = new CoreMod("mediamod");
 
     private boolean firstLoad = true;
 
@@ -114,6 +121,14 @@ public class MediaMod {
             LOGGER.info("MediaMod is up-to-date!");
         } else {
             LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS + " Your Version: v" + Metadata.VERSION);
+        }
+
+        try {
+            LOGGER.info("Registering with MediaMod API...");
+            this.coreMod.register();
+            LOGGER.info("Successfully registered with MediaMod API!");
+        } catch (IOException e) {
+            LOGGER.warn("Failed to register with analytics! " + e.getMessage());
         }
 
         LOGGER.info("Loading Configuration...");
