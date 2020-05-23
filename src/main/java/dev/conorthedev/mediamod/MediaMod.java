@@ -1,7 +1,6 @@
 package dev.conorthedev.mediamod;
 
 import dev.conorthedev.mediamod.command.MediaModCommand;
-import dev.conorthedev.mediamod.command.MediaModUpdateCommand;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.core.CoreMod;
 import dev.conorthedev.mediamod.gui.PlayerOverlay;
@@ -10,15 +9,10 @@ import dev.conorthedev.mediamod.keybinds.KeybindManager;
 import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.browser.BrowserHandler;
 import dev.conorthedev.mediamod.media.spotify.SpotifyHandler;
-import dev.conorthedev.mediamod.util.ChatColor;
 import dev.conorthedev.mediamod.util.Metadata;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import dev.conorthedev.mediamod.util.VersionChecker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -68,7 +62,7 @@ public class MediaMod {
     /**
      * A CoreMod instance which assists with analytics
      */
-    private final CoreMod coreMod = new CoreMod("mediamod");
+    public final CoreMod coreMod = new CoreMod("mediamod");
 
     private boolean firstLoad = true;
 
@@ -124,9 +118,15 @@ public class MediaMod {
         }
 
         try {
-            LOGGER.info("Registering with MediaMod API...");
             this.coreMod.register();
-            LOGGER.info("Successfully registered with MediaMod API!");
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    this.coreMod.shutdown();
+                } catch (IOException e) {
+                    LOGGER.warn("Failed to send offline request! " + e.getMessage());
+                }
+            }));
         } catch (IOException e) {
             LOGGER.warn("Failed to register with analytics! " + e.getMessage());
         }

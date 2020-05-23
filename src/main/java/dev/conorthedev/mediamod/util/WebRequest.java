@@ -31,7 +31,7 @@ public class WebRequest {
 
             return new Gson().fromJson(content, toClass);
         } catch (Exception e) {
-            e.printStackTrace();
+            MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
         } finally {
             try {
                 if (connection != null) {
@@ -42,7 +42,7 @@ public class WebRequest {
                     reader.close();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
             }
         }
 
