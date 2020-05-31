@@ -88,7 +88,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         }
 
         Desktop desktop = Desktop.getDesktop();
-        String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=aafe2607fde64888b9ef5b32bbc3d703&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
+        String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=2892e1e967084cc2b9cbba8fb90c7e56&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
         try {
             desktop.browse(new URI(spotifyUrl));
         } catch (URISyntaxException e) {

@@ -1,6 +1,6 @@
 {
-  "latestVersionInt": 5,
-  "latestVersionS": "1.2.1",
-  "changelog": "MediaMod v1.2.1: Bug fixes & essential backend changes  - This update is REQUIRED for Sk1er MediaMod users! Download from https://github.com/MediaModMC/MediaMod/",
-  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.1/MediaMod-1.2.1.jar"
+  "latestVersionInt": 6,
+  "latestVersionS": "1.2.2",
+  "changelog": "MediaMod v1.2.2: Fixes Spotify login Download from https://github.com/MediaModMC/MediaMod/",
+  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.2/MediaMod-1.2.2.jar"
 }
