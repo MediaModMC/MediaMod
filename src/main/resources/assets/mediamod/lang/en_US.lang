@@ -15,6 +15,8 @@ menu.guimediamod.buttons.playerSettings.name=Player Settings
 
 menu.guimediamod.buttons.servicesSettings.name=Services
 
+menu.guimediamod.buttons.credits.name=Credits
+
 menu.guimediamod.buttons.yes=YES
 menu.guimediamod.buttons.no=NO
 
@@ -32,8 +34,8 @@ menu.guiplayersettings.buttons.colorSelection.tooltip=Sets the background color 
 menu.guiplayersettings.buttons.modernPlayer.name=Modern Player
 menu.guiplayersettings.buttons.modernPlayer.tooltip=Enables a new player design that involves gradients and shadows, designed by ScottehBoeh
 
-menu.guiplayersettings.buttons.position.name=Position Player
-menu.guiplayersettings.buttons.position.tooltip=Move and resize the player
+menu.guiplayersettings.buttons.customize.name=Customize Player
+menu.guiplayersettings.buttons.customize.tooltip=Move, resize and modify elements of the player
 
 menu.guiplayersettings.buttons.progressStyle.name=Progress Style:
 menu.guiplayersettings.buttons.progressStyle.tooltip=Cycles through progress display styles

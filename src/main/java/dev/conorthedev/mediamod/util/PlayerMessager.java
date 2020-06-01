@@ -25,6 +25,18 @@ public class PlayerMessager {
         messages.add(message);
     }
 
+    public static void sendMessage(IChatComponent message, boolean header) {
+        if(Minecraft.getMinecraft().thePlayer == null) return;
+        if (message == null) message = new ChatComponentText("");
+
+        if (header) {
+            messages.add(new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                    "&c[&fMediaMod&c]&r ")).appendSibling(message));
+        } else {
+            messages.add(message);
+        }
+    }
+
     public static void sendMessage(String message) {
         if (message == null || Minecraft.getMinecraft().thePlayer == null) return;
         sendMessage(ChatColor.translateAlternateColorCodes('&', message), true);

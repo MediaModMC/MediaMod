@@ -9,6 +9,7 @@ import dev.conorthedev.mediamod.keybinds.KeybindManager;
 import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.browser.BrowserHandler;
 import dev.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import dev.conorthedev.mediamod.parties.PartyManager;
 import dev.conorthedev.mediamod.util.Metadata;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import dev.conorthedev.mediamod.util.VersionChecker;
@@ -39,7 +40,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "https://mediamodapi.cbyrne.dev/";
+    public static final String ENDPOINT = "http://localhost:3000/";
 
     /**
      * An instance of this class to access non-static methods from other classes
@@ -63,6 +64,11 @@ public class MediaMod {
      * A CoreMod instance which assists with analytics
      */
     public final CoreMod coreMod = new CoreMod("mediamod");
+
+    /**
+     * The class which manages everything to-do with MediaMod Parties
+     */
+    public final PartyManager partyManager = new PartyManager();
 
     private boolean firstLoad = true;
 
@@ -119,14 +125,6 @@ public class MediaMod {
 
         try {
             this.coreMod.register();
-
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    this.coreMod.shutdown();
-                } catch (IOException e) {
-                    LOGGER.warn("Failed to send offline request! " + e.getMessage());
-                }
-            }));
         } catch (IOException e) {
             LOGGER.warn("Failed to register with analytics! " + e.getMessage());
         }
