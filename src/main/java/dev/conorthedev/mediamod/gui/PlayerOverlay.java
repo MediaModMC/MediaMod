@@ -2,6 +2,7 @@ package dev.conorthedev.mediamod.gui;
 
 import dev.conorthedev.mediamod.config.ProgressStyle;
 import dev.conorthedev.mediamod.config.Settings;
+import dev.conorthedev.mediamod.event.SongChangeEvent;
 import dev.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import dev.conorthedev.mediamod.gui.util.IMediaGui;
 import dev.conorthedev.mediamod.media.base.IMediaHandler;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -181,6 +183,7 @@ public class PlayerOverlay {
                                 this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
                                 if(this.previousPlayingObject == null || !this.previousPlayingObject.item.name.equals(this.currentlyPlayingObject.item.name)) {
                                     this.previousPlayingObject = this.currentlyPlayingObject;
+                                    MinecraftForge.EVENT_BUS.post(new SongChangeEvent(this.currentlyPlayingObject));
                                     if(Settings.ANNOUNCE_TRACKS) PlayerMessager.sendMessage(ChatColor.GRAY + "Current track: " + this.currentlyPlayingObject.item.name + " by "  + this.currentlyPlayingObject.item.album.artists[0].name, true);
                                 }
                             }

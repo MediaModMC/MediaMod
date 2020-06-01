@@ -11,4 +11,6 @@ public class Track {
     public Album album;
     public int duration_ms;
     public String name;
+    // Spotify only
+    public String id;
 }
