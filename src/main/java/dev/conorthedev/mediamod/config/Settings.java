@@ -70,7 +70,7 @@ public class Settings {
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
 
-        if (load) ANNOUNCE_TRACKS = enabledProperty.getBoolean();
+        if (load) ANNOUNCE_TRACKS = announceTracksProperty.getBoolean();
         else announceTracksProperty.setValue(ANNOUNCE_TRACKS);
 
         if (load) PROGRESS_STYLE = ProgressStyle.valueOf(progressStyleProperty.getString());
