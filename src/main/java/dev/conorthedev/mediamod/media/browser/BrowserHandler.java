@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The class which receives data from the browser extension
@@ -26,6 +28,11 @@ public class BrowserHandler extends AbstractMediaHandler {
      * Instance of the MediaHandler
      */
     public static final BrowserHandler INSTANCE = new BrowserHandler();
+
+    /**
+     * A list of origins that are allowed for requests to change the current song
+     */
+    public final List<String> allowedOrigins = Arrays.asList("https://[^.]*\\.?youtube.com(/.*)?", "https://[^.]*\\.?music.apple.com(/.*)?", "https://[^.]*\\.?soundcloud.com(/.*)?", "https://[^.]*\\.?music.youtube.com(/.*)?");
 
     /**
      * Logger used to log info messages, debug messages, error messages & more
@@ -128,7 +135,22 @@ public class BrowserHandler extends AbstractMediaHandler {
     private static class ConnectionCallbackHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
-            t.getResponseHeaders().add("Access-Control-Allow-Origin", "http://localhost:9102");
+            String origin = t.getRequestHeaders().get("Origin").get(0);
+
+            boolean matchFound = false;
+            for (String regex : BrowserHandler.INSTANCE.allowedOrigins) {
+                if(origin.matches(regex)) {
+                    t.getResponseHeaders().add("Access-Control-Allow-Origin", origin);
+                    matchFound = true;
+                    break;
+                }
+            }
+
+            if(!matchFound) {
+                LOGGER.warn("Request to set information came from unknown domain... ignoring!");
+                t.sendResponseHeaders(400, -1);
+                return;
+            }
 
             if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
                 t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -187,7 +209,16 @@ public class BrowserHandler extends AbstractMediaHandler {
             BrowserHandler.INSTANCE.currentTrack = null;
             INITIALIZED = false;
 
-            t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            String origin = t.getRequestHeaders().get("Access-Control-Allow-Origin").get(0);
+            for (String regex : BrowserHandler.INSTANCE.allowedOrigins) {
+                if(origin.matches(regex)) {
+                    t.getResponseHeaders().add("Access-Control-Allow-Origin", origin);
+                    break;
+                } else {
+                    t.sendResponseHeaders(400, -1);
+                    return;
+                }
+            }
 
             String response = "OK";
 
