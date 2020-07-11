@@ -1,6 +1,6 @@
 {
-  "latestVersionInt": 7,
-  "latestVersionS": "1.2.3",
-  "changelog": "MediaMod v1.2.3: Improves Spotify reliability Download from https://github.com/MediaModMC/MediaMod/",
-  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.3/MediaMod-1.2.3.jar"
+  "latestVersionInt": 8,
+  "latestVersionS": "1.2.4",
+  "changelog": "MediaMod v1.2.4: Fix analytics not functioning correctly and re-implement disabling snooper disabling mediamod analytics | Download from https://github.com/MediaModMC/MediaMod/",
+  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.4/MediaMod-1.2.4.jar"
 }
