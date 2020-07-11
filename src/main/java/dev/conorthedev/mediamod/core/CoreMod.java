@@ -32,6 +32,8 @@ public class CoreMod {
     }
 
     public void register() throws IOException {
+        if(!Minecraft.getMinecraft().isSnooperEnabled()) return;
+
         LOGGER.info("Attempting to register with CoreMod API...");
 
         URL url = new URL(MediaMod.ENDPOINT + "register");
@@ -39,7 +41,8 @@ public class CoreMod {
         JsonObject obj = new JsonObject();
         obj.addProperty("uuid", Minecraft.getMinecraft().getSession().getProfile().getId().toString());
         obj.addProperty("currentMod", modID);
-        obj.addProperty("version", Minecraft.getMinecraft().getVersion());
+        obj.addProperty("version", Minecraft.getSessionInfo().get("X-Minecraft-Version"));
+
         String content = obj.toString();
 
         HttpURLConnection connection;
@@ -69,6 +72,8 @@ public class CoreMod {
     }
 
     public void shutdown() {
+        if(!Minecraft.getMinecraft().isSnooperEnabled()) return;
+
         LOGGER.info("Shutting down CoreMod (" + modID + ")");
         AtomicBoolean finished = new AtomicBoolean(false);
         Multithreading.runAsync(() -> {
@@ -90,9 +95,6 @@ public class CoreMod {
                 connection.getOutputStream().write(content.getBytes(StandardCharsets.UTF_8));
 
                 connection.connect();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                reader.close();
-                connection.disconnect();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
