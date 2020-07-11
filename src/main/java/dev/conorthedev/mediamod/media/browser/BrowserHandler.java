@@ -209,7 +209,7 @@ public class BrowserHandler extends AbstractMediaHandler {
             BrowserHandler.INSTANCE.currentTrack = null;
             INITIALIZED = false;
 
-            String origin = t.getRequestHeaders().get("Access-Control-Allow-Origin").get(0);
+            String origin = t.getRequestHeaders().get("Origin").get(0);
             for (String regex : BrowserHandler.INSTANCE.allowedOrigins) {
                 if(origin.matches(regex)) {
                     t.getResponseHeaders().add("Access-Control-Allow-Origin", origin);
