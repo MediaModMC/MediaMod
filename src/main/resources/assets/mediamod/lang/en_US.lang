@@ -40,6 +40,9 @@ menu.guiplayersettings.buttons.customize.tooltip=Move, resize and modify element
 menu.guiplayersettings.buttons.progressStyle.name=Progress Style:
 menu.guiplayersettings.buttons.progressStyle.tooltip=Cycles through progress display styles
 
+menu.guiplayersettings.buttons.position.name=Position Player
+menu.guiplayersettings.buttons.position.tooltip=Change the size and position of the MediaMod HUD
+
 menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_new=Progress bar + text (new)
 menu.guiplayersettings.buttons.progressStyle.bar_and_numbers_old=Progress bar + text (old)
 menu.guiplayersettings.buttons.progressStyle.bar_only=Progress Bar Only

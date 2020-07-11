@@ -1,6 +1,6 @@
 {
-  "latestVersionInt": 6,
-  "latestVersionS": "1.2.2",
-  "changelog": "MediaMod v1.2.2: Fixes Spotify login Download from https://github.com/MediaModMC/MediaMod/",
-  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.2/MediaMod-1.2.2.jar"
+  "latestVersionInt": 7,
+  "latestVersionS": "1.2.3",
+  "changelog": "MediaMod v1.2.3: Improves Spotify reliability Download from https://github.com/MediaModMC/MediaMod/",
+  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.3/MediaMod-1.2.3.jar"
 }

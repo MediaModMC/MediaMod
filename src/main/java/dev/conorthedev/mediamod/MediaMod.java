@@ -10,9 +10,7 @@ import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.browser.BrowserHandler;
 import dev.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import dev.conorthedev.mediamod.parties.PartyManager;
-import dev.conorthedev.mediamod.util.Metadata;
-import dev.conorthedev.mediamod.util.PlayerMessager;
-import dev.conorthedev.mediamod.util.VersionChecker;
+import dev.conorthedev.mediamod.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,6 +27,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
+class ClientIDResponse {
+    String clientID;
+}
+
 /**
  * The main class for MediaMod
  *
@@ -40,7 +42,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "http://localhost:3000/";
+    public static final String ENDPOINT = "https://mediamodapi.cbyrne.dev/";
 
     /**
      * An instance of this class to access non-static methods from other classes
@@ -69,6 +71,11 @@ public class MediaMod {
      * The class which manages everything to-do with MediaMod Parties
      */
     public final PartyManager partyManager = new PartyManager();
+
+    /**
+     * The client ID used for Spotify Requests
+     */
+    public String spotifyClientID;
 
     private boolean firstLoad = true;
 
@@ -126,7 +133,16 @@ public class MediaMod {
         try {
             this.coreMod.register();
         } catch (IOException e) {
-            LOGGER.warn("Failed to register with analytics! " + e.getMessage());
+            LOGGER.warn("Failed to register with analytics! " + e.getLocalizedMessage());
+        }
+
+        try {
+            ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.GET, "clientID", ClientIDResponse.class);
+            if(clientIDResponse != null) {
+                spotifyClientID = clientIDResponse.clientID;
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Failed to get Spotify Client ID: " + e.getLocalizedMessage());
         }
 
         LOGGER.info("Loading Configuration...");

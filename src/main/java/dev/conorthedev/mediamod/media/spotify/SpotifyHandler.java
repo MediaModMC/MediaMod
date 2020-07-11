@@ -17,6 +17,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
+import javax.print.attribute.standard.Media;
 import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,6 +49,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         PlayerMessager.sendMessage("&7Exchanging authorization code for access token, this may take a moment...");
         try {
             TokenAPIResponse tokenAPIResponse = WebRequest.requestToMediaModAPI(WebRequestType.GET, "spotify/getToken?code=" + code, TokenAPIResponse.class);
+
             if (tokenAPIResponse == null) {
                 MediaMod.INSTANCE.LOGGER.error("Error: tokenAPIResponse is null");
                 PlayerMessager.sendMessage("&c&lERROR: &rFailed to login to Spotify!");
@@ -66,6 +68,8 @@ public class SpotifyHandler extends AbstractMediaHandler {
                 if (MediaMod.INSTANCE.DEVELOPMENT_ENVIRONMENT && currentTrack != null) {
                     PlayerMessager.sendMessage("&8&lDEBUG: &rCurrent Song: " + currentTrack.item.name + " by " + currentTrack.item.album.artists[0].name);
                 }
+            } else {
+                PlayerMessager.sendMessage("&c&lERROR: &rFailed to login to Spotify! | Refresh token was null!");
             }
         } catch (Exception e) {
             logged = false;
@@ -88,7 +92,7 @@ public class SpotifyHandler extends AbstractMediaHandler {
         }
 
         Desktop desktop = Desktop.getDesktop();
-        String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=2892e1e967084cc2b9cbba8fb90c7e56&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
+        String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=" + MediaMod.INSTANCE.spotifyClientID + "&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
         try {
             desktop.browse(new URI(spotifyUrl));
         } catch (URISyntaxException e) {

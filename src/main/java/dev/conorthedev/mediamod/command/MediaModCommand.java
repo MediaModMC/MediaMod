@@ -1,16 +1,9 @@
 package dev.conorthedev.mediamod.command;
 
-import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.gui.GuiMediaModSettings;
-import dev.conorthedev.mediamod.util.ChatColor;
-import dev.conorthedev.mediamod.util.PlayerMessager;
 import dev.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +32,8 @@ public class MediaModCommand extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
+        TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
+        /*
         if(args.length <= 0) {
             TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
         } else {
@@ -80,6 +75,7 @@ public class MediaModCommand extends CommandBase {
                 }
             }
         }
+        */
     }
 
     @Override
