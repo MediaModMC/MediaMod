@@ -1,11 +1,13 @@
 package dev.conorthedev.mediamod.media.spotify;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.config.Settings;
+import dev.conorthedev.mediamod.core.CoreMod;
 import dev.conorthedev.mediamod.media.base.AbstractMediaHandler;
 import dev.conorthedev.mediamod.media.base.exception.HandlerInitializationException;
 import dev.conorthedev.mediamod.media.spotify.api.SpotifyAPI;
@@ -24,6 +26,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +51,12 @@ public class SpotifyHandler extends AbstractMediaHandler {
 
         PlayerMessager.sendMessage("&7Exchanging authorization code for access token, this may take a moment...");
         try {
-            TokenAPIResponse tokenAPIResponse = WebRequest.requestToMediaModAPI(WebRequestType.GET, "spotify/getToken?code=" + code, TokenAPIResponse.class);
+            JsonObject object = new JsonObject();
+            object.addProperty("code", code);
+            object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+            object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+
+            TokenAPIResponse tokenAPIResponse = WebRequest.requestToMediaModAPI(WebRequestType.GET, "spotify/token", TokenAPIResponse.class);
 
             if (tokenAPIResponse == null) {
                 MediaMod.INSTANCE.LOGGER.error("Error: tokenAPIResponse is null");
@@ -117,16 +125,19 @@ public class SpotifyHandler extends AbstractMediaHandler {
             }
 
             try {
-                RefreshResponse refreshResponse = WebRequest.requestToMediaModAPI(WebRequestType.GET, "spotify/refreshToken?token=" + spotifyApi.getRefreshToken(), RefreshResponse.class);
+                JsonObject object = new JsonObject();
+                object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+                object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+                object.addProperty("refresh_token", spotifyApi.getRefreshToken());
 
+                TokenAPIResponse refreshResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/refresh", object, TokenAPIResponse.class);
                 if (refreshResponse == null) {
-                    MediaMod.INSTANCE.LOGGER.error("Error: tokenAPIResponse is null");
+                    MediaMod.INSTANCE.LOGGER.error("Error: refreshResponse is null");
                     PlayerMessager.sendMessage("&8&lDEBUG: &rFailed to login to Spotify!");
                     return;
                 }
 
                 spotifyApi = new SpotifyAPI(refreshResponse.accessToken, spotifyApi.getRefreshToken());
-
                 if (spotifyApi.getRefreshToken() != null) {
                     logged = true;
                     Settings.REFRESH_TOKEN = spotifyApi.getRefreshToken();
@@ -269,23 +280,6 @@ public class SpotifyHandler extends AbstractMediaHandler {
             this.accessToken = access_token;
             this.expiresIn = expires_in;
             this.refreshToken = refresh_token;
-        }
-    }
-
-    private static class RefreshResponse {
-        @SerializedName("access_token")
-        final String accessToken;
-        @SerializedName("token_type")
-        final String tokenType;
-        @SerializedName("expires_in")
-        final int expiresIn;
-        final String scope;
-
-        RefreshResponse(String access_token, int expires_in, String token_type, String scope) {
-            this.accessToken = access_token;
-            this.expiresIn = expires_in;
-            this.tokenType = token_type;
-            this.scope = scope;
         }
     }
 }

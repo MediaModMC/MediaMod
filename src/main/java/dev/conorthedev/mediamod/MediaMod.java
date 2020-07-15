@@ -1,5 +1,6 @@
 package dev.conorthedev.mediamod;
 
+import com.google.gson.JsonObject;
 import dev.conorthedev.mediamod.command.MediaModCommand;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.core.CoreMod;
@@ -8,6 +9,7 @@ import dev.conorthedev.mediamod.keybinds.KeybindInputHandler;
 import dev.conorthedev.mediamod.keybinds.KeybindManager;
 import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.browser.BrowserHandler;
+import dev.conorthedev.mediamod.media.party.PartyHandler;
 import dev.conorthedev.mediamod.media.spotify.SpotifyHandler;
 import dev.conorthedev.mediamod.parties.PartyManager;
 import dev.conorthedev.mediamod.util.*;
@@ -42,7 +44,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "https://mediamodapi.cbyrne.dev/";
+    public static final String ENDPOINT = "http://localhost:3000/";
 
     /**
      * An instance of this class to access non-static methods from other classes
@@ -137,12 +139,17 @@ public class MediaMod {
         }
 
         try {
-            ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.GET, "clientID", ClientIDResponse.class);
+            JsonObject object = new JsonObject();
+            object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+            object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+
+            ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/clientid", object, ClientIDResponse.class);
             if(clientIDResponse != null) {
                 spotifyClientID = clientIDResponse.clientID;
             }
         } catch (IOException e) {
-            LOGGER.warn("Failed to get Spotify Client ID: " + e.getLocalizedMessage());
+            LOGGER.warn("Failed to get Spotify Client ID:");
+            e.printStackTrace();
         }
 
         LOGGER.info("Loading Configuration...");
@@ -150,10 +157,11 @@ public class MediaMod {
 
         // Load Media Handlers
         ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
+        serviceHandler.registerHandler(new PartyHandler());
         serviceHandler.registerHandler(new BrowserHandler());
         serviceHandler.registerHandler(new SpotifyHandler());
 
-        // Initialize the handlers
+
         serviceHandler.initializeHandlers();
     }
 

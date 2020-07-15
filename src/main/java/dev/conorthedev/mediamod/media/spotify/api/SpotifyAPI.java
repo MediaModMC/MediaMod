@@ -2,6 +2,7 @@ package dev.conorthedev.mediamod.media.spotify.api;
 
 import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import dev.conorthedev.mediamod.media.spotify.api.track.Track;
 import dev.conorthedev.mediamod.util.*;
 
 import java.io.IOException;
@@ -53,6 +54,24 @@ public class SpotifyAPI {
         }
 
         return null;
+    }
+
+    public void setSongFromID(String trackID) {
+        if(trackID == null) return;
+
+        try {
+            Track object = WebRequest.makeRequest(WebRequestType.GET, new URL("https://api.spotify.com/v1/tracks/" + trackID), Track.class, new HashMap<String, String>() {{
+                put("Authorization", "Bearer " + ACCESS_TOKEN);
+            }});
+
+            if (object != null) {
+                WebRequest.makeRequest(WebRequestType.POST, new URL("https://api.spotify.com/v1/player/queue?uri=" + object.uri), new HashMap<String, String>() {{
+                    put("Authorization", "Bearer " + ACCESS_TOKEN);
+                }});
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean skipTrack() {

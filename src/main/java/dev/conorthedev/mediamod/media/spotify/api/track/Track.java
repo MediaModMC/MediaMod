@@ -13,4 +13,5 @@ public class Track {
     public String name;
     // Spotify only
     public String id;
+    public String uri;
 }
