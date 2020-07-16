@@ -81,7 +81,7 @@ public class CoreMod {
     }
 
     public void shutdown() {
-        if(!Minecraft.getMinecraft().isSnooperEnabled() && secret == null) return;
+        if(!Minecraft.getMinecraft().isSnooperEnabled() && secret.equals("")) return;
 
         LOGGER.info("Shutting down CoreMod (" + modID + ")");
         try {
