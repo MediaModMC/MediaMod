@@ -11,4 +11,4 @@ When your client first contacts our server, it recieves a secret which it will u
 
 ### Opting out
 If you wish to opt out of this data collection, you can disable 'Snooper' in Minecraft's Options, this will prevent MediaMod Parties from functioning as it requires some data to be collected to function.
-Please note that this will not delete your information from our database, if you wish for your user to be removed from the database please contact Conor at conorthedev@gmail.com with the subject 'MediaMod Data Removal Request: <your username>'
+Please note that this will not delete your information from our database, if you wish for your user to be removed from the database please contact Conor at conorthedev@gmail.com with the subject 'MediaMod Data Removal Request: [your username]'
