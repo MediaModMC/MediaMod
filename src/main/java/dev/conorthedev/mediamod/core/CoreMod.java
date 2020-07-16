@@ -23,6 +23,7 @@ public class CoreMod {
     public String secret;
 
     public CoreMod(String modIDin) {
+        secret = "";
         modID = modIDin;
         LOGGER = LogManager.getLogger("CoreMod (" + modIDin + ")");
 
@@ -80,7 +81,7 @@ public class CoreMod {
     }
 
     public void shutdown() {
-        if(!Minecraft.getMinecraft().isSnooperEnabled()) return;
+        if(!Minecraft.getMinecraft().isSnooperEnabled() && secret == null) return;
 
         LOGGER.info("Shutting down CoreMod (" + modID + ")");
         try {

@@ -19,7 +19,7 @@ public class PartyHandler extends AbstractMediaHandler {
     }
 
     public boolean handlerReady() {
-        return MediaMod.INSTANCE.partyManager.isParticipatingInParty();
+        return false;
     }
 
     public boolean supportsSkipping() {

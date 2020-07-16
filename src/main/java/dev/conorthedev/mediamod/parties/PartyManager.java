@@ -1,57 +1,68 @@
 package dev.conorthedev.mediamod.parties;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.event.SongChangeEvent;
+import dev.conorthedev.mediamod.media.base.ServiceHandler;
 import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
+import dev.conorthedev.mediamod.media.spotify.api.track.Track;
 import dev.conorthedev.mediamod.util.WebRequest;
 import dev.conorthedev.mediamod.util.WebRequestType;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.IOException;
 
 public class PartyManager {
-    private boolean canStartParty = true;
-    private boolean isHostOfParty = false;
-    private JsonObject uuidBody = new JsonObject();
-    private String partyCode;
-    private String requestSecret;
+    private String partyCode = "";
+    private String partySecret = "";
+
+    private Boolean isHostOfParty = false;
+    private Boolean isParticipatingInParty = false;
 
     public PartyManager() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public String startParty() {
+    public PartyStartResponse startParty() {
+        System.out.println(new Gson().toJson(this.getPartyTrack()));
+
         try {
-            uuidBody.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-            PartyStartResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "startParty", uuidBody, PartyStartResponse.class);
-            if(response == null) {
-                return "";
+            JsonObject body = new JsonObject();
+            body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+            body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+            body.addProperty("currentTrack", new Gson().toJson(this.getPartyTrack()));
+
+            PartyStartResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/party/start", body, PartyStartResponse.class);
+            if (response == null) {
+                return null;
             }
 
-            canStartParty = false;
             isHostOfParty = true;
+            isParticipatingInParty = true;
             partyCode = response.code;
-            requestSecret = response.secret;
-            return partyCode;
+            partySecret = response.secret;
+
+            return response;
         } catch (IOException ignored) {
-            return "";
+            return null;
         }
     }
 
     public PartyJoinResponse joinParty(String inputCode) {
         try {
-            uuidBody.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-            uuidBody.addProperty("code", inputCode);
-            PartyJoinResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "joinParty", uuidBody, PartyJoinResponse.class);
-            uuidBody.remove("code");
+            JsonObject body = new JsonObject();
+            body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+            body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+            body.addProperty("code", inputCode);
 
-            if(response != null && response.success) {
-                canStartParty = false;
+            PartyJoinResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "joinParty", body, PartyJoinResponse.class);
+
+            if (response != null && response.success) {
                 partyCode = inputCode;
                 isHostOfParty = false;
+                isParticipatingInParty = true;
             }
 
             return response;
@@ -62,80 +73,75 @@ public class PartyManager {
 
     public boolean leaveParty() {
         try {
-            uuidBody.addProperty("secret", requestSecret);
-            boolean success = WebRequest.requestToMediaMod(WebRequestType.POST, "leaveParty", uuidBody) == 200;
-            uuidBody.remove("secret");
+            JsonObject body = new JsonObject();
+            body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+            body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+            body.addProperty("partyCode", partyCode);
 
-            canStartParty = success;
-            isHostOfParty = success;
+            if(isHostOfParty) {
+                body.addProperty("partySecret", partySecret);
+            }
+
+            boolean success = WebRequest.requestToMediaMod(WebRequestType.POST, "api/party/leave", body) == 200;
+
+            if(success) {
+                isParticipatingInParty = false;
+                isHostOfParty = false;
+            }
 
             return success;
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
 
-    public void publishSongChange(CurrentlyPlayingObject track) {
+    public void publishSongChange() {
         try {
-            if(isHostOfParty && !canStartParty) {
-                JsonObject body = uuidBody;
+            if (isHostOfParty && isParticipatingInParty) {
+                JsonObject body = new JsonObject();
+                body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+                body.addProperty("track", new Gson().toJson(this.getPartyTrack()));
                 body.addProperty("code", partyCode);
-                body.addProperty("trackId", track.item.id);
-                body.addProperty("secret", requestSecret);
-                WebRequest.requestToMediaMod(WebRequestType.POST, "songChange", uuidBody);
+                body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+                body.addProperty("partySecret", partySecret);
+
+                WebRequest.requestToMediaMod(WebRequestType.POST, "api/party/update", body);
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
-    public boolean canStartParty() {
-        return canStartParty;
+    public boolean isInParty() {
+        return MediaMod.INSTANCE.partyManager.isParticipatingInParty;
     }
 
-    public boolean isParticipatingInParty() {
-        return !isHostOfParty && !canStartParty;
+    public PartyTrack getPartyTrack() {
+        CurrentlyPlayingObject track = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
+        return new PartyTrack(track.item.id, track.progress_ms, !track.is_playing);
     }
 
     public String getCurrentTrack() {
-        System.out.println("Getting current track!");
-        if(isParticipatingInParty()) {
+       /* System.out.println("Getting current track!");
+        if (isParticipatingInParty()) {
             try {
                 uuidBody.addProperty("code", partyCode);
                 PartyInfoResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "partyInfo", uuidBody, PartyInfoResponse.class);
                 uuidBody.remove("code");
 
-                if(response != null) {
+                if (response != null) {
                     System.out.println("Track: " + response.track);
                     return response.track;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         return "";
     }
 
     @SubscribeEvent
     public void onSongChange(SongChangeEvent event) {
-        publishSongChange(event.currentTrack);
-    }
-
-}
-
-class PartyStartResponse {
-    final String code;
-    final String secret;
-
-    PartyStartResponse(String code, String token) {
-        this.secret = token;
-        this.code = code;
+        publishSongChange();
     }
 }
-
-class PartyInfoResponse {
-    final String track;
-
-    PartyInfoResponse(String track) {
-        this.track = track;
-    }
-}
-

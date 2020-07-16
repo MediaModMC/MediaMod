@@ -1,11 +1,14 @@
 package dev.conorthedev.mediamod.command;
 
 import dev.conorthedev.mediamod.MediaMod;
+import dev.conorthedev.mediamod.core.CoreMod;
 import dev.conorthedev.mediamod.gui.GuiMediaModSettings;
 import dev.conorthedev.mediamod.parties.PartyJoinResponse;
+import dev.conorthedev.mediamod.parties.PartyStartResponse;
 import dev.conorthedev.mediamod.util.ChatColor;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import dev.conorthedev.mediamod.util.TickScheduler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
@@ -46,30 +49,40 @@ public class MediaModCommand extends CommandBase {
         } else {
             String subcmd = args[0];
             if (subcmd.equalsIgnoreCase("party")) {
+                if (!Minecraft.getMinecraft().isSnooperEnabled()) {
+                    PlayerMessager.sendMessage(ChatColor.RED + "You must enable Snooper in Minecraft Settings and restart your client to participate in a party!", true);
+                    return;
+                }
+
+                if (MediaMod.INSTANCE.coreMod.secret.equals("")) {
+                    PlayerMessager.sendMessage(ChatColor.RED + "An error occurred when contacting the MediaMod API, please restart your client. If this issue persists please contact us", true);
+                }
+
                 if (args.length >= 2) {
                     String function = args[1];
                     switch (function.toLowerCase()) {
                         case "start":
-                            if (!MediaMod.INSTANCE.partyManager.canStartParty()) {
+                            if (MediaMod.INSTANCE.partyManager.isInParty()) {
                                 PlayerMessager.sendMessage(ChatColor.RED + "You are already in a party!", true);
                                 break;
                             }
 
                             PlayerMessager.sendMessage(ChatColor.GRAY + "Creating MediaMod Party... " + "(note: this only works with spotify at the moment)", true);
+                            PartyStartResponse response = MediaMod.INSTANCE.partyManager.startParty();
 
-                            String code = MediaMod.INSTANCE.partyManager.startParty();
-                            if (code.equals("")) {
+                            if (response.code.equals("")) {
                                 PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst creating your MediaMod party!", true);
                             } else {
-                                IChatComponent urlComponent = new ChatComponentText(ChatColor.WHITE + "" + ChatColor.BOLD + code);
-                                urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, code));
+                                IChatComponent urlComponent = new ChatComponentText(ChatColor.WHITE + "" + ChatColor.BOLD + response.code);
+                                urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, response.code));
                                 urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText("Copy Code")));
                                 PlayerMessager.sendMessage(new ChatComponentText(ChatColor.GRAY + "Share this code with your friends to invite them to your party: ").appendSibling(urlComponent), true);
                             }
                             break;
                         case "leave":
-                            if (!MediaMod.INSTANCE.partyManager.canStartParty()) {
+                            if (MediaMod.INSTANCE.partyManager.isInParty()) {
                                 boolean success = MediaMod.INSTANCE.partyManager.leaveParty();
+
                                 if (success) {
                                     PlayerMessager.sendMessage((ChatColor.GRAY + "You have left the party"), true);
                                 } else {
@@ -85,10 +98,11 @@ public class MediaModCommand extends CommandBase {
                                 if (inputCode.length() != 6) {
                                     PlayerMessager.sendMessage(ChatColor.RED + "Invalid code!");
                                 } else {
-                                    if(MediaMod.INSTANCE.partyManager.canStartParty()) {
-                                        PartyJoinResponse response = MediaMod.INSTANCE.partyManager.joinParty(inputCode);
-                                        if(response.success) {
-                                            PlayerMessager.sendMessage((ChatColor.GRAY + "You have joined " + response.host + "'s party"), true);
+                                    if (!MediaMod.INSTANCE.partyManager.isInParty()) {
+                                        PartyJoinResponse joinResponse = MediaMod.INSTANCE.partyManager.joinParty(inputCode);
+
+                                        if (joinResponse.success) {
+                                            PlayerMessager.sendMessage((ChatColor.GRAY + "You have joined " + joinResponse.host + "'s party"), true);
                                         } else {
                                             PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst trying to join the party!", true);
                                         }
