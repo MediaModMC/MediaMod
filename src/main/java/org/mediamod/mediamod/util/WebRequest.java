@@ -41,7 +41,7 @@ public class WebRequest {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getLocalizedMessage());
+            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getLocalizedMessage());
         } finally {
             try {
                 if (connection != null) {
@@ -52,7 +52,7 @@ public class WebRequest {
                     reader.close();
                 }
             } catch (Exception e) {
-                MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
+                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getMessage());
             }
         }
 
@@ -79,7 +79,7 @@ public class WebRequest {
             return connection.getResponseCode();
         } catch (Exception e) {
             e.printStackTrace();
-            MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getLocalizedMessage());
+            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getLocalizedMessage());
         } finally {
             try {
                 if (connection != null) {
@@ -90,7 +90,7 @@ public class WebRequest {
                     reader.close();
                 }
             } catch (Exception e) {
-                MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
+                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getMessage());
             }
         }
 

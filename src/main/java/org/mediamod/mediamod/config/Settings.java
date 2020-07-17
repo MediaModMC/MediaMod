@@ -26,13 +26,13 @@ public class Settings {
     public static String REFRESH_TOKEN;
 
     public static void saveConfig() {
-        MediaMod.INSTANCE.LOGGER.info("Saving configuration...");
+        MediaMod.INSTANCE.logger.info("Saving configuration...");
 
         Configuration configuration = new Configuration(configFile);
         updateConfig(configuration, false);
         configuration.save();
 
-        MediaMod.INSTANCE.LOGGER.info("Saved configuration!");
+        MediaMod.INSTANCE.logger.info("Saved configuration!");
     }
 
     public static void loadConfig() {

@@ -25,14 +25,22 @@ public class VersionChecker {
         try {
             VersionResponse versionResponse = WebRequest.makeRequest(WebRequestType.GET, new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version.json"), VersionResponse.class, new HashMap<>());
 
+            if(versionResponse == null) return;
+
             if (versionResponse.latestVersionInt > Metadata.VERSION_INT) {
                 INSTANCE.IS_LATEST_VERSION = false;
                 INSTANCE.LATEST_VERSION_INFO = versionResponse;
             } else {
                 INSTANCE.IS_LATEST_VERSION = true;
             }
+
+            if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
+                MediaMod.INSTANCE.logger.info("MediaMod is up-to-date!");
+            } else {
+                MediaMod.INSTANCE.logger.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS + " Your Version: v" + Metadata.VERSION);
+            }
         } catch (Exception e) {
-            MediaMod.INSTANCE.LOGGER.error("Error whilst checking for updates: " + e);
+            MediaMod.INSTANCE.logger.error("Error whilst checking for updates: " + e);
         }
     }
 

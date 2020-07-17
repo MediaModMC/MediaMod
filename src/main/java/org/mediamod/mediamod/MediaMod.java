@@ -1,6 +1,5 @@
 package org.mediamod.mediamod;
 
-import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,7 +26,6 @@ import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.util.*;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * The main class for MediaMod
@@ -53,7 +51,7 @@ public class MediaMod {
      *
      * @see org.apache.logging.log4j.Logger
      */
-    public final Logger LOGGER = LogManager.getLogger("MediaMod");
+    public final Logger logger = LogManager.getLogger("MediaMod");
 
     /**
      * A CoreMod instance which assists with analytics
@@ -64,6 +62,11 @@ public class MediaMod {
      * If this is the first load of MediaMod
      */
     private boolean firstLoad = true;
+
+    /**
+     * If the client successfully registered with API, this will be true
+     */
+    public boolean authenticatedWithAPI = false;
 
     /**
      * Fired before Minecraft starts
@@ -85,7 +88,7 @@ public class MediaMod {
      */
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        LOGGER.info("MediaMod starting...");
+        logger.info("MediaMod starting...");
 
         // Register event subscribers and commands
         MinecraftForge.EVENT_BUS.register(this);
@@ -98,32 +101,22 @@ public class MediaMod {
 
         File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
         if (!MEDIAMOD_DIRECTORY.exists()) {
-            LOGGER.info("Creating necessary directories and files for first launch...");
+            logger.info("Creating necessary directories and files for first launch...");
             boolean mkdir = MEDIAMOD_DIRECTORY.mkdir();
 
             if (mkdir) {
-                LOGGER.info("Created necessary directories and files!");
+                logger.info("Created necessary directories and files!");
             } else {
-                LOGGER.fatal("Failed to create necessary directories and files!");
+                logger.fatal("Failed to create necessary directories and files!");
             }
         }
 
-        LOGGER.info("Checking if MediaMod is up-to-date...");
+        logger.info("Checking if MediaMod is up-to-date...");
         VersionChecker.checkVersion();
 
-        if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
-            LOGGER.info("MediaMod is up-to-date!");
-        } else {
-            LOGGER.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS + " Your Version: v" + Metadata.VERSION);
-        }
+        authenticatedWithAPI = this.coreMod.register();
 
-        try {
-            this.coreMod.register();
-        } catch (Exception e) {
-            LOGGER.warn("Failed to register with analytics! ", e);
-        }
-
-        LOGGER.info("Loading Configuration...");
+        logger.info("Loading Configuration...");
         Settings.loadConfig();
 
         // Load Media Handlers
@@ -139,16 +132,27 @@ public class MediaMod {
      */
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (firstLoad && !VersionChecker.INSTANCE.IS_LATEST_VERSION && Minecraft.getMinecraft().thePlayer != null) {
-            PlayerMessager.sendMessage("&cMediaMod is out of date!" +
-                    "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
-                    "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
+        if (firstLoad && Minecraft.getMinecraft().thePlayer != null) {
+            if(!VersionChecker.INSTANCE.IS_LATEST_VERSION) {
+                PlayerMessager.sendMessage("&cMediaMod is out of date!" +
+                        "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
+                        "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
 
             /*IChatComponent urlComponent = new ChatComponentText(ChatColor.GRAY + "" + ChatColor.BOLD +  "Click this to automatically update now!");
             urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
             urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
                     "&7Runs /mediamodupdate"))));
             PlayerMessager.sendMessage(urlComponent);*/
+            }
+
+            if(!authenticatedWithAPI) {
+                if(!Minecraft.getMinecraft().isSnooperEnabled()) {
+                    PlayerMessager.sendMessage(ChatColor.GRAY + "Note: You have Minecraft Snooper disabled, this means services like Spotify and MediaMod Parties will not work. If you want these services then enable Minecraft Snooper and restart your client!", true);
+                } else {
+                    PlayerMessager.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
+                }
+            }
+
             firstLoad = false;
         }
     }

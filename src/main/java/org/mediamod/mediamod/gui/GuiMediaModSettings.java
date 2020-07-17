@@ -1,12 +1,17 @@
 package org.mediamod.mediamod.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
+import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.util.ButtonTooltip;
 import org.mediamod.mediamod.gui.util.CustomButton;
 import org.mediamod.mediamod.gui.util.IMediaGui;
+import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.Metadata;
+import org.mediamod.mediamod.util.Multithreading;
+import org.mediamod.mediamod.util.PlayerMessager;
 
 import java.io.IOException;
 
@@ -25,6 +30,11 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
         this.buttonList.add(new CustomButton(4, width / 2 - 100, height / 2, getSuffix(Settings.ANNOUNCE_TRACKS, I18n.format("menu.guimediamod.buttons.announceTracks.name"))));
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 + 23, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
         this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 47, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
+
+        if(!MediaMod.INSTANCE.authenticatedWithAPI) {
+            this.buttonList.add(new CustomButton(5, 5, height - 25, "Reconnect"));
+            this.buttonList.get(5).width = 100;
+        }
 
         super.initGui();
     }
@@ -50,6 +60,8 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
                 return I18n.format("menu.guimediamod.buttons.showPlayer.tooltip");
             case 4:
                 return I18n.format("menu.guimediamod.buttons.announceTracks.tooltip");
+            case 5:
+                return "Failed to connect to MediaMod API. Click here to reconnect!";
         }
         return null;
     }
@@ -61,23 +73,34 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
                 Settings.ENABLED = !Settings.ENABLED;
                 button.displayString = getSuffix(Settings.ENABLED, I18n.format("menu.guimediamod.buttons.enabled.name"));
                 break;
-
             case 1:
                 Settings.SHOW_PLAYER = !Settings.SHOW_PLAYER;
                 button.displayString = getSuffix(Settings.SHOW_PLAYER, I18n.format("menu.guimediamod.buttons.showPlayer.name"));
                 break;
-
             case 2:
                 this.mc.displayGuiScreen(new GuiPlayerSettings());
                 break;
-
             case 3:
                 this.mc.displayGuiScreen(new GuiServices());
                 break;
-
             case 4:
                 Settings.ANNOUNCE_TRACKS = !Settings.ANNOUNCE_TRACKS;
                 button.displayString = getSuffix(Settings.ANNOUNCE_TRACKS, I18n.format("menu.guimediamod.buttons.announceTracks.name"));
+                break;
+            case 5:
+                Multithreading.runAsync(() -> {
+                    PlayerMessager.sendMessage(ChatColor.GRAY + "Connecting to MediaMod API...", true);
+                    MediaMod.INSTANCE.authenticatedWithAPI = MediaMod.INSTANCE.coreMod.register();
+
+                    if (MediaMod.INSTANCE.authenticatedWithAPI) {
+                        PlayerMessager.sendMessage(ChatColor.GREEN + "Connected!", true);
+
+                        Minecraft.getMinecraft().displayGuiScreen(null);
+                        Minecraft.getMinecraft().displayGuiScreen(new GuiMediaModSettings());
+                    } else {
+                        PlayerMessager.sendMessage(ChatColor.RED + "Failed to connect to MediaMod API!");
+                    }
+                });
                 break;
         }
 

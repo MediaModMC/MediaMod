@@ -87,29 +87,32 @@ public class SpotifyService implements IServiceHandler {
      * Initialises our API Wrapper if snooper is enabled
      */
     public boolean load() {
-        if (Minecraft.getMinecraft().isSnooperEnabled()) {
+        if (Minecraft.getMinecraft().isSnooperEnabled() && MediaMod.INSTANCE.authenticatedWithAPI) {
             spotifyAPI = new SpotifyAPI();
 
-            Multithreading.runAsync(() -> {
-                try {
-                    JsonObject object = new JsonObject();
-                    object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-                    object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-
-                    ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/clientid", object, ClientIDResponse.class);
-                    if (clientIDResponse != null) {
-                        spotifyClientID = clientIDResponse.clientID;
-                    }
-                } catch (IOException e) {
-                    MediaMod.INSTANCE.LOGGER.warn("Failed to get Spotify Client ID:");
-                    e.printStackTrace();
-                }
-            });
-
+            Multithreading.runAsync(this::attemptToGetClientID);
             return true;
         }
         
         return false;
+    }
+
+    /**
+     * Retrieves the Spotify Client ID from the MediaMod API and sets the spotifyClientID to it
+     */
+    private void attemptToGetClientID() {
+        try {
+            JsonObject object = new JsonObject();
+            object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+            object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+
+            ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/clientid", object, ClientIDResponse.class);
+            if (clientIDResponse != null) {
+                spotifyClientID = clientIDResponse.clientID;
+            }
+        } catch (IOException e) {
+            MediaMod.INSTANCE.logger.warn("Failed to get Spotify Client ID: ", e);
+        }
     }
 
     /**
@@ -190,7 +193,7 @@ class SpotifyAPI {
             server.createContext("/callback", new SpotifyCallbackHandler());
             server.start();
         } catch (IOException ignored) {
-            MediaMod.INSTANCE.LOGGER.warn("Failed to create Spotify callback server! Is the port already in use?");
+            MediaMod.INSTANCE.logger.warn("Failed to create Spotify callback server! Is the port already in use?");
         }
 
         // Refresh existing token
@@ -208,7 +211,7 @@ class SpotifyAPI {
      * @see "https://developer.spotify.com/documentation/general/guides/authorization-guide/"
      */
     public void login(String authCode) {
-        MediaMod.INSTANCE.LOGGER.info("Logging into Spotify...");
+        MediaMod.INSTANCE.logger.info("Logging into Spotify...");
         PlayerMessager.sendMessage(ChatColor.GRAY + "Logging into Spotify...", true);
 
         JsonObject body = new JsonObject();
@@ -220,7 +223,7 @@ class SpotifyAPI {
             SpotifyTokenResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/token", body, SpotifyTokenResponse.class);
 
             if (response == null) {
-                MediaMod.INSTANCE.LOGGER.error("An error occurred when exchanging authorisation code for a token: response was null");
+                MediaMod.INSTANCE.logger.error("An error occurred when exchanging authorisation code for a token: response was null");
                 return;
             }
 
@@ -230,10 +233,10 @@ class SpotifyAPI {
             Settings.REFRESH_TOKEN = refreshToken;
             Multithreading.runAsync(Settings::saveConfig);
 
-            MediaMod.INSTANCE.LOGGER.info("Logged in!");
-            PlayerMessager.sendMessage(ChatColor.GRAY + "Logged in!", true);
+            MediaMod.INSTANCE.logger.info("Logged in!");
+            PlayerMessager.sendMessage(ChatColor.GREEN + "Logged in!", true);
         } catch (IOException e) {
-            MediaMod.INSTANCE.LOGGER.error("An error occurred when exchanging authorisation code for a token: ", e);
+            MediaMod.INSTANCE.logger.error("An error occurred when exchanging authorisation code for a token: ", e);
         }
     }
 
@@ -243,7 +246,7 @@ class SpotifyAPI {
      * @see "https://developer.spotify.com/documentation/general/guides/authorization-guide/"
      */
     public void refresh() {
-        MediaMod.INSTANCE.LOGGER.info("Refreshing token...");
+        MediaMod.INSTANCE.logger.info("Refreshing token...");
         PlayerMessager.sendMessage(ChatColor.GRAY + "Refreshing token...", true);
 
         if (refreshToken == null) return;
@@ -257,7 +260,7 @@ class SpotifyAPI {
             SpotifyTokenResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/refresh", body, SpotifyTokenResponse.class);
 
             if (response == null) {
-                MediaMod.INSTANCE.LOGGER.error("An error occurred when exchanging refresh token for a new token: response was null");
+                MediaMod.INSTANCE.logger.error("An error occurred when exchanging refresh token for a new token: response was null");
                 return;
             }
 
@@ -267,10 +270,10 @@ class SpotifyAPI {
             Settings.REFRESH_TOKEN = refreshToken;
             Multithreading.runAsync(Settings::saveConfig);
 
-            MediaMod.INSTANCE.LOGGER.info("Refreshed token");
-            PlayerMessager.sendMessage(ChatColor.GRAY + "Refreshed token", true);
+            MediaMod.INSTANCE.logger.info("Refreshed token");
+            PlayerMessager.sendMessage(ChatColor.GREEN + "Refreshed token", true);
         } catch (IOException e) {
-            MediaMod.INSTANCE.LOGGER.error("An error occurred when exchanging refresh token for a new auth token: ", e);
+            MediaMod.INSTANCE.logger.error("An error occurred when exchanging refresh token for a new auth token: ", e);
         }
     }
 
@@ -321,7 +324,7 @@ class SpotifyAPI {
                 put("Authorization", "Bearer " + accessToken);
             }});
         } catch (IOException e) {
-            MediaMod.INSTANCE.LOGGER.error("An error occurred when getting playback info: ", e);
+            MediaMod.INSTANCE.logger.error("An error occurred when getting playback info: ", e);
         }
 
         return info;
@@ -366,7 +369,7 @@ class SpotifyCallbackHandler implements HttpHandler {
             if (!code.equals("")) {
                 SpotifyService.spotifyAPI.login(code);
             } else {
-                MediaMod.INSTANCE.LOGGER.warn("Received null code from Spotify callback?");
+                MediaMod.INSTANCE.logger.warn("Received null code from Spotify callback?");
                 title = "Failure";
                 message = "Please go back to Minecraft and attempt login again!";
             }

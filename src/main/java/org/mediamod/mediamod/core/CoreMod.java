@@ -40,12 +40,65 @@ public class CoreMod {
         return Minecraft.getMinecraft().getSession().getProfile().getId().toString();
     }
 
-    public void register() throws IOException, AuthenticationException {
-        if (!Minecraft.getMinecraft().isSnooperEnabled()) return;
+    public boolean register() {
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
 
-        LOGGER.info("Attempting to register with CoreMod API...");
-        URL url = new URL(MediaMod.ENDPOINT + "api/register");
+        try {
+            if (!Minecraft.getMinecraft().isSnooperEnabled()) return false;
 
+            LOGGER.info("Attempting to register with CoreMod API...");
+
+            URL url = new URL(MediaMod.ENDPOINT + "api/register");
+
+            JsonObject obj = new JsonObject();
+            obj.addProperty("uuid", getUUID());
+            obj.addProperty("mod", modID);
+            obj.addProperty("serverID", getServerID());
+
+            String content = obj.toString();
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("User-Agent", modID + "/1.0");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            connection.setDoOutput(true);
+            connection.getOutputStream().write(content.getBytes(StandardCharsets.UTF_8));
+
+            connection.connect();
+
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.lines().collect(Collectors.joining());
+
+            if (connection.getResponseCode() == 200) {
+                RegisterResponse registerResponse = new Gson().fromJson(response, RegisterResponse.class);
+                secret = registerResponse.secret;
+
+                LOGGER.info("Successfully registered with CoreMod API!");
+                return true;
+            } else {
+                LOGGER.info("Failed to register with CoreMod API... Response: " + response);
+                return false;
+            }
+        } catch (Exception ignored) {
+            return false;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String getServerID() throws AuthenticationException {
         GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
         String accessToken = Minecraft.getMinecraft().getSession().getToken();
 
@@ -60,40 +113,7 @@ public class CoreMod {
         String serverId = serverBigInt.toString(16);
         Minecraft.getMinecraft().getSessionService().joinServer(profile, accessToken, serverId);
 
-        JsonObject obj = new JsonObject();
-        obj.addProperty("uuid", this.getUUID());
-        obj.addProperty("mod", modID);
-        obj.addProperty("serverID", serverId);
-
-        String content = obj.toString();
-
-        HttpURLConnection connection;
-        BufferedReader reader;
-
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("User-Agent", modID + "/1.0");
-        connection.setRequestProperty("Content-Type", "application/json");
-
-        connection.setDoOutput(true);
-        connection.getOutputStream().write(content.getBytes(StandardCharsets.UTF_8));
-
-        connection.connect();
-
-        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String response = reader.lines().collect(Collectors.joining());
-
-        connection.disconnect();
-        reader.close();
-
-        if (connection.getResponseCode() == 200) {
-            RegisterResponse registerResponse = new Gson().fromJson(response, RegisterResponse.class);
-            secret = registerResponse.secret;
-
-            LOGGER.info("Successfully registered with CoreMod API!");
-        } else {
-            LOGGER.info("Failed to register with CoreMod API... Response: " + response);
-        }
+        return serverId;
     }
 
     public void shutdown() {
@@ -104,8 +124,8 @@ public class CoreMod {
             URL url = new URL(MediaMod.ENDPOINT + "api/offline");
 
             JsonObject obj = new JsonObject();
-            obj.addProperty("uuid", this.getUUID());
-            obj.addProperty("secret", this.secret);
+            obj.addProperty("uuid", getUUID());
+            obj.addProperty("secret", secret);
 
             HttpURLConnection connection;
 

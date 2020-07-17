@@ -41,14 +41,24 @@ public class MediaHandler {
      */
     private void loadServices() {
         for (IServiceHandler serviceHandler : servicesToLoad) {
-            MediaMod.INSTANCE.LOGGER.info("Loading '" + serviceHandler.displayName() + "'");
+            loadService(serviceHandler);
+        }
+    }
 
-            boolean loaded = serviceHandler.load();
-            if (loaded) {
-                loadedServices.add(serviceHandler);
-            } else {
-                failedServices.add(serviceHandler);
-            }
+    /**
+     * Loads a service handler for usage
+     *
+     * @param serviceHandler: the service handler to load
+     */
+    private void loadService(IServiceHandler serviceHandler) {
+        MediaMod.INSTANCE.logger.info("Loading '" + serviceHandler.displayName() + "'");
+
+        boolean loaded = serviceHandler.load();
+        if (loaded) {
+            loadedServices.add(serviceHandler);
+        } else {
+            MediaMod.INSTANCE.logger.warn("Failed to load '" + serviceHandler.displayName() + "'");
+            failedServices.add(serviceHandler);
         }
     }
 
@@ -58,10 +68,10 @@ public class MediaHandler {
      * @see IServiceHandler
      */
     public void loadAll() {
-        MediaMod.INSTANCE.LOGGER.info("Loading service handlers...");
+        MediaMod.INSTANCE.logger.info("Loading service handlers...");
 
         if (!loadedServices.isEmpty()) {
-            MediaMod.INSTANCE.LOGGER.warn("Attempt to load services when they have already been loaded! Ignoring");
+            MediaMod.INSTANCE.logger.warn("Attempt to load services when they have already been loaded! Ignoring");
             return;
         }
 
@@ -70,9 +80,9 @@ public class MediaHandler {
 
         loadServices();
 
-        MediaMod.INSTANCE.LOGGER.info("Successfully loaded " + loadedServices.size() + " services");
+        MediaMod.INSTANCE.logger.info("Successfully loaded " + loadedServices.size() + " services");
         if (!failedServices.isEmpty()) {
-            MediaMod.INSTANCE.LOGGER.warn("Failed to load " + failedServices.size() + " services");
+            MediaMod.INSTANCE.logger.warn("Failed to load " + failedServices.size() + " services");
         }
     }
 
@@ -83,10 +93,29 @@ public class MediaHandler {
      * @see IServiceHandler#compareTo(IServiceHandler)
      */
     public void addService(@Nonnull IServiceHandler serviceHandler) {
-        MediaMod.INSTANCE.LOGGER.info("Preparing to load " + serviceHandler.displayName());
+        MediaMod.INSTANCE.logger.info("Preparing to load " + serviceHandler.displayName());
 
         servicesToLoad.add(serviceHandler);
         servicesToLoad.sort(IServiceHandler::compareTo);
+    }
+
+    /**
+     * Reloads a service
+     */
+    public void reloadService(@Nonnull Class serviceHandlerClass) {
+        try {
+            IServiceHandler serviceHandlerInstance = (IServiceHandler) serviceHandlerClass.newInstance();
+
+            // Remove the original service
+            failedServices.removeIf(serviceHandler -> serviceHandler.displayName().equals(serviceHandlerInstance.displayName()));
+            loadedServices.removeIf(serviceHandler -> serviceHandler.displayName().equals(serviceHandlerInstance.displayName()));
+            servicesToLoad.removeIf(serviceHandler -> serviceHandler.displayName().equals(serviceHandlerInstance.displayName()));
+
+            addService(serviceHandlerInstance);
+            loadService(serviceHandlerInstance);
+        } catch (InstantiationException | IllegalAccessException ignored) {
+            MediaMod.INSTANCE.logger.warn("Failed to reload service " + serviceHandlerClass);
+        }
     }
 
     /**

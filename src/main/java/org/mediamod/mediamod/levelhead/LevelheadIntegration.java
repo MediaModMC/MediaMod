@@ -17,7 +17,7 @@ import java.io.IOException;
 public class LevelheadIntegration {
     @SubscribeEvent
     public void onMediaChange(MediaInfoUpdateEvent event) {
-        if(event.mediaInfo != null && Settings.LEVELHEAD_ENABLED) {
+        if(event.mediaInfo != null && Settings.LEVELHEAD_ENABLED && MediaMod.INSTANCE.authenticatedWithAPI) {
             try {
                 JsonObject body = new JsonObject();
                 body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());

@@ -62,7 +62,7 @@ public class BrowserService implements IServiceHandler {
 
             return true;
         } catch (IOException ignored) {
-            MediaMod.INSTANCE.LOGGER.warn("Failed to create Spotify callback server! Is the port already in use?");
+            MediaMod.INSTANCE.logger.warn("Failed to create Spotify callback server! Is the port already in use?");
             return false;
         }
     }
@@ -126,7 +126,7 @@ class BrowserUpdateHandler implements HttpHandler {
         }
 
         if (!exchange.getResponseHeaders().containsKey("Access-Control-Allow-Origin")) {
-            MediaMod.INSTANCE.LOGGER.warn("Request to set information came from unknown domain... ignoring!");
+            MediaMod.INSTANCE.logger.warn("Request to set information came from unknown domain... ignoring!");
 
             exchange.sendResponseHeaders(400, "Bad Request".length());
 
@@ -179,7 +179,7 @@ class BrowserDisconnectHandler implements HttpHandler {
         }
 
         if (!exchange.getResponseHeaders().containsKey("Access-Control-Allow-Origin")) {
-            MediaMod.INSTANCE.LOGGER.warn("Request to set information came from unknown domain... ignoring!");
+            MediaMod.INSTANCE.logger.warn("Request to set information came from unknown domain... ignoring!");
 
             exchange.sendResponseHeaders(400, "Bad Request".length());
 

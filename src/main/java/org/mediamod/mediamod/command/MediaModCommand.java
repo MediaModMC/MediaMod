@@ -10,6 +10,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.gui.GuiMediaModSettings;
+import org.mediamod.mediamod.media.services.spotify.SpotifyService;
 import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.parties.responses.PartyJoinResponse;
 import org.mediamod.mediamod.parties.responses.PartyStartResponse;
@@ -55,8 +56,9 @@ public class MediaModCommand extends CommandBase {
                     return;
                 }
 
-                if (MediaMod.INSTANCE.coreMod.secret.equals("")) {
-                    PlayerMessager.sendMessage(ChatColor.RED + "An error occurred when contacting the MediaMod API, please restart your client. If this issue persists please contact us", true);
+                if (!MediaMod.INSTANCE.authenticatedWithAPI) {
+                    PlayerMessager.sendMessage(ChatColor.RED + "An error occurred when contacting the MediaMod API, Please click 'reconnect'. If this issue persists please contact us!", true);
+                    return;
                 }
 
                 Multithreading.runAsync(() -> {
@@ -64,6 +66,10 @@ public class MediaModCommand extends CommandBase {
                         String function = args[1];
                         switch (function.toLowerCase()) {
                             case "start":
+                                if(SpotifyService.isLoggedOut()) {
+                                    PlayerMessager.sendMessage(ChatColor.RED + "You must be logged into Spotify to join a party!", true);
+                                }
+
                                 if (PartyManager.instance.isInParty()) {
                                     PlayerMessager.sendMessage(ChatColor.RED + "You are already in a party!", true);
                                     break;
@@ -87,7 +93,7 @@ public class MediaModCommand extends CommandBase {
                                     boolean success = PartyManager.instance.leaveParty();
 
                                     if (success) {
-                                        PlayerMessager.sendMessage((ChatColor.GRAY + "You have left the party"), true);
+                                        PlayerMessager.sendMessage((ChatColor.GREEN + "You have left the party"), true);
                                     } else {
                                         PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst trying to leave the party!", true);
                                     }
@@ -97,6 +103,10 @@ public class MediaModCommand extends CommandBase {
                                 break;
                             case "join":
                                 if (args.length >= 3) {
+                                    if(SpotifyService.isLoggedOut()) {
+                                        PlayerMessager.sendMessage(ChatColor.RED + "You must be logged into Spotify to join a party!", true);
+                                    }
+
                                     String inputCode = args[2];
                                     if (inputCode.length() != 6) {
                                         PlayerMessager.sendMessage(ChatColor.RED + "Invalid code!");
@@ -105,7 +115,7 @@ public class MediaModCommand extends CommandBase {
                                             PartyJoinResponse joinResponse = PartyManager.instance.joinParty(inputCode);
 
                                             if (joinResponse.success) {
-                                                PlayerMessager.sendMessage((ChatColor.GRAY + "You have joined " + joinResponse.host + "'s party"), true);
+                                                PlayerMessager.sendMessage((ChatColor.GREEN + "You have joined " + joinResponse.host + "'s party"), true);
                                             } else {
                                                 PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst trying to join the party!", true);
                                             }
