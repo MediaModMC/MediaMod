@@ -27,11 +27,35 @@ import java.util.Map;
  * The Spotify Service Handler
  */
 public class SpotifyService implements IServiceHandler {
+    /**
+     * An instance of our Spotify API Wrapper
+     */
     public static SpotifyAPI spotifyAPI;
-    private final boolean isSnooperEnabled = Minecraft.getMinecraft().isSnooperEnabled();
+
+    /**
+     * The client id to use for authorisation
+     * Retrieved from the MediaMod API
+     */
+    public volatile static String spotifyClientID;
+
+    /**
+     * The last timestamp that the progress was estimated
+     */
     private int lastTimestamp = 0;
+
+    /**
+     * The last date that the progress was estimated
+     */
     private long lastEstimationUpdate = 0;
+
+    /**
+     * A cached version of the current media info
+     */
     private MediaInfo cachedMediaInfo = null;
+
+    /**
+     * A cached version of the party's media info
+     */
     private PartyMediaInfo cachedPartyMediaInfo = null;
 
     /**
@@ -39,8 +63,8 @@ public class SpotifyService implements IServiceHandler {
      *
      * @see SpotifyAPI#isLoggedIn()
      */
-    public static boolean isLoggedIn() {
-        return spotifyAPI.isLoggedIn();
+    public static boolean isLoggedOut() {
+        return !spotifyAPI.isLoggedIn();
     }
 
     /**
@@ -63,11 +87,29 @@ public class SpotifyService implements IServiceHandler {
      * Initialises our API Wrapper if snooper is enabled
      */
     public boolean load() {
-        if (isSnooperEnabled) {
+        if (Minecraft.getMinecraft().isSnooperEnabled()) {
             spotifyAPI = new SpotifyAPI();
-        }
 
-        return isSnooperEnabled;
+            Multithreading.runAsync(() -> {
+                try {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+                    object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+
+                    ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/clientid", object, ClientIDResponse.class);
+                    if (clientIDResponse != null) {
+                        spotifyClientID = clientIDResponse.clientID;
+                    }
+                } catch (IOException e) {
+                    MediaMod.INSTANCE.LOGGER.warn("Failed to get Spotify Client ID:");
+                    e.printStackTrace();
+                }
+            });
+
+            return true;
+        }
+        
+        return false;
     }
 
     /**
@@ -126,7 +168,11 @@ public class SpotifyService implements IServiceHandler {
      * This indicates if the handler is ready for usage
      */
     public boolean isReady() {
-        return isSnooperEnabled && spotifyAPI.isLoggedIn();
+        return spotifyAPI != null && spotifyAPI.isLoggedIn();
+    }
+
+    static class ClientIDResponse {
+        String clientID;
     }
 }
 

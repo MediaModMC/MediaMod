@@ -28,10 +28,6 @@ import org.mediamod.mediamod.util.*;
 import java.io.File;
 import java.io.IOException;
 
-class ClientIDResponse {
-    String clientID;
-}
-
 /**
  * The main class for MediaMod
  *
@@ -64,10 +60,8 @@ public class MediaMod {
     public final CoreMod coreMod = new CoreMod("mediamod");
 
     /**
-     * The client ID used for Spotify Requests
+     * If this is the first load of MediaMod
      */
-    public String spotifyClientID;
-
     private boolean firstLoad = true;
 
     /**
@@ -127,31 +121,10 @@ public class MediaMod {
             LOGGER.warn("Failed to register with analytics! " + e.getLocalizedMessage());
         }
 
-        try {
-            JsonObject object = new JsonObject();
-            object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-            object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-
-            ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/clientid", object, ClientIDResponse.class);
-            if (clientIDResponse != null) {
-                spotifyClientID = clientIDResponse.clientID;
-            }
-        } catch (IOException e) {
-            LOGGER.warn("Failed to get Spotify Client ID:");
-            e.printStackTrace();
-        }
-
         LOGGER.info("Loading Configuration...");
         Settings.loadConfig();
 
         // Load Media Handlers
-        /*ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
-        serviceHandler.registerHandler(new PartyHandler());
-        serviceHandler.registerHandler(new BrowserHandler());
-        serviceHandler.registerHandler(new SpotifyHandler());
-
-        serviceHandler.initializeHandlers();*/
-
         MediaHandler mediaHandler = MediaHandler.instance;
         mediaHandler.loadAll();
     }

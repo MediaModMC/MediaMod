@@ -29,7 +29,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, I18n.format("menu.guiplayerpositioning.buttons.back.name")));
 
-        if (!SpotifyService.isLoggedIn()) {
+        if (SpotifyService.isLoggedOut()) {
             this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.loginSpotify.name")));
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.logoutSpotify.name")));
@@ -55,7 +55,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();
 
-        if (!SpotifyService.isLoggedIn()) {
+        if (SpotifyService.isLoggedOut()) {
             drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
         } else {
             drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
@@ -93,7 +93,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                 PlayerMessager.sendMessage("&cOpening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'");
 
                 Desktop desktop = Desktop.getDesktop();
-                String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=" + MediaMod.INSTANCE.spotifyClientID + "&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
+                String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=" + SpotifyService.spotifyClientID + "&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
 
                 try {
                     desktop.browse(new URI(spotifyUrl));

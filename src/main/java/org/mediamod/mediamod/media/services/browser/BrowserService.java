@@ -25,14 +25,17 @@ public class BrowserService implements IServiceHandler {
      * A list of regex that indicate if the URL is allowed or not
      */
     public static final List<String> allowedOrigins = Arrays.asList("https://[^.]*\\.?youtube.com(/.*)?", "https://[^.]*\\.?music.apple.com(/.*)?", "https://[^.]*\\.?soundcloud.com(/.*)?", "https://[^.]*\\.?music.youtube.com(/.*)?");
+
     /**
      * The current MediaInfo instance received from the browser
      */
     private static MediaInfo mediaInfo = null;
+
     /**
      * The last timestamp an estimation was performed at
      */
     private int lastTimestamp = 0;
+
     /**
      * The timestamp of the last estimation update
      */
