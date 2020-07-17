@@ -2,13 +2,13 @@ package dev.conorthedev.mediamod.gui;
 
 import dev.conorthedev.mediamod.config.ProgressStyle;
 import dev.conorthedev.mediamod.config.Settings;
-import dev.conorthedev.mediamod.event.SongChangeEvent;
+import dev.conorthedev.mediamod.event.MediaInfoUpdateEvent;
 import dev.conorthedev.mediamod.gui.util.DynamicTextureWrapper;
 import dev.conorthedev.mediamod.gui.util.IMediaGui;
-import dev.conorthedev.mediamod.media.base.IMediaHandler;
-import dev.conorthedev.mediamod.media.base.ServiceHandler;
-import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
-import dev.conorthedev.mediamod.media.spotify.api.track.Track;
+import dev.conorthedev.mediamod.media.MediaHandler;
+import dev.conorthedev.mediamod.media.core.IServiceHandler;
+import dev.conorthedev.mediamod.media.core.api.MediaInfo;
+import dev.conorthedev.mediamod.media.core.api.track.Track;
 import dev.conorthedev.mediamod.util.ChatColor;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.Minecraft;
@@ -53,18 +53,18 @@ public class PlayerOverlay {
     private boolean first = true;
 
     /**
-     * The current song
+     * The current media information
      *
-     * @see CurrentlyPlayingObject
+     * @see MediaInfo
      */
-    private CurrentlyPlayingObject currentlyPlayingObject = null;
+    private MediaInfo currentMediaInfo = null;
 
     /**
-     * The previous song
+     * The previous media information
      *
-     * @see CurrentlyPlayingObject
+     * @see MediaInfo
      */
-    private CurrentlyPlayingObject previousPlayingObject = null;
+    private MediaInfo previousMediaInfo = null;
 
     /**
      * The length of the concatenated song name
@@ -177,15 +177,18 @@ public class PlayerOverlay {
                 ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
                 exec.scheduleAtFixedRate(() -> {
                     try {
-                        // Check if we are ready
-                        if (ServiceHandler.INSTANCE.getCurrentMediaHandler() != null) {
-                            if (ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady()) {
-                                this.currentlyPlayingObject = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
-                                if(this.previousPlayingObject == null || !this.previousPlayingObject.item.name.equals(this.currentlyPlayingObject.item.name)) {
-                                    this.previousPlayingObject = this.currentlyPlayingObject;
-                                    MinecraftForge.EVENT_BUS.post(new SongChangeEvent(this.currentlyPlayingObject));
-                                    if(Settings.ANNOUNCE_TRACKS) PlayerMessager.sendMessage(ChatColor.GRAY + "Current track: " + this.currentlyPlayingObject.item.name + " by "  + this.currentlyPlayingObject.item.album.artists[0].name, true);
-                                }
+                        if (MediaHandler.instance.getCurrentService() != null) {
+                            currentMediaInfo = MediaHandler.instance.getCurrentMediaInfo();
+                            if (currentMediaInfo == null) {
+                                previousMediaInfo = null;
+                                return;
+                            }
+
+                            Track track = currentMediaInfo.track;
+
+                            if (previousMediaInfo == null || !previousMediaInfo.track.name.equals(track.name)) {
+                                previousMediaInfo = currentMediaInfo;
+                                MinecraftForge.EVENT_BUS.post(new MediaInfoUpdateEvent(currentMediaInfo));
                             }
                         }
                     } catch (Exception e) {
@@ -194,10 +197,8 @@ public class PlayerOverlay {
                 }, 0, 3, TimeUnit.SECONDS);
             }
 
-            // Make sure that a MediaHandler exists and is ready
-            IMediaHandler currentHandler = ServiceHandler.INSTANCE.getCurrentMediaHandler();
-            if (currentHandler != null && currentHandler.handlerReady() && currentlyPlayingObject != null) {
-                // Make sure there's no GUI screen being displayed
+            // Make sure that a Service Handler exists and is ready
+            if (MediaHandler.instance.getCurrentService() != null && currentMediaInfo != null) {
                 if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo) {
                     this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
                 }
@@ -218,9 +219,11 @@ public class PlayerOverlay {
         float cornerX = -75.5f;
         float cornerY = -25.5f;
 
+        // Get the current service
+        IServiceHandler service = MediaHandler.instance.getCurrentService();
+
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
-
         mc.mcProfiler.startSection("mediamod_player");
 
         // Establish a FontRenderer
@@ -228,8 +231,8 @@ public class PlayerOverlay {
 
         // Track Metadata
         Track track = null;
-        if (this.currentlyPlayingObject != null) {
-            track = this.currentlyPlayingObject.item;
+        if (this.currentMediaInfo != null) {
+            track = this.currentMediaInfo.track;
         }
 
         // Track Name
@@ -242,18 +245,17 @@ public class PlayerOverlay {
         Color color = Color.gray;
 
         if (!testing && track != null) {
-            // Get the track metadata
             trackName = track.name;
-            if (track.album != null) {
-                if (track.album.artists != null && track.album.artists.length > 0) {
-                    trackArtist = track.album.artists[0].name;
-                }
-                if (track.album.images != null && track.album.images.length > 0) {
-                    try {
-                        url = new URL(track.album.images[0].url);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
+
+            if (track.artists != null && track.artists.length > 0) {
+                trackArtist = track.artists[0].name;
+            }
+
+            if (track.album != null && track.album.images != null && track.album.images.length > 0) {
+                try {
+                    url = new URL(track.album.images[0].url);
+                } catch (MalformedURLException ignored) {
+                    return;
                 }
             }
         }
@@ -352,7 +354,7 @@ public class PlayerOverlay {
 
         String by = I18n.format("player.text.by") + " ";
 
-        int max = Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject != null && currentlyPlayingObject.item != null && currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0)) ? 18 : 30;
+        int max = Settings.SHOW_ALBUM_ART && (testing || (currentMediaInfo != null && currentMediaInfo.track != null && currentMediaInfo.track.album != null && currentMediaInfo.track.album.images.length > 0)) ? 18 : 30;
 
         if (trackArtist != null) {
             if ((by + trackArtist).length() >= max) {
@@ -382,16 +384,18 @@ public class PlayerOverlay {
             }
         }
 
-        if (testing || (currentlyPlayingObject != null && currentlyPlayingObject.item != null)) {
-            if (testing || (currentlyPlayingObject.item.duration_ms > 0 && currentlyPlayingObject.progress_ms >= 0)) {
+        if (testing || (currentMediaInfo != null && currentMediaInfo.track != null)) {
+            if (testing || (currentMediaInfo.track.duration > 0 && currentMediaInfo.timestamp >= 0)) {
                 float right = textXPosition + 91;
                 int offset = 91;
                 int progressMultiplier = 90;
-                if (!(Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0)))) {
+
+                if (!(Settings.SHOW_ALBUM_ART && (testing || (currentMediaInfo.track.album != null && currentMediaInfo.track.album.images.length > 0)))) {
                     right = textXPosition + 135;
                     offset = 135;
                     progressMultiplier = 135;
                 }
+
                 Color displayColor = Settings.AUTO_COLOR_SELECTION && Settings.SHOW_ALBUM_ART ? color : Color.green;
 
                 if (Settings.PROGRESS_STYLE != ProgressStyle.NUMBERS_ONLY) {
@@ -408,8 +412,8 @@ public class PlayerOverlay {
 
                     // Get the percent complete
                     float percentComplete = (float) 0.75;
-                    if (track != null && ServiceHandler.INSTANCE.getCurrentMediaHandler() != null && !testing) {
-                        percentComplete = (float) ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs() / (float) track.duration_ms;
+                    if (track != null && service != null && !testing) {
+                        percentComplete = (float) service.getEstimatedProgress() / (float) track.duration;
                     }
                     if (Settings.MODERN_PLAYER_STYLE) {
                         // Draw the gradient styled progress bar
@@ -421,9 +425,10 @@ public class PlayerOverlay {
                 }
 
                 if (Settings.PROGRESS_STYLE != ProgressStyle.BAR_ONLY) {
-                    int progressMs = track == null || ServiceHandler.INSTANCE.getCurrentMediaHandler() == null ? 45000 : ServiceHandler.INSTANCE.getCurrentMediaHandler().getEstimatedProgressMs();
-                    int durationMs = track == null ? 60000 : track.duration_ms;
+                    int progressMs = track == null || service == null ? 45000 : service.getEstimatedProgress();
+                    int durationMs = track == null ? 60000 : track.duration;
                     int color2 = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_NEW ? getComplementaryColor(displayColor) : Color.white.darker().getRGB();
+
                     float y2 = Settings.PROGRESS_STYLE == ProgressStyle.BAR_AND_NUMBERS_OLD ? cornerY + 41 : cornerY + 33;
                     if (Settings.PROGRESS_STYLE != ProgressStyle.NUMBERS_ONLY) {
                         String str = formatTime(durationMs);
@@ -436,9 +441,8 @@ public class PlayerOverlay {
                 }
             }
 
-
             // Draw the album art
-            if (Settings.SHOW_ALBUM_ART && (testing || (currentlyPlayingObject.item.album != null && currentlyPlayingObject.item.album.images.length > 0))) {
+            if (Settings.SHOW_ALBUM_ART && (testing || (currentMediaInfo.track.album != null && currentMediaInfo.track.album.images.length > 0))) {
                 if (Settings.MODERN_PLAYER_STYLE) {
                     // Draw outline
                     drawRect(cornerX + 46, cornerY + 9, cornerX + 9, cornerY + 46, new Color(0, 0, 0, 75).getRGB());

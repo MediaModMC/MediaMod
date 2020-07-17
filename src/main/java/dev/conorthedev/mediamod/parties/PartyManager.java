@@ -3,10 +3,9 @@ package dev.conorthedev.mediamod.parties;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dev.conorthedev.mediamod.MediaMod;
-import dev.conorthedev.mediamod.event.SongChangeEvent;
-import dev.conorthedev.mediamod.media.base.ServiceHandler;
-import dev.conorthedev.mediamod.media.spotify.api.playing.CurrentlyPlayingObject;
-import dev.conorthedev.mediamod.media.spotify.api.track.Track;
+import dev.conorthedev.mediamod.event.MediaInfoUpdateEvent;
+import dev.conorthedev.mediamod.media.MediaHandler;
+import dev.conorthedev.mediamod.media.core.api.MediaInfo;
 import dev.conorthedev.mediamod.util.WebRequest;
 import dev.conorthedev.mediamod.util.WebRequestType;
 import net.minecraftforge.common.MinecraftForge;
@@ -26,13 +25,15 @@ public class PartyManager {
     }
 
     public PartyStartResponse startParty() {
-        System.out.println(new Gson().toJson(this.getPartyTrack()));
-
+        MediaInfo mediaInfo = MediaHandler.instance.getCurrentMediaInfo();
         try {
             JsonObject body = new JsonObject();
             body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
             body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-            body.addProperty("currentTrack", new Gson().toJson(this.getPartyTrack()));
+
+            if (mediaInfo != null) {
+                body.addProperty("currentTrack", new Gson().toJson(mediaInfo));
+            }
 
             PartyStartResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/party/start", body, PartyStartResponse.class);
             if (response == null) {
@@ -78,13 +79,13 @@ public class PartyManager {
             body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
             body.addProperty("partyCode", partyCode);
 
-            if(isHostOfParty) {
+            if (isHostOfParty) {
                 body.addProperty("partySecret", partySecret);
             }
 
             boolean success = WebRequest.requestToMediaMod(WebRequestType.POST, "api/party/leave", body) == 200;
 
-            if(success) {
+            if (success) {
                 isParticipatingInParty = false;
                 isHostOfParty = false;
             }
@@ -98,10 +99,11 @@ public class PartyManager {
 
     public void publishSongChange() {
         try {
-            if (isHostOfParty && isParticipatingInParty) {
+            MediaInfo mediaInfo = MediaHandler.instance.getCurrentMediaInfo();
+            if (isHostOfParty && isParticipatingInParty && mediaInfo != null) {
                 JsonObject body = new JsonObject();
                 body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-                body.addProperty("track", new Gson().toJson(this.getPartyTrack()));
+                body.addProperty("track", new Gson().toJson(mediaInfo));
                 body.addProperty("code", partyCode);
                 body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
                 body.addProperty("partySecret", partySecret);
@@ -114,11 +116,6 @@ public class PartyManager {
 
     public boolean isInParty() {
         return MediaMod.INSTANCE.partyManager.isParticipatingInParty;
-    }
-
-    public PartyTrack getPartyTrack() {
-        CurrentlyPlayingObject track = ServiceHandler.INSTANCE.getCurrentMediaHandler().getCurrentTrack();
-        return new PartyTrack(track.item.id, track.progress_ms, !track.is_playing);
     }
 
     public String getCurrentTrack() {
@@ -141,7 +138,7 @@ public class PartyManager {
     }
 
     @SubscribeEvent
-    public void onSongChange(SongChangeEvent event) {
+    public void onMediaInfoUpdate(MediaInfoUpdateEvent event) {
         publishSongChange();
     }
 }

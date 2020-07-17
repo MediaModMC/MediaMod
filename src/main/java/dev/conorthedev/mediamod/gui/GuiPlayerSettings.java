@@ -5,7 +5,7 @@ import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.util.ButtonTooltip;
 import dev.conorthedev.mediamod.gui.util.CustomButton;
 import dev.conorthedev.mediamod.gui.util.IMediaGui;
-import dev.conorthedev.mediamod.media.base.ServiceHandler;
+import dev.conorthedev.mediamod.media.MediaHandler;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -49,13 +49,7 @@ class GuiPlayerSettings extends ButtonTooltip implements IMediaGui {
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, 2, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();
 
-        boolean testing;
-        if (ServiceHandler.INSTANCE.getCurrentMediaHandler() == null) {
-            testing = true;
-        } else {
-            testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
-        }
-
+        boolean testing = MediaHandler.instance.getCurrentService() == null;
         PlayerOverlay.INSTANCE.drawPlayer(width / 2 - 80, height / 2 + 10, Settings.MODERN_PLAYER_STYLE, testing, 1.0);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
