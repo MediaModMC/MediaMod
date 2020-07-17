@@ -64,7 +64,7 @@ public class SpotifyService implements IServiceHandler {
      * @see SpotifyAPI#isLoggedIn()
      */
     public static boolean isLoggedOut() {
-        return !spotifyAPI.isLoggedIn();
+        return spotifyAPI == null || !spotifyAPI.isLoggedIn();
     }
 
     /**
@@ -126,7 +126,7 @@ public class SpotifyService implements IServiceHandler {
 
                 if (info != null) {
                     // If there is a track, check if the cached information is equal to the received information
-                    if (cachedPartyMediaInfo == null || !cachedMediaInfo.track.identifier.equals(info._id)) {
+                    if (cachedPartyMediaInfo == null || (cachedMediaInfo.track != null && cachedMediaInfo.track.identifier != null && !cachedMediaInfo.track.identifier.equals(info._id))) {
                         cachedPartyMediaInfo = info;
                         if (spotifyAPI.addTrackToQueue(info._id)) {
                             spotifyAPI.nextTrack();

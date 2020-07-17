@@ -40,7 +40,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "http://localhost:3000/";
+    public static final String ENDPOINT = "https://mediamodapi.conorthedev.me/";
 
     /**
      * An instance of this class to access non-static methods from other classes

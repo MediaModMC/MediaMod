@@ -2,6 +2,7 @@ package org.mediamod.mediamod.core;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
@@ -45,10 +46,19 @@ public class CoreMod {
         LOGGER.info("Attempting to register with CoreMod API...");
         URL url = new URL(MediaMod.ENDPOINT + "api/register");
 
-        BigInteger serverBigInt = new BigInteger(128, new Random()).xor(new BigInteger(128, new Random(System.identityHashCode(new Object()))));
-        String serverId = serverBigInt.toString(16);
+        GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
+        String accessToken = Minecraft.getMinecraft().getSession().getToken();
 
-        Minecraft.getMinecraft().getSessionService().joinServer(Minecraft.getMinecraft().getSession().getProfile(), Minecraft.getMinecraft().getSession().getToken(), serverId);
+        Random random = new Random();
+        Random random1 = new Random(System.identityHashCode(new Object()));
+
+        BigInteger randomBigInt = new BigInteger(128, random);
+        BigInteger randomBigInt1 = new BigInteger(128, random1);
+
+        BigInteger serverBigInt = randomBigInt.xor(randomBigInt1);
+
+        String serverId = serverBigInt.toString(16);
+        Minecraft.getMinecraft().getSessionService().joinServer(profile, accessToken, serverId);
 
         JsonObject obj = new JsonObject();
         obj.addProperty("uuid", this.getUUID());
