@@ -2,6 +2,7 @@ package org.mediamod.mediamod.core;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,9 +11,11 @@ import org.mediamod.mediamod.MediaMod;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CoreMod {
@@ -36,16 +39,21 @@ public class CoreMod {
         return Minecraft.getMinecraft().getSession().getProfile().getId().toString();
     }
 
-    public void register() throws IOException {
+    public void register() throws IOException, AuthenticationException {
         if (!Minecraft.getMinecraft().isSnooperEnabled()) return;
 
         LOGGER.info("Attempting to register with CoreMod API...");
-
         URL url = new URL(MediaMod.ENDPOINT + "api/register");
+
+        BigInteger serverBigInt = new BigInteger(128, new Random()).xor(new BigInteger(128, new Random(System.identityHashCode(new Object()))));
+        String serverId = serverBigInt.toString(16);
+
+        Minecraft.getMinecraft().getSessionService().joinServer(Minecraft.getMinecraft().getSession().getProfile(), Minecraft.getMinecraft().getSession().getToken(), serverId);
 
         JsonObject obj = new JsonObject();
         obj.addProperty("uuid", this.getUUID());
         obj.addProperty("mod", modID);
+        obj.addProperty("serverID", serverId);
 
         String content = obj.toString();
 
@@ -111,12 +119,12 @@ public class CoreMod {
             e.printStackTrace();
         }
     }
-}
 
-class RegisterResponse {
-    final String secret;
+    class RegisterResponse {
+        final String secret;
 
-    RegisterResponse(String secret) {
-        this.secret = secret;
+        RegisterResponse(String secret) {
+            this.secret = secret;
+        }
     }
 }
