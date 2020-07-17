@@ -1,14 +1,5 @@
 package org.mediamod.mediamod.gui;
 
-import org.mediamod.mediamod.config.ProgressStyle;
-import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
-import org.mediamod.mediamod.gui.util.DynamicTextureWrapper;
-import org.mediamod.mediamod.gui.util.IMediaGui;
-import org.mediamod.mediamod.media.MediaHandler;
-import org.mediamod.mediamod.media.core.IServiceHandler;
-import org.mediamod.mediamod.media.core.api.MediaInfo;
-import org.mediamod.mediamod.media.core.api.track.Track;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,6 +11,15 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.mediamod.mediamod.config.ProgressStyle;
+import org.mediamod.mediamod.config.Settings;
+import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
+import org.mediamod.mediamod.gui.util.DynamicTextureWrapper;
+import org.mediamod.mediamod.gui.util.IMediaGui;
+import org.mediamod.mediamod.media.MediaHandler;
+import org.mediamod.mediamod.media.core.IServiceHandler;
+import org.mediamod.mediamod.media.core.api.MediaInfo;
+import org.mediamod.mediamod.media.core.api.track.Track;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

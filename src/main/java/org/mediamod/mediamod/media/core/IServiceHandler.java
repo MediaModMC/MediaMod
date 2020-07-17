@@ -1,8 +1,8 @@
 package org.mediamod.mediamod.media.core;
 
-import org.mediamod.mediamod.media.core.api.MediaInfo;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.mediamod.mediamod.keybinds.KeybindInputHandler;
+import org.mediamod.mediamod.media.core.api.MediaInfo;
 
 import javax.annotation.Nullable;
 

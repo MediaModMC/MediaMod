@@ -1,12 +1,12 @@
 package org.mediamod.mediamod.gui;
 
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.util.ButtonTooltip;
 import org.mediamod.mediamod.gui.util.CustomButton;
 import org.mediamod.mediamod.gui.util.IMediaGui;
 import org.mediamod.mediamod.util.Metadata;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
 
 import java.io.IOException;
 

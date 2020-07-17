@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import net.minecraft.client.Minecraft;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.media.core.IServiceHandler;
@@ -12,7 +13,6 @@ import org.mediamod.mediamod.media.core.api.MediaInfo;
 import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.parties.meta.PartyMediaInfo;
 import org.mediamod.mediamod.util.*;
-import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

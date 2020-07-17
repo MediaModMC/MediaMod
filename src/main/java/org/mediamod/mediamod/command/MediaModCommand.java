@@ -1,5 +1,13 @@
 package org.mediamod.mediamod.command;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.gui.GuiMediaModSettings;
 import org.mediamod.mediamod.parties.PartyManager;
@@ -9,14 +17,6 @@ import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.Multithreading;
 import org.mediamod.mediamod.util.PlayerMessager;
 import org.mediamod.mediamod.util.TickScheduler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.util.Arrays;
 import java.util.List;

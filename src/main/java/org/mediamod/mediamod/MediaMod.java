@@ -1,16 +1,6 @@
 package org.mediamod.mediamod;
 
 import com.google.gson.JsonObject;
-import org.mediamod.mediamod.command.MediaModCommand;
-import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.core.CoreMod;
-import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
-import org.mediamod.mediamod.gui.PlayerOverlay;
-import org.mediamod.mediamod.keybinds.KeybindInputHandler;
-import org.mediamod.mediamod.keybinds.KeybindManager;
-import org.mediamod.mediamod.media.MediaHandler;
-import org.mediamod.mediamod.media.core.api.MediaInfo;
-import org.mediamod.mediamod.parties.PartyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,6 +13,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mediamod.mediamod.command.MediaModCommand;
+import org.mediamod.mediamod.config.Settings;
+import org.mediamod.mediamod.core.CoreMod;
+import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
+import org.mediamod.mediamod.gui.PlayerOverlay;
+import org.mediamod.mediamod.keybinds.KeybindInputHandler;
+import org.mediamod.mediamod.keybinds.KeybindManager;
+import org.mediamod.mediamod.media.MediaHandler;
+import org.mediamod.mediamod.media.core.api.MediaInfo;
+import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.util.*;
 
 import java.io.File;
@@ -57,11 +57,6 @@ public class MediaMod {
      * @see org.apache.logging.log4j.Logger
      */
     public final Logger LOGGER = LogManager.getLogger("MediaMod");
-
-    /**
-     * Check if the user is in a development environment, this is used for DEBUG messages
-     */
-    public final boolean DEVELOPMENT_ENVIRONMENT = fieldExists(Minecraft.class, "theMinecraft");
 
     /**
      * A CoreMod instance which assists with analytics
@@ -201,19 +196,4 @@ public class MediaMod {
         PartyManager.instance.updateInfo(info);
     }
 
-    /**
-     * Checks if a field exists by the field name
-     *
-     * @param clazz     - the class the field can be in
-     * @param fieldName - the field name
-     * @return boolean
-     */
-    private boolean fieldExists(Class<?> clazz, String fieldName) {
-        try {
-            clazz.getDeclaredField(fieldName);
-            return true;
-        } catch (NoSuchFieldException e) {
-            return false;
-        }
-    }
 }

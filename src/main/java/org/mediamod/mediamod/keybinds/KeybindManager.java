@@ -1,10 +1,10 @@
 package org.mediamod.mediamod.keybinds;
 
-import org.mediamod.mediamod.MediaMod;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.lwjgl.input.Keyboard;
+import org.mediamod.mediamod.MediaMod;
 
 /**
  * The class that initializes and declares keybinds

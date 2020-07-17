@@ -1,14 +1,14 @@
 package org.mediamod.mediamod.keybinds;
 
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.GuiMediaModSettings;
 import org.mediamod.mediamod.media.MediaHandler;
 import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.PlayerMessager;
 import org.mediamod.mediamod.util.TickScheduler;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 /**
  * The class that handles keybind events

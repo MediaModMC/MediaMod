@@ -113,7 +113,8 @@ public class MediaHandler {
      *
      * @see MediaInfo
      */
-    public @Nullable MediaInfo getCurrentMediaInfo() {
+    public @Nullable
+    MediaInfo getCurrentMediaInfo() {
         IServiceHandler serviceHandler = getCurrentService();
         return serviceHandler != null ? serviceHandler.getCurrentMediaInfo() : null;
     }

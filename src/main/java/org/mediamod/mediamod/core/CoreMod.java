@@ -2,10 +2,10 @@ package org.mediamod.mediamod.core;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.mediamod.mediamod.MediaMod;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mediamod.mediamod.MediaMod;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class CoreMod {
         modID = modIDin;
         LOGGER = LogManager.getLogger("CoreMod (" + modIDin + ")");
 
-        Runtime.getRuntime().addShutdownHook(new Thread("CoreMod (" + modID +") Shutdown Thread") {
+        Runtime.getRuntime().addShutdownHook(new Thread("CoreMod (" + modID + ") Shutdown Thread") {
             public void run() {
                 shutdown();
             }
@@ -37,7 +37,7 @@ public class CoreMod {
     }
 
     public void register() throws IOException {
-        if(!Minecraft.getMinecraft().isSnooperEnabled()) return;
+        if (!Minecraft.getMinecraft().isSnooperEnabled()) return;
 
         LOGGER.info("Attempting to register with CoreMod API...");
 
@@ -68,7 +68,7 @@ public class CoreMod {
         connection.disconnect();
         reader.close();
 
-        if(connection.getResponseCode() == 200) {
+        if (connection.getResponseCode() == 200) {
             RegisterResponse registerResponse = new Gson().fromJson(response, RegisterResponse.class);
             secret = registerResponse.secret;
 
@@ -79,7 +79,7 @@ public class CoreMod {
     }
 
     public void shutdown() {
-        if(!Minecraft.getMinecraft().isSnooperEnabled() && secret.equals("")) return;
+        if (!Minecraft.getMinecraft().isSnooperEnabled() && secret.equals("")) return;
 
         LOGGER.info("Shutting down CoreMod (" + modID + ")");
         try {

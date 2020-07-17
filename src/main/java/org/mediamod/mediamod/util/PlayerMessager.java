@@ -20,13 +20,13 @@ public class PlayerMessager {
     }
 
     public static void sendMessage(IChatComponent message) {
-        if(Minecraft.getMinecraft().thePlayer == null) return;
+        if (Minecraft.getMinecraft().thePlayer == null) return;
         if (message == null) message = new ChatComponentText("");
         messages.add(message);
     }
 
     public static void sendMessage(IChatComponent message, boolean header) {
-        if(Minecraft.getMinecraft().thePlayer == null) return;
+        if (Minecraft.getMinecraft().thePlayer == null) return;
         if (message == null) message = new ChatComponentText("");
 
         if (header) {

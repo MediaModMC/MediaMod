@@ -1,13 +1,5 @@
 package org.mediamod.mediamod.gui;
 
-import org.mediamod.mediamod.MediaMod;
-import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.gui.util.ButtonTooltip;
-import org.mediamod.mediamod.gui.util.CustomButton;
-import org.mediamod.mediamod.gui.util.IMediaGui;
-import org.mediamod.mediamod.media.services.spotify.SpotifyService;
-import org.mediamod.mediamod.util.ChatColor;
-import org.mediamod.mediamod.util.PlayerMessager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,6 +8,14 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import org.mediamod.mediamod.MediaMod;
+import org.mediamod.mediamod.config.Settings;
+import org.mediamod.mediamod.gui.util.ButtonTooltip;
+import org.mediamod.mediamod.gui.util.CustomButton;
+import org.mediamod.mediamod.gui.util.IMediaGui;
+import org.mediamod.mediamod.media.services.spotify.SpotifyService;
+import org.mediamod.mediamod.util.ChatColor;
+import org.mediamod.mediamod.util.PlayerMessager;
 
 import java.awt.*;
 import java.io.IOException;

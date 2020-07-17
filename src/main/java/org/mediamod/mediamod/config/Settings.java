@@ -1,9 +1,9 @@
 package org.mediamod.mediamod.config;
 
-import org.mediamod.mediamod.MediaMod;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import org.mediamod.mediamod.MediaMod;
 
 import java.io.File;
 
@@ -60,7 +60,7 @@ public class Settings {
 
         if (load) REFRESH_TOKEN = refreshTokenProperty.getString();
         else {
-            if(SAVE_SPOTIFY_TOKEN) {
+            if (SAVE_SPOTIFY_TOKEN) {
                 refreshTokenProperty.setValue(REFRESH_TOKEN);
             } else {
                 refreshTokenProperty.setValue("");

@@ -1,11 +1,11 @@
 package org.mediamod.mediamod.command;
 
-import org.mediamod.mediamod.MediaMod;
-import org.mediamod.mediamod.util.PlayerMessager;
-import org.mediamod.mediamod.util.VersionChecker;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import org.apache.commons.io.FileUtils;
+import org.mediamod.mediamod.MediaMod;
+import org.mediamod.mediamod.util.PlayerMessager;
+import org.mediamod.mediamod.util.VersionChecker;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class MediaModUpdateCommand extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        if(VersionChecker.INSTANCE.IS_LATEST_VERSION) {
+        if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
             PlayerMessager.sendMessage("MediaMod is up-to-date!", true);
         } else {
             PlayerMessager.sendMessage("Downloading MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);

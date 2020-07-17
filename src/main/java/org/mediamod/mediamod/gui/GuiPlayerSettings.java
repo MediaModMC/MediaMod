@@ -1,16 +1,16 @@
 package org.mediamod.mediamod.gui;
 
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.EnumChatFormatting;
 import org.mediamod.mediamod.config.ProgressStyle;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.util.ButtonTooltip;
 import org.mediamod.mediamod.gui.util.CustomButton;
 import org.mediamod.mediamod.gui.util.IMediaGui;
 import org.mediamod.mediamod.media.MediaHandler;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.io.IOException;
 

@@ -1,7 +1,7 @@
 package org.mediamod.mediamod.event;
 
-import org.mediamod.mediamod.media.core.api.MediaInfo;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import org.mediamod.mediamod.media.core.api.MediaInfo;
 
 public class MediaInfoUpdateEvent extends Event {
     public MediaInfo mediaInfo;

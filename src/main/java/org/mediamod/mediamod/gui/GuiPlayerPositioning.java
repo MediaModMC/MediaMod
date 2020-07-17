@@ -1,14 +1,14 @@
 package org.mediamod.mediamod.gui;
 
-import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.gui.util.CustomButton;
-import org.mediamod.mediamod.gui.util.IMediaGui;
-import org.mediamod.mediamod.media.MediaHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiSlider;
+import org.mediamod.mediamod.config.Settings;
+import org.mediamod.mediamod.gui.util.CustomButton;
+import org.mediamod.mediamod.gui.util.IMediaGui;
+import org.mediamod.mediamod.media.MediaHandler;
 
 import java.io.IOException;
 
