@@ -11,6 +11,7 @@ public class Settings {
     private static final File configFile = new File(FMLClientHandler.instance().getClient().mcDataDir, "config/mediamod.config");
 
     public static boolean ENABLED;
+    public static boolean LEVELHEAD_ENABLED;
     public static boolean SHOW_PLAYER;
     public static boolean MODERN_PLAYER_STYLE;
     public static boolean SHOW_ALBUM_ART;
@@ -42,6 +43,7 @@ public class Settings {
 
     private static void updateConfig(Configuration configuration, boolean load) {
         Property enabledProperty = configuration.get("General", "enabled", true);
+        Property levelheadEnabledProperty = configuration.get("Levelhead", "enabled", true);
         Property showPlayerProperty = configuration.get("General", "showPlayer", true);
         Property modernPlayerProperty = configuration.get("Player", "modernPlayer", true);
         Property albumArtProperty = configuration.get("Player", "showAlbumArt", true);
@@ -69,6 +71,9 @@ public class Settings {
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
+
+        if (load) LEVELHEAD_ENABLED = levelheadEnabledProperty.getBoolean();
+        else levelheadEnabledProperty.setValue(LEVELHEAD_ENABLED);
 
         if (load) ANNOUNCE_TRACKS = announceTracksProperty.getBoolean();
         else announceTracksProperty.setValue(ANNOUNCE_TRACKS);

@@ -20,6 +20,7 @@ import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.gui.PlayerOverlay;
 import org.mediamod.mediamod.keybinds.KeybindInputHandler;
 import org.mediamod.mediamod.keybinds.KeybindManager;
+import org.mediamod.mediamod.levelhead.LevelheadIntegration;
 import org.mediamod.mediamod.media.MediaHandler;
 import org.mediamod.mediamod.media.core.api.MediaInfo;
 import org.mediamod.mediamod.parties.PartyManager;
@@ -39,7 +40,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "https://localhost:3000/";
+    public static final String ENDPOINT = "http://localhost:3000/";
 
     /**
      * An instance of this class to access non-static methods from other classes
@@ -90,6 +91,7 @@ public class MediaMod {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PlayerOverlay.INSTANCE);
         MinecraftForge.EVENT_BUS.register(PlayerMessager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(new LevelheadIntegration());
 
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
         //ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
@@ -117,8 +119,8 @@ public class MediaMod {
 
         try {
             this.coreMod.register();
-        } catch (IOException e) {
-            LOGGER.warn("Failed to register with analytics! " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            LOGGER.warn("Failed to register with analytics! ", e);
         }
 
         LOGGER.info("Loading Configuration...");

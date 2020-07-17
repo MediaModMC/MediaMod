@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 class GuiServices extends ButtonTooltip implements IMediaGui {
-    @Override
     public void initGui() {
         Settings.loadConfig();
 
@@ -31,9 +30,11 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
         if (SpotifyService.isLoggedOut()) {
             this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.loginSpotify.name")));
+            this.buttonList.add(new CustomButton(5, width / 2 - 100, height / 2 + 15, getSuffix(Settings.LEVELHEAD_ENABLED, I18n.format("Levelhead Integration"))));
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.logoutSpotify.name")));
             this.buttonList.add(new CustomButton(4, width / 2 - 100, height / 2 + 15, getSuffix(Settings.SAVE_SPOTIFY_TOKEN, I18n.format("menu.guiservices.buttons.saveSpotifyToken.name"))));
+            this.buttonList.add(new CustomButton(5, width / 2 - 100, height / 2 + 40, getSuffix(Settings.LEVELHEAD_ENABLED, I18n.format("Levelhead Integration"))));
         }
 
         this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 - 10, getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name"))));
@@ -41,7 +42,6 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         super.initGui();
     }
 
-    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
 
@@ -64,23 +64,23 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
-    @Override
     protected String getButtonTooltip(int buttonId) {
-        if (buttonId == 3) {
-            return I18n.format("menu.guiservices.buttons.useBrowserExt.tooltip");
-        } else if (buttonId == 4) {
-            return I18n.format("menu.guiservices.buttons.saveSpotifyToken.tooltip");
-        } else {
-            return null;
+        switch (buttonId) {
+            case 3:
+                return I18n.format("menu.guiservices.buttons.useBrowserExt.tooltip");
+            case 4:
+                return I18n.format("menu.guiservices.buttons.saveSpotifyToken.tooltip");
+            case 5:
+                return "This allows other users to see what you're playing above your head when using Levelhead by Sk1er LLC!";
+            default:
+                return null;
         }
     }
 
-    @Override
     public void onGuiClosed() {
         Settings.saveConfig();
     }
 
-    @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
         switch (button.id) {
@@ -125,10 +125,14 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                 Settings.REFRESH_TOKEN = "";
                 button.displayString = getSuffix(Settings.SAVE_SPOTIFY_TOKEN, I18n.format("menu.guiservices.buttons.saveSpotifyToken.name"));
                 break;
+
+            case 5:
+                Settings.LEVELHEAD_ENABLED = !Settings.LEVELHEAD_ENABLED;
+                button.displayString = getSuffix(Settings.LEVELHEAD_ENABLED, "Levelhead Integration");
+                break;
         }
     }
 
-    @Override
     public boolean doesGuiPauseGame() {
         return false;
     }
