@@ -12,8 +12,8 @@ MediaMod is a Minecraft Mod that shows your current song in Minecraft, it starte
 ### Features
 - Easy to setup, just drag to your mods directory and start Minecraft!
 - Spotify Integration
+- [**NEW, AVAILABLE IN 2.0 BETA**] Parties - listen to your favourite songs with your friends inside of Minecraft (only works on Spotify at the moment)
 - Browser Extension (show current media in YouTube, SoundCloud & more)
-- Beautiful Styles
 - Customize how you want it to look
 
 ### Credits
