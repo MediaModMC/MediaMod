@@ -43,7 +43,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "http://localhost:3000/";
+    public static final String ENDPOINT = "https://c20a0d872f9a.ngrok.io/";
 
     /**
      * An instance of this class to access non-static methods from other classes
@@ -67,11 +67,6 @@ public class MediaMod {
      * A CoreMod instance which assists with analytics
      */
     public final CoreMod coreMod = new CoreMod("mediamod");
-
-    /**
-     * The class which manages everything to-do with MediaMod Parties
-     */
-    public final PartyManager partyManager = new PartyManager();
 
     /**
      * The client ID used for Spotify Requests
@@ -202,6 +197,8 @@ public class MediaMod {
         if (Settings.ANNOUNCE_TRACKS) {
             PlayerMessager.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
         }
+
+        PartyManager.instance.updateInfo(info);
     }
 
     /**

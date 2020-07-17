@@ -36,7 +36,7 @@ public class WebRequest {
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String content = reader.lines().collect(Collectors.joining());
 
-            if(connection.getResponseCode() == 200) {
+            if (connection.getResponseCode() == 200) {
                 return new Gson().fromJson(content, toClass);
             }
         } catch (Exception e) {
@@ -128,5 +128,34 @@ public class WebRequest {
         }
 
         return new Gson().fromJson(content, toClass);
+    }
+
+    public static int makeRequest(WebRequestType type, URL url, HashMap<String, String> properties) throws IOException {
+        HttpURLConnection connection;
+        BufferedReader reader;
+
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod(type.name());
+        connection.setRequestProperty("User-Agent", "MediaMod/1.0");
+
+        for (String key : properties.keySet()) {
+            String value = properties.get(key);
+            connection.setRequestProperty(key, value);
+        }
+
+        if (type == WebRequestType.POST || type == WebRequestType.PUT) {
+            connection.setDoOutput(true);
+            connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
+        }
+
+        connection.connect();
+
+        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String content = reader.lines().collect(Collectors.joining());
+
+        connection.disconnect();
+        reader.close();
+
+        return connection.getResponseCode();
     }
 }

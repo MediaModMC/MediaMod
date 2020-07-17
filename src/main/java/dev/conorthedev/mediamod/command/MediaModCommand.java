@@ -1,11 +1,12 @@
 package dev.conorthedev.mediamod.command;
 
 import dev.conorthedev.mediamod.MediaMod;
-import dev.conorthedev.mediamod.core.CoreMod;
 import dev.conorthedev.mediamod.gui.GuiMediaModSettings;
-import dev.conorthedev.mediamod.parties.PartyJoinResponse;
-import dev.conorthedev.mediamod.parties.PartyStartResponse;
+import dev.conorthedev.mediamod.parties.PartyManager;
+import dev.conorthedev.mediamod.parties.responses.PartyJoinResponse;
+import dev.conorthedev.mediamod.parties.responses.PartyStartResponse;
 import dev.conorthedev.mediamod.util.ChatColor;
+import dev.conorthedev.mediamod.util.Multithreading;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import dev.conorthedev.mediamod.util.TickScheduler;
 import net.minecraft.client.Minecraft;
@@ -58,68 +59,71 @@ public class MediaModCommand extends CommandBase {
                     PlayerMessager.sendMessage(ChatColor.RED + "An error occurred when contacting the MediaMod API, please restart your client. If this issue persists please contact us", true);
                 }
 
-                if (args.length >= 2) {
-                    String function = args[1];
-                    switch (function.toLowerCase()) {
-                        case "start":
-                            if (MediaMod.INSTANCE.partyManager.isInParty()) {
-                                PlayerMessager.sendMessage(ChatColor.RED + "You are already in a party!", true);
+                Multithreading.runAsync(() -> {
+                    if (args.length >= 2) {
+                        String function = args[1];
+                        switch (function.toLowerCase()) {
+                            case "start":
+                                if (PartyManager.instance.isInParty()) {
+                                    PlayerMessager.sendMessage(ChatColor.RED + "You are already in a party!", true);
+                                    break;
+                                }
+
+                                PlayerMessager.sendMessage(ChatColor.GRAY + "Creating MediaMod Party... " + "(note: this only works with spotify at the moment)", true);
+                                PartyStartResponse response = PartyManager.instance.startParty();
+
+                                if (response.code.equals("")) {
+                                    PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst creating your MediaMod party!", true);
+                                } else {
+                                    IChatComponent urlComponent = new ChatComponentText(ChatColor.WHITE + "" + ChatColor.BOLD + response.code);
+                                    urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, response.code));
+                                    urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText("Copy Code")));
+                                    PlayerMessager.sendMessage(new ChatComponentText(ChatColor.GRAY + "Share this code with your friends to invite them to your party: ").appendSibling(urlComponent), true);
+                                }
                                 break;
-                            }
+                            case "leave":
+                                if (PartyManager.instance.isInParty()) {
+                                    PlayerMessager.sendMessage((ChatColor.GRAY + "Leaving party..."), true);
+                                    boolean success = PartyManager.instance.leaveParty();
 
-                            PlayerMessager.sendMessage(ChatColor.GRAY + "Creating MediaMod Party... " + "(note: this only works with spotify at the moment)", true);
-                            PartyStartResponse response = MediaMod.INSTANCE.partyManager.startParty();
-
-                            if (response.code.equals("")) {
-                                PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst creating your MediaMod party!", true);
-                            } else {
-                                IChatComponent urlComponent = new ChatComponentText(ChatColor.WHITE + "" + ChatColor.BOLD + response.code);
-                                urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, response.code));
-                                urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText("Copy Code")));
-                                PlayerMessager.sendMessage(new ChatComponentText(ChatColor.GRAY + "Share this code with your friends to invite them to your party: ").appendSibling(urlComponent), true);
-                            }
-                            break;
-                        case "leave":
-                            if (MediaMod.INSTANCE.partyManager.isInParty()) {
-                                boolean success = MediaMod.INSTANCE.partyManager.leaveParty();
-
-                                if (success) {
-                                    PlayerMessager.sendMessage((ChatColor.GRAY + "You have left the party"), true);
-                                } else {
-                                    PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst trying to leave the party!", true);
-                                }
-                            } else {
-                                PlayerMessager.sendMessage(ChatColor.RED + "You are not in a party!");
-                            }
-                            break;
-                        case "join":
-                            if (args.length >= 3) {
-                                String inputCode = args[2];
-                                if (inputCode.length() != 6) {
-                                    PlayerMessager.sendMessage(ChatColor.RED + "Invalid code!");
-                                } else {
-                                    if (!MediaMod.INSTANCE.partyManager.isInParty()) {
-                                        PartyJoinResponse joinResponse = MediaMod.INSTANCE.partyManager.joinParty(inputCode);
-
-                                        if (joinResponse.success) {
-                                            PlayerMessager.sendMessage((ChatColor.GRAY + "You have joined " + joinResponse.host + "'s party"), true);
-                                        } else {
-                                            PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst trying to join the party!", true);
-                                        }
+                                    if (success) {
+                                        PlayerMessager.sendMessage((ChatColor.GRAY + "You have left the party"), true);
                                     } else {
-                                        PlayerMessager.sendMessage(ChatColor.RED + "You must leave your current party before you join a new one!");
+                                        PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst trying to leave the party!", true);
                                     }
+                                } else {
+                                    PlayerMessager.sendMessage(ChatColor.RED + "You are not in a party!");
                                 }
-                            } else {
+                                break;
+                            case "join":
+                                if (args.length >= 3) {
+                                    String inputCode = args[2];
+                                    if (inputCode.length() != 6) {
+                                        PlayerMessager.sendMessage(ChatColor.RED + "Invalid code!");
+                                    } else {
+                                        if (!PartyManager.instance.isInParty()) {
+                                            PartyJoinResponse joinResponse = PartyManager.instance.joinParty(inputCode);
+
+                                            if (joinResponse.success) {
+                                                PlayerMessager.sendMessage((ChatColor.GRAY + "You have joined " + joinResponse.host + "'s party"), true);
+                                            } else {
+                                                PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst trying to join the party!", true);
+                                            }
+                                        } else {
+                                            PlayerMessager.sendMessage(ChatColor.RED + "You must leave your current party before you join a new one!");
+                                        }
+                                    }
+                                } else {
+                                    PlayerMessager.sendMessage(ChatColor.RED + "Incorrect syntax! Usage: /mm party <start/invite/info/join/leave>");
+                                }
+                                break;
+                            default:
                                 PlayerMessager.sendMessage(ChatColor.RED + "Incorrect syntax! Usage: /mm party <start/invite/info/join/leave>");
-                            }
-                            break;
-                        default:
-                            PlayerMessager.sendMessage(ChatColor.RED + "Incorrect syntax! Usage: /mm party <start/invite/info/join/leave>");
+                        }
+                    } else {
+                        PlayerMessager.sendMessage(ChatColor.RED + "Incorrect syntax! Usage: /mm party <start/invite/info/join/leave>");
                     }
-                } else {
-                    PlayerMessager.sendMessage(ChatColor.RED + "Incorrect syntax! Usage: /mm party <start/invite/info/join/leave>");
-                }
+                });
             }
         }
 

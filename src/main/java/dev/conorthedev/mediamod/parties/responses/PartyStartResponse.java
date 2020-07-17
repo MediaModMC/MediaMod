@@ -1,4 +1,4 @@
-package dev.conorthedev.mediamod.parties;
+package dev.conorthedev.mediamod.parties.responses;
 
 public class PartyStartResponse {
     public final String code;

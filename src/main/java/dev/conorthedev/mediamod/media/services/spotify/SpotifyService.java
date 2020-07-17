@@ -9,9 +9,12 @@ import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.media.core.IServiceHandler;
 import dev.conorthedev.mediamod.media.core.api.MediaInfo;
+import dev.conorthedev.mediamod.parties.PartyManager;
+import dev.conorthedev.mediamod.parties.meta.PartyMediaInfo;
 import dev.conorthedev.mediamod.util.*;
 import net.minecraft.client.Minecraft;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,6 +32,7 @@ public class SpotifyService implements IServiceHandler {
     private int lastTimestamp = 0;
     private long lastEstimationUpdate = 0;
     private MediaInfo cachedMediaInfo = null;
+    private PartyMediaInfo cachedPartyMediaInfo = null;
 
     /**
      * A pass through boolean for SpotifyAPI#isLoggedIn as that doesn't need to be public
@@ -71,6 +75,25 @@ public class SpotifyService implements IServiceHandler {
      */
     @Nullable
     public MediaInfo getCurrentMediaInfo() {
+        Multithreading.runAsync(() -> {
+            PartyManager partyManager = PartyManager.instance;
+
+            // Check if the user is participating in a party but is not the host
+            if (partyManager.isInParty() && !partyManager.isPartyHost()) {
+                PartyMediaInfo info = partyManager.getPartyMediaInfo();
+
+                if (info != null) {
+                    // If there is a track, check if the cached information is equal to the received information
+                    if (cachedPartyMediaInfo == null || !cachedMediaInfo.track.identifier.equals(info._id)) {
+                        cachedPartyMediaInfo = info;
+                        if (spotifyAPI.addTrackToQueue(info._id)) {
+                            spotifyAPI.nextTrack();
+                        }
+                    }
+                }
+            }
+        });
+
         MediaInfo info = spotifyAPI.getUserPlaybackInfo();
         cachedMediaInfo = info;
 
@@ -136,6 +159,7 @@ class SpotifyAPI {
      * Completes the authorisation flow by contacting the MediaMod API with an authorisation code which will be exchanged for an access and refresh code
      *
      * @param authCode: The code provided by the Spotify callback
+     * @see "https://developer.spotify.com/documentation/general/guides/authorization-guide/"
      */
     public void login(String authCode) {
         MediaMod.INSTANCE.LOGGER.info("Logging into Spotify...");
@@ -169,6 +193,8 @@ class SpotifyAPI {
 
     /**
      * Contacts the MediaMod API to exchange a refresh token for a new access token
+     *
+     * @see "https://developer.spotify.com/documentation/general/guides/authorization-guide/"
      */
     public void refresh() {
         MediaMod.INSTANCE.LOGGER.info("Refreshing token...");
@@ -213,6 +239,34 @@ class SpotifyAPI {
         Multithreading.runAsync(Settings::saveConfig);
     }
 
+    /**
+     * Adds a track to the user's playback queue
+     *
+     * @param trackIdentifier: The identifier provided by Spotify
+     * @return true if the action was successful
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/add-to-queue/"
+     */
+    public boolean addTrackToQueue(@Nonnull String trackIdentifier) {
+        String trackUri = "spotify:track:" + trackIdentifier;
+
+        try {
+            int status = WebRequest.makeRequest(WebRequestType.POST, new URL("https://api.spotify.com/v1/me/player/queue?uri=" + trackUri), new HashMap<String, String>() {{
+                put("Authorization", "Bearer " + accessToken);
+            }});
+
+            return status == 204;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Queries the Spotify API for the current playback information
+     *
+     * @return a MediaInfo instance
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/get-information-about-the-users-current-playback/"
+     */
     @Nullable
     public MediaInfo getUserPlaybackInfo() {
         MediaInfo info = null;
@@ -232,6 +286,25 @@ class SpotifyAPI {
      */
     public boolean isLoggedIn() {
         return accessToken != null && !accessToken.equals("");
+    }
+
+    /**
+     * Skips the playback to the next track
+     *
+     * @return if the operation was successful
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/skip-users-playback-to-next-track/"
+     */
+    public boolean nextTrack() {
+        try {
+            int status = WebRequest.makeRequest(WebRequestType.POST, new URL("https://api.spotify.com/v1/me/player/next"), new HashMap<String, String>() {{
+                put("Authorization", "Bearer " + accessToken);
+            }});
+
+            return status == 204;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 
