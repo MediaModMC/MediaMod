@@ -43,7 +43,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "https://c20a0d872f9a.ngrok.io/";
+    public static final String ENDPOINT = "https://localhost:3000/";
 
     /**
      * An instance of this class to access non-static methods from other classes
