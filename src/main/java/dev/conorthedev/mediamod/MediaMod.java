@@ -4,13 +4,12 @@ import com.google.gson.JsonObject;
 import dev.conorthedev.mediamod.command.MediaModCommand;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.core.CoreMod;
+import dev.conorthedev.mediamod.event.MediaInfoUpdateEvent;
 import dev.conorthedev.mediamod.gui.PlayerOverlay;
 import dev.conorthedev.mediamod.keybinds.KeybindInputHandler;
 import dev.conorthedev.mediamod.keybinds.KeybindManager;
-import dev.conorthedev.mediamod.media.base.ServiceHandler;
-import dev.conorthedev.mediamod.media.browser.BrowserHandler;
-import dev.conorthedev.mediamod.media.party.PartyHandler;
-import dev.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import dev.conorthedev.mediamod.media.MediaHandler;
+import dev.conorthedev.mediamod.media.core.api.MediaInfo;
 import dev.conorthedev.mediamod.parties.PartyManager;
 import dev.conorthedev.mediamod.util.*;
 import net.minecraft.client.Minecraft;
@@ -144,7 +143,7 @@ public class MediaMod {
             object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
 
             ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/clientid", object, ClientIDResponse.class);
-            if(clientIDResponse != null) {
+            if (clientIDResponse != null) {
                 spotifyClientID = clientIDResponse.clientID;
             }
         } catch (IOException e) {
@@ -156,13 +155,15 @@ public class MediaMod {
         Settings.loadConfig();
 
         // Load Media Handlers
-        ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
+        /*ServiceHandler serviceHandler = ServiceHandler.INSTANCE;
         serviceHandler.registerHandler(new PartyHandler());
         serviceHandler.registerHandler(new BrowserHandler());
         serviceHandler.registerHandler(new SpotifyHandler());
 
+        serviceHandler.initializeHandlers();*/
 
-        serviceHandler.initializeHandlers();
+        MediaHandler mediaHandler = MediaHandler.instance;
+        mediaHandler.loadAll();
     }
 
     /**
@@ -184,6 +185,22 @@ public class MediaMod {
                     "&7Runs /mediamodupdate"))));
             PlayerMessager.sendMessage(urlComponent);*/
             firstLoad = false;
+        }
+    }
+
+
+    /**
+     * Fired when the current song information changes
+     *
+     * @see MediaInfoUpdateEvent
+     */
+    @SubscribeEvent
+    public void onMediaInfoChange(MediaInfoUpdateEvent event) {
+        MediaInfo info = event.mediaInfo;
+        if (info == null) return;
+
+        if (Settings.ANNOUNCE_TRACKS) {
+            PlayerMessager.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
         }
     }
 

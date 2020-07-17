@@ -14,76 +14,6 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class WebRequest {
-    public static <T> T requestToMediaMod(WebRequestType type, String path, Class<T> toClass) throws IOException {
-        URL url = new URL(MediaMod.ENDPOINT + path);
-
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
-
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-            connection.connect();
-
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String content = reader.lines().collect(Collectors.joining());
-
-            return new Gson().fromJson(content, toClass);
-        } catch (Exception e) {
-            MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
-            }
-        }
-
-        return null;
-    }
-
-    public static <T> T requestToMediaModAPI(WebRequestType type, String path, Class<T> toClass) throws IOException {
-        URL url = new URL(MediaMod.ENDPOINT + "api/" + path);
-
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
-
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-            connection.connect();
-
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String content = reader.lines().collect(Collectors.joining());
-
-            return new Gson().fromJson(content, toClass);
-        } catch (Exception e) {
-            MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getMessage());
-            }
-        }
-
-        return null;
-    }
-
     public static <T> T requestToMediaMod(WebRequestType type, String path, JsonObject body, Class<T> toClass) throws IOException {
         URL url = new URL(MediaMod.ENDPOINT + path);
 
@@ -94,17 +24,21 @@ public class WebRequest {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(type.name());
             connection.setRequestProperty("User-Agent", "MediaMod/1.0");
+
             if (type == WebRequestType.POST) {
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
                 connection.getOutputStream().write(body.toString().getBytes(StandardCharsets.UTF_8));
             }
+
             connection.connect();
 
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String content = reader.lines().collect(Collectors.joining());
 
-            return new Gson().fromJson(content, toClass);
+            if(connection.getResponseCode() == 200) {
+                return new Gson().fromJson(content, toClass);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             MediaMod.INSTANCE.LOGGER.error("Failed to perform web request! Error: " + e.getLocalizedMessage());
@@ -194,31 +128,5 @@ public class WebRequest {
         }
 
         return new Gson().fromJson(content, toClass);
-    }
-
-    public static void makeRequest(WebRequestType type, URL url, HashMap<String, String> properties) throws IOException {
-        HttpURLConnection connection;
-        BufferedReader reader;
-
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(type.name());
-        connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-
-        for (String key : properties.keySet()) {
-            String value = properties.get(key);
-            connection.setRequestProperty(key, value);
-        }
-
-        if (type == WebRequestType.POST || type == WebRequestType.PUT) {
-            connection.setDoOutput(true);
-            connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
-        }
-
-        connection.connect();
-
-        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String content = reader.lines().collect(Collectors.joining());
-
-        System.out.println(content);
     }
 }

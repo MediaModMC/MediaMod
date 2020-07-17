@@ -3,7 +3,7 @@ package dev.conorthedev.mediamod.gui;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.util.CustomButton;
 import dev.conorthedev.mediamod.gui.util.IMediaGui;
-import dev.conorthedev.mediamod.media.base.ServiceHandler;
+import dev.conorthedev.mediamod.media.MediaHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -42,13 +42,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
 
         this.drawCenteredString(fontRendererObj, I18n.format("menu.guiplayerpositioning.text.info.name"), width / 2, height - 120, -1);
 
-        boolean testing;
-        if (ServiceHandler.INSTANCE.getCurrentMediaHandler() == null) {
-            testing = true;
-        } else {
-            testing = !ServiceHandler.INSTANCE.getCurrentMediaHandler().handlerReady();
-        }
-
+        boolean testing = MediaHandler.instance.getCurrentService() == null;
         PlayerOverlay.INSTANCE.drawPlayer(currentX, currentY, Settings.MODERN_PLAYER_STYLE, testing, slider.getValue());
 
         super.drawScreen(mouseX, mouseY, partialTicks);

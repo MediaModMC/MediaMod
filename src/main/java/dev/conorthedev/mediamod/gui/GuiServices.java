@@ -1,18 +1,26 @@
 package dev.conorthedev.mediamod.gui;
 
+import dev.conorthedev.mediamod.MediaMod;
 import dev.conorthedev.mediamod.config.Settings;
 import dev.conorthedev.mediamod.gui.util.ButtonTooltip;
 import dev.conorthedev.mediamod.gui.util.CustomButton;
 import dev.conorthedev.mediamod.gui.util.IMediaGui;
-import dev.conorthedev.mediamod.media.spotify.SpotifyHandler;
+import dev.conorthedev.mediamod.media.services.spotify.SpotifyService;
+import dev.conorthedev.mediamod.util.ChatColor;
 import dev.conorthedev.mediamod.util.PlayerMessager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 class GuiServices extends ButtonTooltip implements IMediaGui {
     @Override
@@ -21,7 +29,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 50, I18n.format("menu.guiplayerpositioning.buttons.back.name")));
 
-        if (!SpotifyHandler.logged) {
+        if (!SpotifyService.isLoggedIn()) {
             this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.loginSpotify.name")));
         } else {
             this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons.logoutSpotify.name")));
@@ -47,7 +55,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         Gui.drawModalRectWithCustomSizedTexture(width / 2 - 111, height / 2 - 110, 0, 0, 222, 55, 222, 55);
         GlStateManager.popMatrix();
 
-        if (!SpotifyHandler.logged) {
+        if (!SpotifyService.isLoggedIn()) {
             drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
         } else {
             drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
@@ -83,12 +91,27 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
             case 1:
                 this.mc.displayGuiScreen(null);
                 PlayerMessager.sendMessage("&cOpening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'");
-                SpotifyHandler.INSTANCE.connectSpotify();
+
+                Desktop desktop = Desktop.getDesktop();
+                String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=" + MediaMod.INSTANCE.spotifyClientID + "&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
+
+                try {
+                    desktop.browse(new URI(spotifyUrl));
+                } catch (URISyntaxException e) {
+                    MediaMod.INSTANCE.LOGGER.fatal("Something has gone terribly wrong... SpotifyHandler:l59");
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    PlayerMessager.sendMessage("&cFailed to open browser with the Spotify Auth URL!");
+                    IChatComponent urlComponent = new ChatComponentText(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
+                    urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, spotifyUrl));
+                    urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                            "&7Click this to open the Spotify Auth URL"))));
+                    PlayerMessager.sendMessage(urlComponent);
+                }
                 break;
 
             case 2:
-                SpotifyHandler.spotifyApi = null;
-                SpotifyHandler.logged = false;
+                SpotifyService.logout();
                 this.mc.displayGuiScreen(new GuiServices());
                 break;
 
