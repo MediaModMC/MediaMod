@@ -27,8 +27,13 @@ minecraft {
     makeObfSourceJar = false
 }
 
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
 dependencies {
-    compile("org.java-websocket:Java-WebSocket:1.5.1")
+    embed("org.java-websocket:Java-WebSocket:1.5.1")
 }
 
 processResources {
@@ -52,6 +57,16 @@ task moveResources {
         ant.move file: "${buildDir}/resources/main",
                 todir: "${buildDir}/classes/java"
     }
+}
+
+jar {
+    dependsOn configurations.compile
+    from {
+        configurations.embed.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
 
 moveResources.dependsOn processResources

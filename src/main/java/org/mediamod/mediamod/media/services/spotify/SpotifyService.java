@@ -1,6 +1,8 @@
 package org.mediamod.mediamod.media.services.spotify;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -131,18 +133,9 @@ public class SpotifyService implements IServiceHandler {
                     // If there is a track, check if the cached information is equal to the received information
                     if (cachedPartyMediaInfo == null || (cachedMediaInfo.track != null && cachedMediaInfo.track.identifier != null && !cachedMediaInfo.track.identifier.equals(info._id))) {
                         cachedPartyMediaInfo = info;
-                        if (spotifyAPI.addTrackToQueue(info._id)) {
-                            if (spotifyAPI.nextTrack()) {
-                                if (info.timestamp >= 3000) {
-                                    if (!spotifyAPI.seekToTimestamp(info.timestamp)) {
-                                        PlayerMessager.sendMessage("Failed to skip to correct timestamp!", true);
-                                    }
-                                }
-                            } else {
-                                PlayerMessager.sendMessage("Failed to skip to next track!", true);
-                            }
-                        } else {
-                            PlayerMessager.sendMessage("Failed to add new track to queue", true);
+
+                        if (!spotifyAPI.playTrack(info._id, info.timestamp)) {
+                            PlayerMessager.sendMessage(ChatColor.RED + "Failed to play new track. Do you have Spotify Premium?", true);
                         }
                     }
                 }
@@ -402,7 +395,7 @@ class SpotifyAPI {
      * Resumes the playback
      *
      * @return if the operation was successful
-     * @see "https://developer.spotify.com/documentation/web-api/reference/player/skip-users-playback-to-next-track/"
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/start-a-users-playback/"
      */
     public boolean resumePlayback() {
         try {
@@ -412,6 +405,32 @@ class SpotifyAPI {
 
             return status == 204;
         } catch (IOException ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * Tell Spotify to play a track identifier at a certain timestamp
+     *
+     * @return if the operation was successful
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/start-a-users-playback/"
+     */
+    public boolean playTrack(String trackID, int timestamp) {
+        try {
+            JsonArray array = new JsonArray();
+            array.add(new JsonPrimitive("spotify:track:" + trackID));
+
+            JsonObject body = new JsonObject();
+            body.add("uris", array);
+            body.addProperty("position_ms", timestamp);
+
+            int status = WebRequest.makeRequest(WebRequestType.PUT, new URL("https://api.spotify.com/v1/me/player/play"), body, new HashMap<String, String>() {{
+                put("Authorization", "Bearer " + accessToken);
+            }});
+
+            return status == 204;
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
