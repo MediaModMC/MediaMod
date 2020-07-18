@@ -12,18 +12,11 @@ import org.mediamod.mediamod.util.Multithreading;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The service that communicates with the browser extension to display media from sites like SoundCloud, YouTube and Apple Music
  */
 public class BrowserService implements IServiceHandler {
-    /**
-     * A list of regex that indicate if the URL is allowed or not
-     */
-    public static final List<String> allowedOrigins = Arrays.asList("https://[^.]*\\.?youtube.com(/.*)?", "https://[^.]*\\.?music.apple.com(/.*)?", "https://[^.]*\\.?soundcloud.com(/.*)?", "https://[^.]*\\.?music.youtube.com(/.*)?");
-
     /**
      * The current MediaInfo instance received from the browser
      */
@@ -38,6 +31,10 @@ public class BrowserService implements IServiceHandler {
      * The timestamp of the last estimation update
      */
     private long lastEstimationUpdate = 0;
+    /**
+     * An instance of our websocket server
+     */
+    private volatile BrowserSocketServer server;
 
     /**
      * The name to be shown in MediaMod Menus
@@ -45,11 +42,6 @@ public class BrowserService implements IServiceHandler {
     public String displayName() {
         return "Browser Extension";
     }
-
-    /**
-     * An instance of our websocket server
-     */
-    private volatile BrowserSocketServer server;
 
     /**
      * This should initialise any needed variables, start any local servers, etc.
@@ -89,6 +81,8 @@ public class BrowserService implements IServiceHandler {
      */
     @Nullable
     public MediaInfo getCurrentMediaInfo() {
+        mediaInfo = server.getMediaInfo();
+
         if (mediaInfo != null) {
             this.lastEstimationUpdate = System.currentTimeMillis();
             this.lastTimestamp = mediaInfo.timestamp;
@@ -127,6 +121,9 @@ public class BrowserService implements IServiceHandler {
      * The web socket server for communication with the browser extension
      */
     static class BrowserSocketServer extends WebSocketServer {
+        private volatile MediaInfo currentMediaInfo = null;
+        private volatile MediaInfo previousMediaInfo = null;
+
         public BrowserSocketServer() {
             super(new InetSocketAddress(9102));
         }
@@ -134,24 +131,25 @@ public class BrowserService implements IServiceHandler {
         public void onOpen(WebSocket conn, ClientHandshake handshake) {
             MediaMod.INSTANCE.logger.info("Client Connected");
             broadcast("Hello");
+            broadcast("Send");
         }
 
         public void onClose(WebSocket conn, int code, String reason, boolean remote) {
             MediaMod.INSTANCE.logger.info("Client Disconnected");
-
             BrowserService.setCurrentMediaInfo(null);
         }
 
         public void onMessage(WebSocket conn, String message) {
-            if(!message.equals("Hello")) {
+            if (!message.equals("Hello")) {
                 Gson gson = new Gson();
 
                 MediaInfo info = null;
                 try {
                     info = gson.fromJson(message, MediaInfo.class);
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
 
-                BrowserService.setCurrentMediaInfo(info);
+                currentMediaInfo = info;
             }
         }
 
@@ -162,6 +160,19 @@ public class BrowserService implements IServiceHandler {
         public void onStart() {
             setConnectionLostTimeout(0);
             setConnectionLostTimeout(100);
+        }
+
+        /**
+         * Queries the extension for the current MediaInfo
+         */
+        public MediaInfo getMediaInfo() {
+            broadcast("Send");
+
+            while (currentMediaInfo == previousMediaInfo) {
+            }
+            previousMediaInfo = currentMediaInfo;
+
+            return currentMediaInfo;
         }
     }
 }
