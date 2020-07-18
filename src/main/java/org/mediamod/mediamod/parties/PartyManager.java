@@ -184,7 +184,7 @@ public class PartyManager {
         requestBody.addProperty("partyCode", partyCode);
 
         if (info != null) {
-            requestBody.addProperty("currentTrack", new Gson().toJson(new PartyMediaInfo(info.track.identifier)));
+            requestBody.addProperty("currentTrack", new Gson().toJson(new PartyMediaInfo(info.track.identifier, 0)));
         }
 
         try {

@@ -93,7 +93,7 @@ public class SpotifyService implements IServiceHandler {
             Multithreading.runAsync(this::attemptToGetClientID);
             return true;
         }
-        
+
         return false;
     }
 
@@ -132,7 +132,17 @@ public class SpotifyService implements IServiceHandler {
                     if (cachedPartyMediaInfo == null || (cachedMediaInfo.track != null && cachedMediaInfo.track.identifier != null && !cachedMediaInfo.track.identifier.equals(info._id))) {
                         cachedPartyMediaInfo = info;
                         if (spotifyAPI.addTrackToQueue(info._id)) {
-                            spotifyAPI.nextTrack();
+                            if (spotifyAPI.nextTrack()) {
+                                if (info.timestamp >= 3000) {
+                                    if (!spotifyAPI.seekToTimestamp(info.timestamp)) {
+                                        PlayerMessager.sendMessage("Failed to skip to correct timestamp!", true);
+                                    }
+                                }
+                            } else {
+                                PlayerMessager.sendMessage("Failed to skip to next track!", true);
+                            }
+                        } else {
+                            PlayerMessager.sendMessage("Failed to add new track to queue", true);
                         }
                     }
                 }
@@ -179,6 +189,29 @@ public class SpotifyService implements IServiceHandler {
      */
     public int getPriority() {
         return 1;
+    }
+
+    @Override
+    public boolean supportsSkipping() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsPausing() {
+        return true;
+    }
+
+    @Override
+    public boolean skipTrack() {
+        return spotifyAPI.nextTrack();
+    }
+
+    @Override
+    public boolean pausePlayTrack() {
+        MediaInfo info = getCurrentMediaInfo();
+        if (info == null) return false;
+
+        return info.isPlaying ? spotifyAPI.pausePlayback() : spotifyAPI.resumePlayback();
     }
 
     /**
@@ -360,8 +393,62 @@ class SpotifyAPI {
             }});
 
             return status == 204;
+        } catch (IOException ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * Resumes the playback
+     *
+     * @return if the operation was successful
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/skip-users-playback-to-next-track/"
+     */
+    public boolean resumePlayback() {
+        try {
+            int status = WebRequest.makeRequest(WebRequestType.PUT, new URL("https://api.spotify.com/v1/me/player/play"), new HashMap<String, String>() {{
+                put("Authorization", "Bearer " + accessToken);
+            }});
+
+            return status == 204;
+        } catch (IOException ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * Pauses the playback
+     *
+     * @return if the operation was successful
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/skip-users-playback-to-next-track/"
+     */
+    public boolean pausePlayback() {
+        try {
+            int status = WebRequest.makeRequest(WebRequestType.PUT, new URL("https://api.spotify.com/v1/me/player/pause"), new HashMap<String, String>() {{
+                put("Authorization", "Bearer " + accessToken);
+            }});
+
+            return status == 204;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Seeks to a specific time in the current track
+     *
+     * @param timestamp: The time in milliseconds
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/seek-to-position-in-currently-playing-track/"
+     */
+    public boolean seekToTimestamp(int timestamp) {
+        try {
+            int status = WebRequest.makeRequest(WebRequestType.POST, new URL("https://api.spotify.com/v1/me/player/seek?position_ms=" + timestamp), new HashMap<String, String>() {{
+                put("Authorization", "Bearer " + accessToken);
+            }});
+
+            return status == 204;
+        } catch (IOException ignored) {
             return false;
         }
     }
