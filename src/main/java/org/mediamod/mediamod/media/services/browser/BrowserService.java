@@ -1,18 +1,16 @@
 package org.mediamod.mediamod.media.services.browser;
 
 import com.google.gson.Gson;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import org.apache.commons.io.IOUtils;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.media.core.IServiceHandler;
 import org.mediamod.mediamod.media.core.api.MediaInfo;
+import org.mediamod.mediamod.util.Multithreading;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
@@ -49,29 +47,33 @@ public class BrowserService implements IServiceHandler {
     }
 
     /**
+     * An instance of our websocket server
+     */
+    private volatile BrowserSocketServer server;
+
+    /**
      * This should initialise any needed variables, start any local servers, etc.
      *
      * @return If initialisation was successful
      */
     public boolean load() {
-        try {
-            HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 9102), 0);
-            server.createContext("/", new BrowserUpdateHandler());
-            server.createContext("/disconnect", new BrowserDisconnectHandler());
-            server.start();
+        Multithreading.runAsync(() -> {
+            try {
+                server = new BrowserSocketServer();
+                server.start();
+            } catch (Exception ignored) {
+                MediaMod.INSTANCE.logger.warn("Failed to create Spotify callback server! Is the port already in use?");
+            }
+        });
 
-            return true;
-        } catch (IOException ignored) {
-            MediaMod.INSTANCE.logger.warn("Failed to create Spotify callback server! Is the port already in use?");
-            return false;
-        }
+        return true;
     }
 
     /**
      * This indicates if the handler is ready for usage
      */
     public boolean isReady() {
-        return mediaInfo != null && Settings.EXTENSION_ENABLED;
+        return Settings.EXTENSION_ENABLED;
     }
 
     /**
@@ -113,97 +115,46 @@ public class BrowserService implements IServiceHandler {
             return lastTimestamp;
         }
     }
-}
 
-class BrowserUpdateHandler implements HttpHandler {
-    public void handle(HttpExchange exchange) throws IOException {
-        String requestOrigin = exchange.getRequestHeaders().get("Origin").get(0);
+    /**
+     * The web socket server for communication with the browser extension
+     */
+    static class BrowserSocketServer extends WebSocketServer {
+        public BrowserSocketServer() {
+            super(new InetSocketAddress(9102));
+        }
 
-        for (String origin : BrowserService.allowedOrigins) {
-            if (requestOrigin.matches(origin)) {
-                exchange.getResponseHeaders().add("Access-Control-Allow-Origin", requestOrigin);
+        public void onOpen(WebSocket conn, ClientHandshake handshake) {
+            MediaMod.INSTANCE.logger.info("Client Connected");
+            broadcast("Hello");
+        }
+
+        public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+            MediaMod.INSTANCE.logger.info("Client Disconnected");
+
+            BrowserService.setCurrentMediaInfo(null);
+        }
+
+        public void onMessage(WebSocket conn, String message) {
+            if(!message.equals("Hello")) {
+                Gson gson = new Gson();
+
+                MediaInfo info = null;
+                try {
+                    info = gson.fromJson(message, MediaInfo.class);
+                } catch (Exception ignored) {}
+
+                BrowserService.setCurrentMediaInfo(info);
             }
         }
 
-        if (!exchange.getResponseHeaders().containsKey("Access-Control-Allow-Origin")) {
-            MediaMod.INSTANCE.logger.warn("Request to set information came from unknown domain... ignoring!");
-
-            exchange.sendResponseHeaders(400, "Bad Request".length());
-
-            OutputStream outputStream = exchange.getResponseBody();
-            outputStream.write("Bad Request".getBytes());
-            outputStream.close();
-
-            return;
+        public void onError(WebSocket conn, Exception ex) {
+            MediaMod.INSTANCE.logger.error("Error: ", ex);
         }
 
-        if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
-            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
-            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
-            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", requestOrigin);
-            exchange.sendResponseHeaders(204, -1);
-            return;
+        public void onStart() {
+            setConnectionLostTimeout(0);
+            setConnectionLostTimeout(100);
         }
-
-        String body = IOUtils.toString(exchange.getRequestBody());
-
-        if (body == null || body.equals("")) {
-            exchange.sendResponseHeaders(400, "Bad Request".length());
-
-            OutputStream outputStream = exchange.getResponseBody();
-            outputStream.write("Bad Request".getBytes());
-            outputStream.close();
-
-            return;
-        }
-
-        MediaInfo info = new Gson().fromJson(body, MediaInfo.class);
-        BrowserService.setCurrentMediaInfo(info);
-
-        exchange.sendResponseHeaders(200, "OK".length());
-
-        OutputStream outputStream = exchange.getResponseBody();
-        outputStream.write("OK".getBytes());
-        outputStream.close();
-    }
-}
-
-class BrowserDisconnectHandler implements HttpHandler {
-    public void handle(HttpExchange exchange) throws IOException {
-        String requestOrigin = exchange.getRequestHeaders().get("Origin").get(0);
-
-        for (String origin : BrowserService.allowedOrigins) {
-            if (requestOrigin.matches(origin)) {
-                exchange.getResponseHeaders().add("Access-Control-Allow-Origin", requestOrigin);
-            }
-        }
-
-        if (!exchange.getResponseHeaders().containsKey("Access-Control-Allow-Origin")) {
-            MediaMod.INSTANCE.logger.warn("Request to set information came from unknown domain... ignoring!");
-
-            exchange.sendResponseHeaders(400, "Bad Request".length());
-
-            OutputStream outputStream = exchange.getResponseBody();
-            outputStream.write("Bad Request".getBytes());
-            outputStream.close();
-
-            return;
-        }
-
-        if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
-            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
-            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
-            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", requestOrigin);
-            exchange.sendResponseHeaders(204, -1);
-            return;
-        }
-
-        BrowserService.setCurrentMediaInfo(null);
-
-        exchange.sendResponseHeaders(200, "OK".length());
-
-        OutputStream outputStream = exchange.getResponseBody();
-        outputStream.write("OK".getBytes());
-        outputStream.close();
     }
 }

@@ -27,6 +27,10 @@ minecraft {
     makeObfSourceJar = false
 }
 
+dependencies {
+    compile("org.java-websocket:Java-WebSocket:1.5.1")
+}
+
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
