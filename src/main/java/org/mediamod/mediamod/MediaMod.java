@@ -1,6 +1,10 @@
 package org.mediamod.mediamod;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -13,6 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mediamod.mediamod.command.MediaModCommand;
+import org.mediamod.mediamod.command.MediaModUpdateCommand;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.core.CoreMod;
 import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
@@ -97,7 +102,7 @@ public class MediaMod {
         MinecraftForge.EVENT_BUS.register(new LevelheadIntegration());
 
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
-        //ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
+        ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
 
         File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
         if (!MEDIAMOD_DIRECTORY.exists()) {
@@ -138,11 +143,11 @@ public class MediaMod {
                         "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
                         "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
 
-            /*IChatComponent urlComponent = new ChatComponentText(ChatColor.GRAY + "" + ChatColor.BOLD +  "Click this to automatically update now!");
-            urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
-            urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
-                    "&7Runs /mediamodupdate"))));
-            PlayerMessager.sendMessage(urlComponent);*/
+                IChatComponent urlComponent = new ChatComponentText(ChatColor.GRAY + "" + ChatColor.BOLD + "Click this to automatically update now!");
+                urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
+                urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                        "&7Runs /mediamodupdate"))));
+                PlayerMessager.sendMessage(urlComponent);
             }
 
             if(!authenticatedWithAPI) {

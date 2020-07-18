@@ -1,9 +1,10 @@
 package org.mediamod.mediamod.command;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import org.apache.commons.io.FileUtils;
-import org.mediamod.mediamod.MediaMod;
+import org.mediamod.mediamod.util.Multithreading;
 import org.mediamod.mediamod.util.PlayerMessager;
 import org.mediamod.mediamod.util.VersionChecker;
 
@@ -32,7 +33,7 @@ public class MediaModUpdateCommand extends CommandBase {
 
     @Override
     public List<String> getCommandAliases() {
-        return Collections.emptyList();
+        return Collections.singletonList("mmupdate");
     }
 
     @Override
@@ -42,10 +43,28 @@ public class MediaModUpdateCommand extends CommandBase {
         } else {
             PlayerMessager.sendMessage("Downloading MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
             try {
-                FileUtils.copyURLToFile(new URL(VersionChecker.INSTANCE.LATEST_VERSION_INFO.downloadURL), new File(MediaMod.class.getProtectionDomain().getCodeSource().getLocation().getFile().substring(0,
-                        MediaMod.class.getProtectionDomain().getCodeSource().getLocation().getFile().indexOf(""))));
-                PlayerMessager.sendMessage("Update downloaded to " + MediaMod.class.getProtectionDomain().getCodeSource().getLocation().getFile() + "! Relaunch Minecraft to complete installation", true);
-            } catch (IOException e) {
+                URL url = new URL(VersionChecker.INSTANCE.LATEST_VERSION_INFO.downloadURL);
+                //URL updater = null;
+
+                if(new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock").createNewFile()) {
+                    Multithreading.runAsync(() -> {
+                        try {
+                            FileUtils.copyURLToFile(url, new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.jar"));
+                            /*File updaterFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
+                            if(!updaterFile.exists()) {
+                                FileUtils.copyURLToFile(updater, updaterFile);
+                            }*/
+
+                            PlayerMessager.sendMessage("Update downloaded! Relaunch Minecraft to complete installation", true);
+                        } catch (Exception e) {
+                            PlayerMessager.sendMessage("Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+                            e.printStackTrace();
+                        }
+                    });
+                } else {
+                    PlayerMessager.sendMessage("Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
                 PlayerMessager.sendMessage("Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
             }

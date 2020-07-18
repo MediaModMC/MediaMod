@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.mediamod.mediamod.MediaMod;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
@@ -119,7 +120,23 @@ public class CoreMod {
     public void shutdown() {
         if (!Minecraft.getMinecraft().isSnooperEnabled() && secret.equals("")) return;
 
-        LOGGER.info("Shutting down CoreMod (" + modID + ")");
+        String codeSourceLoc = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        String modJarPath = codeSourceLoc.substring(0, codeSourceLoc.indexOf("!")).substring(5);
+
+        File updaterJar = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
+        File lockFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock");
+
+        if(updaterJar.exists() && lockFile.exists()) {
+            try {
+                ProcessBuilder pb = new ProcessBuilder("java", "-jar", updaterJar.getAbsolutePath(), modJarPath);
+                pb.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        MediaMod.INSTANCE.logger.info("Shutting down CoreMod (" + modID + ")");
+
         try {
             URL url = new URL(MediaMod.ENDPOINT + "api/offline");
 
@@ -145,12 +162,10 @@ public class CoreMod {
 
             connection.disconnect();
             reader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) { }
     }
 
-    class RegisterResponse {
+    static class RegisterResponse {
         final String secret;
 
         RegisterResponse(String secret) {
