@@ -68,6 +68,7 @@ public class MediaModCommand extends CommandBase {
                             case "start":
                                 if(SpotifyService.isLoggedOut()) {
                                     PlayerMessager.sendMessage(ChatColor.RED + "You must be logged into Spotify to join a party!", true);
+                                    return;
                                 }
 
                                 if (PartyManager.instance.isInParty()) {
@@ -105,6 +106,7 @@ public class MediaModCommand extends CommandBase {
                                 if (args.length >= 3) {
                                     if(SpotifyService.isLoggedOut()) {
                                         PlayerMessager.sendMessage(ChatColor.RED + "You must be logged into Spotify to join a party!", true);
+                                        return;
                                     }
 
                                     String inputCode = args[2];
