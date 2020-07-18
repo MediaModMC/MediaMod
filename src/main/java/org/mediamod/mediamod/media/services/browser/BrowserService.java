@@ -77,6 +77,13 @@ public class BrowserService implements IServiceHandler {
     }
 
     /**
+     * The priority of the service, this indicates if the mod should use this service instead of another if they are both ready
+     */
+    public int getPriority() {
+        return 0;
+    }
+
+    /**
      * Returns metadata about the current track
      * If no track is playing, or an error occurs it can return null
      */

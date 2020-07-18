@@ -174,6 +174,16 @@ public class SpotifyService implements IServiceHandler {
         return spotifyAPI != null && spotifyAPI.isLoggedIn();
     }
 
+    /**
+     * The priority of the service, this indicates if the mod should use this service instead of another if they are both ready
+     */
+    public int getPriority() {
+        return 1;
+    }
+
+    /**
+     * The response recieved when querying the MediaMod API for the Spotify Client ID
+     */
     static class ClientIDResponse {
         String clientID;
     }

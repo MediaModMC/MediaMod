@@ -22,8 +22,8 @@ public class PartyManager {
 
     private volatile boolean isPartyHost = false;
     private volatile boolean isInParty = false;
-    private String partyCode = "";
-    private String partySecret = "";
+    private volatile String partyCode = "";
+    private volatile String partySecret = "";
 
     /**
      * Contacts the MediaMod API to create a party and also sends the current track information
@@ -184,7 +184,6 @@ public class PartyManager {
         requestBody.addProperty("partyCode", partyCode);
 
         if (info != null) {
-            System.out.println(new Gson().toJson(new PartyMediaInfo(info.track.identifier)));
             requestBody.addProperty("currentTrack", new Gson().toJson(new PartyMediaInfo(info.track.identifier)));
         }
 
