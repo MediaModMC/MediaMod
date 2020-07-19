@@ -181,7 +181,6 @@ public class PlayerOverlay {
                     try {
                         if (MediaHandler.instance.getCurrentService() != null) {
                             currentMediaInfo = MediaHandler.instance.getCurrentMediaInfo();
-                            MediaMod.INSTANCE.richPresenceManager.setPresenceInfo(currentMediaInfo);
 
                             if (currentMediaInfo == null) {
                                 previousMediaInfo = null;
