@@ -1,0 +1,15 @@
+{
+  "versions": {
+    "1.8.9": {
+      "version": 9,
+      "name": "2.0.0-beta+1",
+      "changelog": "The first beta release of MediaMod 2.0.0"
+    },
+    "1.12.2": {
+      "version": 9,
+      "name": "2.0.0-beta+1",
+      "changelog": "The first beta release of MediaMod 2.0.0"
+    }
+  },
+  "latestUpdater": "1.0.0-BETA-1"
+}
