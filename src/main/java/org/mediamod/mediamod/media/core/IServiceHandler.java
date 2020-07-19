@@ -32,7 +32,7 @@ public interface IServiceHandler extends Comparable<IServiceHandler> {
     MediaInfo getCurrentMediaInfo();
 
     /**
-     * This returns the priority of the service handler 0 being the lowest and the number of services loaded being the highest
+     * This returns the priority of the service handler
      * <p>
      * TODO: Load from configuration
      */
@@ -43,11 +43,13 @@ public interface IServiceHandler extends Comparable<IServiceHandler> {
     /**
      * Compares the current service handler against another
      *
-     * @param compareTo: The service handler to compare to
      * @return The priority that comes first
      */
-    default int compareTo(IServiceHandler compareTo) {
-        return compareTo.getPriority() - this.getPriority();
+    default int compareTo(IServiceHandler sh) {
+        int i = Integer.compare(sh.getPriority(), this.getPriority());
+        System.out.println(displayName() + ": " + i);
+
+        return i;
     }
 
     /**

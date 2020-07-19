@@ -125,8 +125,8 @@ public class MediaHandler {
      * @see IServiceHandler#compareTo(IServiceHandler)
      * @see IServiceHandler#isReady()
      */
-    public @Nullable
-    IServiceHandler getCurrentService() {
+    @Nullable
+    public IServiceHandler getCurrentService() {
         for (IServiceHandler handler : loadedServices) {
             if (handler.isReady()) {
                 return handler;
