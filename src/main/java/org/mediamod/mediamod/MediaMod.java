@@ -139,14 +139,15 @@ public class MediaMod {
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (firstLoad && Minecraft.getMinecraft().thePlayer != null) {
             if(!VersionChecker.INSTANCE.IS_LATEST_VERSION) {
-                PlayerMessenger.sendMessage("&cMediaMod is out of date!" +
-                        "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
-                        "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
+                PlayerMessenger.sendMessage(ChatColor.RED + "MediaMod is out of date!", true);
+                PlayerMessenger.sendMessage(ChatColor.GRAY + "Latest Version: " + ChatColor.WHITE + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS);
+                PlayerMessenger.sendMessage(ChatColor.GRAY + "Your Version: " + ChatColor.WHITE + Metadata.VERSION);
+                PlayerMessenger.sendMessage(ChatColor.GRAY + "Changelog: " + ChatColor.WHITE + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
 
-                IChatComponent urlComponent = new ChatComponentText(ChatColor.GRAY + "" + ChatColor.BOLD + "Click this to automatically update now!");
+                IChatComponent urlComponent = new ChatComponentText(ChatColor.GRAY + "Click this to automatically update now!");
                 urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
                 urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
-                        "&7Runs /mediamodupdate"))));
+                        "&7Runs /mmupdate"))));
                 PlayerMessenger.sendMessage(urlComponent);
             }
 
