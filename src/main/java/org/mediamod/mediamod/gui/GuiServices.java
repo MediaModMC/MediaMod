@@ -39,7 +39,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
         GuiButton backButton = new CustomButton(0, width / 2 - 100, height - 50, I18n.format("menu.guiplayerpositioning.buttons.back.name"));
         GuiButton loginoutSpotifyButton = new CustomButton(1, width / 2 - 100, height / 2 - 35, I18n.format("menu.guiservices.buttons." + (SpotifyService.isLoggedOut() ? "login" : "logout") + "Spotify.name"));
-        GuiButton levelheadIntegrationButton = new CustomButton(2, width / 2 - 100, height / 2 - 10, getSuffix(Minecraft.getMinecraft().isSnooperEnabled() && Settings.LEVELHEAD_ENABLED, "Levelhead Integration"));
+        GuiButton levelheadIntegrationButton = new CustomButton(2, width / 2 - 100, height / 2 - 10, getSuffix(Settings.LEVELHEAD_ENABLED, "Levelhead Integration"));
         GuiButton useBrowserExtButton = new CustomButton(3, width / 2 - 100, height / 2 + 15, getSuffix(Settings.EXTENSION_ENABLED, I18n.format("menu.guiservices.buttons.useBrowserExt.name")));
         GuiButton saveSpotifyTokenButton = new CustomButton(4, width / 2 - 100, height / 2 + 40, getSuffix(Settings.SAVE_SPOTIFY_TOKEN, "Save Spotify Token"));
 

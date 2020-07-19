@@ -89,7 +89,7 @@ public class SpotifyService implements IServiceHandler {
      * Initialises our API Wrapper if snooper is enabled
      */
     public boolean load() {
-        if (Minecraft.getMinecraft().isSnooperEnabled() && MediaMod.INSTANCE.authenticatedWithAPI) {
+        if (MediaMod.INSTANCE.authenticatedWithAPI) {
             spotifyAPI = new SpotifyAPI();
 
             Multithreading.runAsync(this::attemptToGetClientID);
