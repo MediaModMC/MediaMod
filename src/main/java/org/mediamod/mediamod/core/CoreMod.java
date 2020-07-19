@@ -123,8 +123,8 @@ public class CoreMod {
         String codeSourceLoc = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
         String modJarPath = codeSourceLoc.substring(0, codeSourceLoc.indexOf("!")).substring(5);
 
-        File updaterJar = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
-        File lockFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock");
+        File updaterJar = new File(Minecraft.getMinecraft().gameDir, "mediamod/updater.jar");
+        File lockFile = new File(Minecraft.getMinecraft().gameDir, "mediamod/update.lock");
 
         if(updaterJar.exists() && lockFile.exists()) {
             try {

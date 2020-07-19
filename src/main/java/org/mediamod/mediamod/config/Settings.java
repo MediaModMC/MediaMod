@@ -8,7 +8,7 @@ import org.mediamod.mediamod.MediaMod;
 import java.io.File;
 
 public class Settings {
-    private static final File configFile = new File(FMLClientHandler.instance().getClient().mcDataDir, "config/mediamod.config");
+    private static final File configFile = new File(FMLClientHandler.instance().getClient().gameDir, "config/mediamod.config");
 
     public static boolean ENABLED;
     public static boolean LEVELHEAD_ENABLED;

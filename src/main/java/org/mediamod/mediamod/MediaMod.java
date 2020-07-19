@@ -1,10 +1,10 @@
 package org.mediamod.mediamod;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -98,13 +98,13 @@ public class MediaMod {
         // Register event subscribers and commands
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PlayerOverlay.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(PlayerMessager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(PlayerMessenger.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new LevelheadIntegration());
 
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
         ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
 
-        File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
+        File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().gameDir, "mediamod");
         if (!MEDIAMOD_DIRECTORY.exists()) {
             logger.info("Creating necessary directories and files for first launch...");
             boolean mkdir = MEDIAMOD_DIRECTORY.mkdir();
@@ -137,24 +137,24 @@ public class MediaMod {
      */
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (firstLoad && Minecraft.getMinecraft().thePlayer != null) {
+        if (firstLoad && Minecraft.getMinecraft().player != null) {
             if(!VersionChecker.INSTANCE.IS_LATEST_VERSION) {
-                PlayerMessager.sendMessage("&cMediaMod is out of date!" +
+                PlayerMessenger.sendMessage("&cMediaMod is out of date!" +
                         "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
                         "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
 
-                IChatComponent urlComponent = new ChatComponentText(ChatColor.GRAY + "" + ChatColor.BOLD + "Click this to automatically update now!");
-                urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
-                urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                ITextComponent urlComponent = new TextComponentString(ChatColor.GRAY + "" + ChatColor.BOLD + "Click this to automatically update now!");
+                urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
+                urlComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(ChatColor.translateAlternateColorCodes('&',
                         "&7Runs /mediamodupdate"))));
-                PlayerMessager.sendMessage(urlComponent);
+                PlayerMessenger.sendMessage(urlComponent);
             }
 
             if(!authenticatedWithAPI) {
                 if(!Minecraft.getMinecraft().isSnooperEnabled()) {
-                    PlayerMessager.sendMessage(ChatColor.GRAY + "Note: You have Minecraft Snooper disabled, this means services like Spotify and MediaMod Parties will not work. If you want these services then enable Minecraft Snooper and restart your client!", true);
+                    PlayerMessenger.sendMessage(ChatColor.GRAY + "Note: You have Minecraft Snooper disabled, this means services like Spotify and MediaMod Parties will not work. If you want these services then enable Minecraft Snooper and restart your client!", true);
                 } else {
-                    PlayerMessager.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
+                    PlayerMessenger.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
                 }
             }
 
@@ -174,7 +174,7 @@ public class MediaMod {
         if (info == null) return;
 
         if (Settings.ANNOUNCE_TRACKS) {
-            PlayerMessager.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
+            PlayerMessenger.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
         }
 
         PartyManager.instance.updateInfo(info);

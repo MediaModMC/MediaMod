@@ -5,10 +5,10 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.util.ButtonTooltip;
@@ -18,7 +18,7 @@ import org.mediamod.mediamod.media.MediaHandler;
 import org.mediamod.mediamod.media.services.spotify.SpotifyService;
 import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.Multithreading;
-import org.mediamod.mediamod.util.PlayerMessager;
+import org.mediamod.mediamod.util.PlayerMessenger;
 
 import java.awt.*;
 import java.io.IOException;
@@ -72,9 +72,9 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         GlStateManager.popMatrix();
 
         if (SpotifyService.isLoggedOut()) {
-            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
+            drawCenteredString(fontRenderer, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
         } else {
-            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
+            drawCenteredString(fontRenderer, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -147,12 +147,12 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                             return;
                         }
                     } else {
-                        PlayerMessager.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect'", true);
+                        PlayerMessenger.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect'", true);
                         return;
                     }
                 }
 
-                PlayerMessager.sendMessage("&cOpening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'");
+                PlayerMessenger.sendMessage("&cOpening browser with instructions on what to do, when it opens log in with your Spotify Account and press 'Agree'");
                 String spotifyUrl = "https://accounts.spotify.com/authorize?client_id=" + SpotifyService.spotifyClientID + "&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:9103%2Fcallback%2F&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state&state=34fFs29kd09";
 
                 try {
@@ -161,12 +161,12 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                     MediaMod.INSTANCE.logger.fatal("Something has gone terribly wrong... SpotifyHandler:l59");
                     e.printStackTrace();
                 } catch (Exception e) {
-                    PlayerMessager.sendMessage("&cFailed to open browser with the Spotify Auth URL!");
-                    IChatComponent urlComponent = new ChatComponentText(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
-                    urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, spotifyUrl));
-                    urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                    PlayerMessenger.sendMessage("&cFailed to open browser with the Spotify Auth URL!");
+                    ITextComponent urlComponent = new TextComponentString(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
+                    urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, spotifyUrl));
+                    urlComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(ChatColor.translateAlternateColorCodes('&',
                             "&7Click this to open the Spotify Auth URL"))));
-                    PlayerMessager.sendMessage(urlComponent);
+                    PlayerMessenger.sendMessage(urlComponent);
                 }
                 break;
             case 2:
@@ -184,16 +184,16 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                 break;
             case 5:
                 Multithreading.runAsync(() -> {
-                    PlayerMessager.sendMessage(ChatColor.GRAY + "Connecting to MediaMod API...", true);
+                    PlayerMessenger.sendMessage(ChatColor.GRAY + "Connecting to MediaMod API...", true);
                     MediaMod.INSTANCE.authenticatedWithAPI = MediaMod.INSTANCE.coreMod.register();
 
                     if (MediaMod.INSTANCE.authenticatedWithAPI) {
-                        PlayerMessager.sendMessage(ChatColor.GREEN + "Connected!", true);
+                        PlayerMessenger.sendMessage(ChatColor.GREEN + "Connected!", true);
 
                         Minecraft.getMinecraft().displayGuiScreen(null);
                         Minecraft.getMinecraft().displayGuiScreen(new GuiServices());
                     } else {
-                        PlayerMessager.sendMessage(ChatColor.RED + "Failed to connect to MediaMod API!");
+                        PlayerMessenger.sendMessage(ChatColor.RED + "Failed to connect to MediaMod API!");
                     }
                 });
                 break;
