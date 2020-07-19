@@ -84,18 +84,14 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         switch (buttonId) {
             case 1:
                 if (SpotifyService.isLoggedOut()) {
-                    if (!Minecraft.getMinecraft().isSnooperEnabled()) {
-                        return "You cannot log into Spotify as snooper is disabled. Please enable it to use the Spotify Integration!";
-                    } else if (!MediaMod.INSTANCE.authenticatedWithAPI) {
+                    if (!MediaMod.INSTANCE.authenticatedWithAPI) {
                         return "This feature is disabled as we have failed to authenticate with the MediaMod API. Please click 'reconnect'";
                     }
                 }
 
                 return null;
             case 2:
-                if (!Minecraft.getMinecraft().isSnooperEnabled()) {
-                    return "You cannot use Levelhead Integration as snooper is disabled. Please enable it to use the Levelhead Integration!";
-                } else if (!MediaMod.INSTANCE.authenticatedWithAPI) {
+                if (!MediaMod.INSTANCE.authenticatedWithAPI) {
                     return "This feature is disabled as we have failed to authenticate with the MediaMod API. Please click 'reconnect'";
                 } else {
                     return "This allows other users to see what you're playing above your head when using Levelhead by Sk1er LLC!";
@@ -104,9 +100,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                 return I18n.format("menu.guiservices.buttons.useBrowserExt.tooltip");
             case 4:
                 if (SpotifyService.isLoggedOut()) {
-                    if (!Minecraft.getMinecraft().isSnooperEnabled()) {
-                        return "You cannot use Spotify Integration as snooper is disabled. Please enable it to use the Spotify Integration!";
-                    } else if (!MediaMod.INSTANCE.authenticatedWithAPI) {
+                    if (!MediaMod.INSTANCE.authenticatedWithAPI) {
                         return "This feature is disabled as we have failed to authenticate with the MediaMod API. Please click 'reconnect'";
                     }
                 }

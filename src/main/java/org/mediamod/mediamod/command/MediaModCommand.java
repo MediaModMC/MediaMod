@@ -51,11 +51,6 @@ public class MediaModCommand extends CommandBase {
         } else {
             String subcmd = args[0];
             if (subcmd.equalsIgnoreCase("party")) {
-                if (!Minecraft.getMinecraft().isSnooperEnabled()) {
-                    PlayerMessenger.sendMessage(ChatColor.RED + "You must enable Snooper in Minecraft Settings and restart your client to participate in a party!", true);
-                    return;
-                }
-
                 if (!MediaMod.INSTANCE.authenticatedWithAPI) {
                     PlayerMessenger.sendMessage(ChatColor.RED + "An error occurred when contacting the MediaMod API, Please click 'reconnect'. If this issue persists please contact us!", true);
                     return;

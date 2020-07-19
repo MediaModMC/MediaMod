@@ -152,11 +152,7 @@ public class MediaMod {
             }
 
             if(!authenticatedWithAPI) {
-                if(!Minecraft.getMinecraft().isSnooperEnabled()) {
-                    PlayerMessenger.sendMessage(ChatColor.GRAY + "Note: You have Minecraft Snooper disabled, this means services like Spotify and MediaMod Parties will not work. If you want these services then enable Minecraft Snooper and restart your client!", true);
-                } else {
-                    PlayerMessenger.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
-                }
+                PlayerMessenger.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
             }
 
             firstLoad = false;

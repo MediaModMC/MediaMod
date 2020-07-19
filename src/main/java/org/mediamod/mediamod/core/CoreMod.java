@@ -46,8 +46,6 @@ public class CoreMod {
         BufferedReader reader = null;
 
         try {
-            if (!Minecraft.getMinecraft().isSnooperEnabled()) return false;
-
             LOGGER.info("Attempting to register with CoreMod API...");
 
             URL url = new URL(MediaMod.ENDPOINT + "api/register");
@@ -118,8 +116,6 @@ public class CoreMod {
     }
 
     public void shutdown() {
-        if (!Minecraft.getMinecraft().isSnooperEnabled() && secret.equals("")) return;
-
         File updaterJar = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
         File lockFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock");
 
@@ -137,6 +133,7 @@ public class CoreMod {
 
         MediaMod.INSTANCE.logger.info("Shutting down CoreMod (" + modID + ")");
 
+        if (secret.equals("")) return;
         try {
             URL url = new URL(MediaMod.ENDPOINT + "api/offline");
 
