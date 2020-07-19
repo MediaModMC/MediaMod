@@ -14,6 +14,7 @@ public class UpdaterUtility {
      * Downloads the required files for a MediaMod Update
      */
     public void scheduleUpdate() {
+        VersionChecker.checkVersion();
         if(VersionChecker.INSTANCE.isLatestVersion) return;
 
         PlayerMessenger.sendMessage(ChatColor.GRAY + "Downloading MediaMod v" + VersionChecker.INSTANCE.latestVersionInformation.name, true);
@@ -25,17 +26,21 @@ public class UpdaterUtility {
             File updateJar = new File(MediaMod.INSTANCE.mediamodDirectory, "update.jar");
             File updaterJar = new File(MediaMod.INSTANCE.mediamodDirectory, "updater.jar");
 
-            if (lockFile.exists() && updateJar.exists()) {
+            if(lockFile.exists() || updateJar.exists()) {
                 PlayerMessenger.sendMessage(ChatColor.GRAY + "It seems there was a previous update attempt that may have failed. Deleting previous files and attempting again!", true);
 
-                if (!updateJar.delete()) {
-                    PlayerMessenger.sendMessage(ChatColor.RED + "Failed to delete previous update jar", true);
-                    return;
+                if (lockFile.exists()) {
+                    if (!lockFile.delete()) {
+                        PlayerMessenger.sendMessage(ChatColor.RED + "Failed to delete previous lockfile", true);
+                        return;
+                    }
                 }
 
-                if (!lockFile.delete()) {
-                    PlayerMessenger.sendMessage(ChatColor.RED + "Failed to delete previous lockfile", true);
-                    return;
+                if(updateJar.exists()) {
+                    if (!updateJar.delete()) {
+                        PlayerMessenger.sendMessage(ChatColor.RED + "Failed to delete previous update jar", true);
+                        return;
+                    }
                 }
             }
 

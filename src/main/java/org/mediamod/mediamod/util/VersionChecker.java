@@ -1,8 +1,7 @@
 package org.mediamod.mediamod.util;
 
-import net.minecraft.client.Minecraft;
+import com.github.zafarkhaja.semver.Version;
 import org.mediamod.mediamod.MediaMod;
-import scala.tools.cmd.Meta;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -35,9 +34,13 @@ public class VersionChecker {
             if (INSTANCE.allVersionInfo == null) return;
 
             VersionInformation information = INSTANCE.allVersionInfo.versions.get(Metadata.MINECRAFT_VERSION);
-            if(information == null) return;
+            if (information == null) return;
 
-            information.downloadURL = "https://github.com/MediaModMC/MediaMod/releases/download/" + information.name + "/MediaMod-" + information.name + "-" +  Metadata.MINECRAFT_VERSION + ".jar";
+            Version version = Version.valueOf(information.name);
+            version.setBuildMetadata("beta");
+
+            information.downloadURL = "https://github.com/MediaModMC/MediaMod/releases/download/" + information.name + "/MediaMod-" + version.getNormalVersion() + "-" + Metadata.MINECRAFT_VERSION + information.name.replace(version.getNormalVersion(), "") + ".jar";
+
             if (information.version > Metadata.VERSION_INT) {
                 INSTANCE.isLatestVersion = false;
                 INSTANCE.latestVersionInformation = information;

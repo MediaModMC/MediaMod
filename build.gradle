@@ -32,8 +32,13 @@ configurations {
     compile.extendsFrom(embed)
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     embed("org.java-websocket:Java-WebSocket:1.5.1")
+    embed("com.github.zafarkhaja:java-semver:0.9.0")
 }
 
 processResources {
