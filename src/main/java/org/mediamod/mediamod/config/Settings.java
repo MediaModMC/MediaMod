@@ -13,6 +13,7 @@ public class Settings {
     public static boolean ENABLED;
     public static boolean LEVELHEAD_ENABLED;
     public static boolean SHOW_PLAYER;
+    public static boolean SHOW_IN_PAUSE;
     public static boolean MODERN_PLAYER_STYLE;
     public static boolean SHOW_ALBUM_ART;
     public static boolean AUTO_COLOR_SELECTION;
@@ -45,6 +46,7 @@ public class Settings {
         Property enabledProperty = configuration.get("General", "enabled", true);
         Property levelheadEnabledProperty = configuration.get("Levelhead", "enabled", true);
         Property showPlayerProperty = configuration.get("General", "showPlayer", true);
+        Property showInPauseProperty = configuration.get("Player", "showInPause", true);
         Property modernPlayerProperty = configuration.get("Player", "modernPlayer", true);
         Property albumArtProperty = configuration.get("Player", "showAlbumArt", true);
         Property autoColorProperty = configuration.get("Player", "automaticColorSelection", true);
@@ -71,6 +73,9 @@ public class Settings {
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
+
+        if (load) SHOW_IN_PAUSE = showInPauseProperty.getBoolean();
+        else showInPauseProperty.setValue(SHOW_IN_PAUSE);
 
         if (load) LEVELHEAD_ENABLED = levelheadEnabledProperty.getBoolean();
         else levelheadEnabledProperty.setValue(LEVELHEAD_ENABLED);

@@ -2,15 +2,18 @@ package org.mediamod.mediamod.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.mediamod.mediamod.config.ProgressStyle;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
@@ -166,7 +169,7 @@ public class PlayerOverlay {
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        if (event.type.equals(RenderGameOverlayEvent.ElementType.EXPERIENCE) && Settings.SHOW_PLAYER && Settings.ENABLED) {
+        if (event.type.equals(RenderGameOverlayEvent.ElementType.EXPERIENCE) && (Settings.SHOW_PLAYER || Settings.SHOW_IN_PAUSE) && Settings.ENABLED) {
             if (this.first) {
                 // Make sure that this is never ran again
                 this.first = false;
@@ -197,10 +200,17 @@ public class PlayerOverlay {
 
             // Make sure that a Service Handler exists and is ready
             if (MediaHandler.instance.getCurrentService() != null && currentMediaInfo != null) {
-                if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo) {
+                if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo && Settings.SHOW_PLAYER) {
                     this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onGuiDraw(GuiScreenEvent.DrawScreenEvent event) {
+        if (event.gui instanceof GuiIngameMenu && Settings.SHOW_IN_PAUSE && Settings.SHOW_PLAYER) {
+            this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
         }
     }
 

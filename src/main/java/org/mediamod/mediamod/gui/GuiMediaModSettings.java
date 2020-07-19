@@ -26,10 +26,11 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
         Settings.loadConfig();
 
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height / 2 - 47, getSuffix(Settings.ENABLED, I18n.format("menu.guimediamod.buttons.enabled.name"))));
-        this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.SHOW_PLAYER, I18n.format("menu.guimediamod.buttons.showPlayer.name"))));
-        this.buttonList.add(new CustomButton(4, width / 2 - 100, height / 2, getSuffix(Settings.ANNOUNCE_TRACKS, I18n.format("menu.guimediamod.buttons.announceTracks.name"))));
-        this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 + 23, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 47, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
+        this.buttonList.add(new CustomButton(1, width / 2 - 100, height / 2 - 23, getSuffix(Settings.SHOW_PLAYER, "Show player in game")));
+        this.buttonList.add(new CustomButton(6, width / 2 - 100, height / 2, getSuffix(Settings.SHOW_IN_PAUSE, "Show player in pause menu")));
+        this.buttonList.add(new CustomButton(4, width / 2 - 100, height / 2 + 23, getSuffix(Settings.ANNOUNCE_TRACKS, I18n.format("menu.guimediamod.buttons.announceTracks.name"))));
+        this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 + 47, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
+        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 71, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
 
         if (!MediaMod.INSTANCE.authenticatedWithAPI) {
             this.buttonList.add(new CustomButton(5, 5, height - 25, "Reconnect"));
@@ -57,11 +58,13 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
             case 0:
                 return I18n.format("menu.guimediamod.buttons.enabled.tooltip");
             case 1:
-                return I18n.format("menu.guimediamod.buttons.showPlayer.tooltip");
+                return "Shows the player in game";
             case 4:
                 return I18n.format("menu.guimediamod.buttons.announceTracks.tooltip");
             case 5:
                 return "Failed to connect to MediaMod API. Click here to reconnect!";
+            case 6:
+                return "Shows player when your game is paused";
         }
         return null;
     }
@@ -75,7 +78,7 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
                 break;
             case 1:
                 Settings.SHOW_PLAYER = !Settings.SHOW_PLAYER;
-                button.displayString = getSuffix(Settings.SHOW_PLAYER, I18n.format("menu.guimediamod.buttons.showPlayer.name"));
+                button.displayString = getSuffix(Settings.SHOW_PLAYER, "Show player in game");
                 break;
             case 2:
                 this.mc.displayGuiScreen(new GuiPlayerSettings());
@@ -101,6 +104,10 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
                         PlayerMessenger.sendMessage(ChatColor.RED + "Failed to connect to MediaMod API!");
                     }
                 });
+                break;
+            case 6:
+                Settings.SHOW_IN_PAUSE = !Settings.SHOW_IN_PAUSE;
+                button.displayString = getSuffix(Settings.SHOW_IN_PAUSE, "Show player in pause menu");
                 break;
         }
 
