@@ -1,6 +1,5 @@
 package org.mediamod.mediamod.command;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
@@ -61,7 +60,7 @@ public class MediaModCommand extends CommandBase {
                         String function = args[1];
                         switch (function.toLowerCase()) {
                             case "start":
-                                if(SpotifyService.isLoggedOut()) {
+                                if (SpotifyService.isLoggedOut()) {
                                     PlayerMessenger.sendMessage(ChatColor.RED + "You must be logged into Spotify to join a party!", true);
                                     return;
                                 }
@@ -99,7 +98,7 @@ public class MediaModCommand extends CommandBase {
                                 break;
                             case "join":
                                 if (args.length >= 3) {
-                                    if(SpotifyService.isLoggedOut()) {
+                                    if (SpotifyService.isLoggedOut()) {
                                         PlayerMessenger.sendMessage(ChatColor.RED + "You must be logged into Spotify to join a party!", true);
                                         return;
                                     }

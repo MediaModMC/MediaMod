@@ -31,7 +31,7 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 + 23, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
         this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 47, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
 
-        if(!MediaMod.INSTANCE.authenticatedWithAPI) {
+        if (!MediaMod.INSTANCE.authenticatedWithAPI) {
             this.buttonList.add(new CustomButton(5, 5, height - 25, "Reconnect"));
             this.buttonList.get(5).width = 100;
         }

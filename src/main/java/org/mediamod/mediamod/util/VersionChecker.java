@@ -25,7 +25,7 @@ public class VersionChecker {
         try {
             VersionResponse versionResponse = WebRequest.makeRequest(WebRequestType.GET, new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version.json"), VersionResponse.class, new HashMap<>());
 
-            if(versionResponse == null) return;
+            if (versionResponse == null) return;
 
             if (versionResponse.latestVersionInt > Metadata.VERSION_INT) {
                 INSTANCE.IS_LATEST_VERSION = false;

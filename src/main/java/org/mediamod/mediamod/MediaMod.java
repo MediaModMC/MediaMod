@@ -28,7 +28,10 @@ import org.mediamod.mediamod.levelhead.LevelheadIntegration;
 import org.mediamod.mediamod.media.MediaHandler;
 import org.mediamod.mediamod.media.core.api.MediaInfo;
 import org.mediamod.mediamod.parties.PartyManager;
-import org.mediamod.mediamod.util.*;
+import org.mediamod.mediamod.util.ChatColor;
+import org.mediamod.mediamod.util.Metadata;
+import org.mediamod.mediamod.util.PlayerMessenger;
+import org.mediamod.mediamod.util.VersionChecker;
 
 import java.io.File;
 
@@ -138,7 +141,7 @@ public class MediaMod {
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (firstLoad && Minecraft.getMinecraft().thePlayer != null) {
-            if(!VersionChecker.INSTANCE.IS_LATEST_VERSION) {
+            if (!VersionChecker.INSTANCE.IS_LATEST_VERSION) {
                 PlayerMessenger.sendMessage(ChatColor.RED + "MediaMod is out of date!", true);
                 PlayerMessenger.sendMessage(ChatColor.GRAY + "Latest Version: " + ChatColor.WHITE + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS);
                 PlayerMessenger.sendMessage(ChatColor.GRAY + "Your Version: " + ChatColor.WHITE + Metadata.VERSION);
@@ -151,7 +154,7 @@ public class MediaMod {
                 PlayerMessenger.sendMessage(urlComponent);
             }
 
-            if(!authenticatedWithAPI) {
+            if (!authenticatedWithAPI) {
                 PlayerMessenger.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
             }
 

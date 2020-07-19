@@ -134,7 +134,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
                 Desktop desktop = Desktop.getDesktop();
                 if (SpotifyService.spotifyClientID == null) {
-                    if(MediaMod.INSTANCE.authenticatedWithAPI) {
+                    if (MediaMod.INSTANCE.authenticatedWithAPI) {
                         MediaHandler.instance.reloadService(SpotifyService.class);
 
                         if (!SpotifyService.isLoggedOut()) {

@@ -119,7 +119,7 @@ public class CoreMod {
         File updaterJar = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
         File lockFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock");
 
-        if(updaterJar.exists() && lockFile.exists()) {
+        if (updaterJar.exists() && lockFile.exists()) {
             try {
                 String codeSourceLoc = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
                 String modJarPath = codeSourceLoc.substring(0, codeSourceLoc.indexOf("!")).substring(5);
@@ -159,7 +159,8 @@ public class CoreMod {
 
             connection.disconnect();
             reader.close();
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+        }
     }
 
     static class RegisterResponse {
