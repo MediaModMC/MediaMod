@@ -28,8 +28,6 @@ import java.net.URISyntaxException;
 class GuiServices extends ButtonTooltip implements IMediaGui {
 
     public void initGui() {
-        boolean isOKForAPICalls = Minecraft.getMinecraft().isSnooperEnabled() && MediaMod.INSTANCE.authenticatedWithAPI;
-
         Settings.loadConfig();
 
         if (!MediaMod.INSTANCE.authenticatedWithAPI) {
@@ -51,9 +49,9 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         buttonList.add(useBrowserExtButton);
         buttonList.add(saveSpotifyTokenButton);
 
-        loginoutSpotifyButton.enabled = isOKForAPICalls || !SpotifyService.isLoggedOut();
-        levelheadIntegrationButton.enabled = isOKForAPICalls;
-        saveSpotifyTokenButton.enabled = isOKForAPICalls || !SpotifyService.isLoggedOut();
+        loginoutSpotifyButton.enabled = MediaMod.INSTANCE.authenticatedWithAPI || !SpotifyService.isLoggedOut();
+        levelheadIntegrationButton.enabled = MediaMod.INSTANCE.authenticatedWithAPI;
+        saveSpotifyTokenButton.enabled = MediaMod.INSTANCE.authenticatedWithAPI || !SpotifyService.isLoggedOut();
 
         super.initGui();
     }
