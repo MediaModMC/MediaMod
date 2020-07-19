@@ -47,7 +47,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
 
         buttonList.add(backButton);
         buttonList.add(loginoutSpotifyButton);
-        buttonList.add(levelheadIntegrationButton);
+        //buttonList.add(levelheadIntegrationButton);
         buttonList.add(useBrowserExtButton);
         buttonList.add(saveSpotifyTokenButton);
 
