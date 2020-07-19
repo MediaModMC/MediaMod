@@ -20,6 +20,7 @@ import org.mediamod.mediamod.command.MediaModCommand;
 import org.mediamod.mediamod.command.MediaModUpdateCommand;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.core.CoreMod;
+import org.mediamod.mediamod.discord.RichPresenceManager;
 import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.gui.PlayerOverlay;
 import org.mediamod.mediamod.keybinds.KeybindInputHandler;
@@ -64,6 +65,11 @@ public class MediaMod {
     public final CoreMod coreMod = new CoreMod("mediamod");
 
     /**
+     * An instance of the Discord Rich Presence manager
+     */
+    public RichPresenceManager richPresenceManager;
+
+    /**
      * If this is the first load of MediaMod
      */
     private boolean firstLoad = true;
@@ -106,6 +112,10 @@ public class MediaMod {
         MinecraftForge.EVENT_BUS.register(PlayerOverlay.INSTANCE);
         MinecraftForge.EVENT_BUS.register(PlayerMessenger.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new LevelheadIntegration());
+
+        richPresenceManager = new RichPresenceManager("734486425537347674");
+        richPresenceManager.start();
+        MinecraftForge.EVENT_BUS.register(richPresenceManager);
 
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
         ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
