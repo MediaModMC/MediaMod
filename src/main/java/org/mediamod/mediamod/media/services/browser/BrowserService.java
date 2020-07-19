@@ -165,6 +165,7 @@ public class BrowserService implements IServiceHandler {
         /**
          * Queries the extension for the current MediaInfo
          */
+        @SuppressWarnings("StatementWithEmptyBody")
         public MediaInfo getMediaInfo() {
             broadcast("Send");
 
