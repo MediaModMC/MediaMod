@@ -18,7 +18,6 @@ public class WebRequest {
         URL url = new URL(MediaMod.ENDPOINT + path);
 
         HttpURLConnection connection = null;
-        BufferedReader reader = null;
 
         try {
             connection = (HttpURLConnection) url.openConnection();
@@ -33,26 +32,22 @@ public class WebRequest {
 
             connection.connect();
 
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String content = reader.lines().collect(Collectors.joining());
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String content = reader.lines().collect(Collectors.joining());
 
-            if (connection.getResponseCode() == 200) {
-                return new Gson().fromJson(content, toClass);
+                if (connection.getResponseCode() == 200) {
+                    return new Gson().fromJson(content, toClass);
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getLocalizedMessage());
+            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
         } finally {
             try {
                 if (connection != null) {
                     connection.disconnect();
                 }
-
-                if (reader != null) {
-                    reader.close();
-                }
             } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getMessage());
+                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
             }
         }
 
@@ -63,7 +58,6 @@ public class WebRequest {
         URL url = new URL(MediaMod.ENDPOINT + path);
 
         HttpURLConnection connection = null;
-        BufferedReader reader = null;
 
         try {
             connection = (HttpURLConnection) url.openConnection();
@@ -78,19 +72,14 @@ public class WebRequest {
 
             return connection.getResponseCode();
         } catch (Exception e) {
-            e.printStackTrace();
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getLocalizedMessage());
+            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
         } finally {
             try {
                 if (connection != null) {
                     connection.disconnect();
                 }
-
-                if (reader != null) {
-                    reader.close();
-                }
             } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: " + e.getMessage());
+                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
             }
         }
 
@@ -98,94 +87,119 @@ public class WebRequest {
     }
 
     public static <T> T makeRequest(WebRequestType type, URL url, Class<T> toClass, HashMap<String, String> properties) throws IOException {
-        HttpURLConnection connection;
-        BufferedReader reader;
+        HttpURLConnection connection = null;
 
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(type.name());
-        connection.setRequestProperty("User-Agent", "MediaMod/1.0");
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(type.name());
+            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
 
-        for (String key : properties.keySet()) {
-            String value = properties.get(key);
-            connection.setRequestProperty(key, value);
+            for (String key : properties.keySet()) {
+                String value = properties.get(key);
+                connection.setRequestProperty(key, value);
+            }
+
+            if (type == WebRequestType.POST || type == WebRequestType.PUT) {
+                connection.setDoOutput(true);
+                connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
+            }
+
+            connection.connect();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String content = reader.lines().collect(Collectors.joining());
+
+                if (toClass == null) {
+                    return null;
+                }
+
+                return new Gson().fromJson(content, toClass);
+            }
+        } catch (Exception e) {
+            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            } catch (Exception e) {
+                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
+            }
         }
 
-        if (type == WebRequestType.POST || type == WebRequestType.PUT) {
-            connection.setDoOutput(true);
-            connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
-        }
-
-        connection.connect();
-
-        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String content = reader.lines().collect(Collectors.joining());
-
-        connection.disconnect();
-        reader.close();
-
-        if (toClass == null) {
-            return null;
-        }
-
-        return new Gson().fromJson(content, toClass);
+        return null;
     }
 
     public static int makeRequest(WebRequestType type, URL url, JsonObject body, HashMap<String, String> properties) throws IOException {
-        HttpURLConnection connection;
-        BufferedReader reader;
+        HttpURLConnection connection = null;
 
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(type.name());
-        connection.setRequestProperty("User-Agent", "MediaMod/1.0");
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(type.name());
+            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
 
-        for (String key : properties.keySet()) {
-            String value = properties.get(key);
-            connection.setRequestProperty(key, value);
+            for (String key : properties.keySet()) {
+                String value = properties.get(key);
+                connection.setRequestProperty(key, value);
+            }
+
+            if (type == WebRequestType.POST || type == WebRequestType.PUT) {
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+                connection.getOutputStream().write(body.toString().getBytes(StandardCharsets.UTF_8));
+            }
+
+            connection.connect();
+
+            return connection.getResponseCode();
+        } catch (Exception e) {
+            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            } catch (Exception e) {
+                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
+            }
         }
 
-        if (type == WebRequestType.POST || type == WebRequestType.PUT) {
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-            connection.getOutputStream().write(body.toString().getBytes(StandardCharsets.UTF_8));
-        }
-
-        connection.connect();
-
-        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String content = reader.lines().collect(Collectors.joining());
-
-        connection.disconnect();
-        reader.close();
-
-        return connection.getResponseCode();
+        return 0;
     }
 
     public static int makeRequest(WebRequestType type, URL url, HashMap<String, String> properties) throws IOException {
-        HttpURLConnection connection;
-        BufferedReader reader;
+        HttpURLConnection connection = null;
 
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(type.name());
-        connection.setRequestProperty("User-Agent", "MediaMod/1.0");
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(type.name());
+            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
 
-        for (String key : properties.keySet()) {
-            String value = properties.get(key);
-            connection.setRequestProperty(key, value);
+            for (String key : properties.keySet()) {
+                String value = properties.get(key);
+                connection.setRequestProperty(key, value);
+            }
+
+            if (type == WebRequestType.POST || type == WebRequestType.PUT) {
+                connection.setDoOutput(true);
+                connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
+            }
+
+            connection.connect();
+
+            return connection.getResponseCode();
+        } catch (Exception e) {
+            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            } catch (Exception e) {
+                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
+            }
         }
 
-        if (type == WebRequestType.POST || type == WebRequestType.PUT) {
-            connection.setDoOutput(true);
-            connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
-        }
-
-        connection.connect();
-
-        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String content = reader.lines().collect(Collectors.joining());
-
-        connection.disconnect();
-        reader.close();
-
-        return connection.getResponseCode();
+        return 0;
     }
 }

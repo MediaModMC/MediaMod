@@ -43,7 +43,6 @@ public class CoreMod {
 
     public boolean register() {
         HttpURLConnection connection = null;
-        BufferedReader reader = null;
 
         try {
             LOGGER.info("Attempting to register with CoreMod API...");
@@ -67,32 +66,25 @@ public class CoreMod {
 
             connection.connect();
 
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String response = reader.lines().collect(Collectors.joining());
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String response = reader.lines().collect(Collectors.joining());
 
-            if (connection.getResponseCode() == 200) {
-                RegisterResponse registerResponse = new Gson().fromJson(response, RegisterResponse.class);
-                secret = registerResponse.secret;
+                if (connection.getResponseCode() == 200) {
+                    RegisterResponse registerResponse = new Gson().fromJson(response, RegisterResponse.class);
+                    secret = registerResponse.secret;
 
-                LOGGER.info("Successfully registered with CoreMod API!");
-                return true;
-            } else {
-                LOGGER.info("Failed to register with CoreMod API... Response: " + response);
-                return false;
+                    LOGGER.info("Successfully registered with CoreMod API!");
+                    return true;
+                } else {
+                    LOGGER.info("Failed to register with CoreMod API... Response: " + response);
+                    return false;
+                }
             }
         } catch (Exception ignored) {
             return false;
         } finally {
             if (connection != null) {
                 connection.disconnect();
-            }
-
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
@@ -132,6 +124,7 @@ public class CoreMod {
         MediaMod.INSTANCE.logger.info("Shutting down CoreMod (" + modID + ")");
 
         if (secret.equals("")) return;
+        HttpURLConnection connection = null;
         try {
             URL url = new URL(MediaMod.ENDPOINT + "api/offline");
 
@@ -139,7 +132,6 @@ public class CoreMod {
             obj.addProperty("uuid", getUUID());
             obj.addProperty("secret", secret);
 
-            HttpURLConnection connection;
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -150,14 +142,16 @@ public class CoreMod {
             connection.getOutputStream().write(obj.toString().getBytes(StandardCharsets.UTF_8));
 
             connection.connect();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-            String response = reader.lines().collect(Collectors.joining());
-            LOGGER.info(response);
-
-            connection.disconnect();
-            reader.close();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))){
+                String response = reader.lines().collect(Collectors.joining());
+                LOGGER.info(response);
+            }
         } catch (Exception ignored) {
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
