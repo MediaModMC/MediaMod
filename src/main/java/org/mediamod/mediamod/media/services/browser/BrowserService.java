@@ -65,7 +65,15 @@ public class BrowserService implements IServiceHandler {
      * This indicates if the handler is ready for usage
      */
     public boolean isReady() {
-        return server != null && server.getConnections() != null && server.getConnections().size() >= 1 && Settings.EXTENSION_ENABLED;
+        boolean baseIsReady = server != null && server.getConnections() != null && server.getConnections().size() >= 1 && Settings.EXTENSION_ENABLED;
+
+        if(baseIsReady) {
+            if(mediaInfo != null) {
+                return mediaInfo.isPlaying;
+            }
+        }
+
+        return baseIsReady;
     }
 
     /**

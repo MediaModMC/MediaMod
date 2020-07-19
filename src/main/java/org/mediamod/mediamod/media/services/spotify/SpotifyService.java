@@ -174,6 +174,12 @@ public class SpotifyService implements IServiceHandler {
      * This indicates if the handler is ready for usage
      */
     public boolean isReady() {
+        if(spotifyAPI != null && spotifyAPI.isLoggedIn()) {
+            if(cachedMediaInfo != null) {
+                return cachedMediaInfo.isPlaying;
+            }
+        }
+
         return spotifyAPI != null && spotifyAPI.isLoggedIn();
     }
 
