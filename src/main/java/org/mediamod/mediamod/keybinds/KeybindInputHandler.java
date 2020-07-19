@@ -8,7 +8,7 @@ import org.mediamod.mediamod.gui.GuiMediaModSettings;
 import org.mediamod.mediamod.media.MediaHandler;
 import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.Multithreading;
-import org.mediamod.mediamod.util.PlayerMessager;
+import org.mediamod.mediamod.util.PlayerMessenger;
 import org.mediamod.mediamod.util.TickScheduler;
 
 /**
@@ -25,10 +25,10 @@ public class KeybindInputHandler {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (KeybindManager.INSTANCE.disableKeybind.isPressed()) {
             if (!Settings.SHOW_PLAYER) {
-                PlayerMessager.sendMessage(ChatColor.GRAY + "Player Visible");
+                PlayerMessenger.sendMessage(ChatColor.GRAY + "Player Visible");
                 Settings.SHOW_PLAYER = true;
             } else {
-                PlayerMessager.sendMessage(ChatColor.GRAY + "Player Hidden");
+                PlayerMessenger.sendMessage(ChatColor.GRAY + "Player Hidden");
                 Settings.SHOW_PLAYER = false;
             }
             Settings.saveConfig();
@@ -40,18 +40,18 @@ public class KeybindInputHandler {
                 if (KeybindManager.INSTANCE.skipKeybind.isPressed()) {
                     if (MediaHandler.instance.getCurrentService().supportsSkipping()) {
                         if (MediaHandler.instance.getCurrentService().skipTrack()) {
-                            PlayerMessager.sendMessage(ChatColor.GREEN + "Song skipped!", true);
+                            PlayerMessenger.sendMessage(ChatColor.GREEN + "Song skipped!", true);
                         }
                     } else {
-                        PlayerMessager.sendMessage(ChatColor.RED + "This service does not support skipping songs", true);
+                        PlayerMessenger.sendMessage(ChatColor.RED + "This service does not support skipping songs", true);
                     }
                 } else if (KeybindManager.INSTANCE.pausePlayKeybind.isPressed()) {
                     if (MediaHandler.instance.getCurrentService().supportsPausing()) {
                         if (MediaHandler.instance.getCurrentService().pausePlayTrack()) {
-                            PlayerMessager.sendMessage(ChatColor.GREEN + "Song paused/resumed!", true);
+                            PlayerMessenger.sendMessage(ChatColor.GREEN + "Song paused/resumed!", true);
                         }
                     } else {
-                        PlayerMessager.sendMessage(ChatColor.RED + "This service does not support pausing or resuming songs", true);
+                        PlayerMessenger.sendMessage(ChatColor.RED + "This service does not support pausing or resuming songs", true);
                     }
                 }
             });

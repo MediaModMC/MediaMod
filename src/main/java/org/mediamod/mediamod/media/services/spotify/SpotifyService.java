@@ -135,7 +135,7 @@ public class SpotifyService implements IServiceHandler {
                         cachedPartyMediaInfo = info;
 
                         if (!spotifyAPI.playTrack(info._id, info.timestamp)) {
-                            PlayerMessager.sendMessage(ChatColor.RED + "Failed to play new track. Do you have Spotify Premium?", true);
+                            PlayerMessenger.sendMessage(ChatColor.RED + "Failed to play new track. Do you have Spotify Premium?", true);
                         }
                     }
                 }
@@ -248,7 +248,7 @@ class SpotifyAPI {
      */
     public void login(String authCode) {
         MediaMod.INSTANCE.logger.info("Logging into Spotify...");
-        PlayerMessager.sendMessage(ChatColor.GRAY + "Logging into Spotify...", true);
+        PlayerMessenger.sendMessage(ChatColor.GRAY + "Logging into Spotify...", true);
 
         JsonObject body = new JsonObject();
         body.addProperty("code", authCode);
@@ -270,7 +270,7 @@ class SpotifyAPI {
             Multithreading.runAsync(Settings::saveConfig);
 
             MediaMod.INSTANCE.logger.info("Logged in!");
-            PlayerMessager.sendMessage(ChatColor.GREEN + "Logged in!", true);
+            PlayerMessenger.sendMessage(ChatColor.GREEN + "Logged in!", true);
         } catch (IOException e) {
             MediaMod.INSTANCE.logger.error("An error occurred when exchanging authorisation code for a token: ", e);
         }
@@ -283,7 +283,7 @@ class SpotifyAPI {
      */
     public void refresh() {
         MediaMod.INSTANCE.logger.info("Refreshing token...");
-        PlayerMessager.sendMessage(ChatColor.GRAY + "Refreshing token...", true);
+        PlayerMessenger.sendMessage(ChatColor.GRAY + "Refreshing token...", true);
 
         if (refreshToken == null) return;
 
@@ -307,7 +307,7 @@ class SpotifyAPI {
             Multithreading.runAsync(Settings::saveConfig);
 
             MediaMod.INSTANCE.logger.info("Refreshed token");
-            PlayerMessager.sendMessage(ChatColor.GREEN + "Refreshed token", true);
+            PlayerMessenger.sendMessage(ChatColor.GREEN + "Refreshed token", true);
         } catch (IOException e) {
             MediaMod.INSTANCE.logger.error("An error occurred when exchanging refresh token for a new auth token: ", e);
         }

@@ -45,16 +45,18 @@ public class VersionChecker {
     }
 
     public static class VersionResponse {
-        public String latestVersionS;
-        public int latestVersionInt;
-        public String changelog;
-        public String downloadURL;
+        public final String latestVersionS;
+        public final int latestVersionInt;
+        public final String changelog;
+        public final String downloadURL;
+        public final String latestUpdater;
 
-        VersionResponse(int latestVersionInt, String latestVersionS, String changelog, String downloadURL) {
+        VersionResponse(int latestVersionInt, String latestVersionS, String changelog, String downloadURL, String latestUpdater) {
             this.latestVersionInt = latestVersionInt;
             this.latestVersionS = latestVersionS;
             this.changelog = changelog;
             this.downloadURL = downloadURL;
+            this.latestUpdater = latestUpdater;
         }
     }
 }

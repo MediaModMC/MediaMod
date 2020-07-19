@@ -2,5 +2,6 @@
   "latestVersionInt": 8,
   "latestVersionS": "1.2.4",
   "changelog": "MediaMod v1.2.4: Fix analytics not functioning correctly and re-implement disabling snooper disabling mediamod analytics | Download from https://github.com/MediaModMC/MediaMod/",
-  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.4/MediaMod-1.2.4.jar"
+  "downloadURL": "https://github.com/MediaModMC/MediaMod/releases/download/1.2.4/MediaMod-1.2.4.jar",
+  "latestUpdater": "https://github.com/MediaModMC/Updater/releases/download/1.0.0-BETA-1/MediaModUpdater-1.0.0-BETA-1.jar"
 }

@@ -9,13 +9,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class PlayerMessager {
+public class PlayerMessenger {
 
-    public static final PlayerMessager INSTANCE = new PlayerMessager();
+    public static final PlayerMessenger INSTANCE = new PlayerMessenger();
     private static final ConcurrentLinkedQueue<String> queuedMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<IChatComponent> messages = new ConcurrentLinkedQueue<>();
 
-    private PlayerMessager() {
+    private PlayerMessenger() {
         TickScheduler.INSTANCE.schedule(0, this::check);
     }
 

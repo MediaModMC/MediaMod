@@ -11,7 +11,7 @@ import org.mediamod.mediamod.gui.util.IMediaGui;
 import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.Metadata;
 import org.mediamod.mediamod.util.Multithreading;
-import org.mediamod.mediamod.util.PlayerMessager;
+import org.mediamod.mediamod.util.PlayerMessenger;
 
 import java.io.IOException;
 
@@ -89,16 +89,16 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
                 break;
             case 5:
                 Multithreading.runAsync(() -> {
-                    PlayerMessager.sendMessage(ChatColor.GRAY + "Connecting to MediaMod API...", true);
+                    PlayerMessenger.sendMessage(ChatColor.GRAY + "Connecting to MediaMod API...", true);
                     MediaMod.INSTANCE.authenticatedWithAPI = MediaMod.INSTANCE.coreMod.register();
 
                     if (MediaMod.INSTANCE.authenticatedWithAPI) {
-                        PlayerMessager.sendMessage(ChatColor.GREEN + "Connected!", true);
+                        PlayerMessenger.sendMessage(ChatColor.GREEN + "Connected!", true);
 
                         Minecraft.getMinecraft().displayGuiScreen(null);
                         Minecraft.getMinecraft().displayGuiScreen(new GuiMediaModSettings());
                     } else {
-                        PlayerMessager.sendMessage(ChatColor.RED + "Failed to connect to MediaMod API!");
+                        PlayerMessenger.sendMessage(ChatColor.RED + "Failed to connect to MediaMod API!");
                     }
                 });
                 break;

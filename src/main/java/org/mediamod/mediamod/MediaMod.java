@@ -98,7 +98,7 @@ public class MediaMod {
         // Register event subscribers and commands
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(PlayerOverlay.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(PlayerMessager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(PlayerMessenger.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new LevelheadIntegration());
 
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
@@ -139,7 +139,7 @@ public class MediaMod {
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (firstLoad && Minecraft.getMinecraft().thePlayer != null) {
             if(!VersionChecker.INSTANCE.IS_LATEST_VERSION) {
-                PlayerMessager.sendMessage("&cMediaMod is out of date!" +
+                PlayerMessenger.sendMessage("&cMediaMod is out of date!" +
                         "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +
                         "\n&7Changelog: &r&l" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.changelog);
 
@@ -147,14 +147,14 @@ public class MediaMod {
                 urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "mediamodupdate"));
                 urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
                         "&7Runs /mediamodupdate"))));
-                PlayerMessager.sendMessage(urlComponent);
+                PlayerMessenger.sendMessage(urlComponent);
             }
 
             if(!authenticatedWithAPI) {
                 if(!Minecraft.getMinecraft().isSnooperEnabled()) {
-                    PlayerMessager.sendMessage(ChatColor.GRAY + "Note: You have Minecraft Snooper disabled, this means services like Spotify and MediaMod Parties will not work. If you want these services then enable Minecraft Snooper and restart your client!", true);
+                    PlayerMessenger.sendMessage(ChatColor.GRAY + "Note: You have Minecraft Snooper disabled, this means services like Spotify and MediaMod Parties will not work. If you want these services then enable Minecraft Snooper and restart your client!", true);
                 } else {
-                    PlayerMessager.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
+                    PlayerMessenger.sendMessage(ChatColor.RED + "Failed to authenticate with MediaMod API, this means services like Spotify will not work. Please click 'reconnect' in the MediaMod GUI!", true);
                 }
             }
 
@@ -174,7 +174,7 @@ public class MediaMod {
         if (info == null) return;
 
         if (Settings.ANNOUNCE_TRACKS) {
-            PlayerMessager.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
+            PlayerMessenger.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
         }
 
         PartyManager.instance.updateInfo(info);
