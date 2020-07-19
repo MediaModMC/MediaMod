@@ -99,7 +99,7 @@ public class MediaMod {
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
         //ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
 
-        File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
+        File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().gameDir, "mediamod");
         if (!MEDIAMOD_DIRECTORY.exists()) {
             logger.info("Creating necessary directories and files for first launch...");
             boolean mkdir = MEDIAMOD_DIRECTORY.mkdir();
@@ -132,7 +132,7 @@ public class MediaMod {
      */
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (firstLoad && Minecraft.getMinecraft().thePlayer != null) {
+        if (firstLoad && Minecraft.getMinecraft().player != null) {
             if(!VersionChecker.INSTANCE.IS_LATEST_VERSION) {
                 PlayerMessager.sendMessage("&cMediaMod is out of date!" +
                         "\n&7Latest Version: &r&lv" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS +

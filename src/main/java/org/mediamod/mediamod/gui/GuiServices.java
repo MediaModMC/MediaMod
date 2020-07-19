@@ -5,10 +5,10 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.util.ButtonTooltip;
@@ -72,9 +72,9 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
         GlStateManager.popMatrix();
 
         if (SpotifyService.isLoggedOut()) {
-            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
+            drawCenteredString(fontRenderer, I18n.format("menu.guiservices.text.spotifyNotLogged.name"), width / 2, height / 2 - 53, Color.red.getRGB());
         } else {
-            drawCenteredString(fontRendererObj, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
+            drawCenteredString(fontRenderer, I18n.format("menu.guiservices.text.spotifyLogged.name"), width / 2, height / 2 - 53, Color.green.getRGB());
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -162,9 +162,9 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
                     e.printStackTrace();
                 } catch (Exception e) {
                     PlayerMessager.sendMessage("&cFailed to open browser with the Spotify Auth URL!");
-                    IChatComponent urlComponent = new ChatComponentText(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
-                    urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, spotifyUrl));
-                    urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+                    ITextComponent urlComponent = new TextComponentString(ChatColor.translateAlternateColorCodes('&', "&lOpen URL"));
+                    urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, spotifyUrl));
+                    urlComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(ChatColor.translateAlternateColorCodes('&',
                             "&7Click this to open the Spotify Auth URL"))));
                     PlayerMessager.sendMessage(urlComponent);
                 }

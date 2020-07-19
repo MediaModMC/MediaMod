@@ -45,8 +45,8 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
 
         this.drawHeader(width, height);
 
-        this.drawString(this.fontRendererObj, I18n.format("menu.guimediamod.text.author.name"), this.width - this.fontRendererObj.getStringWidth(I18n.format("menu.guimediamod.text.author.name")) - 2, this.height - 10, -1);
-        this.drawString(this.fontRendererObj, I18n.format("menu.guimediamod.text.version.name") + " " + Metadata.VERSION, this.width - this.fontRendererObj.getStringWidth("Version " + Metadata.VERSION) - 2, this.height - 20, -1);
+        this.drawString(this.fontRenderer, I18n.format("menu.guimediamod.text.author.name"), this.width - this.fontRenderer.getStringWidth(I18n.format("menu.guimediamod.text.author.name")) - 2, this.height - 10, -1);
+        this.drawString(this.fontRenderer, I18n.format("menu.guimediamod.text.version.name") + " " + Metadata.VERSION, this.width - this.fontRenderer.getStringWidth("Version " + Metadata.VERSION) - 2, this.height - 20, -1);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

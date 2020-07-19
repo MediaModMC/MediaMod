@@ -2,9 +2,9 @@ package org.mediamod.mediamod.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -101,12 +101,12 @@ public class PlayerOverlay {
         float f = 1.0F / textureWidth;
         float f1 = 1.0F / textureHeight;
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos(x, y + height, 0.0D).tex(u * f, (v + (float) height) * f1).endVertex();
-        worldrenderer.pos(x + width, y + height, 0.0D).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
-        worldrenderer.pos(x + width, y, 0.0D).tex((u + (float) width) * f, v * f1).endVertex();
-        worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferBuilder.pos(x, y + height, 0.0D).tex(u * f, (v + (float) height) * f1).endVertex();
+        bufferBuilder.pos(x + width, y + height, 0.0D).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
+        bufferBuilder.pos(x + width, y, 0.0D).tex((u + (float) width) * f, v * f1).endVertex();
+        bufferBuilder.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
         tessellator.draw();
     }
 
@@ -140,16 +140,16 @@ public class PlayerOverlay {
         float f1 = (float) (color >> 8 & 255) / 255.0F;
         float f2 = (float) (color & 255) / 255.0F;
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(left, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, bottom, 0.0D).endVertex();
-        worldrenderer.pos(right, top, 0.0D).endVertex();
-        worldrenderer.pos(left, top, 0.0D).endVertex();
+        bufferBuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferBuilder.pos(left, bottom, 0.0D).endVertex();
+        bufferBuilder.pos(right, bottom, 0.0D).endVertex();
+        bufferBuilder.pos(right, top, 0.0D).endVertex();
+        bufferBuilder.pos(left, top, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
@@ -166,7 +166,7 @@ public class PlayerOverlay {
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        if (event.type.equals(RenderGameOverlayEvent.ElementType.EXPERIENCE) && Settings.SHOW_PLAYER && Settings.ENABLED) {
+        if (event.getType().equals(RenderGameOverlayEvent.ElementType.EXPERIENCE) && Settings.SHOW_PLAYER && Settings.ENABLED) {
             if (this.first) {
                 // Make sure that this is never ran again
                 this.first = false;
@@ -222,10 +222,10 @@ public class PlayerOverlay {
 
         // Get a Minecraft Instance
         Minecraft mc = FMLClientHandler.instance().getClient();
-        mc.mcProfiler.startSection("mediamod_player");
+        mc.profiler.startSection("mediamod_player");
 
         // Establish a FontRenderer
-        FontRenderer fontRenderer = mc.fontRendererObj;
+        FontRenderer fontRenderer = mc.fontRenderer;
 
         // Track Metadata
         Track track = null;
@@ -467,7 +467,7 @@ public class PlayerOverlay {
         }
 
         GlStateManager.popMatrix();
-        mc.mcProfiler.endSection();
+        mc.profiler.endSection();
     }
 
     /**
@@ -491,12 +491,12 @@ public class PlayerOverlay {
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(right, top, 0).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos(left, bottom, 0).color(f5, f6, f7, f4).endVertex();
-        worldrenderer.pos(right, bottom, 0).color(f5, f6, f7, f4).endVertex();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        bufferBuilder.pos(right, top, 0).color(f1, f2, f3, f).endVertex();
+        bufferBuilder.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
+        bufferBuilder.pos(left, bottom, 0).color(f5, f6, f7, f4).endVertex();
+        bufferBuilder.pos(right, bottom, 0).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
         GlStateManager.shadeModel(7424);
         GlStateManager.disableBlend();

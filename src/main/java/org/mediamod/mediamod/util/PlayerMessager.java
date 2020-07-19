@@ -2,8 +2,8 @@ package org.mediamod.mediamod.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -13,24 +13,24 @@ public class PlayerMessager {
 
     public static final PlayerMessager INSTANCE = new PlayerMessager();
     private static final ConcurrentLinkedQueue<String> queuedMessages = new ConcurrentLinkedQueue<>();
-    private static final ConcurrentLinkedQueue<IChatComponent> messages = new ConcurrentLinkedQueue<>();
+    private static final ConcurrentLinkedQueue<ITextComponent> messages = new ConcurrentLinkedQueue<>();
 
     private PlayerMessager() {
         TickScheduler.INSTANCE.schedule(0, this::check);
     }
 
-    public static void sendMessage(IChatComponent message) {
-        if (Minecraft.getMinecraft().thePlayer == null) return;
-        if (message == null) message = new ChatComponentText("");
+    public static void sendMessage(ITextComponent    message) {
+        if (Minecraft.getMinecraft().player == null) return;
+        if (message == null) message = new TextComponentString("");
         messages.add(message);
     }
 
-    public static void sendMessage(IChatComponent message, boolean header) {
-        if (Minecraft.getMinecraft().thePlayer == null) return;
-        if (message == null) message = new ChatComponentText("");
+    public static void sendMessage(ITextComponent message, boolean header) {
+        if (Minecraft.getMinecraft().player == null) return;
+        if (message == null) message = new TextComponentString("");
 
         if (header) {
-            messages.add(new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+            messages.add(new TextComponentString(ChatColor.translateAlternateColorCodes('&',
                     "&c[&fMediaMod&c]&r ")).appendSibling(message));
         } else {
             messages.add(message);
@@ -38,18 +38,18 @@ public class PlayerMessager {
     }
 
     public static void sendMessage(String message) {
-        if (message == null || Minecraft.getMinecraft().thePlayer == null) return;
+        if (message == null || Minecraft.getMinecraft().player == null) return;
         sendMessage(ChatColor.translateAlternateColorCodes('&', message), true);
     }
 
     public static void sendMessage(String message, boolean header) {
-        if (message == null || Minecraft.getMinecraft().thePlayer == null) return;
+        if (message == null || Minecraft.getMinecraft().player == null) return;
 
         if (header) {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&',
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(ChatColor.translateAlternateColorCodes('&',
                     "&c[&fMediaMod&c]&r " + message)));
         } else {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&', message)));
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(ChatColor.translateAlternateColorCodes('&', message)));
         }
     }
 
@@ -59,7 +59,7 @@ public class PlayerMessager {
 
     private void check() {
         if (!queuedMessages.isEmpty()) {
-            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
             if (player != null && queuedMessages.peek() != null) {
                 String poll = queuedMessages.poll();
                 sendMessage(poll);
@@ -69,12 +69,12 @@ public class PlayerMessager {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if (Minecraft.getMinecraft().thePlayer == null) {
+        if (Minecraft.getMinecraft().player == null) {
             return;
         }
 
         while (!messages.isEmpty()) {
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(messages.poll());
+            Minecraft.getMinecraft().player.sendMessage(messages.poll());
         }
 
         while (!queuedMessages.isEmpty()) {

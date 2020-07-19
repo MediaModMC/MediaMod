@@ -2,11 +2,13 @@ package org.mediamod.mediamod.command;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.gui.GuiMediaModSettings;
@@ -30,22 +32,27 @@ import java.util.List;
 public class MediaModCommand extends CommandBase {
 
     @Override
-    public String getCommandName() {
+    public int getRequiredPermissionLevel() {
+        return -1;
+    }
+
+    @Override
+    public String getName() {
         return "mediamod";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender iCommandSender) {
         return "/mediamod";
     }
 
     @Override
-    public List<String> getCommandAliases() {
+    public List<String> getAliases() {
         return Arrays.asList("media", "mm");
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer minecraftServer, ICommandSender iCommandSender, String[] args) throws CommandException {
         if (args.length <= 0) {
             TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
         } else {
@@ -82,10 +89,10 @@ public class MediaModCommand extends CommandBase {
                                 if (response.code.equals("")) {
                                     PlayerMessager.sendMessage(ChatColor.RED + "An error occurred whilst creating your MediaMod party!", true);
                                 } else {
-                                    IChatComponent urlComponent = new ChatComponentText(ChatColor.WHITE + "" + ChatColor.BOLD + response.code);
-                                    urlComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, response.code));
-                                    urlComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText("Copy Code")));
-                                    PlayerMessager.sendMessage(new ChatComponentText(ChatColor.GRAY + "Share this code with your friends to invite them to your party: ").appendSibling(urlComponent), true);
+                                    ITextComponent urlComponent = new TextComponentString(ChatColor.WHITE + "" + ChatColor.BOLD + response.code);
+                                    urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, response.code));
+                                    urlComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Copy Code")));
+                                    PlayerMessager.sendMessage(new TextComponentString(ChatColor.GRAY + "Share this code with your friends to invite them to your party: ").appendSibling(urlComponent), true);
                                 }
                                 break;
                             case "leave":
@@ -139,15 +146,5 @@ public class MediaModCommand extends CommandBase {
             }
         }
 
-    }
-
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
-        return true;
-    }
-
-    @Override
-    public int getRequiredPermissionLevel() {
-        return -1;
     }
 }

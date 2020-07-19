@@ -1,7 +1,9 @@
 package org.mediamod.mediamod.command;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import org.apache.commons.io.FileUtils;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.util.PlayerMessager;
@@ -21,22 +23,22 @@ import java.util.List;
 public class MediaModUpdateCommand extends CommandBase {
 
     @Override
-    public String getCommandName() {
+    public int getRequiredPermissionLevel() {
+        return -1;
+    }
+
+    @Override
+    public String getName() {
         return "mediamodupdate";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender iCommandSender) {
         return "/mediamodupdate";
     }
 
     @Override
-    public List<String> getCommandAliases() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer minecraftServer, ICommandSender iCommandSender, String[] strings) throws CommandException {
         if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
             PlayerMessager.sendMessage("MediaMod is up-to-date!", true);
         } else {
@@ -50,15 +52,5 @@ public class MediaModUpdateCommand extends CommandBase {
                 PlayerMessager.sendMessage("Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
             }
         }
-    }
-
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
-        return true;
-    }
-
-    @Override
-    public int getRequiredPermissionLevel() {
-        return -1;
     }
 }
