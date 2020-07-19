@@ -4,7 +4,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.util.ButtonTooltip;
 import org.mediamod.mediamod.gui.util.CustomButton;
@@ -16,11 +15,10 @@ public class GuiOtherSettings extends ButtonTooltip implements IMediaGui {
     public void initGui() {
         GuiButton backButton = new CustomButton(0, width / 2 - 100, height - 50, I18n.format("menu.guiplayerpositioning.buttons.back.name"));
         GuiButton alwaysUpdateButton = new CustomButton(1, width / 2 - 100, height / 2 - 35, getSuffix(Settings.ALWAYS_AUTOUPDATE, "Always Autoupdate"));
-        GuiButton discordRPCButton = new CustomButton(2, width / 2 - 100, height / 2 - 10, getSuffix(Settings.DISCORD_RPC_ENABLED, "Use Discord RPC"));
 
         buttonList.add(backButton);
         buttonList.add(alwaysUpdateButton);
-        buttonList.add(discordRPCButton);
+
 
         super.initGui();
     }
@@ -62,16 +60,6 @@ public class GuiOtherSettings extends ButtonTooltip implements IMediaGui {
                 Settings.ALWAYS_AUTOUPDATE = !Settings.ALWAYS_AUTOUPDATE;
                 button.displayString = getSuffix(Settings.ALWAYS_AUTOUPDATE, "Always Autoupdate");
                 Settings.saveConfig();
-            case 2:
-                Settings.DISCORD_RPC_ENABLED = !Settings.DISCORD_RPC_ENABLED;
-                button.displayString = getSuffix(Settings.DISCORD_RPC_ENABLED, "Use Discord RPC");
-                Settings.saveConfig();
-
-                if(!Settings.DISCORD_RPC_ENABLED) {
-                    MediaMod.INSTANCE.richPresenceManager.stopPresence();
-                } else {
-                    MediaMod.INSTANCE.richPresenceManager.start();
-                }
         }
     }
 

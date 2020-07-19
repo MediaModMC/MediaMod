@@ -12,7 +12,6 @@ public class Settings {
     private static final File configFile = new File(FMLClientHandler.instance().getClient().mcDataDir, "config/mediamod.config");
 
     public static boolean ENABLED;
-    public static boolean DISCORD_RPC_ENABLED;
     public static boolean ALWAYS_AUTOUPDATE;
     public static boolean LEVELHEAD_ENABLED;
     public static boolean SHOW_PLAYER;
@@ -48,7 +47,6 @@ public class Settings {
     private static void updateConfig(Configuration configuration, boolean load) {
         Property enabledProperty = configuration.get("General", "enabled", true);
         Property alwaysAutoupdateProperty = configuration.get("Auto-update", "alwaysAutoUpdate", false);
-        Property discordRPCProperty = configuration.get("Discord", "useRPC", true);
         Property levelheadEnabledProperty = configuration.get("Levelhead", "enabled", true);
         Property showPlayerProperty = configuration.get("General", "showPlayer", true);
         Property showInPauseProperty = configuration.get("Player", "showInPause", true);
@@ -78,9 +76,6 @@ public class Settings {
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
-
-        if (load) DISCORD_RPC_ENABLED = discordRPCProperty.getBoolean();
-        else discordRPCProperty.set(DISCORD_RPC_ENABLED);
 
         if (load) ALWAYS_AUTOUPDATE = alwaysAutoupdateProperty.getBoolean();
         else alwaysAutoupdateProperty.setValue(ALWAYS_AUTOUPDATE);
