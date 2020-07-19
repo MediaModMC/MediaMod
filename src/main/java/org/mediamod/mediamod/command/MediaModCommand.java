@@ -32,11 +32,6 @@ import java.util.List;
 public class MediaModCommand extends CommandBase {
 
     @Override
-    public int getRequiredPermissionLevel() {
-        return -1;
-    }
-
-    @Override
     public String getName() {
         return "mediamod";
     }
@@ -46,13 +41,14 @@ public class MediaModCommand extends CommandBase {
         return "/mediamod";
     }
 
+
     @Override
     public List<String> getAliases() {
         return Arrays.asList("media", "mm");
     }
 
     @Override
-    public void execute(MinecraftServer minecraftServer, ICommandSender iCommandSender, String[] args) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender iCommandSender, String[] args) {
         if (args.length <= 0) {
             TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
         } else {
@@ -147,4 +143,10 @@ public class MediaModCommand extends CommandBase {
         }
 
     }
+
+    @Override
+    public int getRequiredPermissionLevel() {
+        return -1;
+    }
+
 }
