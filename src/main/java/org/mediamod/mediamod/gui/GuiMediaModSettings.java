@@ -30,11 +30,14 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
         this.buttonList.add(new CustomButton(6, width / 2 - 100, height / 2, getSuffix(Settings.SHOW_IN_PAUSE, "Show player in pause menu")));
         this.buttonList.add(new CustomButton(4, width / 2 - 100, height / 2 + 23, getSuffix(Settings.ANNOUNCE_TRACKS, I18n.format("menu.guimediamod.buttons.announceTracks.name"))));
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height / 2 + 47, I18n.format("menu.guimediamod.buttons.playerSettings.name")));
-        this.buttonList.add(new CustomButton(3, width / 2 - 100, height / 2 + 71, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
+        this.buttonList.add(new CustomButton(3, width / 2 + 5, height / 2 + 71, I18n.format("menu.guimediamod.buttons.servicesSettings.name")));
+        this.buttonList.add(new CustomButton(7, width / 2 - 100, height / 2 + 71, "Other"));
+        this.buttonList.get(5).width = 95;
+        this.buttonList.get(6).width = 95;
 
         if (!MediaMod.INSTANCE.authenticatedWithAPI) {
             this.buttonList.add(new CustomButton(5, 5, height - 25, "Reconnect"));
-            this.buttonList.get(6).width = 100;
+            this.buttonList.get(7).width = 100;
         }
 
         super.initGui();
@@ -59,12 +62,16 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
                 return I18n.format("menu.guimediamod.buttons.enabled.tooltip");
             case 1:
                 return "Shows the player in game";
+            case 3:
+                return "Settings for stuff like Spotify Integration and the Browser Extension";
             case 4:
                 return I18n.format("menu.guimediamod.buttons.announceTracks.tooltip");
             case 5:
                 return "Failed to connect to MediaMod API. Click here to reconnect!";
             case 6:
                 return "Shows player when your game is paused";
+            case 7:
+                return "Other MediaMod Settings like auto-update + more";
         }
         return null;
     }
@@ -108,6 +115,9 @@ public class GuiMediaModSettings extends ButtonTooltip implements IMediaGui {
             case 6:
                 Settings.SHOW_IN_PAUSE = !Settings.SHOW_IN_PAUSE;
                 button.displayString = getSuffix(Settings.SHOW_IN_PAUSE, "Show player in pause menu");
+                break;
+            case 7:
+                this.mc.displayGuiScreen(new GuiOtherSettings());
                 break;
         }
 

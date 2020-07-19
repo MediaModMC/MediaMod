@@ -3,6 +3,7 @@ package org.mediamod.mediamod.config;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import org.lwjgl.openal.AL;
 import org.mediamod.mediamod.MediaMod;
 
 import java.io.File;
@@ -11,6 +12,7 @@ public class Settings {
     private static final File configFile = new File(FMLClientHandler.instance().getClient().mcDataDir, "config/mediamod.config");
 
     public static boolean ENABLED;
+    public static boolean ALWAYS_AUTOUPDATE;
     public static boolean LEVELHEAD_ENABLED;
     public static boolean SHOW_PLAYER;
     public static boolean SHOW_IN_PAUSE;
@@ -44,6 +46,7 @@ public class Settings {
 
     private static void updateConfig(Configuration configuration, boolean load) {
         Property enabledProperty = configuration.get("General", "enabled", true);
+        Property alwaysAutoupdateProperty = configuration.get("Auto-update", "alwaysAutoUpdate", false);
         Property levelheadEnabledProperty = configuration.get("Levelhead", "enabled", true);
         Property showPlayerProperty = configuration.get("General", "showPlayer", true);
         Property showInPauseProperty = configuration.get("Player", "showInPause", true);
@@ -73,6 +76,9 @@ public class Settings {
 
         if (load) ENABLED = enabledProperty.getBoolean();
         else enabledProperty.setValue(ENABLED);
+
+        if (load) ALWAYS_AUTOUPDATE = alwaysAutoupdateProperty.getBoolean();
+        else alwaysAutoupdateProperty.setValue(ALWAYS_AUTOUPDATE);
 
         if (load) SHOW_IN_PAUSE = showInPauseProperty.getBoolean();
         else showInPauseProperty.setValue(SHOW_IN_PAUSE);
