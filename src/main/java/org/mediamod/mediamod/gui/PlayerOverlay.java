@@ -14,6 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.ProgressStyle;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
@@ -180,6 +181,8 @@ public class PlayerOverlay {
                     try {
                         if (MediaHandler.instance.getCurrentService() != null) {
                             currentMediaInfo = MediaHandler.instance.getCurrentMediaInfo();
+                            MediaMod.INSTANCE.richPresenceManager.setPresenceInfo(currentMediaInfo);
+
                             if (currentMediaInfo == null) {
                                 previousMediaInfo = null;
                                 return;

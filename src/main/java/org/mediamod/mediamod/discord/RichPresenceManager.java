@@ -3,10 +3,8 @@ package org.mediamod.mediamod.discord;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.media.MediaHandler;
 import org.mediamod.mediamod.media.core.api.MediaInfo;
 import org.mediamod.mediamod.util.Metadata;
@@ -72,7 +70,9 @@ public class RichPresenceManager {
         rpc.Discord_ClearPresence();
         rpc.Discord_Shutdown();
 
-        callbackThread.interrupt();
+        if(callbackThread != null) {
+            callbackThread.interrupt();
+        }
     }
 
     /**
@@ -84,8 +84,14 @@ public class RichPresenceManager {
             richPresence.state = "No media playing!";
             richPresence.details = "Listening to music in Minecraft";
         } else {
-            richPresence.startTimestamp = (System.currentTimeMillis() - info.timestamp) / 1000;
-            richPresence.endTimestamp = richPresence.startTimestamp + info.track.duration / 1000;
+            if(info.isPlaying) {
+                richPresence.startTimestamp = (System.currentTimeMillis() - info.timestamp) / 1000;
+                richPresence.endTimestamp = richPresence.startTimestamp + info.track.duration / 1000;
+            } else {
+                richPresence.startTimestamp = 0;
+                richPresence.endTimestamp = 0;
+            }
+
             richPresence.state = info.track.name + " by " + info.track.artists[0].name;
             richPresence.details = "Listening to music in Minecraft";
 
@@ -98,15 +104,5 @@ public class RichPresenceManager {
 
 
         rpc.Discord_UpdatePresence(richPresence);
-    }
-
-
-    /**
-     * Fired when the song changes
-     * @see MediaInfoUpdateEvent
-     */
-    @SubscribeEvent
-    public void onMediaInfoChange(MediaInfoUpdateEvent event) {
-        setPresenceInfo(event.mediaInfo);
     }
 }
