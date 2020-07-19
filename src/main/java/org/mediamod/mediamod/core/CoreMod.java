@@ -120,14 +120,14 @@ public class CoreMod {
     public void shutdown() {
         if (!Minecraft.getMinecraft().isSnooperEnabled() && secret.equals("")) return;
 
-        String codeSourceLoc = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        String modJarPath = codeSourceLoc.substring(0, codeSourceLoc.indexOf("!")).substring(5);
-
         File updaterJar = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
         File lockFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock");
 
         if(updaterJar.exists() && lockFile.exists()) {
             try {
+                String codeSourceLoc = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+                String modJarPath = codeSourceLoc.substring(0, codeSourceLoc.indexOf("!")).substring(5);
+
                 ProcessBuilder pb = new ProcessBuilder("java", "-jar", updaterJar.getAbsolutePath(), modJarPath);
                 pb.start();
             } catch (IOException e) {
