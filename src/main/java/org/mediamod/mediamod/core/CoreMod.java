@@ -126,9 +126,7 @@ public class CoreMod {
 
                 ProcessBuilder pb = new ProcessBuilder("java", "-jar", updaterJar.getAbsolutePath(), modJarPath);
                 pb.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (Exception ignored) { }
         }
 
         MediaMod.INSTANCE.logger.info("Shutting down CoreMod (" + modID + ")");
