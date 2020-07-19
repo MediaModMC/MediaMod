@@ -41,7 +41,7 @@ public class MediaModUpdateCommand extends CommandBase {
             PlayerMessenger.sendMessage(ChatColor.GRAY + "Downloading MediaMod v" + VersionChecker.INSTANCE.latestVersionInformation.name, true);
             try {
                 URL url = new URL(VersionChecker.INSTANCE.latestVersionInformation.downloadURL);
-                URL updater = new URL(VersionChecker.INSTANCE.allVersionInfo.latestUpdater);
+                URL updater = new URL("https://github.com/MediaModMC/Updater/releases/download/" + VersionChecker.INSTANCE.allVersionInfo.latestUpdater + "/MediaModUpdater-" + VersionChecker.INSTANCE.allVersionInfo.latestUpdater + ".jar");
 
                 File lockFile = new File(MediaMod.INSTANCE.mediamodDirectory, "update.lock");
                 File updateJar = new File(MediaMod.INSTANCE.mediamodDirectory, "update.jar");
