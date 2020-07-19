@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import org.apache.commons.io.FileUtils;
+import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.Multithreading;
 import org.mediamod.mediamod.util.PlayerMessenger;
@@ -46,27 +47,45 @@ public class MediaModUpdateCommand extends CommandBase {
                 URL url = new URL(VersionChecker.INSTANCE.LATEST_VERSION_INFO.downloadURL);
                 URL updater = new URL(VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestUpdater);
 
-                if (new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock").createNewFile()) {
+                File lockFile = new File(MediaMod.INSTANCE.mediamodDirectory, "update.lock");
+                File updateJar = new File(MediaMod.INSTANCE.mediamodDirectory, "update.jar");
+                File updaterJar = new File(MediaMod.INSTANCE.mediamodDirectory, "updater.jar");
+
+                if(lockFile.exists() && updateJar.exists()) {
+                    PlayerMessenger.sendMessage(ChatColor.GRAY + "It seems there was a previous update attempt that may have failed. Deleting previous files and attempting again!", true);
+
+                    if (!updateJar.delete()) {
+                        PlayerMessenger.sendMessage(ChatColor.RED + "Failed to delete previous update jar", true);
+                        return;
+                    }
+
+                    if (!lockFile.delete()) {
+                        PlayerMessenger.sendMessage(ChatColor.RED + "Failed to delete previous lockfile", true);
+                        return;
+                    }
+                }
+
+                if (lockFile.createNewFile()) {
                     Multithreading.runAsync(() -> {
                         try {
-                            FileUtils.copyURLToFile(url, new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.jar"));
-                            File updaterFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
-                            if (!updaterFile.exists()) {
-                                FileUtils.copyURLToFile(updater, updaterFile);
+                            FileUtils.copyURLToFile(url, updateJar);
+                            if (!updaterJar.exists()) {
+                                FileUtils.copyURLToFile(updater, updaterJar);
                             }
 
                             PlayerMessenger.sendMessage(ChatColor.GREEN + "Update downloaded! It will automatically install when you close Minecraft", true);
                         } catch (Exception e) {
                             PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
-                            e.printStackTrace();
+                            MediaMod.INSTANCE.logger.error("Failed to download required files", e);
                         }
                     });
                 } else {
                     PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+                    MediaMod.INSTANCE.logger.error("Failed to create lockfile!");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+                MediaMod.INSTANCE.logger.error("Failed to create lockfile", e);
             }
         }
     }

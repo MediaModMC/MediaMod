@@ -77,6 +77,12 @@ public class MediaMod {
     public boolean authenticatedWithAPI = false;
 
     /**
+     * A File which points to the MediaMod Data directory
+     */
+    public File mediamodDirectory;
+
+
+    /**
      * Fired before Minecraft starts
      *
      * @param event - FMLPreInitializationEvent
@@ -107,10 +113,10 @@ public class MediaMod {
         ClientCommandHandler.instance.registerCommand(new MediaModCommand());
         ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
 
-        File MEDIAMOD_DIRECTORY = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
-        if (!MEDIAMOD_DIRECTORY.exists()) {
+        mediamodDirectory = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
+        if (!mediamodDirectory.exists()) {
             logger.info("Creating necessary directories and files for first launch...");
-            boolean mkdir = MEDIAMOD_DIRECTORY.mkdir();
+            boolean mkdir = mediamodDirectory.mkdir();
 
             if (mkdir) {
                 logger.info("Created necessary directories and files!");
