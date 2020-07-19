@@ -1,9 +1,11 @@
 package org.mediamod.mediamod.util;
 
+import net.minecraft.client.Minecraft;
 import org.mediamod.mediamod.MediaMod;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 public class VersionChecker {
     /**
@@ -14,49 +16,66 @@ public class VersionChecker {
     /**
      * If the mod is up to date
      */
-    public boolean IS_LATEST_VERSION = false;
+    public boolean isLatestVersion = false;
 
     /**
      * If the mod isn't up to date, this will contain the latest version's information
      */
-    public VersionResponse LATEST_VERSION_INFO = null;
+    public VersionInformation latestVersionInformation = null;
+
+    /**
+     * The whole version.json file parsed into a java class
+     */
+    public AllVersionInfo allVersionInfo = null;
 
     public static void checkVersion() {
         try {
-            VersionResponse versionResponse = WebRequest.makeRequest(WebRequestType.GET, new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version.json"), VersionResponse.class, new HashMap<>());
+            INSTANCE.allVersionInfo = WebRequest.makeRequest(WebRequestType.GET, new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version-beta.json"), AllVersionInfo.class, new HashMap<>());
+            if (INSTANCE.allVersionInfo == null) return;
 
-            if (versionResponse == null) return;
+            String mcVersion = Minecraft.getSessionInfo().get("X-Minecraft-Version");
 
-            if (versionResponse.latestVersionInt > Metadata.VERSION_INT) {
-                INSTANCE.IS_LATEST_VERSION = false;
-                INSTANCE.LATEST_VERSION_INFO = versionResponse;
+            VersionInformation information = INSTANCE.allVersionInfo.versions.get(mcVersion);
+            if(information == null) return;
+
+            information.downloadURL = "https://github.com/MediaModMC/MediaMod/releases/download/" + information.name + "/MediaMod-" + information.name + "-" +  Minecraft.getSessionInfo().get("X-Minecraft-Version") + ".jar";
+            if (information.version > Metadata.VERSION_INT) {
+                INSTANCE.isLatestVersion = false;
+                INSTANCE.latestVersionInformation = information;
             } else {
-                INSTANCE.IS_LATEST_VERSION = true;
+                INSTANCE.isLatestVersion = true;
             }
 
-            if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
+            if (VersionChecker.INSTANCE.isLatestVersion) {
                 MediaMod.INSTANCE.logger.info("MediaMod is up-to-date!");
             } else {
-                MediaMod.INSTANCE.logger.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS + " Your Version: v" + Metadata.VERSION);
+                MediaMod.INSTANCE.logger.warn("MediaMod is NOT up-to-date! Latest Version: v" + VersionChecker.INSTANCE.latestVersionInformation.name + " Your Version: v" + Metadata.VERSION);
             }
         } catch (Exception e) {
             MediaMod.INSTANCE.logger.error("Error whilst checking for updates: " + e);
         }
     }
 
-    public static class VersionResponse {
-        public final String latestVersionS;
-        public final int latestVersionInt;
-        public final String changelog;
-        public final String downloadURL;
+    public static class AllVersionInfo {
+        public final Map<String, VersionInformation> versions;
         public final String latestUpdater;
 
-        VersionResponse(int latestVersionInt, String latestVersionS, String changelog, String downloadURL, String latestUpdater) {
-            this.latestVersionInt = latestVersionInt;
-            this.latestVersionS = latestVersionS;
-            this.changelog = changelog;
-            this.downloadURL = downloadURL;
+        AllVersionInfo(Map<String, VersionInformation> versions, String latestUpdater) {
+            this.versions = versions;
             this.latestUpdater = latestUpdater;
+        }
+    }
+
+    public static class VersionInformation {
+        public final int version;
+        public final String name;
+        public final String changelog;
+        public String downloadURL;
+
+        public VersionInformation(int version, String name, String changelog) {
+            this.version = version;
+            this.name = name;
+            this.changelog = changelog;
         }
     }
 }

@@ -1,14 +1,10 @@
 package org.mediamod.mediamod.command;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import org.apache.commons.io.FileUtils;
 import org.mediamod.mediamod.MediaMod;
-import org.mediamod.mediamod.util.ChatColor;
-import org.mediamod.mediamod.util.Multithreading;
-import org.mediamod.mediamod.util.PlayerMessenger;
-import org.mediamod.mediamod.util.VersionChecker;
+import org.mediamod.mediamod.util.*;
 
 import java.io.File;
 import java.net.URL;
@@ -39,19 +35,19 @@ public class MediaModUpdateCommand extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        if (VersionChecker.INSTANCE.IS_LATEST_VERSION) {
+        if (VersionChecker.INSTANCE.isLatestVersion) {
             PlayerMessenger.sendMessage(ChatColor.GRAY + "MediaMod is up-to-date!", true);
         } else {
-            PlayerMessenger.sendMessage(ChatColor.GRAY + "Downloading MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+            PlayerMessenger.sendMessage(ChatColor.GRAY + "Downloading MediaMod v" + VersionChecker.INSTANCE.latestVersionInformation.name, true);
             try {
-                URL url = new URL(VersionChecker.INSTANCE.LATEST_VERSION_INFO.downloadURL);
-                URL updater = new URL(VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestUpdater);
+                URL url = new URL(VersionChecker.INSTANCE.latestVersionInformation.downloadURL);
+                URL updater = new URL(VersionChecker.INSTANCE.allVersionInfo.latestUpdater);
 
                 File lockFile = new File(MediaMod.INSTANCE.mediamodDirectory, "update.lock");
                 File updateJar = new File(MediaMod.INSTANCE.mediamodDirectory, "update.jar");
                 File updaterJar = new File(MediaMod.INSTANCE.mediamodDirectory, "updater.jar");
 
-                if(lockFile.exists() && updateJar.exists()) {
+                if (lockFile.exists() && updateJar.exists()) {
                     PlayerMessenger.sendMessage(ChatColor.GRAY + "It seems there was a previous update attempt that may have failed. Deleting previous files and attempting again!", true);
 
                     if (!updateJar.delete()) {
@@ -75,16 +71,16 @@ public class MediaModUpdateCommand extends CommandBase {
 
                             PlayerMessenger.sendMessage(ChatColor.GREEN + "Update downloaded! It will automatically install when you close Minecraft", true);
                         } catch (Exception e) {
-                            PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+                            PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.latestVersionInformation.name, true);
                             MediaMod.INSTANCE.logger.error("Failed to download required files", e);
                         }
                     });
                 } else {
-                    PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+                    PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.latestVersionInformation.name, true);
                     MediaMod.INSTANCE.logger.error("Failed to create lockfile!");
                 }
             } catch (Exception e) {
-                PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.LATEST_VERSION_INFO.latestVersionS, true);
+                PlayerMessenger.sendMessage(ChatColor.RED + "Failed to download MediaMod v" + VersionChecker.INSTANCE.latestVersionInformation.name, true);
                 MediaMod.INSTANCE.logger.error("Failed to create lockfile", e);
             }
         }
