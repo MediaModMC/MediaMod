@@ -27,7 +27,7 @@ public class GuiPlayerPositioning extends GuiScreen implements IMediaGui {
         this.buttonList.add(new CustomButton(2, width / 2 - 100, height - 83, EnumChatFormatting.GREEN + I18n.format("menu.guiplayerpositioning.buttons.save.name")));
         this.buttonList.add(new CustomButton(1, width / 2 - 100, height - 60, EnumChatFormatting.RED + I18n.format("menu.guiplayerpositioning.buttons.reset.name")));
         this.buttonList.add(new CustomButton(0, width / 2 - 100, height - 37, I18n.format("menu.guiplayerpositioning.buttons.back.name")));
-        this.buttonList.add(slider = new GuiSlider(3, width / 2 - 75, height - 105, 150, 20, I18n.format("menu.guiplayerpositioning.buttons.slider.prefix") + " ", "", 0.1, 2.0, Settings.PLAYER_ZOOM, true, false, it -> {
+        this.buttonList.add(slider = new GuiSlider(3, width / 2 - 75, height - 105, 150, 20, I18n.format("menu.guiplayerpositioning.buttons.slider.prefix") + " ", "", 0.1, 5.0, Settings.PLAYER_ZOOM, true, false, it -> {
             // custom display string change stuff
             it.displayString = it.dispString + (Math.round(it.getValue() * 10) / 10.0) + it.suffix;
         }));
