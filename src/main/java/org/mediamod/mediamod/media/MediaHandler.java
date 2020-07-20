@@ -1,6 +1,8 @@
 package org.mediamod.mediamod.media;
 
+import net.minecraftforge.common.MinecraftForge;
 import org.mediamod.mediamod.MediaMod;
+import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.media.core.IServiceHandler;
 import org.mediamod.mediamod.media.core.api.MediaInfo;
 import org.mediamod.mediamod.media.services.browser.BrowserService;
@@ -9,6 +11,9 @@ import org.mediamod.mediamod.media.services.spotify.SpotifyService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The class that manages which service is currently being used and more
@@ -33,6 +38,34 @@ public class MediaHandler {
      * An array of service handlers that failed to load
      */
     private final ArrayList<IServiceHandler> failedServices = new ArrayList<>();
+
+    /**
+     * A cached version of the current MediaInfo instance from the service, changes every 3 seconds
+     */
+    private MediaInfo cachedMediaInfo = null;
+
+    /**
+     * A cached version of the previous MediaInfo instance from the service, changes every 3 seconds
+     */
+    private MediaInfo previousMediaInfo = null;
+
+    public MediaHandler() {
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(() -> {
+            try {
+                if (getCurrentService() != null) {
+                    cachedMediaInfo = getCurrentService().getCurrentMediaInfo();
+
+                    if (previousMediaInfo == null || cachedMediaInfo == null || !previousMediaInfo.track.name.equals(cachedMediaInfo.track.name)) {
+                        previousMediaInfo = cachedMediaInfo;
+                        MinecraftForge.EVENT_BUS.post(new MediaInfoUpdateEvent(cachedMediaInfo));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 0, 3, TimeUnit.SECONDS);
+    }
 
     /**
      * Load all services to prepare for usage
@@ -102,9 +135,9 @@ public class MediaHandler {
     /**
      * Reloads a service
      */
-    public void reloadService(@Nonnull Class serviceHandlerClass) {
+    public void reloadService(@Nonnull Class<? extends IServiceHandler> serviceHandlerClass) {
         try {
-            IServiceHandler serviceHandlerInstance = (IServiceHandler) serviceHandlerClass.newInstance();
+            IServiceHandler serviceHandlerInstance = serviceHandlerClass.newInstance();
 
             // Remove the original service
             failedServices.removeIf(serviceHandler -> serviceHandler.displayName().equals(serviceHandlerInstance.displayName()));
@@ -144,7 +177,6 @@ public class MediaHandler {
      */
     public @Nullable
     MediaInfo getCurrentMediaInfo() {
-        IServiceHandler serviceHandler = getCurrentService();
-        return serviceHandler != null ? serviceHandler.getCurrentMediaInfo() : null;
+        return cachedMediaInfo;
     }
 }

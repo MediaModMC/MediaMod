@@ -10,14 +10,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.ProgressStyle;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.gui.util.DynamicTextureWrapper;
 import org.mediamod.mediamod.gui.util.IMediaGui;
 import org.mediamod.mediamod.media.MediaHandler;
@@ -43,30 +39,24 @@ public class PlayerOverlay {
      * An instance of this class
      */
     public static final PlayerOverlay INSTANCE = new PlayerOverlay();
+    /**
+     * The date format of the displayed timestamp
+     */
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("mm:ss");
     /**
      * Average Color Cache
      */
     private static final HashMap<BufferedImage, Color> avgColorCache = new HashMap<>();
-
     /**
-     * If the current tick is the first tick being called
+     * An instance of the Minecraft Client
      */
-    private boolean first = true;
-
+    private final Minecraft mc = FMLClientHandler.instance().getClient();
     /**
      * The current media information
      *
      * @see MediaInfo
      */
     private MediaInfo currentMediaInfo = null;
-
-    /**
-     * The previous media information
-     *
-     * @see MediaInfo
-     */
-    private MediaInfo previousMediaInfo = null;
 
     /**
      * The length of the concatenated song name
@@ -167,41 +157,10 @@ public class PlayerOverlay {
      */
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
-        // Get a Minecraft Instance
-        Minecraft mc = FMLClientHandler.instance().getClient();
-
         if (event.type.equals(RenderGameOverlayEvent.ElementType.EXPERIENCE) && (Settings.SHOW_PLAYER || Settings.SHOW_IN_PAUSE) && Settings.ENABLED) {
-            if (this.first) {
-                // Make sure that this is never ran again
-                this.first = false;
-
-                // Setup a ScheduledExecutorService to run every 3 seconds
-                ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-                exec.scheduleAtFixedRate(() -> {
-                    try {
-                        if (MediaHandler.instance.getCurrentService() != null) {
-                            currentMediaInfo = MediaHandler.instance.getCurrentMediaInfo();
-
-                            if (currentMediaInfo == null) {
-                                previousMediaInfo = null;
-                                return;
-                            }
-
-                            Track track = currentMediaInfo.track;
-
-                            if (previousMediaInfo == null || !previousMediaInfo.track.name.equals(track.name)) {
-                                previousMediaInfo = currentMediaInfo;
-                                MinecraftForge.EVENT_BUS.post(new MediaInfoUpdateEvent(currentMediaInfo));
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, 0, 3, TimeUnit.SECONDS);
-            }
-
             // Make sure that a Service Handler exists and is ready
-            if (MediaHandler.instance.getCurrentService() != null && currentMediaInfo != null) {
+            currentMediaInfo = MediaHandler.instance.getCurrentMediaInfo();
+            if (currentMediaInfo != null) {
                 if (mc.currentScreen == null && !mc.gameSettings.showDebugInfo && Settings.SHOW_PLAYER) {
                     this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
                 }
@@ -211,7 +170,8 @@ public class PlayerOverlay {
 
     @SubscribeEvent
     public void onGuiDraw(GuiScreenEvent.DrawScreenEvent event) {
-        if (MediaHandler.instance.getCurrentService() != null && currentMediaInfo != null) {
+        currentMediaInfo = MediaHandler.instance.getCurrentMediaInfo();
+        if (currentMediaInfo != null) {
             if (event.gui instanceof GuiIngameMenu && Settings.SHOW_IN_PAUSE) {
                 this.drawPlayer(Settings.PLAYER_X, Settings.PLAYER_Y, Settings.MODERN_PLAYER_STYLE, false, Settings.PLAYER_ZOOM);
             }
@@ -234,8 +194,7 @@ public class PlayerOverlay {
         // Get the current service
         IServiceHandler service = MediaHandler.instance.getCurrentService();
 
-        // Get a Minecraft Instance
-        Minecraft mc = FMLClientHandler.instance().getClient();
+        // Start da profiler bruh
         mc.mcProfiler.startSection("mediamod_player");
 
         // Establish a FontRenderer
