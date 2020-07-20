@@ -14,7 +14,7 @@ public class Multithreading {
     /**
      * The executor service, which uses a thread pool of 50 threads
      */
-    private static final ExecutorService SERVICE = Executors.newFixedThreadPool(50, task -> new Thread(task, "MediaMod Thread " + threadCounter.getAndIncrement()));
+    private static final ExecutorService SERVICE = Executors.newCachedThreadPool( task -> new Thread(task, "MediaMod Thread " + threadCounter.getAndIncrement()));
 
     /**
      * Runs a task asynchronously on the thread pool
