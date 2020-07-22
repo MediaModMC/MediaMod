@@ -86,7 +86,7 @@ public class SpotifyService implements IServiceHandler {
     }
 
     /**
-     * Initialises our API Wrapper if snooper is enabled
+     * Initialises our API Wrapper if we have authenticated with the MediaMod API
      */
     public boolean load() {
         if (MediaMod.INSTANCE.authenticatedWithAPI) {
