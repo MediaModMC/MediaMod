@@ -53,10 +53,6 @@ public class PlayerMessenger {
         }
     }
 
-    public void queue(String chat) {
-        queuedMessages.add(chat);
-    }
-
     private void check() {
         if (!queuedMessages.isEmpty()) {
             EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
@@ -67,6 +63,7 @@ public class PlayerMessenger {
         }
     }
 
+    @SuppressWarnings("unused")
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         if (Minecraft.getMinecraft().thePlayer == null) {

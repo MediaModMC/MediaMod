@@ -38,6 +38,7 @@ import java.io.File;
  * @author ConorTheDev
  * @see net.minecraftforge.fml.common.Mod
  */
+@SuppressWarnings("unused")
 @Mod(name = Metadata.NAME, modid = Metadata.MODID, version = Metadata.VERSION)
 public class MediaMod {
     /**
@@ -185,7 +186,9 @@ public class MediaMod {
             PlayerMessenger.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
         }
 
-        PartyManager.instance.updateInfo(info);
+        if(!PartyManager.instance.updateInfo(info)) {
+            PlayerMessenger.sendMessage(ChatColor.RED + "Uh oh, an error has occurred when trying to update your party track information! If this occurs again, restart your game.", true);
+        }
     }
 
 }

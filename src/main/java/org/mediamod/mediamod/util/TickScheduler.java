@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A util for scheduling tick-tasks
+ * A class for scheduling code to run after a certain amount of milliseconds
  */
+@SuppressWarnings("unused")
 public class TickScheduler {
 
     /**
@@ -50,6 +51,7 @@ public class TickScheduler {
          * Task to execute
          */
         private final Runnable task;
+
         /**
          * Ticks left until the task executes
          */
