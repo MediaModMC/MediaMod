@@ -16,10 +16,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mediamod.mediamod.api.APIHandler;
 import org.mediamod.mediamod.command.MediaModCommand;
 import org.mediamod.mediamod.command.MediaModUpdateCommand;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.core.CoreMod;
 import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.gui.PlayerOverlay;
 import org.mediamod.mediamod.keybinds.KeybindInputHandler;
@@ -62,11 +62,6 @@ public class MediaMod {
     public final Logger logger = LogManager.getLogger("MediaMod");
 
     /**
-     * A CoreMod instance which assists with analytics
-     */
-    public final CoreMod coreMod = new CoreMod("mediamod");
-
-    /**
      * If this is the first load of MediaMod
      */
     private boolean firstLoad = true;
@@ -80,10 +75,6 @@ public class MediaMod {
      * A File which points to the MediaMod Data directory
      */
     public File mediamodDirectory;
-    /**
-     * If this is the first load of MediaMod
-     */
-    private boolean firstLoad = true;
 
     /**
      * A file that points to the MediaMod Themes Data directory
@@ -171,8 +162,6 @@ public class MediaMod {
 
         logger.info("Checking if MediaMod is up-to-date...");
         VersionChecker.checkVersion();
-
-        authenticatedWithAPI = this.coreMod.register();
 
         logger.info("Loading Configuration...");
         Settings.loadConfig();
