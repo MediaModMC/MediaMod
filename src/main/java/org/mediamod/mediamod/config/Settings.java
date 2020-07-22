@@ -118,6 +118,6 @@ public class Settings {
         else browserExtProperty.setValue(EXTENSION_ENABLED);
 
         if (load) THEME_FILE = new File(themeFileProperty.getString());
-        else themeFileProperty.setValue(THEME_FILE.getPath());
+        else themeFileProperty.setValue(THEME_FILE.getAbsolutePath());
     }
 }
