@@ -17,6 +17,14 @@ public class ColourHandler {
     private final Logger logger = LogManager.getLogger(this.getClass());
     public static ColourHandler INSTANCE = new ColourHandler();
 
+    /**
+     * Iterates through the themes directory and fishes out .toml files and attempts to parse them.
+     *
+     * @author ChachyDev
+     * @since 2.0.0-beta.2
+     * @return Metadata and Colours from File
+     */
+
     public ArrayList<Pair<Metadata, Colours>> getThemes() {
         File[] files = MediaMod.INSTANCE.mediamodThemeDirectory.listFiles();
         ArrayList<Pair<Metadata, Colours>> themes = new ArrayList<>();
@@ -40,6 +48,14 @@ public class ColourHandler {
         return themes;
     }
 
+    /**
+     * Grabs the currently selected theme's background opts from the colour table
+     *
+     * @author ChachyDev
+     * @since 2.0.0-beta.2
+     * @return Metadata and Colours from File
+     */
+
     public Color getPlayerColour() {
         Colours colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(Colours.class);
         if (colourBlock == null) {
@@ -48,6 +64,14 @@ public class ColourHandler {
             return new Color(colourBlock.getPlayerRed(), colourBlock.getPlayerGreen(), colourBlock.getPlayerBlue());
         }
     }
+
+    /**
+     * Grabs the currently selected theme's text opts from the colour table
+     *
+     * @author ChachyDev
+     * @since 2.0.0-beta.2
+     * @return Metadata and Colours from File
+     */
 
     public Color getPlayerTextColour() {
         Colours colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(Colours.class);
