@@ -80,7 +80,8 @@ public class CoreMod {
                     return false;
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         } finally {
             if (connection != null) {
