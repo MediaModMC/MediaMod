@@ -141,9 +141,12 @@ public class MediaMod {
                                         "version = 1.0\n" +
                                         "\n" +
                                         "[colours]\n" +
-                                        "playerRed = 255\n" +
-                                        "playerGreen = 255\n" +
-                                        "playerBlue = 255\n";
+                                        "textRed = 255\n" +
+                                        "textGreen = 255\n" +
+                                        "textBlue = 255\n" +
+                                        "playerRed = 0\n" +
+                                        "playerGreen = 0\n" +
+                                        "playerBlue = 0\n";
                                 FileWriter writer = new FileWriter(defaultThemeFile);
                                 writer.append(defaultFile);
                                 writer.close();
