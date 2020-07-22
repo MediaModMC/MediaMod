@@ -136,7 +136,7 @@ public class MediaMod {
             mediaHandler.loadAll();
         });
 
-        Runtime.getRuntime().addShutdownHook(new Thread("MeidaMod Shutdown Thread") {
+        Runtime.getRuntime().addShutdownHook(new Thread("MediaMod Shutdown Thread") {
             public void run() {
                 logger.info("Shutting down MediaMod");
                 new UpdaterUtility().performUpdate();
@@ -147,7 +147,7 @@ public class MediaMod {
 
     /**
      * Fired when the world fires a tick
-     *  
+     *
      * @param event WorldTickEvent
      * @see net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent
      */
