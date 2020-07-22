@@ -86,7 +86,7 @@ public class WebRequest {
         return 0;
     }
 
-    public static <T> T makeRequest(WebRequestType type, URL url, Class<T> toClass, HashMap<String, String> properties) throws IOException {
+    public static <T> T makeRequest(WebRequestType type, URL url, Class<T> toClass, HashMap<String, String> properties) {
         HttpURLConnection connection = null;
 
         try {
@@ -130,7 +130,7 @@ public class WebRequest {
         return null;
     }
 
-    public static int makeRequest(WebRequestType type, URL url, JsonObject body, HashMap<String, String> properties) throws IOException {
+    public static int makeRequest(WebRequestType type, URL url, JsonObject body, HashMap<String, String> properties) {
         HttpURLConnection connection = null;
 
         try {
@@ -167,7 +167,7 @@ public class WebRequest {
         return 0;
     }
 
-    public static int makeRequest(WebRequestType type, URL url, HashMap<String, String> properties) throws IOException {
+    public static int makeRequest(WebRequestType type, URL url, HashMap<String, String> properties) {
         HttpURLConnection connection = null;
 
         try {
