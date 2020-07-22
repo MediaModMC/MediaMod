@@ -46,10 +46,7 @@ public interface IServiceHandler extends Comparable<IServiceHandler> {
      * @return The priority that comes first
      */
     default int compareTo(IServiceHandler sh) {
-        int i = Integer.compare(sh.getPriority(), this.getPriority());
-        System.out.println(displayName() + ": " + i);
-
-        return i;
+        return Integer.compare(sh.getPriority(), this.getPriority());
     }
 
     /**
