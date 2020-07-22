@@ -31,6 +31,8 @@ import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.util.*;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * The main class for MediaMod
@@ -79,6 +81,11 @@ public class MediaMod {
      */
     public File mediamodDirectory;
 
+    /**
+     * A file that points to the MediaMod Themes Data directory
+     */
+
+    public File mediamodThemeDirectory;
 
     /**
      * Fired before Minecraft starts
@@ -112,6 +119,7 @@ public class MediaMod {
         ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
 
         mediamodDirectory = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
+        mediamodThemeDirectory = new File(mediamodDirectory, "themes");
         if (!mediamodDirectory.exists()) {
             logger.info("Creating necessary directories and files for first launch...");
             boolean mkdir = mediamodDirectory.mkdir();
@@ -120,6 +128,41 @@ public class MediaMod {
                 logger.info("Created necessary directories and files!");
             } else {
                 logger.fatal("Failed to create necessary directories and files!");
+            }
+
+            if (!mediamodThemeDirectory.exists()) {
+                boolean createdThemeDirectory = mediamodThemeDirectory.mkdir();
+                if (createdThemeDirectory) {
+                    logger.info("Created theme directory!");
+                    File defaultThemeFile = new File(mediamodThemeDirectory, "default.toml");
+                    try {
+                        if (!defaultThemeFile.exists()) {
+                            if (defaultThemeFile.createNewFile()) {
+                                if (!defaultThemeFile.setWritable(false)) {
+                                    logger.error("Failed to set default theme to immutable!");
+                                }
+                                logger.info("Created default theme file");
+                                String defaultFile = "[metadata]\n" +
+                                        "name = \"Default\"\n" +
+                                        "version = 1.0\n" +
+                                        "\n" +
+                                        "[colours]\n" +
+                                        "playerRed = 255\n" +
+                                        "playerGreen = 255\n" +
+                                        "playerBlue = 255\n";
+                                FileWriter writer = new FileWriter(defaultThemeFile);
+                                writer.append(defaultFile);
+                                writer.close();
+                            }
+                        } else {
+                            logger.fatal("Failed to create default theme file");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    logger.fatal("Failed to create theme directory");
+                }
             }
         }
 
@@ -186,7 +229,7 @@ public class MediaMod {
             PlayerMessenger.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
         }
 
-        if(!PartyManager.instance.updateInfo(info)) {
+        if (!PartyManager.instance.updateInfo(info)) {
             PlayerMessenger.sendMessage(ChatColor.RED + "Uh oh, an error has occurred when trying to update your party track information! If this occurs again, restart your game.", true);
         }
     }
