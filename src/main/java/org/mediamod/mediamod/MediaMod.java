@@ -16,10 +16,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mediamod.mediamod.api.APIHandler;
 import org.mediamod.mediamod.command.MediaModCommand;
 import org.mediamod.mediamod.command.MediaModUpdateCommand;
 import org.mediamod.mediamod.config.Settings;
+import org.mediamod.mediamod.core.CoreMod;
 import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.gui.PlayerOverlay;
 import org.mediamod.mediamod.keybinds.KeybindInputHandler;
@@ -31,6 +31,8 @@ import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.util.*;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * The main class for MediaMod
@@ -58,10 +60,22 @@ public class MediaMod {
      * @see org.apache.logging.log4j.Logger
      */
     public final Logger logger = LogManager.getLogger("MediaMod");
+
+    /**
+     * A CoreMod instance which assists with analytics
+     */
+    public final CoreMod coreMod = new CoreMod("mediamod");
+
+    /**
+     * If this is the first load of MediaMod
+     */
+    private boolean firstLoad = true;
+
     /**
      * If the client successfully registered with API, this will be true
      */
     public boolean authenticatedWithAPI = false;
+
     /**
      * A File which points to the MediaMod Data directory
      */
@@ -70,6 +84,12 @@ public class MediaMod {
      * If this is the first load of MediaMod
      */
     private boolean firstLoad = true;
+
+    /**
+     * A file that points to the MediaMod Themes Data directory
+     */
+
+    public File mediamodThemeDirectory;
 
     /**
      * Fired before Minecraft starts
@@ -112,10 +132,47 @@ public class MediaMod {
             } else {
                 logger.fatal("Failed to create necessary directories and files!");
             }
+
+            if (!mediamodThemeDirectory.exists()) {
+                boolean createdThemeDirectory = mediamodThemeDirectory.mkdir();
+                if (createdThemeDirectory) {
+                    logger.info("Created theme directory!");
+                    File defaultThemeFile = new File(mediamodThemeDirectory, "default.toml");
+                    try {
+                        if (!defaultThemeFile.exists()) {
+                            if (defaultThemeFile.createNewFile()) {
+                                if (!defaultThemeFile.setWritable(false)) {
+                                    logger.error("Failed to set default theme to immutable!");
+                                }
+                                logger.info("Created default theme file");
+                                String defaultFile = "[metadata]\n" +
+                                        "name = \"Default\"\n" +
+                                        "version = 1.0\n" +
+                                        "\n" +
+                                        "[colours]\n" +
+                                        "playerRed = 255\n" +
+                                        "playerGreen = 255\n" +
+                                        "playerBlue = 255\n";
+                                FileWriter writer = new FileWriter(defaultThemeFile);
+                                writer.append(defaultFile);
+                                writer.close();
+                            }
+                        } else {
+                            logger.fatal("Failed to create default theme file");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    logger.fatal("Failed to create theme directory");
+                }
+            }
         }
 
         logger.info("Checking if MediaMod is up-to-date...");
         VersionChecker.checkVersion();
+
+        authenticatedWithAPI = this.coreMod.register();
 
         logger.info("Loading Configuration...");
         Settings.loadConfig();
