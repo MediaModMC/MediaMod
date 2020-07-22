@@ -16,10 +16,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mediamod.mediamod.api.APIHandler;
 import org.mediamod.mediamod.command.MediaModCommand;
 import org.mediamod.mediamod.command.MediaModUpdateCommand;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.core.CoreMod;
 import org.mediamod.mediamod.event.MediaInfoUpdateEvent;
 import org.mediamod.mediamod.gui.PlayerOverlay;
 import org.mediamod.mediamod.keybinds.KeybindInputHandler;
@@ -58,27 +58,18 @@ public class MediaMod {
      * @see org.apache.logging.log4j.Logger
      */
     public final Logger logger = LogManager.getLogger("MediaMod");
-
-    /**
-     * A CoreMod instance which assists with analytics
-     */
-    public final CoreMod coreMod = new CoreMod("mediamod");
-
-    /**
-     * If this is the first load of MediaMod
-     */
-    private boolean firstLoad = true;
-
     /**
      * If the client successfully registered with API, this will be true
      */
     public boolean authenticatedWithAPI = false;
-
     /**
      * A File which points to the MediaMod Data directory
      */
     public File mediamodDirectory;
-
+    /**
+     * If this is the first load of MediaMod
+     */
+    private boolean firstLoad = true;
 
     /**
      * Fired before Minecraft starts
@@ -126,19 +117,37 @@ public class MediaMod {
         logger.info("Checking if MediaMod is up-to-date...");
         VersionChecker.checkVersion();
 
-        authenticatedWithAPI = this.coreMod.register();
-
         logger.info("Loading Configuration...");
         Settings.loadConfig();
 
-        // Load Media Handlers
-        MediaHandler mediaHandler = MediaHandler.instance;
-        mediaHandler.loadAll();
+        Multithreading.runAsync(() -> {
+            logger.info("Attempting to connect with MediaMod API");
+
+            authenticatedWithAPI = APIHandler.instance.connect();
+
+            if (authenticatedWithAPI) {
+                logger.info("Connected with MediaMod API!");
+            } else {
+                logger.warn("Failed to connect with MediaMod API");
+            }
+
+            // Load services
+            MediaHandler mediaHandler = MediaHandler.instance;
+            mediaHandler.loadAll();
+        });
+
+        Runtime.getRuntime().addShutdownHook(new Thread("MeidaMod Shutdown Thread") {
+            public void run() {
+                logger.info("Shutting down MediaMod");
+                new UpdaterUtility().performUpdate();
+                APIHandler.instance.shutdown();
+            }
+        });
     }
 
     /**
      * Fired when the world fires a tick
-     *
+     *  
      * @param event WorldTickEvent
      * @see net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent
      */
@@ -186,9 +195,7 @@ public class MediaMod {
             PlayerMessenger.sendMessage(ChatColor.GRAY + "Current track: " + info.track.name + " by " + info.track.artists[0].name, true);
         }
 
-        if(!PartyManager.instance.updateInfo(info)) {
-            PlayerMessenger.sendMessage(ChatColor.RED + "Uh oh, an error has occurred when trying to update your party track information! If this occurs again, restart your game.", true);
-        }
+        PartyManager.instance.updateInfo(info);
     }
 
 }

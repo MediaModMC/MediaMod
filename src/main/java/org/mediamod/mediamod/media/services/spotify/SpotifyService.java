@@ -8,7 +8,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.mediamod.mediamod.MediaMod;
+import org.mediamod.mediamod.api.APIHandler;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.media.core.IServiceHandler;
 import org.mediamod.mediamod.media.core.api.MediaInfo;
@@ -16,7 +18,6 @@ import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.parties.meta.PartyMediaInfo;
 import org.mediamod.mediamod.util.*;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -100,13 +101,13 @@ public class SpotifyService implements IServiceHandler {
     }
 
     /**
-     * Retrieves the Spotify Client ID from the MediaMod API and sets the spotifyClientID to it
+     * Retrieves the Spotify Client ID from the MediaMod API
      */
     private void attemptToGetClientID() {
         try {
             JsonObject object = new JsonObject();
-            object.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-            object.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+            object.addProperty("secret", APIHandler.instance.requestSecret);
+            object.addProperty("uuid", Minecraft.getMinecraft().getSession().getProfile().getId().toString());
 
             ClientIDResponse clientIDResponse = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/clientid", object, ClientIDResponse.class);
             if (clientIDResponse != null) {
@@ -252,8 +253,8 @@ class SpotifyAPI {
 
         JsonObject body = new JsonObject();
         body.addProperty("code", authCode);
-        body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-        body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+        body.addProperty("uuid", FMLClientHandler.instance().getClient().thePlayer.getUniqueID().toString());
+        body.addProperty("secret", APIHandler.instance.requestSecret);
 
         try {
             SpotifyTokenResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/token", body, SpotifyTokenResponse.class);
@@ -289,8 +290,8 @@ class SpotifyAPI {
 
         JsonObject body = new JsonObject();
         body.addProperty("refresh_token", refreshToken);
-        body.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
-        body.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
+        body.addProperty("uuid", Minecraft.getMinecraft().getSession().getProfile().getId().toString());
+        body.addProperty("secret", APIHandler.instance.requestSecret);
 
         try {
             SpotifyTokenResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/refresh", body, SpotifyTokenResponse.class);

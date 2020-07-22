@@ -1,5 +1,6 @@
 package org.mediamod.mediamod.util;
 
+import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FileUtils;
 import org.mediamod.mediamod.MediaMod;
 
@@ -10,6 +11,21 @@ import java.net.URL;
  * The class that handles auto-updates for MediaMod
  */
 public class UpdaterUtility {
+    public void performUpdate() {
+        File updaterJar = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/updater.jar");
+        File lockFile = new File(Minecraft.getMinecraft().mcDataDir, "mediamod/update.lock");
+
+        if (updaterJar.exists() && lockFile.exists()) {
+            try {
+                String codeSourceLoc = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+                String modJarPath = codeSourceLoc.substring(0, codeSourceLoc.indexOf("!")).substring(5);
+
+                ProcessBuilder pb = new ProcessBuilder("java", "-jar", updaterJar.getAbsolutePath(), modJarPath);
+                pb.start();
+            } catch (Exception ignored) { }
+        }
+    }
+
     /**
      * Downloads the required files for a MediaMod Update
      */

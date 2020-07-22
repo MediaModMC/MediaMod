@@ -2,13 +2,16 @@ package org.mediamod.mediamod.parties;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.mediamod.mediamod.MediaMod;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import org.mediamod.mediamod.api.APIHandler;
 import org.mediamod.mediamod.media.MediaHandler;
 import org.mediamod.mediamod.media.core.api.MediaInfo;
 import org.mediamod.mediamod.parties.meta.PartyMediaInfo;
 import org.mediamod.mediamod.parties.responses.PartyJoinResponse;
 import org.mediamod.mediamod.parties.responses.PartyStartResponse;
 import org.mediamod.mediamod.parties.responses.PartyStatusResponse;
+import org.mediamod.mediamod.util.ChatColor;
+import org.mediamod.mediamod.util.PlayerMessenger;
 import org.mediamod.mediamod.util.WebRequest;
 import org.mediamod.mediamod.util.WebRequestType;
 
@@ -34,8 +37,8 @@ public class PartyManager {
         if (isInParty) return null;
 
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-        requestBody.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+        requestBody.addProperty("secret", APIHandler.instance.requestSecret);
+        requestBody.addProperty("uuid", FMLClientHandler.instance().getClient().thePlayer.getUniqueID().toString());
 
         MediaInfo mediaInfo = MediaHandler.instance.getCurrentMediaInfo();
         if (mediaInfo != null) {
@@ -72,8 +75,8 @@ public class PartyManager {
         if (partyCode == null || partyCode.length() != 6) return null;
 
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-        requestBody.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+        requestBody.addProperty("secret", APIHandler.instance.requestSecret);
+        requestBody.addProperty("uuid", FMLClientHandler.instance().getClient().thePlayer.getUniqueID().toString());
         requestBody.addProperty("partyCode", partyCode);
 
         try {
@@ -101,8 +104,8 @@ public class PartyManager {
         if (partyCode == null || partyCode.length() != 6) return false;
 
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-        requestBody.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+        requestBody.addProperty("secret", APIHandler.instance.requestSecret);
+        requestBody.addProperty("uuid", FMLClientHandler.instance().getClient().thePlayer.getUniqueID().toString());
         requestBody.addProperty("partyCode", partyCode);
 
         if (isPartyHost) {
@@ -151,8 +154,8 @@ public class PartyManager {
         if (partyCode == null || partyCode.length() != 6) return null;
 
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-        requestBody.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+        requestBody.addProperty("secret", APIHandler.instance.requestSecret);
+        requestBody.addProperty("uuid", FMLClientHandler.instance().getClient().thePlayer.getUniqueID().toString());
         requestBody.addProperty("partyCode", partyCode);
 
         try {
@@ -174,12 +177,12 @@ public class PartyManager {
      *
      * @see PartyStartResponse
      */
-    public boolean updateInfo(MediaInfo info) {
-        if (!isPartyHost) return false;
+    public void updateInfo(MediaInfo info) {
+        if (!isPartyHost) return;
 
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("secret", MediaMod.INSTANCE.coreMod.secret);
-        requestBody.addProperty("uuid", MediaMod.INSTANCE.coreMod.getUUID());
+        requestBody.addProperty("secret", APIHandler.instance.requestSecret);
+        requestBody.addProperty("uuid", FMLClientHandler.instance().getClient().thePlayer.getUniqueID().toString());
         requestBody.addProperty("partySecret", partySecret);
         requestBody.addProperty("partyCode", partyCode);
 
@@ -189,10 +192,12 @@ public class PartyManager {
 
         try {
             PartyStartResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/party/update", requestBody, PartyStartResponse.class);
-            return response != null;
+            if (response == null) {
+                PlayerMessenger.sendMessage(ChatColor.RED + "Uh oh, an error has occurred when trying to update your party track information! If this occurs again, restart your game.", true);
+            }
         } catch (Exception e) {
+            PlayerMessenger.sendMessage(ChatColor.RED + "Uh oh, an error has occurred when trying to update your party track information! If this occurs again, restart your game.", true);
             e.printStackTrace();
-            return false;
         }
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import org.mediamod.mediamod.MediaMod;
+import org.mediamod.mediamod.api.APIHandler;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.util.ButtonTooltip;
 import org.mediamod.mediamod.gui.util.CustomButton;
@@ -177,7 +178,7 @@ class GuiServices extends ButtonTooltip implements IMediaGui {
             case 5:
                 Multithreading.runAsync(() -> {
                     PlayerMessenger.sendMessage(ChatColor.GRAY + "Connecting to MediaMod API...", true);
-                    MediaMod.INSTANCE.authenticatedWithAPI = MediaMod.INSTANCE.coreMod.register();
+                    MediaMod.INSTANCE.authenticatedWithAPI = APIHandler.instance.connect();
 
                     if (MediaMod.INSTANCE.authenticatedWithAPI) {
                         PlayerMessenger.sendMessage(ChatColor.GREEN + "Connected!", true);
