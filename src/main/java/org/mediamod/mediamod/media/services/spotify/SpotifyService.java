@@ -325,28 +325,6 @@ class SpotifyAPI {
     }
 
     /**
-     * Adds a track to the user's playback queue
-     *
-     * @param trackIdentifier: The identifier provided by Spotify
-     * @return true if the action was successful
-     * @see "https://developer.spotify.com/documentation/web-api/reference/player/add-to-queue/"
-     */
-    public boolean addTrackToQueue(@Nonnull String trackIdentifier) {
-        String trackUri = "spotify:track:" + trackIdentifier;
-
-        try {
-            int status = WebRequest.makeRequest(WebRequestType.POST, new URL("https://api.spotify.com/v1/me/player/queue?uri=" + trackUri), new HashMap<String, String>() {{
-                put("Authorization", "Bearer " + accessToken);
-            }});
-
-            return status == 204;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
      * Queries the Spotify API for the current playback information
      *
      * @return a MediaInfo instance
@@ -450,24 +428,6 @@ class SpotifyAPI {
             return status == 204;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Seeks to a specific time in the current track
-     *
-     * @param timestamp: The time in milliseconds
-     * @see "https://developer.spotify.com/documentation/web-api/reference/player/seek-to-position-in-currently-playing-track/"
-     */
-    public boolean seekToTimestamp(int timestamp) {
-        try {
-            int status = WebRequest.makeRequest(WebRequestType.POST, new URL("https://api.spotify.com/v1/me/player/seek?position_ms=" + timestamp), new HashMap<String, String>() {{
-                put("Authorization", "Bearer " + accessToken);
-            }});
-
-            return status == 204;
-        } catch (IOException ignored) {
             return false;
         }
     }
