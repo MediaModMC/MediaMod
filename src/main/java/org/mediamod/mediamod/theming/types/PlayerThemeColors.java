@@ -1,6 +1,6 @@
 package org.mediamod.mediamod.theming.types;
 
-public class PlayerThemingColors {
+public class PlayerThemeColors {
     private int textRed;
 
     private int textBlue;

@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.theming.types.PlayerThemingColors;
+import org.mediamod.mediamod.theming.types.PlayerThemeColors;
 import org.mediamod.mediamod.theming.types.PlayerThemeMetadata;
 
 import java.awt.*;
@@ -27,9 +27,9 @@ public class PlayerThemeHandler {
      *
      * @return Metadata and Colours from File
      */
-    public ArrayList<Pair<PlayerThemeMetadata, PlayerThemingColors>> getThemes() {
+    public ArrayList<Pair<PlayerThemeMetadata, PlayerThemeColors>> getThemes() {
         File[] files = MediaMod.INSTANCE.mediamodThemeDirectory.listFiles();
-        ArrayList<Pair<PlayerThemeMetadata, PlayerThemingColors>> themes = new ArrayList<>();
+        ArrayList<Pair<PlayerThemeMetadata, PlayerThemeColors>> themes = new ArrayList<>();
         if (files != null) {
             for (File theme : files) {
                 if (theme.getName().endsWith(".toml")) {
@@ -38,7 +38,7 @@ public class PlayerThemeHandler {
                         themes.add(
                                 Pair.of(
                                         toml.getTable("metadata").to(PlayerThemeMetadata.class),
-                                        toml.getTable("colours").to(PlayerThemingColors.class)
+                                        toml.getTable("colours").to(PlayerThemeColors.class)
                                 )
                         );
                     } catch (Exception e) {
@@ -56,7 +56,7 @@ public class PlayerThemeHandler {
      * @return Metadata and Colours from File
      */
     public Color getPlayerColour() {
-        PlayerThemingColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemingColors.class);
+        PlayerThemeColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemeColors.class);
         if (colourBlock == null) {
             return Color.darkGray.brighter();
         } else {
@@ -70,7 +70,7 @@ public class PlayerThemeHandler {
      * @return Metadata and Colours from File
      */
     public Color getPlayerTextColour() {
-        PlayerThemingColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemingColors.class);
+        PlayerThemeColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemeColors.class);
         if (colourBlock == null) {
             return Color.white;
         } else {
