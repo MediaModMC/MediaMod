@@ -117,51 +117,51 @@ public class MediaMod {
         mediamodThemeDirectory = new File(mediamodDirectory, "themes");
 
         if (!mediamodDirectory.exists()) {
-            logger.info("Creating necessary directories and files for first launch...");
+            logger.info("Creating mediamod directory...");
             boolean mkdir = mediamodDirectory.mkdir();
 
             if (mkdir) {
-                logger.info("Created necessary directories and files!");
+                logger.info("Created directory!");
             } else {
-                logger.fatal("Failed to create necessary directories and files!");
+                logger.fatal("Failed to create mediamod directory");
             }
+        }
 
-            if (!mediamodThemeDirectory.exists()) {
-                boolean createdThemeDirectory = mediamodThemeDirectory.mkdir();
-                if (createdThemeDirectory) {
-                    logger.info("Created theme directory!");
-                    File defaultThemeFile = new File(mediamodThemeDirectory, "default.toml");
-                    try {
-                        if (!defaultThemeFile.exists()) {
-                            if (defaultThemeFile.createNewFile()) {
-                                logger.info("Created default theme file");
+        if (!mediamodThemeDirectory.exists()) {
+            boolean createdThemeDirectory = mediamodThemeDirectory.mkdir();
+            if (createdThemeDirectory) {
+                logger.info("Created theme directory!");
+                File defaultThemeFile = new File(mediamodThemeDirectory, "default.toml");
+                try {
+                    if (!defaultThemeFile.exists()) {
+                        if (defaultThemeFile.createNewFile()) {
+                            logger.info("Created default theme file");
 
-                                String defaultFile =
-                                        "[metadata]\n" +
-                                        "name = \"Default\"\n" +
-                                        "version = 1.0\n" +
-                                        "\n" +
-                                        "[colours]\n" +
-                                        "textRed = 255\n" +
-                                        "textGreen = 255\n" +
-                                        "textBlue = 255\n" +
-                                        "playerRed = 0\n" +
-                                        "playerGreen = 0\n" +
-                                        "playerBlue = 0\n";
+                            String defaultFile =
+                                    "[metadata]\n" +
+                                            "name = \"Default\"\n" +
+                                            "version = 1.0\n" +
+                                            "\n" +
+                                            "[colours]\n" +
+                                            "textRed = 255\n" +
+                                            "textGreen = 255\n" +
+                                            "textBlue = 255\n" +
+                                            "playerRed = 0\n" +
+                                            "playerGreen = 0\n" +
+                                            "playerBlue = 0\n";
 
-                                FileWriter writer = new FileWriter(defaultThemeFile);
-                                writer.append(defaultFile);
-                                writer.close();
-                            }
-                        } else {
-                            logger.error("Failed to create default theme file");
+                            FileWriter writer = new FileWriter(defaultThemeFile);
+                            writer.append(defaultFile);
+                            writer.close();
                         }
-                    } catch (IOException e) {
-                        logger.error("Failed to initialise themes! Error: ", e);
+                    } else {
+                        logger.error("Failed to create default theme file");
                     }
-                } else {
-                    logger.error("Failed to create theme directory");
+                } catch (IOException e) {
+                    logger.error("Failed to initialise themes! Error: ", e);
                 }
+            } else {
+                logger.error("Failed to create theme directory");
             }
         }
 
