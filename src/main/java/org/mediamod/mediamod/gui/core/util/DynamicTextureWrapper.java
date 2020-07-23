@@ -1,4 +1,4 @@
-package org.mediamod.mediamod.gui.util;
+package org.mediamod.mediamod.gui.core.util;
 
 
 import net.minecraft.client.renderer.texture.DynamicTexture;

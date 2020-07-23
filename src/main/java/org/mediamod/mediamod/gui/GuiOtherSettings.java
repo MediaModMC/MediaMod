@@ -5,9 +5,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.gui.util.ButtonTooltip;
-import org.mediamod.mediamod.gui.util.CustomButton;
-import org.mediamod.mediamod.gui.util.IMediaGui;
+import org.mediamod.mediamod.gui.core.util.ButtonTooltip;
+import org.mediamod.mediamod.gui.core.util.CustomButton;
+import org.mediamod.mediamod.gui.core.util.IMediaGui;
 
 import java.io.IOException;
 

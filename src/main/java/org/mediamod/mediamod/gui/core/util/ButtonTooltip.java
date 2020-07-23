@@ -1,4 +1,4 @@
-package org.mediamod.mediamod.gui.util;
+package org.mediamod.mediamod.gui.core.util;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;

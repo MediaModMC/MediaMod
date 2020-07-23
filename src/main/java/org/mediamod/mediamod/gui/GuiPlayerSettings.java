@@ -7,9 +7,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import org.mediamod.mediamod.config.ProgressStyle;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.gui.util.ButtonTooltip;
-import org.mediamod.mediamod.gui.util.CustomButton;
-import org.mediamod.mediamod.gui.util.IMediaGui;
+import org.mediamod.mediamod.gui.core.util.ButtonTooltip;
+import org.mediamod.mediamod.gui.core.util.CustomButton;
+import org.mediamod.mediamod.gui.core.util.IMediaGui;
 import org.mediamod.mediamod.media.MediaHandler;
 
 import java.io.IOException;
