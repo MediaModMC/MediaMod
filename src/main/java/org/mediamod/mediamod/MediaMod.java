@@ -114,6 +114,8 @@ public class MediaMod {
         ClientCommandHandler.instance.registerCommand(new MediaModUpdateCommand());
 
         mediamodDirectory = new File(FMLClientHandler.instance().getClient().mcDataDir, "mediamod");
+        mediamodThemeDirectory = new File(mediamodDirectory, "themes");
+
         if (!mediamodDirectory.exists()) {
             logger.info("Creating necessary directories and files for first launch...");
             boolean mkdir = mediamodDirectory.mkdir();
@@ -132,11 +134,10 @@ public class MediaMod {
                     try {
                         if (!defaultThemeFile.exists()) {
                             if (defaultThemeFile.createNewFile()) {
-                                if (!defaultThemeFile.setWritable(false)) {
-                                    logger.error("Failed to set default theme to immutable!");
-                                }
                                 logger.info("Created default theme file");
-                                String defaultFile = "[metadata]\n" +
+
+                                String defaultFile =
+                                        "[metadata]\n" +
                                         "name = \"Default\"\n" +
                                         "version = 1.0\n" +
                                         "\n" +
@@ -147,18 +148,19 @@ public class MediaMod {
                                         "playerRed = 0\n" +
                                         "playerGreen = 0\n" +
                                         "playerBlue = 0\n";
+
                                 FileWriter writer = new FileWriter(defaultThemeFile);
                                 writer.append(defaultFile);
                                 writer.close();
                             }
                         } else {
-                            logger.fatal("Failed to create default theme file");
+                            logger.error("Failed to create default theme file");
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error("Failed to initialise themes! Error: ", e);
                     }
                 } else {
-                    logger.fatal("Failed to create theme directory");
+                    logger.error("Failed to create theme directory");
                 }
             }
         }
