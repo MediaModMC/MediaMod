@@ -1,6 +1,6 @@
-package org.mediamod.mediamod.gui.handlers.types;
+package org.mediamod.mediamod.theming.types;
 
-public class Colours {
+public class PlayerThemingColors {
     private int textRed;
 
     private int textBlue;

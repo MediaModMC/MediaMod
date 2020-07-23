@@ -1,6 +1,6 @@
-package org.mediamod.mediamod.gui.handlers.types;
+package org.mediamod.mediamod.theming.types;
 
-public class Metadata {
+public class PlayerThemeMetadata {
     private String name;
 
     private String version;

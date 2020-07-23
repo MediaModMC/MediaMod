@@ -1,4 +1,4 @@
-package org.mediamod.mediamod.gui.handlers;
+package org.mediamod.mediamod.theming;
 
 import com.moandjiezana.toml.Toml;
 import org.apache.commons.lang3.tuple.Pair;
@@ -6,28 +6,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mediamod.mediamod.MediaMod;
 import org.mediamod.mediamod.config.Settings;
-import org.mediamod.mediamod.gui.handlers.types.Colours;
-import org.mediamod.mediamod.gui.handlers.types.Metadata;
+import org.mediamod.mediamod.theming.types.PlayerThemingColors;
+import org.mediamod.mediamod.theming.types.PlayerThemeMetadata;
 
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
-public class ColourHandler {
+/**
+ * Class that handles themes
+ *
+ * @author ChachyDev
+ */
+public class PlayerThemeHandler {
     private final Logger logger = LogManager.getLogger(this.getClass());
-    public static ColourHandler INSTANCE = new ColourHandler();
+    public static PlayerThemeHandler INSTANCE = new PlayerThemeHandler();
 
     /**
-     * Iterates through the themes directory and fishes out .toml files and attempts to parse them.
+     * Iterates through the themes directory and gets all of the .toml files, then attempts to parse them.
      *
-     * @author ChachyDev
-     * @since 2.0.0-beta.2
      * @return Metadata and Colours from File
      */
-
-    public ArrayList<Pair<Metadata, Colours>> getThemes() {
+    public ArrayList<Pair<PlayerThemeMetadata, PlayerThemingColors>> getThemes() {
         File[] files = MediaMod.INSTANCE.mediamodThemeDirectory.listFiles();
-        ArrayList<Pair<Metadata, Colours>> themes = new ArrayList<>();
+        ArrayList<Pair<PlayerThemeMetadata, PlayerThemingColors>> themes = new ArrayList<>();
         if (files != null) {
             for (File theme : files) {
                 if (theme.getName().endsWith(".toml")) {
@@ -35,8 +37,8 @@ public class ColourHandler {
                         Toml toml = new Toml().read(theme);
                         themes.add(
                                 Pair.of(
-                                        toml.getTable("metadata").to(Metadata.class),
-                                        toml.getTable("colours").to(Colours.class)
+                                        toml.getTable("metadata").to(PlayerThemeMetadata.class),
+                                        toml.getTable("colours").to(PlayerThemingColors.class)
                                 )
                         );
                     } catch (Exception e) {
@@ -51,13 +53,10 @@ public class ColourHandler {
     /**
      * Grabs the currently selected theme's background opts from the colour table
      *
-     * @author ChachyDev
-     * @since 2.0.0-beta.2
      * @return Metadata and Colours from File
      */
-
     public Color getPlayerColour() {
-        Colours colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(Colours.class);
+        PlayerThemingColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemingColors.class);
         if (colourBlock == null) {
             return Color.darkGray.brighter();
         } else {
@@ -68,13 +67,10 @@ public class ColourHandler {
     /**
      * Grabs the currently selected theme's text opts from the colour table
      *
-     * @author ChachyDev
-     * @since 2.0.0-beta.2
      * @return Metadata and Colours from File
      */
-
     public Color getPlayerTextColour() {
-        Colours colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(Colours.class);
+        PlayerThemingColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemingColors.class);
         if (colourBlock == null) {
             return Color.white;
         } else {
