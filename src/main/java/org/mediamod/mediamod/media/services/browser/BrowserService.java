@@ -1,6 +1,8 @@
 package org.mediamod.mediamod.media.services.browser;
 
 import com.google.gson.Gson;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -11,7 +13,11 @@ import org.mediamod.mediamod.media.core.api.MediaInfo;
 import org.mediamod.mediamod.util.Multithreading;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The service that communicates with the browser extension to display media from sites like SoundCloud, YouTube and Apple Music
@@ -51,10 +57,16 @@ public class BrowserService implements IServiceHandler {
     public boolean load() {
         Multithreading.runAsync(() -> {
             try {
-                server = new BrowserSocketServer();
-                server.start();
+                // Without this Launchwrapper may still have some slf4j classes marked as invalid although these are included in the jar
+                Field field = LaunchClassLoader.class.getDeclaredField("invalidClasses");
+                field.setAccessible(true);
+                field.set(Launch.classLoader, new HashSet<String>());
+                Field field2 = LaunchClassLoader.class.getDeclaredField("negativeResourceCache");
+                field2.setAccessible(true);
+                field2.set(Launch.classLoader, Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>()));
+                (server = new BrowserSocketServer()).start();
             } catch (Exception ignored) {
-                MediaMod.INSTANCE.logger.warn("Failed to create Spotify callback server! Is the port already in use?");
+                MediaMod.INSTANCE.logger.warn("Failed to create browser extension server! Is the port already in use?");
             }
         });
 
