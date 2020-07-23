@@ -31,6 +31,8 @@ import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.util.*;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * The main class for MediaMod
@@ -58,18 +60,27 @@ public class MediaMod {
      * @see org.apache.logging.log4j.Logger
      */
     public final Logger logger = LogManager.getLogger("MediaMod");
-    /**
-     * If the client successfully registered with API, this will be true
-     */
-    public boolean authenticatedWithAPI = false;
-    /**
-     * A File which points to the MediaMod Data directory
-     */
-    public File mediamodDirectory;
+
     /**
      * If this is the first load of MediaMod
      */
     private boolean firstLoad = true;
+
+    /**
+     * If the client successfully registered with API, this will be true
+     */
+    public boolean authenticatedWithAPI = false;
+
+    /**
+     * A File which points to the MediaMod Data directory
+     */
+    public File mediamodDirectory;
+
+    /**
+     * A file that points to the MediaMod Themes Data directory
+     */
+
+    public File mediamodThemeDirectory;
 
     /**
      * Fired before Minecraft starts
@@ -111,6 +122,44 @@ public class MediaMod {
                 logger.info("Created necessary directories and files!");
             } else {
                 logger.fatal("Failed to create necessary directories and files!");
+            }
+
+            if (!mediamodThemeDirectory.exists()) {
+                boolean createdThemeDirectory = mediamodThemeDirectory.mkdir();
+                if (createdThemeDirectory) {
+                    logger.info("Created theme directory!");
+                    File defaultThemeFile = new File(mediamodThemeDirectory, "default.toml");
+                    try {
+                        if (!defaultThemeFile.exists()) {
+                            if (defaultThemeFile.createNewFile()) {
+                                if (!defaultThemeFile.setWritable(false)) {
+                                    logger.error("Failed to set default theme to immutable!");
+                                }
+                                logger.info("Created default theme file");
+                                String defaultFile = "[metadata]\n" +
+                                        "name = \"Default\"\n" +
+                                        "version = 1.0\n" +
+                                        "\n" +
+                                        "[colours]\n" +
+                                        "textRed = 255\n" +
+                                        "textGreen = 255\n" +
+                                        "textBlue = 255\n" +
+                                        "playerRed = 0\n" +
+                                        "playerGreen = 0\n" +
+                                        "playerBlue = 0\n";
+                                FileWriter writer = new FileWriter(defaultThemeFile);
+                                writer.append(defaultFile);
+                                writer.close();
+                            }
+                        } else {
+                            logger.fatal("Failed to create default theme file");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    logger.fatal("Failed to create theme directory");
+                }
             }
         }
 

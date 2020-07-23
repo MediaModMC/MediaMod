@@ -3,7 +3,6 @@ package org.mediamod.mediamod.config;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import org.lwjgl.openal.AL;
 import org.mediamod.mediamod.MediaMod;
 
 import java.io.File;
@@ -26,6 +25,7 @@ public class Settings {
     public static double PLAYER_ZOOM;
     public static boolean EXTENSION_ENABLED;
     public static ProgressStyle PROGRESS_STYLE;
+    public static File THEME_FILE;
     public static String REFRESH_TOKEN;
 
     public static void saveConfig() {
@@ -61,6 +61,7 @@ public class Settings {
         Property browserExtProperty = configuration.get("Player", "useBrowserExtension", true);
         Property progressStyleProperty = configuration.get("Player", "progressStyle", ProgressStyle.BAR_AND_NUMBERS_NEW.name());
         Property refreshTokenProperty = configuration.get("Spotify", "refreshToken", "");
+        Property themeFileProperty = configuration.get("Theme", "themeFile", MediaMod.INSTANCE.mediamodThemeDirectory.getAbsolutePath() + "/default.toml");
 
         if (load) SAVE_SPOTIFY_TOKEN = saveSpotifyTokenProperty.getBoolean();
         else saveSpotifyTokenProperty.setValue(SAVE_SPOTIFY_TOKEN);
@@ -115,5 +116,8 @@ public class Settings {
 
         if (load) EXTENSION_ENABLED = browserExtProperty.getBoolean();
         else browserExtProperty.setValue(EXTENSION_ENABLED);
+
+        if (load) THEME_FILE = new File(themeFileProperty.getString());
+        else themeFileProperty.setValue(THEME_FILE.getAbsolutePath());
     }
 }
