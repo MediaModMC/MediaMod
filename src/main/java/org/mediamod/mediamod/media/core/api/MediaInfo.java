@@ -5,7 +5,7 @@ import org.mediamod.mediamod.media.core.api.track.Track;
 
 public class MediaInfo {
     @SerializedName("progress_ms")
-    public Integer timestamp;
+    public int timestamp;
 
     @SerializedName("is_playing")
     public boolean isPlaying;
@@ -13,3 +13,4 @@ public class MediaInfo {
     @SerializedName("item")
     public Track track;
 }
+

@@ -12,7 +12,7 @@ public class Track {
     public String identifier;
 
     @SerializedName("duration_ms")
-    public Integer duration;
+    public int duration;
 
     public String name;
 
