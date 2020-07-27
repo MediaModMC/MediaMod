@@ -11,5 +11,5 @@
       "changelog": "Fix crash when a track is skipped when using the browser extension"
     }
   },
-  "latestUpdater": "1.0.0-BETA-3"
+  "latestUpdater": "1.0.0-BETA-4"
 }
