@@ -1,14 +1,14 @@
 {
   "versions": {
     "1.8.9": {
-      "version": 10,
-      "name": "2.0.0-beta.2",
-      "changelog": "Stability fixes"
+      "version": 11,
+      "name": "2.0.0-beta.3",
+      "changelog": "Browser extension fixes + more"
     },
     "1.12.2": {
-      "version": 10,
-      "name": "2.0.0-beta.2",
-      "changelog": "Stability fixes"
+      "version": 11,
+      "name": "2.0.0-beta.3",
+      "changelog": "Browser extension fixes + more"
     }
   },
   "latestUpdater": "1.0.0-BETA-2"
