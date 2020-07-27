@@ -56,12 +56,14 @@ public class PlayerThemeHandler {
      * @return Metadata and Colours from File
      */
     public Color getPlayerColour() {
-        PlayerThemeColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemeColors.class);
-        if (colourBlock == null) {
-            return Color.darkGray.brighter();
-        } else {
-            return new Color(colourBlock.getPlayerRed(), colourBlock.getPlayerGreen(), colourBlock.getPlayerBlue());
+        if(Settings.THEME_FILE.exists()) {
+            PlayerThemeColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemeColors.class);
+            if (colourBlock != null) {
+                return new Color(colourBlock.getPlayerRed(), colourBlock.getPlayerGreen(), colourBlock.getPlayerBlue());
+            }
         }
+
+        return Color.darkGray.brighter();
     }
 
     /**
@@ -70,11 +72,13 @@ public class PlayerThemeHandler {
      * @return Metadata and Colours from File
      */
     public Color getPlayerTextColour() {
-        PlayerThemeColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemeColors.class);
-        if (colourBlock == null) {
-            return Color.white;
-        } else {
-            return new Color(colourBlock.getTextRed(), colourBlock.getTextGreen(), colourBlock.getTextBlue());
+        if(Settings.THEME_FILE.exists()) {
+            PlayerThemeColors colourBlock = new Toml().read(Settings.THEME_FILE).getTable("colours").to(PlayerThemeColors.class);
+            if (colourBlock != null) {
+                return new Color(colourBlock.getTextRed(), colourBlock.getTextGreen(), colourBlock.getTextBlue());
+            }
         }
+
+        return Color.white;
     }
 }

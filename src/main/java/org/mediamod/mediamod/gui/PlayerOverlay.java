@@ -350,9 +350,9 @@ public class PlayerOverlay {
                 }
 
                 // String concatenation for tracks
-                fontRenderer.drawString(concatName.substring(concatArtistCount, concatArtistCount2.get()), textXPosition, cornerY + 20, PlayerThemeHandler.INSTANCE.getPlayerTextColour().getRGB(), false);
+                fontRenderer.drawString(concatName.substring(concatArtistCount, concatArtistCount2.get()), textXPosition, cornerY + 20, Color.white.darker().getRGB(), false);
             } else {
-                fontRenderer.drawString(by + trackArtist, textXPosition, cornerY + 20, PlayerThemeHandler.INSTANCE.getPlayerTextColour().getRGB(), false);
+                fontRenderer.drawString(by + trackArtist, textXPosition, cornerY + 20, Color.white.darker().getRGB(), false);
             }
         }
 

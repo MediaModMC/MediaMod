@@ -31,8 +31,6 @@ import org.mediamod.mediamod.parties.PartyManager;
 import org.mediamod.mediamod.util.*;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * The main class for MediaMod
@@ -127,7 +125,8 @@ public class MediaMod {
             }
         }
 
-        if (!mediamodThemeDirectory.exists()) {
+        // Remove theming for this beta build because it's nowhere near ready for the betas
+        /*if (!mediamodThemeDirectory.exists()) {
             boolean createdThemeDirectory = mediamodThemeDirectory.mkdir();
             if (createdThemeDirectory) {
                 logger.info("Created theme directory!");
@@ -163,7 +162,7 @@ public class MediaMod {
             } else {
                 logger.error("Failed to create theme directory");
             }
-        }
+        }*/
 
         logger.info("Checking if MediaMod is up-to-date...");
         VersionChecker.checkVersion();
