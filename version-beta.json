@@ -1,14 +1,14 @@
 {
   "versions": {
     "1.8.9": {
-      "version": 11,
-      "name": "2.0.0-beta.3",
-      "changelog": "Browser extension fixes + more"
+      "version": 12,
+      "name": "2.0.0-beta.4",
+      "changelog": "Fix crash when a track is skipped when using the browser extension"
     },
     "1.12.2": {
-      "version": 11,
-      "name": "2.0.0-beta.3",
-      "changelog": "Browser extension fixes + more"
+      "version": 12,
+      "name": "2.0.0-beta.4",
+      "changelog": "Fix crash when a track is skipped when using the browser extension"
     }
   },
   "latestUpdater": "1.0.0-BETA-2"
