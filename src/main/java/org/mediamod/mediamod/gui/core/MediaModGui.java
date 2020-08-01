@@ -41,6 +41,6 @@ public abstract class MediaModGui extends ButtonTooltip {
     }
 
     protected int getRowPos(int rowNumber) {
-        return 60 + rowNumber * 23;
+        return 75 + rowNumber * 23;
     }
 }

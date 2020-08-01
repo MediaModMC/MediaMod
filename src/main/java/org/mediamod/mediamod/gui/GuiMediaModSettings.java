@@ -1,19 +1,11 @@
 package org.mediamod.mediamod.gui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import org.mediamod.mediamod.MediaMod;
-import org.mediamod.mediamod.api.APIHandler;
 import org.mediamod.mediamod.config.Settings;
 import org.mediamod.mediamod.gui.core.MediaModGui;
 import org.mediamod.mediamod.gui.core.util.CustomButton;
-import org.mediamod.mediamod.util.ChatColor;
 import org.mediamod.mediamod.util.Metadata;
-import org.mediamod.mediamod.util.Multithreading;
-import org.mediamod.mediamod.util.PlayerMessenger;
-
-import java.io.IOException;
 
 /**
  * The Gui for editing the MediaMod Settings
@@ -35,6 +27,8 @@ public class GuiMediaModSettings extends MediaModGui {
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawDefaultBackground();
+
+        drawString(fontRendererObj, "General settings", (width / 2) - 100, 60, -1);
 
         this.drawString(this.fontRendererObj, I18n.format("menu.guimediamod.text.version.name") + " " + Metadata.VERSION, this.width - this.fontRendererObj.getStringWidth("Version " + Metadata.VERSION) - 2, this.height - 10, -1);
 
