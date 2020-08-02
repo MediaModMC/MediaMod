@@ -32,7 +32,7 @@ public class WebRequest {
 
             connection.connect();
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                 String content = reader.lines().collect(Collectors.joining());
 
                 if (connection.getResponseCode() == 200) {
@@ -106,7 +106,7 @@ public class WebRequest {
 
             connection.connect();
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                 String content = reader.lines().collect(Collectors.joining());
 
                 if (toClass == null) {
