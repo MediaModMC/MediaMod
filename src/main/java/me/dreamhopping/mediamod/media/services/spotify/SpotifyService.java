@@ -246,7 +246,7 @@ class SpotifyAPI {
         if (refreshToken == null) return;
 
         try {
-            SpotifyTokenResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/user/auth?refresh=true", SpotifyTokenResponse.class);
+            SpotifyTokenResponse response = WebRequest.requestToMediaMod(WebRequestType.POST, "api/spotify/user/auth/" + refreshToken + "?refresh=true", SpotifyTokenResponse.class);
 
             if (response == null) {
                 MediaMod.INSTANCE.logger.error("An error occurred when exchanging refresh token for a new token: response was null");
@@ -254,7 +254,6 @@ class SpotifyAPI {
             }
 
             accessToken = response.accessToken;
-            refreshToken = response.refreshToken;
 
             Settings.REFRESH_TOKEN = refreshToken;
             Multithreading.runAsync(Settings::saveConfig);
