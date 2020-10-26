@@ -1,6 +1,7 @@
 package me.dreamhopping.mediamod.command;
 
 import me.dreamhopping.mediamod.gui.GuiMediaModSettings;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -35,6 +36,17 @@ public class MediaModCommand extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length <= 0) {
             TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(new GuiMediaModSettings()));
+        } else {
+            String subbcommand = args[0];
+            if (subbcommand.equals("debug")) {
+                String className = args[1];
+                try {
+                    GuiScreen screen = (GuiScreen) Class.forName(className).newInstance();
+                    TickScheduler.INSTANCE.schedule(1, () -> FMLClientHandler.instance().getClient().displayGuiScreen(screen));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
