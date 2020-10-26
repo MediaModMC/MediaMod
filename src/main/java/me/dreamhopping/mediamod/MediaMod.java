@@ -1,5 +1,6 @@
 package me.dreamhopping.mediamod;
 
+import me.dreamhopping.mediamod.gui.GuiMediaPlayerManager;
 import me.dreamhopping.mediamod.gui.PlayerOverlay;
 import me.dreamhopping.mediamod.keybinds.KeybindInputHandler;
 import me.dreamhopping.mediamod.util.*;
@@ -78,7 +79,9 @@ public class MediaMod {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         KeybindManager.INSTANCE.register();
+
         MinecraftForge.EVENT_BUS.register(new KeybindInputHandler());
+        MinecraftForge.EVENT_BUS.register(GuiMediaPlayerManager.instance);
     }
 
     /**
