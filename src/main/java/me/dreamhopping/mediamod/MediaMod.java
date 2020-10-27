@@ -42,7 +42,7 @@ public class MediaMod {
     /**
      * The API Endpoint for MediaMod requests
      */
-    public static final String ENDPOINT = "https://mediamod-serverless.vercel.app/";
+    public static final String ENDPOINT = "https://mediamod-serverless.dreamhopping.vercel.app/";
 
     /**
      * An instance of this class to access non-static methods from other classes
