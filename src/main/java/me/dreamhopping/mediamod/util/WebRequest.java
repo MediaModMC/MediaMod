@@ -1,239 +1,99 @@
 package me.dreamhopping.mediamod.util;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import me.dreamhopping.mediamod.MediaMod;
+import okhttp3.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 public class WebRequest {
-    public static <T> T requestToMediaMod(WebRequestType type, String path, JsonObject body, Class<T> toClass) throws IOException {
-        URL url = new URL(MediaMod.ENDPOINT + path);
+    public static final WebRequest instance = new WebRequest();
 
-        HttpURLConnection connection = null;
+    private final OkHttpClient client = new OkHttpClient();
+    private final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
+    public <T> T post(URL url, String body, Class<T> type) throws IOException {
+        RequestBody requestBody = RequestBody.create(JSON, body);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        Response response = client.newCall(request).execute();
 
-            if (type == WebRequestType.POST) {
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.getOutputStream().write(body.toString().getBytes(StandardCharsets.UTF_8));
-            }
-
-            connection.connect();
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                String content = reader.lines().collect(Collectors.joining());
-
-                if (connection.getResponseCode() == 200) {
-                    return new Gson().fromJson(content, toClass);
-                }
-            }
-        } catch (Exception e) {
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
-            }
+        ResponseBody responseBody = response.body();
+        if (responseBody != null) {
+            return new Gson().fromJson(responseBody.string(), type);
+        } else {
+            return null;
         }
-
-        return null;
     }
 
-    public static int requestToMediaMod(WebRequestType type, String path, JsonObject body) throws IOException {
-        URL url = new URL(MediaMod.ENDPOINT + path);
+    public <T> T post(URL url, Class<T> type) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response = client.newCall(request).execute();
 
-        HttpURLConnection connection = null;
-
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-            if (type == WebRequestType.POST) {
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.getOutputStream().write(body.toString().getBytes(StandardCharsets.UTF_8));
-            }
-            connection.connect();
-
-            return connection.getResponseCode();
-        } catch (Exception e) {
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
-            }
+        ResponseBody responseBody = response.body();
+        if (responseBody != null) {
+            return new Gson().fromJson(responseBody.string(), type);
+        } else {
+            return null;
         }
-
-        return 0;
     }
 
-    public static <T> T requestToMediaMod(WebRequestType type, String path, Class<T> toClass) throws IOException {
-        URL url = new URL(MediaMod.ENDPOINT + path);
+    public <T> T get(URL url, Class<T> type) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        Response response = client.newCall(request).execute();
 
-        HttpURLConnection connection = null;
-
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-
-            connection.connect();
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                String content = reader.lines().collect(Collectors.joining());
-
-                if (connection.getResponseCode() == 200) {
-                    return new Gson().fromJson(content, toClass);
-                }
-            }
-        } catch (Exception e) {
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
-            }
+        ResponseBody responseBody = response.body();
+        if (responseBody != null) {
+            return new Gson().fromJson(responseBody.string(), type);
+        } else {
+            return null;
         }
-
-        return null;
     }
 
-    public static <T> T makeRequest(WebRequestType type, URL url, Class<T> toClass, HashMap<String, String> properties) {
-        HttpURLConnection connection = null;
+    public <T> T get(URL url, Class<T> type, HashMap<String, String> headers) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .headers(Headers.of(headers))
+                .get()
+                .build();
 
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
+        Response response = client.newCall(request).execute();
 
-            for (String key : properties.keySet()) {
-                String value = properties.get(key);
-                connection.setRequestProperty(key, value);
-            }
-
-            if (type == WebRequestType.POST || type == WebRequestType.PUT) {
-                connection.setDoOutput(true);
-                connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
-            }
-
-            connection.connect();
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                String content = reader.lines().collect(Collectors.joining());
-
-                if (toClass == null) {
-                    return null;
-                }
-
-                return new Gson().fromJson(content, toClass);
-            }
-        } catch (Exception e) {
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
-            }
+        ResponseBody responseBody = response.body();
+        if (responseBody != null) {
+            return new Gson().fromJson(responseBody.string(), type);
+        } else {
+            return null;
         }
-
-        return null;
     }
 
-    public static int makeRequest(WebRequestType type, URL url, JsonObject body, HashMap<String, String> properties) {
-        HttpURLConnection connection = null;
+    public int post(URL url, HashMap<String, String> headers) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .headers(Headers.of(headers))
+                .post(RequestBody.create(JSON, ""))
+                .build();
 
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-
-            for (String key : properties.keySet()) {
-                String value = properties.get(key);
-                connection.setRequestProperty(key, value);
-            }
-
-            if (type == WebRequestType.POST || type == WebRequestType.PUT) {
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.getOutputStream().write(body.toString().getBytes(StandardCharsets.UTF_8));
-            }
-
-            connection.connect();
-
-            return connection.getResponseCode();
-        } catch (Exception e) {
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
-            }
-        }
-
-        return 0;
+        Response response = client.newCall(request).execute();
+        return response.code();
     }
 
-    public static int makeRequest(WebRequestType type, URL url, HashMap<String, String> properties) {
-        HttpURLConnection connection = null;
+    public int put(URL url, HashMap<String, String> headers) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .headers(Headers.of(headers))
+                .post(RequestBody.create(JSON, ""))
+                .build();
 
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(type.name());
-            connection.setRequestProperty("User-Agent", "MediaMod/1.0");
-
-            for (String key : properties.keySet()) {
-                String value = properties.get(key);
-                connection.setRequestProperty(key, value);
-            }
-
-            if (type == WebRequestType.POST || type == WebRequestType.PUT) {
-                connection.setDoOutput(true);
-                connection.getOutputStream().write("".getBytes(StandardCharsets.UTF_8));
-            }
-
-            connection.connect();
-
-            return connection.getResponseCode();
-        } catch (Exception e) {
-            MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getLocalizedMessage(), e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            } catch (Exception e) {
-                MediaMod.INSTANCE.logger.error("Failed to perform web request! Error: {}", e.getMessage(), e);
-            }
-        }
-
-        return 0;
+        Response response = client.newCall(request).execute();
+        return response.code();
     }
 }

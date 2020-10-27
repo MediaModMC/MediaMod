@@ -30,7 +30,7 @@ public class VersionChecker {
 
     public static void checkVersion() {
         try {
-            INSTANCE.allVersionInfo = WebRequest.makeRequest(WebRequestType.GET, new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version-beta.json"), AllVersionInfo.class, new HashMap<>());
+            INSTANCE.allVersionInfo = WebRequest.instance.get(new URL("https://raw.githubusercontent.com/MediaModMC/MediaMod/master/version-beta.json"), AllVersionInfo.class);
             if (INSTANCE.allVersionInfo == null) return;
 
             VersionInformation information = INSTANCE.allVersionInfo.versions.get(Metadata.MINECRAFT_VERSION);
