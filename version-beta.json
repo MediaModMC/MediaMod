@@ -6,9 +6,9 @@
       "changelog": "Fix spotify pausing/resuming not working"
     },
     "1.12.2": {
-      "version": 13,
-      "name": "2.0.0-beta.5",
-      "changelog": "Fix text encoding issues"
+      "version": 16,
+      "name": "2.0.0-beta.8",
+      "changelog": "Fix spotify pausing/resuming not working"
     }
   },
   "latestUpdater": "1.0.0-BETA-6"
