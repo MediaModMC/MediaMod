@@ -370,7 +370,7 @@ class SpotifyAPI {
      * Pauses the playback
      *
      * @return if the operation was successful
-     * @see "https://developer.spotify.com/documentation/web-api/reference/player/skip-users-playback-to-next-track/"
+     * @see "https://developer.spotify.com/documentation/web-api/reference/player/pause-a-users-playback/"
      */
     public boolean pausePlayback() {
         try {
