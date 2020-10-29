@@ -97,7 +97,7 @@ public class WebRequest {
         Request request = new Request.Builder()
                 .url(url)
                 .headers(Headers.of(headers))
-                .post(RequestBody.create(JSON, ""))
+                .put(RequestBody.create(JSON, ""))
                 .build();
 
         Response response = client.newCall(request).execute();
