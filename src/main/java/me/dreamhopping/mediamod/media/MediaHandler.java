@@ -4,6 +4,7 @@ import me.dreamhopping.mediamod.MediaMod;
 import me.dreamhopping.mediamod.media.core.IServiceHandler;
 import me.dreamhopping.mediamod.media.core.api.MediaInfo;
 import me.dreamhopping.mediamod.media.services.browser.BrowserService;
+import me.dreamhopping.mediamod.media.services.file.LocalFileService;
 import me.dreamhopping.mediamod.media.services.spotify.SpotifyService;
 import net.minecraftforge.common.MinecraftForge;
 import me.dreamhopping.mediamod.event.MediaInfoUpdateEvent;
@@ -110,6 +111,7 @@ public class MediaHandler {
 
         addService(new SpotifyService());
         addService(new BrowserService());
+        addService(new LocalFileService());
 
         loadServices();
 
