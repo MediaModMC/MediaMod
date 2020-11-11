@@ -12,5 +12,25 @@ public class MediaInfo {
 
     @SerializedName("item")
     public Track track;
+
+    @SerializedName("error")
+    public SpotifyError error;
+
+    public static class SpotifyError extends Exception {
+        @SerializedName("status")
+        public final int status;
+        @SerializedName("message")
+        public final String message;
+
+        SpotifyError(int status, String message) {
+            this.status = status;
+            this.message = message;
+        }
+
+        @Override
+        public String toString() {
+            return "Spotify error: status=" + status +", message='" + message+"'";
+        }
+    }
 }
 

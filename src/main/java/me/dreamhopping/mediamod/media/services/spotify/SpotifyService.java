@@ -294,6 +294,14 @@ class SpotifyAPI {
             MediaMod.INSTANCE.logger.error("An error occurred when getting playback info: ", e);
         }
 
+        if (info != null && info.error != null) {
+            if (info.error.status == 401 && info.error.message.equals("The access token expired")) {
+                this.refresh();
+            } else {
+                MediaMod.INSTANCE.logger.error("Spotify gave an error when getting playback info: ", info.error);
+            }
+        }
+
         return info;
     }
 
