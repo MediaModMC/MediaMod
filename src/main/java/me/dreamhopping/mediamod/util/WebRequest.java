@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import me.dreamhopping.mediamod.MediaMod;
 import okhttp3.*;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -18,22 +21,6 @@ public class WebRequest {
     public WebRequest() {
         OkHttpClient.Builder builder = configureToIgnoreCertificate(new OkHttpClient.Builder());
         client = builder.build();
-    }
-
-    public <T> T post(URL url, String body, Class<T> type) throws IOException {
-        RequestBody requestBody = RequestBody.create(JSON, body);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
-        Response response = client.newCall(request).execute();
-
-        ResponseBody responseBody = response.body();
-        if (responseBody != null) {
-            return new Gson().fromJson(responseBody.string(), type);
-        } else {
-            return null;
-        }
     }
 
     public <T> T post(URL url, Class<T> type) throws IOException {
@@ -105,10 +92,8 @@ public class WebRequest {
     }
 
     private OkHttpClient.Builder configureToIgnoreCertificate(OkHttpClient.Builder builder) {
-        MediaMod.INSTANCE.logger.warn("Ignore Ssl Certificate");
-
         try {
-            final TrustManager[] trustAllCerts = new TrustManager[] {
+            final TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         @Override
                         public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
@@ -131,11 +116,12 @@ public class WebRequest {
             // Create an ssl socket factory with our all-trusting manager
             final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
             builder.hostnameVerifier((hostname, session) -> true);
         } catch (Exception e) {
-            MediaMod.INSTANCE.logger.warn("Exception while configuring IgnoreSslCertificate" + e, e);
+            MediaMod.INSTANCE.logger.warn("Exception thrown whilst running configureToIgnoreCertificate", e);
         }
+
         return builder;
     }
 
