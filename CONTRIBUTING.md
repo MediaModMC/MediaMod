@@ -4,17 +4,17 @@ When making a commit to the MediaMod repository, it is recommended that you foll
 ### General
 - Document your code, if creating a new class it is recommended that you start it like this:
 ```java
-package me.conorthedev.example;
+package com.mediamod.example;
 
 /**
- * This is the main class for the ExampleMod
- * @author ConorTheDev
+ * This is the main class for MediaMod
+ * @author YourName
  */
-public class ExampleMod {
+public class MediaMod {
   /**
    * Contains the URL required for the endpoint
    */
-  public static final String aString = "url";
+  public static final String endpointUrl = "url";
 }
 ```
 - Format your code, this can be done in IntelliJ by pressing CTRL + Alt + L (on Windows / Linux) or CMD + Alt + L (on macOS)
