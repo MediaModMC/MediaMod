@@ -17,7 +17,7 @@ MediaMod is a Minecraft Mod that shows your current song in Minecraft, it starte
 [![widget](https://inv.wtf/widget/mediamod)](https://inv.wtf/mediamod)
 
 ### Credits
-- [ConorTheDev](https://twitter.com/ConorTheDev) - Developing the Mod
+- [dreamhopping](https://twitter.com/dreamhopping) - Developing the Mod
 - [KodingKing](https://twitter.com/KodingKing_) - Fixing a previous build issue
 - [asbyth](https://twitter.com/asbythh) - Code cleaning & optimizations
 - [ScottehBoeh](https://twitter.com/ScottehBoeh) - Code cleaning & New Player Design
