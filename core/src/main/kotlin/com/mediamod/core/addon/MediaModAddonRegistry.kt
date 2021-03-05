@@ -40,6 +40,13 @@ import java.net.URLClassLoader
  */
 object MediaModAddonRegistry {
     /**
+     * The [Method] instance for the [URLClassLoader.addURL] method
+     * Allows us to access it at any time, this is done on initialisation to make addon loading seem faster when done
+     */
+    private val addUrlMethod: Method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
+        .apply { isAccessible = true }
+
+    /**
      * A mutable list of all loaded addons, these are instances of [MediaModAddon]
      * This list is modified in [register] and [unregister]
      */
@@ -82,23 +89,25 @@ object MediaModAddonRegistry {
      * @param addonId The addon's identifier parsed from the mediamod-addon.json file
      * @param addonClass The addon's class, the class name was parsed from the mediamod-addon.json file
      */
-    private fun register(addonId: String, addonClass: Class<*>) {
-        // Create an instance of the addonClass
-        val addonInstance = addonClass.newInstance()
+    private fun register(addonId: String, addonClass: String?) {
+        // Try to get the addon's class from the addonClass field
+        val addonClazz = try {
+            this.javaClass.classLoader.loadClass(addonClass)
+        } catch (t: Throwable) {
+            return logger.error("Failed to register addon $addonId: The addon class could not be found! Please contact the developer for more information")
+        }
 
-        // Verify that the addon class instance is a subclass of MediaModAddon
-        if (addonInstance is MediaModAddon) {
-            // Register the addon
-            if (addonInstance.register()) {
-                // The addon has successfully registered, add it to the list
-                loadedAddons.add(addonInstance)
-            } else {
-                // The addon failed to register, an exception may have been printed to stacktrace
-                throw AddonRegisterException(addonId, "The addon failed to register!")
-            }
-        } else {
-            // The addon class does not implement MediaModAddon
+        // Verify that the addon class is an instance of MediaModAddon
+        if (addonClazz !is MediaModAddon)
             throw AddonRegisterException(addonId, "The addon's class is not a subclass of MediaModAddon!")
+
+        val addonInstance = addonClazz.newInstance() as MediaModAddon
+        if (addonInstance.register()) {
+            // The addon has successfully registered, add it to the list
+            loadedAddons.add(addonInstance)
+        } else {
+            // The addon failed to register, an exception may have been printed to stacktrace
+            throw AddonRegisterException(addonId, "The addon failed to register!")
         }
     }
 
@@ -127,18 +136,12 @@ object MediaModAddonRegistry {
      * When an addon is discovered, it is added to the [discoveredAddons] map
      */
     fun discoverAddons() {
-        // Make the "addURL" method accessible by us
-        val addUrlMethod: Method =
-            URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
-        addUrlMethod.isAccessible = true
-
         // Iterate over all "external" addon sources, get all jar or zip files and add them to the classloader
         externalAddonSources.forEach { source ->
             source.walkTopDown()
-                .filter { it.isFile && (it.extension == "jar" || it.extension == "zip") }
-                .map { it.toURI().toURL() }
                 .forEach {
-                    addUrlMethod.invoke(this.javaClass.classLoader, it)
+                    if (it.isFile && (it.extension == "jar" || it.extension == "zip"))
+                        addUrlMethod.invoke(this.javaClass.classLoader, it.toURI().toURL())
                 }
         }
 
@@ -171,19 +174,17 @@ object MediaModAddonRegistry {
 
         // Loop through all discovered addons and attempt to load their classes
         discoveredAddons.forEach { (addonId, addonEntry) ->
+            // Verify that this addon identifier hasn't been loaded already
+            val existingAddon = loadedAddons.firstOrNull { it.identifier == addonId }
+            if (existingAddon != null)
+                return@forEach logger.error("Failed to register addon $addonId: Another addon already exists with this identifier! (class: ${existingAddon.javaClass.name}) Please contact the developer for more information")
+
             // Verify that the API version matches
             if (addonEntry.apiVersion != MediaModCore.apiVersion)
                 return@forEach logger.error("Failed to register addon $addonId: The addon's API version (${addonEntry.apiVersion}) does not match MediaMod's (${MediaModCore.apiVersion})! Please contact the developer for more information")
 
-            // Try to get the addon's class from the addonClass field
-            val addonClass = try {
-                this.javaClass.classLoader.loadClass(addonEntry.addonClass)
-            } catch (t: Throwable) {
-                return@forEach logger.error("Failed to register addon $addonId: The addon class could not be found! Please contact the developer for more information")
-            }
-
             // Register the addon
-            register(addonId, addonClass)
+            register(addonId, addonEntry.addonClass)
         }
 
         logger.info("Registered ${loadedAddons.size} addon${if (loadedAddons.size == 1) "" else "s"}!")
