@@ -97,11 +97,13 @@ object MediaModAddonRegistry {
             return logger.error("Failed to register addon $addonId: The addon class could not be found! Please contact the developer for more information")
         }
 
-        // Verify that the addon class is an instance of MediaModAddon
-        if (addonClazz !is MediaModAddon)
-            throw AddonRegisterException(addonId, "The addon's class is not a subclass of MediaModAddon!")
+        // Create an instance of the class, if it is not a subclass of MediaModAddon, throw an exception
+        val addonInstance = addonClazz.newInstance() as? MediaModAddon
+            ?: throw AddonRegisterException(
+                addonId,
+                "The addon's class is not a subclass of MediaModAddon!"
+            )
 
-        val addonInstance = addonClazz.newInstance() as MediaModAddon
         if (addonInstance.register()) {
             // The addon has successfully registered, add it to the list
             loadedAddons.add(addonInstance)
