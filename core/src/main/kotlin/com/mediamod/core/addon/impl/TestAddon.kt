@@ -28,7 +28,7 @@ class TestAddon : MediaModAddon {
      * For example: "spotify-addon" or "extension-addon",
      * If a duplicate identifier is found, a warning will be print to the console and the first addon that was loaded will take priority
      */
-    override val identifier = "test-addon"
+    override val identifier = "mediamod-test-addon"
 
     /**
      * The display name for your addon, this will be shown to the user in various MediaMod menus
@@ -36,12 +36,12 @@ class TestAddon : MediaModAddon {
      * For example: "Spotify" or "Browser Extension", it is not required to be unique to your addon
      * To avoid confusion, please do not make it the same as any other addon
      */
-    override val name: String = "TestAddon"
+    override val name: String = "MediaMod Test Addon"
 
     /**
      * A logger instance for this class, used for logging debug information
      */
-    private val logger = LogManager.getLogger("TestAddon")
+    private val logger = LogManager.getLogger("MediaModTestAddon")
 
     /**
      * Called when MediaMod is loading your addon, this will occur around the same time as the forge initialisation event
