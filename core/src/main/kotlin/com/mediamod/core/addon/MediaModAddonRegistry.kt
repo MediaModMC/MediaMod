@@ -149,16 +149,13 @@ object MediaModAddonRegistry {
         discoveredAddons.forEach { (addonId, addonEntry) ->
             // Verify that the API version matches
             if (addonEntry.apiVersion != MediaModCore.apiVersion)
-                throw AddonRegisterException(
-                    addonId,
-                    "The addon's API version (${addonEntry.apiVersion}) does not match MediaMod's (${MediaModCore.apiVersion})"
-                )
+                return@forEach logger.error("Failed to register addon $addonId: The addon's API version (${addonEntry.apiVersion}) does not match MediaMod's (${MediaModCore.apiVersion})! Please contact the developer for more information")
 
             // Try to get the addon's class from the addonClass field
             val addonClass = try {
                 Class.forName(addonEntry.addonClass)
             } catch (t: Throwable) {
-                throw AddonRegisterException(addonId, "The addon class could not be found!")
+                return@forEach logger.error("Failed to register addon $addonId: The addon class could not be found! Please contact the developer for more information")
             }
 
             // Register the addon

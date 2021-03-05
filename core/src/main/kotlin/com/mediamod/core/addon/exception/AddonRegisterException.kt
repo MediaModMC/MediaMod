@@ -19,4 +19,4 @@
 package com.mediamod.core.addon.exception
 
 data class AddonRegisterException(val addonId: String, val reason: String) :
-    AddonRegistryException("Failed to load addon $addonId: $reason Please contact the developer for more information.")
+    AddonRegistryException("Failed to register addon $addonId: $reason Please contact the developer for more information.")

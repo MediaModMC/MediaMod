@@ -1,16 +1,16 @@
 {
   "addons": {
     "test-addon": {
-      "addonClass": "com.mediamod.core.addon.impl.TestAddon",
+      "addonClass": "com.mediamod.core.addon.impl.TestAddonFD",
       "apiVersion": 1
     },
     "another-test-addon": {
       "addonClass": "com.mediamod.core.addon.impl.AnotherTestAddon",
-      "apiVersion": 1
+      "apiVersion": -1
     },
     "wow-test-addon": {
       "addonClass": "com.mediamod.core.addon.impl.WowTestAddon",
-      "apiVersion": 1
+      "apiVersion": 3
     }
   }
 }
