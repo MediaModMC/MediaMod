@@ -188,7 +188,7 @@ object MediaModAddonRegistry {
             logger.info("Discovered ${discoveredAddons.size} addon${if (discoveredAddons.size == 1) "" else "s"}!")
             registerAddons()
         } catch (e: AddonRegistryException) {
-            logger.warn("Failed to load addons! ${e.message}")
+            logger.warn(e.message)
         }
     }
 }
