@@ -146,10 +146,7 @@ object MediaModAddonRegistry {
         logger.info("Registering addons")
 
         // Loop through all discovered addons and attempt to load their classes
-        discoveredAddons.forEach { entry ->
-            val addonId = entry.key
-            val addonEntry = entry.value
-
+        discoveredAddons.forEach { (addonId, addonEntry) ->
             // Verify that the API version matches
             if (addonEntry.apiVersion != MediaModCore.apiVersion)
                 throw AddonRegisterException(
