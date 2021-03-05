@@ -19,13 +19,15 @@
 package com.mediamod.core.addon
 
 import com.mediamod.core.MediaModCore
+import com.mediamod.core.addon.exception.AddonRegisterException
+import com.mediamod.core.addon.exception.AddonRegistryException
+import com.mediamod.core.addon.exception.AddonUnregisterException
 import com.mediamod.core.addon.json.MediaModAddonJson
 import com.mediamod.core.addon.json.MediaModAddonJsonEntry
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.LogManager
-import kotlin.system.measureTimeMillis
 
 /**
  * The registry class handling the loading, unloading and management of all instances of a [MediaModAddon]
@@ -80,14 +82,13 @@ object MediaModAddonRegistry {
             if (addonInstance.register()) {
                 // The addon has successfully registered, add it to the list
                 loadedAddons.add(addonInstance)
-                logger.debug("Successfully registered addon ${addonInstance.name} (${addonInstance.identifier})!")
             } else {
                 // The addon failed to register, an exception may have been printed to stacktrace
-                logger.error("Unable to register ${addonId}: The addon failed to register! Contact the developer for more information.")
+                throw AddonRegisterException(addonId, "The addon failed to register!")
             }
         } else {
             // The addon class does not implement MediaModAddon
-            logger.error("Unable to register ${addonId}: The addon's class is not a subclass of MediaModAddon! Contact the developer for more information.")
+            throw AddonRegisterException(addonId, "The addon's class is not a subclass of MediaModAddon!")
         }
     }
 
@@ -99,7 +100,7 @@ object MediaModAddonRegistry {
      */
     private fun unregister(addonId: String) {
         val addon = loadedAddons.firstOrNull { it.identifier == addonId }
-            ?: return logger.error("Unable to unregister ${addonId}: An addon with that identifier could not be found")
+            ?: throw AddonUnregisterException(addonId, "An addon with that identifier could not be found")
 
         // Unregister and remove the addon from the list
         addon.unregister()
@@ -124,7 +125,6 @@ object MediaModAddonRegistry {
 
                 // Loop through all addons in the json and add them to the discovered list
                 addonJson.addons.forEach { addon ->
-                    logger.debug("Discovered addon class ${addon.value.addonClass}")
                     discoveredAddons[addon.key] = addon.value
                 }
             } catch (e: SerializationException) {
@@ -152,13 +152,16 @@ object MediaModAddonRegistry {
 
             // Verify that the API version matches
             if (addonEntry.apiVersion != MediaModCore.apiVersion)
-                return@forEach logger.error("Unable to load $addonId: The addon's API version (${addonEntry.apiVersion}) does not match MediaMod's (${MediaModCore.apiVersion}). Contact the developer for more information.")
+                throw AddonRegisterException(
+                    addonId,
+                    "The addon's API version (${addonEntry.apiVersion}) does not match MediaMod's (${MediaModCore.apiVersion})"
+                )
 
             // Try to get the addon's class from the addonClass field
             val addonClass = try {
                 Class.forName(addonEntry.addonClass)
             } catch (t: Throwable) {
-                return@forEach logger.error("Unable to load $addonId: The addon class could not be found! Contact the developer for more information.")
+                throw AddonRegisterException(addonId, "The addon class could not be found!")
             }
 
             // Register the addon
@@ -172,20 +175,20 @@ object MediaModAddonRegistry {
      * Discovers all MediaMod addons on the classpath and registers them
      */
     fun loadAddons() {
-        val timeTaken = measureTimeMillis {
+        try {
             // Discover all addons
             logger.info("Starting addon discovery")
             discoverAddons()
 
             // Check if there is any discovered addons before continuing
-            if (discoveredAddons.isNotEmpty()) {
-                logger.info("Discovered ${discoveredAddons.size} addon${if (discoveredAddons.size == 1) "" else "s"}!")
-                registerAddons()
-            } else {
+            if (discoveredAddons.isEmpty())
                 logger.warn("No addons were found during discovery")
-            }
-        }
 
-        logger.info("Discovered and registered all addons in ${timeTaken}ms")
+            // Register all discovered addons
+            logger.info("Discovered ${discoveredAddons.size} addon${if (discoveredAddons.size == 1) "" else "s"}!")
+            registerAddons()
+        } catch (e: AddonRegistryException) {
+            logger.warn("Failed to load addons! ${e.message}")
+        }
     }
 }
