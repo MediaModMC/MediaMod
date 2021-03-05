@@ -28,6 +28,10 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.LogManager
+import java.io.File
+import java.lang.reflect.Method
+import java.net.URL
+import java.net.URLClassLoader
 
 /**
  * The registry class handling the loading, unloading and management of all instances of a [MediaModAddon]
@@ -48,6 +52,12 @@ object MediaModAddonRegistry {
      * The key for this map is the addon's identifier and the value is the addon's json entry
      */
     private val discoveredAddons = mutableMapOf<String, MediaModAddonJsonEntry>()
+
+    /**
+     * A list of [File]s which are "external" sources which MediaMod will load addons from
+     * This has to be a directory, otherwise it will be ignored
+     */
+    private val externalAddonSources = mutableListOf<File>()
 
     /**
      * A logger for this class, used to print out errors with addon loading
@@ -117,9 +127,23 @@ object MediaModAddonRegistry {
      * When an addon is discovered, it is added to the [discoveredAddons] map
      */
     fun discoverAddons() {
-        // Get all mediamod-addon.json files and parse the json from each resource
-        val addonJsonList = this.javaClass.classLoader.getResources("mediamod-addon.json").toList()
-        addonJsonList.forEach { file ->
+        // Make the "addURL" method accessible by us
+        val addUrlMethod: Method =
+            URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
+        addUrlMethod.isAccessible = true
+
+        // Iterate over all "external" addon sources, get all jar or zip files and add them to the classloader
+        externalAddonSources.forEach { source ->
+            source.walkTopDown()
+                .filter { it.isFile && (it.extension == "jar" || it.extension == "zip") }
+                .map { it.toURI().toURL() }
+                .forEach {
+                    addUrlMethod.invoke(this.javaClass.classLoader, it)
+                }
+        }
+
+        // Find all mediamod-addon.json files and iterate over them
+        this.javaClass.classLoader.getResources("mediamod-addon.json").toList().forEach { file ->
             try {
                 val addonJson: MediaModAddonJson = json.decodeFromString(file.readText())
 
@@ -153,7 +177,7 @@ object MediaModAddonRegistry {
 
             // Try to get the addon's class from the addonClass field
             val addonClass = try {
-                Class.forName(addonEntry.addonClass)
+                this.javaClass.classLoader.loadClass(addonEntry.addonClass)
             } catch (t: Throwable) {
                 return@forEach logger.error("Failed to register addon $addonId: The addon class could not be found! Please contact the developer for more information")
             }
@@ -184,5 +208,18 @@ object MediaModAddonRegistry {
         } catch (e: AddonRegistryException) {
             logger.warn(e.message)
         }
+    }
+
+    /**
+     * Adds an external addon source to the list ([externalAddonSources])
+     * A check is performed to see if the addon source is a directory, if this passes, it will be added
+     * Otherwise, a warning will be logged
+     */
+    fun addAddonSource(source: File) {
+        // Verify the source is a directory
+        if (!source.isDirectory) return logger.warn("Attempt to add non-directory addon source! (${source})")
+
+        // Add the source to the addon list
+        externalAddonSources.add(source)
     }
 }

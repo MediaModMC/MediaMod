@@ -21,9 +21,12 @@ package com.mediamod
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.MediaModAddonRegistry
+import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import org.apache.logging.log4j.LogManager
+import java.io.File
+import kotlin.system.measureTimeMillis
 
 /**
  * The mod class for MediaMod
@@ -37,11 +40,21 @@ class MediaMod {
      */
     private val logger = LogManager.getLogger("MediaMod")
 
+    /**
+     * The data directory for MediaMod
+     * This contains addons, configuration files & more
+     */
+    private val mediamodDirectory = File(Minecraft.getMinecraft().mcDataDir, "mediamod")
+
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         logger.info("Loading MediaMod v${MediaModCore.version}!")
 
+        // Add ${dir}/mediamod/addons as an addon source
+        MediaModAddonRegistry.addAddonSource(File(mediamodDirectory, "addons"))
+
         // Discover and register all MediaMod addons
-        MediaModAddonRegistry.loadAddons()
+        val timeToLoadAddons = measureTimeMillis(MediaModAddonRegistry::loadAddons)
+        logger.info("Took ${timeToLoadAddons}ms to load addons")
     }
 }
