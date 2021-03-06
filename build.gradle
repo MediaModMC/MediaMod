@@ -72,7 +72,7 @@ shadowJar {
     relocate "kotlinx", "mediamod.kotlinx"
 }
 
-reobfJar.finalizedBy tasks.shadowJar
+tasks.build.finalizedBy tasks.shadowJar
 
 processResources {
     // this will ensure that this task is redone when the versions change.
