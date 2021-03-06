@@ -16,26 +16,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.service
-
-import com.mediamod.core.track.TrackMetadata
+package com.mediamod.core.track
 
 /**
- * The class which all MediaMod Services should extend
- * @see MediaModServiceRegistry
- * @author Conor Byrne (dreamhopping)
+ * Contains information about a track
+ * A [MediaModService] will return this information, which MediaMod will then use
  */
-abstract class MediaModService(val identifier: String) {
-    /**
-     * Called when your service is being registered
-     * You should do any once-off operations in here like configuration file reading, etc.
-     * Once this method is complete, your service needs to be ready to use
-     */
-    abstract fun initialise()
-
-    /**
-     * Called when MediaMod wants to get a [TrackMetadata] instance from you
-     * If you do not have one, return null
-     */
-    abstract fun fetchTrackMetadata(): TrackMetadata?
-}
+data class TrackMetadata(
+    val name: String,
+    val artist: String,
+    val progress: Int = 0,
+    val length: Int = 0,
+    val albumArtUrl: String? = null
+)

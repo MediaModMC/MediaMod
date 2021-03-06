@@ -19,6 +19,7 @@
 package com.mediamod.core.service.impl
 
 import com.mediamod.core.service.MediaModService
+import com.mediamod.core.track.TrackMetadata
 import org.apache.logging.log4j.LogManager
 
 /**
@@ -36,4 +37,10 @@ class TestService : MediaModService("mediamod-test-addon-service") {
     override fun initialise() {
         logger.info("My service (${identifier}) has been initialised!")
     }
+
+    /**
+     * Called when MediaMod wants to get a [TrackMetadata] instance from you
+     * If you do not have one, return null
+     */
+    override fun fetchTrackMetadata() = TrackMetadata("Test Track", "Test Artist")
 }
