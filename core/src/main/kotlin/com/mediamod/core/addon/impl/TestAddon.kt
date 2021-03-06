@@ -36,6 +36,7 @@ class TestAddon : MediaModAddon("mediamod-test-addon") {
      */
     override fun initialise() {
         logger.info("Registering my service")
+
         MediaModServiceRegistry.registerService(identifier, TestService())
     }
 
