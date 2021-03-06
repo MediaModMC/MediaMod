@@ -20,11 +20,9 @@ package com.mediamod.listener
 
 import com.mediamod.ui.RenderUtils
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
-import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.max
 import kotlin.math.min
@@ -36,16 +34,9 @@ import kotlin.math.min
  */
 object GuiEventListener {
     private val fontRenderer = Minecraft.getMinecraft().fontRendererObj
+
+    private const val textProgressIncrement = 0.005
     private var textProgressPercent = 0.00
-
-    // Constants for GLScissor box
-    private const val boxX = 50
-    private const val boxY = 5
-    private const val boxWidth = 90
-    private const val boxHeight = 20
-
-    // save me
-    private const val INCREMEMENBRSHIEJBSDBHCXBDFES = 0.005
 
     @SubscribeEvent
     fun onRenderTick(event: RenderGameOverlayEvent) {
@@ -56,54 +47,55 @@ object GuiEventListener {
         renderText(event.partialTicks)
     }
 
-    @SubscribeEvent
-    fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase != TickEvent.Phase.END)
-            return
-
-        textProgressPercent += INCREMEMENBRSHIEJBSDBHCXBDFES
-        if (textProgressPercent > 1.0) {
-            textProgressPercent = 0.0
-        }
-    }
-
     private fun renderBackground() {
         RenderUtils.drawRectangle(5, 5, 150, 50, Color.DARK_GRAY)
     }
 
     private fun renderText(partialTicks: Float) {
         val trackName = "welcome to the end (feat. Sewerperson)"
+        val artistName = "Heylog and Sewerperson"
+
+        if (fontRenderer.getStringWidth(artistName) > 90) {
+            drawMarqueeText(artistName, 50, 20, Color.WHITE.darker(), partialTicks)
+        } else {
+            RenderUtils.drawText(artistName, 50f, 20f, Color.WHITE)
+        }
 
         if (fontRenderer.getStringWidth(trackName) > 90) {
-            val textString = "$trackName     $trackName"
-            val textProgressPartialTicks =
-                min((textProgressPercent + partialTicks * INCREMEMENBRSHIEJBSDBHCXBDFES), 1.0)
-
-            // Setup GL Scissoring
-            GL11.glEnable(GL11.GL_SCISSOR_TEST)
-
-            // Scissor box calculation
-            val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
-            val scaleFactor = scaledResolution.scaleFactor
-            val x = boxX * scaleFactor
-            val y = (scaledResolution.scaledHeight * scaleFactor) - ((boxY + boxHeight) * scaleFactor)
-            val width = boxWidth * scaleFactor
-            val height = boxHeight * scaleFactor
-            val textWidth = fontRenderer.getStringWidth(textString)
-
-            // Apply scissor and render text
-            GL11.glScissor(x, y, width, height)
-
-            RenderUtils.drawText(
-                textString,
-                (50 - (textProgressPartialTicks * max(0, textWidth - boxWidth))).toFloat(),
-                10f,
-                Color.WHITE
-            )
-
-            GL11.glDisable(GL11.GL_SCISSOR_TEST)
+            drawMarqueeText(trackName, 50, 10, Color.WHITE, partialTicks)
         } else {
             RenderUtils.drawText(trackName, 50f, 10f, Color.WHITE)
+        }
+    }
+
+    /**
+     * Renders text to the screen that rotates on the x axis around the scissored area, similar to a HTML marquee
+     */
+    private fun drawMarqueeText(text: String, x: Int, y: Int, color: Color, partialTicks: Float) {
+        val textString = "$text     $text"
+        val textWidth = fontRenderer.getStringWidth(textString)
+
+        val textProgressPartialTicks =
+            min((textProgressPercent + partialTicks * textProgressIncrement), 1.0)
+
+        RenderUtils.drawScissor(x, y, 90, 15) {
+            RenderUtils.drawText(
+                textString,
+                ((x - (textProgressPartialTicks * max(0, textWidth - 90)))).toFloat(),
+                y.toFloat(),
+                color
+            )
+        }
+    }
+
+    @SubscribeEvent
+    fun onTick(event: TickEvent.ClientTickEvent) {
+        if (event.phase != TickEvent.Phase.END)
+            return
+
+        textProgressPercent += textProgressIncrement
+        if (textProgressPercent > 1.0) {
+            textProgressPercent = 0.0
         }
     }
 }

@@ -21,6 +21,8 @@ package com.mediamod.ui
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
+import net.minecraft.client.gui.ScaledResolution
+import org.lwjgl.opengl.GL11
 import java.awt.Color
 
 /**
@@ -57,4 +59,33 @@ object RenderUtils {
      */
     fun drawText(text: String, x: Float, y: Float, color: Color) =
         fontRenderer.drawString(text, x, y, color.rgb, false)
+
+    /**
+     * Renders elements to the screen under a scissor
+     * Scales the inputs to [ScaledResolution]
+     *
+     * @param x The x co-ordinate of the top left corner
+     * @param y The y co-ordinate of the top left corner
+     * @param width The width of the scissor
+     * @param height The height of the scissor
+     * @param drawCode The code that will be run under the scissor
+     */
+    fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {
+        val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
+        val scaleFactor = scaledResolution.scaleFactor
+
+        // Scale inputs
+        val scaledX = x * scaleFactor
+        val scaledY = (scaledResolution.scaledHeight * scaleFactor) - ((y + height) * scaleFactor)
+        val scaledWidth = width * scaleFactor
+        val scaledHeight = height * scaleFactor
+
+        // Apply scissor and render elements
+        GL11.glEnable(GL11.GL_SCISSOR_TEST)
+        GL11.glScissor(scaledX, scaledY, scaledWidth, scaledHeight)
+
+        drawCode()
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST)
+    }
 }
