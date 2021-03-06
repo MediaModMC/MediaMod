@@ -19,6 +19,7 @@
 package com.mediamod.ui
 
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
 import java.awt.Color
 
@@ -28,7 +29,7 @@ import java.awt.Color
  * @author Conor Byrne (dreamhopping)
  */
 object RenderUtils {
-    private val textIndexMap = mutableMapOf<String, Int>()
+    private val fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRendererObj
 
     /**
      * Renders a rectangle to the screen
@@ -43,6 +44,17 @@ object RenderUtils {
     fun drawRectangle(cornerX: Int, cornerY: Int, width: Int, height: Int, color: Color) =
         Gui.drawRect(cornerX, cornerY, width, height, color.rgb)
 
+    /**
+     * Renders text to the screen
+     * Calls [FontRenderer.drawString], this function is a wrapper to make the parameters easier to understand
+     *
+     * It also accepts floats as an input by using the old drawString method
+     *
+     * @param text The text to render
+     * @param x The x co-ordinate of the top left corner
+     * @param y The y co-ordinate of the top left corner
+     * @param color The color of the text
+     */
     fun drawText(text: String, x: Float, y: Float, color: Color) =
-        Minecraft.getMinecraft().fontRendererObj.drawString(text, x, y, color.rgb, false)
+        fontRenderer.drawString(text, x, y, color.rgb, false)
 }
