@@ -16,21 +16,27 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'kotlin'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.31'
-}
+package com.mediamod.ui
 
-group 'com.mediamod.core'
-version '2.0.0-rewrite'
-sourceCompatibility = targetCompatibility = "1.8"
+import net.minecraft.client.gui.Gui
+import java.awt.Color
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compileOnly "org.apache.logging.log4j:log4j-api:2.0-beta9"
-    compileOnly "org.apache.logging.log4j:log4j-core:2.0-beta9"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
+/**
+ * A class which provides commonly used methods for rendering things to the screen
+ *
+ * @author Conor Byrne (dreamhopping)
+ */
+object RenderUtils {
+    /**
+     * Renders a rectangle to the screen
+     * Calls [Gui.drawRect], this function is a wrapper to make the parameters easier to understand
+     *
+     * @param cornerX The x co-ordinate of the top left corner
+     * @param cornerY The y co-ordinate of the top left corner
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     * @param color The desired color for the rectangle
+     */
+    fun renderRectangle(cornerX: Int, cornerY: Int, width: Int, height: Int, color: Color) =
+        Gui.drawRect(cornerX, cornerY, width, height, color.rgb)
 }

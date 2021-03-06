@@ -16,21 +16,23 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'kotlin'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.31'
-}
+package com.mediamod.listener
 
-group 'com.mediamod.core'
-version '2.0.0-rewrite'
-sourceCompatibility = targetCompatibility = "1.8"
+import com.mediamod.ui.RenderUtils
+import net.minecraftforge.client.event.RenderGameOverlayEvent
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import java.awt.Color
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compileOnly "org.apache.logging.log4j:log4j-api:2.0-beta9"
-    compileOnly "org.apache.logging.log4j:log4j-core:2.0-beta9"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
+/**
+ * Listens to all events related to GUIs like [RenderGameOverlayEvent]
+ *
+ * @author Conor Byrne (dreamhopping)
+ */
+object GuiEventListener {
+    @SubscribeEvent
+    fun onRenderGameOverlay(event: RenderGameOverlayEvent) {
+        // Draw a red rectangle to the screen at the same time as the hotbar
+        if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR)
+            RenderUtils.renderRectangle(5, 5, 100, 50, Color.RED)
+    }
 }

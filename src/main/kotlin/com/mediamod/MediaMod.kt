@@ -21,9 +21,12 @@ package com.mediamod
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.MediaModAddonRegistry
+import com.mediamod.listener.GuiEventListener
 import net.minecraft.client.Minecraft
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
+import net.minecraftforge.fml.common.eventhandler.EventBus
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import kotlin.system.measureTimeMillis
@@ -66,5 +69,16 @@ class MediaMod {
         // Discover and register all MediaMod addons
         val timeToLoadAddons = measureTimeMillis(MediaModAddonRegistry::loadAddons)
         logger.info("Took ${timeToLoadAddons}ms to load addons")
+
+        // Register event listeners & commands
+        registerEventListeners()
+    }
+
+    /**
+     * Registers all event listeners to [MinecraftForge.EVENT_BUS] via [EventBus.register]
+     * Current event listeners: [GuiEventListener]
+     */
+    private fun registerEventListeners() {
+        MinecraftForge.EVENT_BUS.register(GuiEventListener)
     }
 }
