@@ -18,7 +18,9 @@
 
 package com.mediamod.listener
 
+import com.mediamod.MediaMod
 import com.mediamod.ui.RenderUtils
+import net.minecraft.client.Minecraft
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
@@ -31,7 +33,9 @@ import java.awt.Color
 object GuiEventListener {
     @SubscribeEvent
     fun onRenderGameOverlay(event: RenderGameOverlayEvent) {
-        if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR)
-            RenderUtils.renderRectangle(5, 5, 100, 50, Color.RED)
+        if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
+            RenderUtils.renderRectangle(5, 5, 100, 50, Color.DARK_GRAY)
+            Minecraft.getMinecraft().fontRendererObj.drawString(MediaMod.currentTrackMetadata?.name, 10, 10, -1)
+        }
     }
 }
