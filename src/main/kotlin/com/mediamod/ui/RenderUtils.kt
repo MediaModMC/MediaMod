@@ -18,6 +18,7 @@
 
 package com.mediamod.ui
 
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import java.awt.Color
 
@@ -27,6 +28,8 @@ import java.awt.Color
  * @author Conor Byrne (dreamhopping)
  */
 object RenderUtils {
+    private val textIndexMap = mutableMapOf<String, Int>()
+
     /**
      * Renders a rectangle to the screen
      * Calls [Gui.drawRect], this function is a wrapper to make the parameters easier to understand
@@ -37,6 +40,9 @@ object RenderUtils {
      * @param height The height of the rectangle
      * @param color The desired color for the rectangle
      */
-    fun renderRectangle(cornerX: Int, cornerY: Int, width: Int, height: Int, color: Color) =
+    fun drawRectangle(cornerX: Int, cornerY: Int, width: Int, height: Int, color: Color) =
         Gui.drawRect(cornerX, cornerY, width, height, color.rgb)
+
+    fun drawText(text: String, x: Float, y: Float, color: Color) =
+        Minecraft.getMinecraft().fontRendererObj.drawString(text, x, y, color.rgb, false)
 }
