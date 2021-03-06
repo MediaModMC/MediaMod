@@ -46,12 +46,22 @@ class MediaMod {
      */
     private val mediamodDirectory = File(Minecraft.getMinecraft().mcDataDir, "mediamod")
 
+    /**
+     * The addons directory for MediaMod
+     * This is where MediaMod addons will be stored
+     */
+    private val mediamodAddonDirectory = File(mediamodDirectory, "addons")
+
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         logger.info("Loading MediaMod v${MediaModCore.version}!")
 
+        // Create the "./mediamod/addons" Directory if it doesn't exist already
+        if (!mediamodAddonDirectory.exists())
+            mediamodAddonDirectory.mkdirs()
+
         // Add ${dir}/mediamod/addons as an addon source
-        MediaModAddonRegistry.addAddonSource(File(mediamodDirectory, "addons"))
+        MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
 
         // Discover and register all MediaMod addons
         val timeToLoadAddons = measureTimeMillis(MediaModAddonRegistry::loadAddons)
