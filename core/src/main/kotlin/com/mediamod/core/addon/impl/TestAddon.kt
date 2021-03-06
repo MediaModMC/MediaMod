@@ -19,14 +19,24 @@
 package com.mediamod.core.addon.impl
 
 import com.mediamod.core.addon.MediaModAddon
+import com.mediamod.core.service.MediaModServiceRegistry
+import com.mediamod.core.service.impl.TestService
+import org.apache.logging.log4j.LogManager
 
-class TestAddon(override val identifier: String = "mediamod-test-addon") : MediaModAddon {
+/**
+ * A test addon for MediaMod which registers a service ([TestService])
+ * @author Conor Byrne (dreamhopping)
+ */
+class TestAddon : MediaModAddon("mediamod-test-addon") {
+    private val logger = LogManager.getLogger("TestAddon")
+
     /**
      * Called when MediaMod is initialising your addon
      * The addon should be ready for usage when this method is complete
      */
     override fun initialise() {
-        println("Initialised")
+        logger.info("Registering my service")
+        MediaModServiceRegistry.registerService(identifier, TestService())
     }
 
     /**
@@ -34,6 +44,6 @@ class TestAddon(override val identifier: String = "mediamod-test-addon") : Media
      * The addon should do any configuration saving, etc. in this method
      */
     override fun unload() {
-        println("Unloaded")
+        logger.info("Unloaded")
     }
 }

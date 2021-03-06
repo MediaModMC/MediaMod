@@ -16,31 +16,18 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-package com.mediamod.core.addon
+package com.mediamod.core.service
 
 /**
- * The interface which a MediaMod Addon will implement, this will allow MediaMod to recognise it
+ * The class which all MediaMod Services should extend
+ * @see MediaModServiceRegistry
  * @author Conor Byrne (dreamhopping)
  */
-abstract class MediaModAddon(
+abstract class MediaModService(val identifier: String) {
     /**
-     * A unique identifier for your MediaMod Addon, this can not be the same as any other addon
-     *
-     * For example: "spotify-addon" or "extension-addon",
-     * If a duplicate identifier is found, a warning will be print to the console and the first addon that was loaded will take priority
-     */
-    val identifier: String
-) {
-    /**
-     * Called when MediaMod is initialising your addon
-     * The addon should be ready for usage when this method is complete
+     * Called when your service is being registered
+     * You should do any once-off operations in here like configuration file reading, etc.
+     * Once this method is complete, your service needs to be ready to use
      */
     abstract fun initialise()
-
-    /**
-     * Called when MediaMod is unloading your addon
-     * The addon should do any configuration saving, etc. in this method
-     */
-    abstract fun unload()
 }

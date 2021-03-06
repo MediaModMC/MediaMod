@@ -16,31 +16,24 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package com.mediamod.core.service.impl
 
-package com.mediamod.core.addon
+import com.mediamod.core.service.MediaModService
+import org.apache.logging.log4j.LogManager
 
 /**
- * The interface which a MediaMod Addon will implement, this will allow MediaMod to recognise it
+ * A test service for MediaMod
  * @author Conor Byrne (dreamhopping)
  */
-abstract class MediaModAddon(
-    /**
-     * A unique identifier for your MediaMod Addon, this can not be the same as any other addon
-     *
-     * For example: "spotify-addon" or "extension-addon",
-     * If a duplicate identifier is found, a warning will be print to the console and the first addon that was loaded will take priority
-     */
-    val identifier: String
-) {
-    /**
-     * Called when MediaMod is initialising your addon
-     * The addon should be ready for usage when this method is complete
-     */
-    abstract fun initialise()
+class TestService : MediaModService("mediamod-test-addon-service") {
+    private val logger = LogManager.getLogger("TestService")
 
     /**
-     * Called when MediaMod is unloading your addon
-     * The addon should do any configuration saving, etc. in this method
+     * Called when your service is being registered
+     * You should do any once-off operations in here like configuration file reading, etc.
+     * Once this method is complete, your service needs to be ready to use
      */
-    abstract fun unload()
+    override fun initialise() {
+        logger.info("My service (${identifier}) has been initialised!")
+    }
 }
