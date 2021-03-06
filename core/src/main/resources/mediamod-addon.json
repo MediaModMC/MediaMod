@@ -2,6 +2,7 @@
   "addons": {
     "mediamod-test-addon": {
       "addonClass": "com.mediamod.core.addon.impl.TestAddon",
+      "displayName": "MediaMod Test Addon",
       "apiVersion": 1
     }
   }

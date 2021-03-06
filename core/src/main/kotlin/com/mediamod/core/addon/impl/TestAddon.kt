@@ -19,70 +19,21 @@
 package com.mediamod.core.addon.impl
 
 import com.mediamod.core.addon.MediaModAddon
-import com.mediamod.core.metadata.TrackMetadata
-import org.apache.logging.log4j.LogManager
 
-class TestAddon : MediaModAddon {
+class TestAddon(override val identifier: String = "mediamod-test-addon") : MediaModAddon {
     /**
-     * A unique identifier for your MediaMod Addon, this can not be the same as any other addon
-     *
-     * For example: "spotify-addon" or "extension-addon",
-     * If a duplicate identifier is found, a warning will be print to the console and the first addon that was loaded will take priority
+     * Called when MediaMod is initialising your addon
+     * The addon should be ready for usage when this method is complete
      */
-    override val identifier = "mediamod-test-addon"
-
-    /**
-     * The display name for your addon, this will be shown to the user in various MediaMod menus
-     *
-     * For example: "Spotify" or "Browser Extension", it is not required to be unique to your addon
-     * To avoid confusion, please do not make it the same as any other addon
-     */
-    override val name: String = "MediaMod Test Addon"
-
-    /**
-     * A logger instance for this class, used for logging debug information
-     */
-    private val logger = LogManager.getLogger("MediaModTestAddon")
-
-    /**
-     * Called when MediaMod is loading your addon, this will occur around the same time as the forge initialisation event
-     * This is also called if your addon has been reloaded by the user
-     *
-     * @return true if the addon has been loaded successfully, otherwise false
-     */
-    override fun register(): Boolean {
-        logger.info("Hello, I have been registered!")
-        return true
+    override fun initialise() {
+        println("Initialised")
     }
 
     /**
-     * Called when MediaMod is unloading your addon, this will occur around the same time as Minecraft closing
-     * This is also called if your addon has been reloaded by the user
-     *
-     * @return true if the addon has been unloaded successfully, otherwise false
+     * Called when MediaMod is unloading your addon
+     * The addon should do any configuration saving, etc. in this method
      */
-    override fun unregister(): Boolean {
-        logger.info("Goodbye, I have been unregistered!")
-        return true
-    }
-
-    /**
-     * Called when MediaMod wants to get a [TrackMetadata] instance from your addon
-     * This is where you will return the information about the current track
-     *
-     * @return If there is a track available, an instance of [TrackMetadata], otherwise null
-     */
-    override fun fetchTrackMetadata(): TrackMetadata {
-        return TrackMetadata("Test Track", "Test Artist")
-    }
-
-    /**
-     * Called when MediaMod is trying to locate an addon that is ready for providing track information
-     * Please do not abuse this method, only return true if [fetchTrackMetadata] will not return null
-     *
-     * @return true if you are ready to return a track (i.e. if one is being played), otherwise false
-     */
-    override fun isReady(): Boolean {
-        return true
+    override fun unload() {
+        println("Unloaded")
     }
 }

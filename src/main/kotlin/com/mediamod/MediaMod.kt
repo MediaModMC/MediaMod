@@ -29,7 +29,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.EventBus
 import org.apache.logging.log4j.LogManager
 import java.io.File
-import kotlin.system.measureTimeMillis
 
 /**
  * The mod class for MediaMod
@@ -67,8 +66,12 @@ class MediaMod {
         MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
 
         // Discover and register all MediaMod addons
-        val timeToLoadAddons = measureTimeMillis(MediaModAddonRegistry::loadAddons)
-        logger.info("Took ${timeToLoadAddons}ms to load addons")
+        try {
+            MediaModAddonRegistry.discoverAddons()
+            MediaModAddonRegistry.initialiseAddons()
+        } catch (t: Throwable) {
+            logger.error(t.message)
+        }
 
         // Register event listeners & commands
         registerEventListeners()
