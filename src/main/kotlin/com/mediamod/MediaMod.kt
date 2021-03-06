@@ -21,6 +21,8 @@ package com.mediamod
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.MediaModAddonRegistry
+import com.mediamod.core.service.MediaModServiceRegistry
+import com.mediamod.core.track.TrackMetadata
 import com.mediamod.listener.GuiEventListener
 import net.minecraft.client.Minecraft
 import net.minecraftforge.common.MinecraftForge
@@ -29,14 +31,18 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.EventBus
 import org.apache.logging.log4j.LogManager
 import java.io.File
+import kotlin.concurrent.fixedRateTimer
 
 /**
  * The mod class for MediaMod
- *
  * @author Conor Byrne (dreamhopping)
  */
-@Mod(modid = "mediamod", version = MediaModCore.version)
-class MediaMod {
+@Mod(
+    modid = "mediamod",
+    version = MediaModCore.version,
+    modLanguageAdapter = "com.mediamod.launch.KotlinLanguageAdapter"
+)
+object MediaMod {
     /**
      * A logger instance for this class, used to log any issues that may occur during mod-loading
      */
@@ -53,6 +59,11 @@ class MediaMod {
      * This is where MediaMod addons will be stored
      */
     private val mediamodAddonDirectory = File(mediamodDirectory, "addons")
+
+    /**
+     * An instance of [TrackMetadata], this is the current track information provided by a [MediaModService]
+     */
+    var currentTrackMetadata: TrackMetadata? = null
 
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
@@ -83,5 +94,15 @@ class MediaMod {
      */
     private fun registerEventListeners() {
         MinecraftForge.EVENT_BUS.register(GuiEventListener)
+    }
+
+    init {
+        fixedRateTimer("MediaMod: TrackMetadata", false, 0, 3000) {
+            // Query the current service for some track information, if none is provided, return
+            val trackMetadata = MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
+            if (trackMetadata != currentTrackMetadata) {
+                currentTrackMetadata = trackMetadata
+            }
+        }
     }
 }

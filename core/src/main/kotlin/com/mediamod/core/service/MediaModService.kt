@@ -35,7 +35,18 @@ abstract class MediaModService(val identifier: String) {
 
     /**
      * Called when MediaMod wants to get a [TrackMetadata] instance from you
-     * If you do not have one, return null
+     * This is called every 3 seconds to avoid rate limits if you are using an API
+     * You can do network operations on this method
+     *
+     * @return null if there is no TrackMetadata available
      */
     abstract fun fetchTrackMetadata(): TrackMetadata?
+
+    /**
+     * Called when MediaMod is querying your service to check if it is ready to provide track information
+     * You should NOT do any network operations on this call
+     *
+     * @return true if you are ready to return [TrackMetadata], otherwise false
+     */
+    abstract fun hasTrackMetadata(): Boolean
 }

@@ -31,7 +31,6 @@ import java.awt.Color
 object GuiEventListener {
     @SubscribeEvent
     fun onRenderGameOverlay(event: RenderGameOverlayEvent) {
-        // Draw a red rectangle to the screen at the same time as the hotbar
         if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR)
             RenderUtils.renderRectangle(5, 5, 100, 50, Color.RED)
     }

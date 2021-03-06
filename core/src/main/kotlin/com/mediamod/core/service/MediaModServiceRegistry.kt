@@ -32,6 +32,12 @@ object MediaModServiceRegistry {
     private val services = mutableMapOf<String, MutableList<MediaModService>>()
 
     /**
+     * An instance of [MediaModService] that is currently being used, this may change from time to time
+     */
+    val currentService: MediaModService?
+        get() = services.values.flatten().firstOrNull { it.hasTrackMetadata() }
+
+    /**
      * Registers a service into the [MediaModServiceRegistry]
      *
      * @param addonId The identifier of the addon that owns this service
