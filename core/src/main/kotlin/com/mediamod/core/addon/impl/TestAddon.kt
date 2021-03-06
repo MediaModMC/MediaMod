@@ -19,6 +19,7 @@
 package com.mediamod.core.addon.impl
 
 import com.mediamod.core.addon.MediaModAddon
+import com.mediamod.core.metadata.TrackMetadata
 import org.apache.logging.log4j.LogManager
 
 class TestAddon : MediaModAddon {
@@ -62,6 +63,26 @@ class TestAddon : MediaModAddon {
      */
     override fun unregister(): Boolean {
         logger.info("Goodbye, I have been unregistered!")
+        return true
+    }
+
+    /**
+     * Called when MediaMod wants to get a [TrackMetadata] instance from your addon
+     * This is where you will return the information about the current track
+     *
+     * @return If there is a track available, an instance of [TrackMetadata], otherwise null
+     */
+    override fun fetchTrackMetadata(): TrackMetadata {
+        return TrackMetadata("Test Track", "Test Artist")
+    }
+
+    /**
+     * Called when MediaMod is trying to locate an addon that is ready for providing track information
+     * Please do not abuse this method, only return true if [fetchTrackMetadata] will not return null
+     *
+     * @return true if you are ready to return a track (i.e. if one is being played), otherwise false
+     */
+    override fun isReady(): Boolean {
         return true
     }
 }

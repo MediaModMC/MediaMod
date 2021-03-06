@@ -72,6 +72,15 @@ object MediaModAddonRegistry {
     private val logger = LogManager.getLogger("MediaMod.AddonRegistry")
 
     /**
+     * Fetches the first loaded [MediaModAddon] that is ready for usage
+     * @return An instance of [MediaModAddon] if an addon is ready, otherwise null
+     */
+    val firstReadyAddon: MediaModAddon?
+        get() {
+            return loadedAddons.firstOrNull { it.isReady() }
+        }
+
+    /**
      * A kotlinx-serialization json parser, used when parsing the mediamod-addon.json files
      */
     private val json = Json {

@@ -56,11 +56,11 @@ class MediaMod {
     fun init(event: FMLInitializationEvent) {
         logger.info("Loading MediaMod v${MediaModCore.version}!")
 
-        // Create the "./mediamod/addons" Directory if it doesn't exist already
+        // Create the "./mediamod" and "./mediamod/addons" directories if they don't exist
         if (!mediamodAddonDirectory.exists())
             mediamodAddonDirectory.mkdirs()
 
-        // Add ${dir}/mediamod/addons as an addon source
+        // Add ".mediamod/addons" as an addon source
         MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
 
         // Discover and register all MediaMod addons

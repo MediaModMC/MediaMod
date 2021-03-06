@@ -19,6 +19,8 @@
 
 package com.mediamod.core.addon
 
+import com.mediamod.core.metadata.TrackMetadata
+
 /**
  * The interface which a MediaMod Addon will implement, this will allow MediaMod to recognise it
  *
@@ -56,4 +58,20 @@ interface MediaModAddon {
      * @return true if the addon has been unloaded successfully, otherwise false
      */
     fun unregister(): Boolean
+
+    /**
+     * Called when MediaMod wants to get a [TrackMetadata] instance from your addon
+     * This is where you will return the information about the current track
+     *
+     * @return If there is a track available, an instance of [TrackMetadata], otherwise null
+     */
+    fun fetchTrackMetadata(): TrackMetadata?
+
+    /**
+     * Called when MediaMod is trying to locate an addon that is ready for providing track information
+     * Please do not abuse this method, only return true if [fetchTrackMetadata] will not return null
+     *
+     * @return true if you are ready to return a track (i.e. if one is being played), otherwise false
+     */
+    fun isReady(): Boolean
 }
