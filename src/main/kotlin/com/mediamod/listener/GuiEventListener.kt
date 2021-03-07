@@ -23,6 +23,7 @@ import com.mediamod.ui.ImageUtils
 import com.mediamod.ui.RenderUtils
 import com.mediamod.ui.render.MarqueeingTextRenderer
 import com.mediamod.ui.render.ProgressBarRenderer
+import com.mediamod.util.MultithreadingUtils
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -56,10 +57,14 @@ object GuiEventListener {
     }
 
     private fun renderAlbumArt() {
-        val imageLocation =
-            ImageUtils.getResourceForURL(MediaMod.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
+        MultithreadingUtils.runAsync {
+            val imageLocation =
+                ImageUtils.getResourceForURL(MediaMod.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
 
-        RenderUtils.drawImage(imageLocation, 10, 10, 35, 35)
+            MultithreadingUtils.runBlocking {
+                RenderUtils.drawImage(imageLocation, 10, 10, 35, 35)
+            }
+        }
     }
 
     private fun renderProgressBar() {
