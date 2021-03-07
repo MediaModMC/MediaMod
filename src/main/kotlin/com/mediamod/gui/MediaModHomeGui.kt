@@ -1,10 +1,7 @@
 package com.mediamod.gui
 
 import club.sk1er.elementa.WindowScreen
-import club.sk1er.elementa.components.UIBlock
-import club.sk1er.elementa.components.UIContainer
-import club.sk1er.elementa.components.UIText
-import club.sk1er.elementa.components.UIWrappedText
+import club.sk1er.elementa.components.*
 import club.sk1er.elementa.components.inspector.Inspector
 import club.sk1er.elementa.constraints.CenterConstraint
 import club.sk1er.elementa.constraints.SiblingConstraint
@@ -27,7 +24,10 @@ MediaMod has changed since 1.0!
 - Improved reliability and performance
 - Better player customisation
 - and more...
-Some other text here, yea yea yea yea yea"""
+
+Even more services are supported with MediaMod 2.0, to check out all the services you can install, check out the "Store" pane in the GUI!
+
+Ready to check it out? Click "OK" to never see this GUI again."""
 
     init {
         val leftBlock = UIBlock(blockColour)
@@ -42,7 +42,7 @@ Some other text here, yea yea yea yea yea"""
             x = 0.pixels()
             y = 0.pixels()
             width = 100.percent()
-            height = 55.percent()
+            height = 75.percent()
         } childOf leftBlock
 
         UIText("Welcome to MediaMod 2.0")
@@ -55,27 +55,27 @@ Some other text here, yea yea yea yea yea"""
         UIWrappedText(
             descriptionText,
             false,
+            trimText = true
         ).constrain {
             x = 10.pixels()
             y = SiblingConstraint() + 10.pixels()
-            width = 100.percent()
+            width = 90.percent()
             color = descriptionColour.toConstraint()
         } childOf textContainer
 
         val bottomContainer = UIContainer()
             .constrain {
-                x = 0.pixels()
                 y = SiblingConstraint()
                 width = 100.percent()
-                height = 45.percent()
+                height = 25.percent()
             } childOf leftBlock
 
         val buttonContainer = UIContainer()
             .constrain {
                 x = CenterConstraint()
-                y = 75.percent()
+                y = 50.percent()
                 width = 100.percent()
-                height = 100.percent()
+                height = 50.percent()
             } childOf bottomContainer
 
         UIRoundedButton(Color(69, 204, 116), "OK", 50, 20) {
@@ -103,6 +103,29 @@ Some other text here, yea yea yea yea yea"""
             width = 50.pixels()
             height = 20.pixels()
         } childOf buttonContainer
+
+        val rightBlock = UIBlock(blockColour.darker())
+            .constrain {
+                x = 50.percent()
+                y = 0.pixels()
+                width = 50.percent()
+                height = 100.percent()
+            } childOf window
+
+        UIImage.ofResource("/assets/mediamod/screenshot.png")
+            .constrain {
+                x = 5.percent()
+                y = 25.percent() - 5.pixels()
+                width = 90.percent()
+                height = 50.percent()
+            } childOf rightBlock
+
+        UIText("This is a placeholder image n stuff", false)
+            .constrain {
+                x = 5.percent()
+                y = SiblingConstraint() + 5.pixels()
+                color = descriptionColour.toConstraint()
+            } childOf rightBlock
 
         Inspector(window) childOf window
     }
