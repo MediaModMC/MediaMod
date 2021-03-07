@@ -19,12 +19,14 @@
 
 package com.mediamod
 
+import com.mediamod.command.MediaModCommand
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.track.TrackMetadata
 import com.mediamod.listener.GuiEventListener
 import net.minecraft.client.Minecraft
+import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -73,10 +75,7 @@ object MediaMod {
         if (!mediamodAddonDirectory.exists())
             mediamodAddonDirectory.mkdirs()
 
-        // Add ".mediamod/addons" as an addon source
         MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
-
-        // Discover and register all MediaMod addons
         try {
             MediaModAddonRegistry.discoverAddons()
             MediaModAddonRegistry.initialiseAddons()
@@ -84,8 +83,8 @@ object MediaMod {
             logger.error(t.message)
         }
 
-        // Register event listeners & commands
         registerEventListeners()
+        ClientCommandHandler.instance.registerCommand(MediaModCommand())
     }
 
     /**
@@ -100,7 +99,8 @@ object MediaMod {
         fixedRateTimer("MediaMod: TrackMetadata", false, 0, 3000) {
             // Query the current service for some track information, if none is provided, return
             try {
-                val trackMetadata = MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
+                val trackMetadata =
+                    MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
                 if (trackMetadata != currentTrackMetadata) {
                     currentTrackMetadata = trackMetadata
                 }
