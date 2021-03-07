@@ -70,7 +70,7 @@ object RenderUtils {
      * @param height The height of the scissor
      * @param drawCode The code that will be run under the scissor
      */
-    fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {
+    inline fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {
         val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
         val scaleFactor = scaledResolution.scaleFactor
 
