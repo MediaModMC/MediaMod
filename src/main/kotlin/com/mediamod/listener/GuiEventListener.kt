@@ -19,6 +19,7 @@
 package com.mediamod.listener
 
 import com.mediamod.MediaMod
+import com.mediamod.ui.ImageUtils
 import com.mediamod.ui.RenderUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
@@ -50,7 +51,10 @@ object GuiEventListener {
     }
 
     private fun renderAlbumArt() {
-        RenderUtils.drawImage(mediamodIconLocation, 10, 10, 35, 35)
+        val imageLocation =
+            ImageUtils.getResourceForURL(MediaMod.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
+
+        RenderUtils.drawImage(imageLocation, 10, 10, 35, 35)
     }
 
     private fun renderText(partialTicks: Float) {
