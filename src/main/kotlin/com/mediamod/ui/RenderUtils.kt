@@ -18,12 +18,18 @@
 
 package com.mediamod.ui
 
+import com.mediamod.ui.RenderUtils.SpinningTextHandler.textProgressPercent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.lwjgl.opengl.GL11
 import java.awt.Color
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * A class which provides commonly used methods for rendering things to the screen
@@ -32,6 +38,10 @@ import java.awt.Color
  */
 object RenderUtils {
     private val fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRendererObj
+
+    init {
+        MinecraftForge.EVENT_BUS.register(SpinningTextHandler)
+    }
 
     /**
      * Renders a rectangle to the screen
@@ -87,5 +97,64 @@ object RenderUtils {
         drawCode()
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
+    }
+
+    /**
+     * Renders text to the screen "spinning" on the x axis, like a HTML <marquee>
+     * This can be used to show a long string, f.ex: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     * On a small area of the screen
+     *
+     * @param text The text to draw to the screen
+     * @param x The x position of the text
+     * @param y The y position of the text
+     * @param color The color of the text
+     * @param maximumWidth The width of the glScissor box, the maximum length of the displayed text
+     * @param maximumHeight The height of the glScissor box, the maximum height of the displayed text
+     * @param partialTicks The partial ticks for this render tick
+     */
+    fun drawScrollingText(
+        text: String,
+        x: Int,
+        y: Int,
+        color: Color,
+        maximumWidth: Int,
+        maximumHeight: Int,
+        partialTicks: Float
+    ) {
+        val textString = "$text     ${fontRenderer.trimStringToWidth(text, 90)}"
+
+        val textWidth = fontRenderer.getStringWidth(textString)
+        val textProgressPartialTicks = min(
+            (textProgressPercent + partialTicks * SpinningTextHandler.textProgressIncrement),
+            1.0
+        )
+
+        drawScissor(x, y, maximumWidth, maximumHeight) {
+            drawText(
+                textString,
+                ((x - (textProgressPartialTicks * max(0, textWidth - 90)))).toFloat(),
+                y.toFloat(),
+                color
+            )
+        }
+    }
+
+    /**
+     * The class which handles the updating of [textProgressPercent], used in [drawScrollingText]
+     */
+    object SpinningTextHandler {
+        const val textProgressIncrement = 0.005
+        var textProgressPercent = 0.0
+
+        @SubscribeEvent
+        fun onTick(event: TickEvent.ClientTickEvent) {
+            if (event.phase != TickEvent.Phase.END)
+                return
+
+            textProgressPercent += textProgressIncrement
+            if (textProgressPercent > 1.0 + textProgressIncrement) {
+                textProgressPercent = 0.0
+            }
+        }
     }
 }

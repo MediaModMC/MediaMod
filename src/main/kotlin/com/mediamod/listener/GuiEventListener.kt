@@ -18,14 +18,12 @@
 
 package com.mediamod.listener
 
+import com.mediamod.MediaMod
 import com.mediamod.ui.RenderUtils
 import net.minecraft.client.Minecraft
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
 import java.awt.Color
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Listens to all events related to GUIs like [RenderGameOverlayEvent]
@@ -34,9 +32,6 @@ import kotlin.math.min
  */
 object GuiEventListener {
     private val fontRenderer = Minecraft.getMinecraft().fontRendererObj
-
-    private const val textProgressIncrement = 0.005
-    private var textProgressPercent = 0.00
 
     @SubscribeEvent
     fun onRenderTick(event: RenderGameOverlayEvent) {
@@ -52,50 +47,19 @@ object GuiEventListener {
     }
 
     private fun renderText(partialTicks: Float) {
-        val trackName = "welcome to the end (feat. Sewerperson)"
-        val artistName = "Heylog and Sewerperson"
+        val trackName = MediaMod.currentTrackMetadata?.name ?: "Unknown Track"
+        val artistName = MediaMod.currentTrackMetadata?.artist ?: "Unknown Artist"
 
         if (fontRenderer.getStringWidth(artistName) > 90) {
-            drawMarqueeText(artistName, 50, 20, Color.WHITE.darker(), partialTicks)
+            RenderUtils.drawScrollingText(artistName, 50, 20, Color.WHITE.darker(), 90, 20, partialTicks)
         } else {
-            RenderUtils.drawText(artistName, 50f, 20f, Color.WHITE)
+            RenderUtils.drawText(artistName, 50f, 20f, Color.WHITE.darker())
         }
 
         if (fontRenderer.getStringWidth(trackName) > 90) {
-            drawMarqueeText(trackName, 50, 10, Color.WHITE, partialTicks)
+            RenderUtils.drawScrollingText(trackName, 50, 10, Color.WHITE, 90, 20, partialTicks)
         } else {
             RenderUtils.drawText(trackName, 50f, 10f, Color.WHITE)
-        }
-    }
-
-    /**
-     * Renders text to the screen that rotates on the x axis around the scissored area, similar to a HTML marquee
-     */
-    private fun drawMarqueeText(text: String, x: Int, y: Int, color: Color, partialTicks: Float) {
-        val textString = "$text     ${fontRenderer.trimStringToWidth(text, 90)}"
-        val textWidth = fontRenderer.getStringWidth(textString)
-
-        val textProgressPartialTicks =
-            min((textProgressPercent + partialTicks * textProgressIncrement), 1.0)
-
-        RenderUtils.drawScissor(x, y, 90, 15) {
-            RenderUtils.drawText(
-                textString,
-                ((x - (textProgressPartialTicks * max(0, textWidth - 90)))).toFloat(),
-                y.toFloat(),
-                color
-            )
-        }
-    }
-
-    @SubscribeEvent
-    fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase != TickEvent.Phase.END)
-            return
-
-        textProgressPercent += textProgressIncrement
-        if (textProgressPercent > 1.0 + textProgressIncrement) {
-            textProgressPercent = 0.0
         }
     }
 }
