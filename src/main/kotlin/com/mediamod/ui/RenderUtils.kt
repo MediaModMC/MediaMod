@@ -23,6 +23,8 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
@@ -69,6 +71,20 @@ object RenderUtils {
      */
     fun drawText(text: String, x: Float, y: Float, color: Color) =
         fontRenderer.drawString(text, x, y, color.rgb, false)
+
+    /**
+     * Renders an image to the screen
+     *
+     * @param imageLocation A resource location for the image
+     * @param x The x position of the image
+     * @param y The y position of the image
+     * @param width The width of the image
+     * @param height The height of the image
+     */
+    fun drawImage(imageLocation: ResourceLocation, x: Int, y: Int, width: Int, height: Int) {
+        Minecraft.getMinecraft().textureManager.bindTexture(imageLocation)
+        Gui.drawModalRectWithCustomSizedTexture(x, y, 0f, 0f, width, height, width.toFloat(), height.toFloat())
+    }
 
     /**
      * Renders elements to the screen under a scissor

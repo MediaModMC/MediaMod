@@ -42,7 +42,13 @@ class TestService : MediaModService("mediamod-test-addon-service") {
      * Called when MediaMod wants to get a [TrackMetadata] instance from you
      * If you do not have one, return null
      */
-    override fun fetchTrackMetadata() = TrackMetadata("Test Track", "Test Artist")
+    override fun fetchTrackMetadata() = TrackMetadata(
+        "barely bleeding",
+        "nothing,nowhere.",
+        1000,
+        3500,
+        "https://images.genius.com/98253285aa46027c831f87813332953c.1000x1000x1.jpg"
+    )
 
     /**
      * Called when MediaMod is querying your service to check if it is ready to provide track information
