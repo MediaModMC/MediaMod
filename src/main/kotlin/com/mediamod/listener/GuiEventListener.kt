@@ -42,7 +42,7 @@ object GuiEventListener {
 
     @SubscribeEvent
     fun onRenderTick(event: RenderGameOverlayEvent) {
-        if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR)
+        if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || MediaMod.currentTrackMetadata == null)
             return
 
         renderBackground()
