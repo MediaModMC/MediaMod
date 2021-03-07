@@ -19,7 +19,6 @@
 package com.mediamod.core.addon.impl
 
 import com.mediamod.core.addon.MediaModAddon
-import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.service.impl.TestService
 import org.apache.logging.log4j.LogManager
 
@@ -36,8 +35,7 @@ class TestAddon : MediaModAddon("mediamod-test-addon") {
      */
     override fun initialise() {
         logger.info("Registering my service")
-
-        MediaModServiceRegistry.registerService(identifier, TestService())
+        // MediaModServiceRegistry.registerService(identifier, TestService())
     }
 
     /**
