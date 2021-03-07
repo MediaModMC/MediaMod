@@ -67,9 +67,6 @@ shadowJar {
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     configurations = [project.configurations.embed]
-
-    relocate "kotlin", "mediamod.kotlin"
-    relocate "kotlinx", "mediamod.kotlinx"
 }
 
 tasks.build.finalizedBy tasks.shadowJar
