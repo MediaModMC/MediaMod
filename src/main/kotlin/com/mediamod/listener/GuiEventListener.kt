@@ -21,7 +21,7 @@ package com.mediamod.listener
 import com.mediamod.MediaMod
 import com.mediamod.ui.ImageUtils
 import com.mediamod.ui.RenderUtils
-import net.minecraft.client.Minecraft
+import com.mediamod.ui.render.MarqueeingTextRenderer
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -33,8 +33,9 @@ import java.awt.Color
  * @author Conor Byrne (dreamhopping)
  */
 object GuiEventListener {
-    private val fontRenderer = Minecraft.getMinecraft().fontRendererObj
     private val mediamodIconLocation = ResourceLocation("mediamod", "mediamod.png")
+    private val titleTextRenderer = MarqueeingTextRenderer(50, 10, 90, 20)
+    private val artistTextRenderer = MarqueeingTextRenderer(50, 20, 90, 20, textColor = Color.WHITE.darker())
 
     @SubscribeEvent
     fun onRenderTick(event: RenderGameOverlayEvent) {
@@ -58,19 +59,10 @@ object GuiEventListener {
     }
 
     private fun renderText(partialTicks: Float) {
-        val trackName = MediaMod.currentTrackMetadata?.name ?: "Unknown Track"
-        val artistName = MediaMod.currentTrackMetadata?.artist ?: "Unknown Artist"
+        titleTextRenderer.text = MediaMod.currentTrackMetadata?.name ?: "Unknown Track"
+        artistTextRenderer.text = MediaMod.currentTrackMetadata?.artist ?: "Unknown Artist"
 
-        if (fontRenderer.getStringWidth(artistName) > 90) {
-            RenderUtils.drawScrollingText(artistName, 50, 20, Color.WHITE.darker(), 90, 20, partialTicks)
-        } else {
-            RenderUtils.drawText(artistName, 50f, 20f, Color.WHITE.darker())
-        }
-
-        if (fontRenderer.getStringWidth(trackName) > 90) {
-            RenderUtils.drawScrollingText(trackName, 50, 10, Color.WHITE, 90, 20, partialTicks)
-        } else {
-            RenderUtils.drawText(trackName, 50f, 10f, Color.WHITE)
-        }
+        titleTextRenderer.render(partialTicks)
+        artistTextRenderer.render(partialTicks)
     }
 }
