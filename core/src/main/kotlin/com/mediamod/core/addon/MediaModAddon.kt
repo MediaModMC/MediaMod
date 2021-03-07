@@ -42,5 +42,5 @@ abstract class MediaModAddon(
      * Called when MediaMod is unloading your addon
      * The addon should do any configuration saving, etc. in this method
      */
-    abstract fun unload()
+    fun unload() {}
 }
