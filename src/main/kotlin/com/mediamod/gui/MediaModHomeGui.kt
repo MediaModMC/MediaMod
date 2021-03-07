@@ -78,7 +78,7 @@ Some other text here, yea yea yea yea yea"""
                 height = 100.percent()
             } childOf bottomContainer
 
-        UIRoundedButton(Color(87, 222, 134), "OK", 50, 20) {
+        UIRoundedButton(Color(69, 204, 116), "OK", 50, 20) {
             // Reset the GUI scale and close the GUI
             Minecraft.getMinecraft().gameSettings.guiScale = previousGuiScale
             Minecraft.getMinecraft().displayGuiScreen(null)
