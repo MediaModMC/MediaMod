@@ -45,7 +45,7 @@ object RenderUtils {
      * @param color The desired color for the rectangle
      */
     fun drawRectangle(cornerX: Int, cornerY: Int, width: Int, height: Int, color: Color) =
-        Gui.drawRect(cornerX, cornerY, width, height, color.rgb)
+        Gui.drawRect(cornerX, cornerY, cornerX + width, cornerY + height, color.rgb)
 
     /**
      * Renders text to the screen
