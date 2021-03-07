@@ -25,7 +25,7 @@ package com.mediamod.core.track
 data class TrackMetadata(
     val name: String,
     val artist: String,
-    val progress: Int = 0,
-    val length: Int = 0,
+    val progress: Long = 0,
+    val duration: Long = 0,
     val albumArtUrl: String? = null
 )

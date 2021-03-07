@@ -45,8 +45,8 @@ class TestService : MediaModService("mediamod-test-addon-service") {
     override fun fetchTrackMetadata() = TrackMetadata(
         "barely bleeding",
         "nothing,nowhere.",
-        1000,
-        3500,
+        0,
+        35000,
         "https://images.genius.com/98253285aa46027c831f87813332953c.1000x1000x1.jpg"
     )
 
