@@ -72,7 +72,7 @@ object GuiEventListener {
      * Renders text to the screen that rotates on the x axis around the scissored area, similar to a HTML marquee
      */
     private fun drawMarqueeText(text: String, x: Int, y: Int, color: Color, partialTicks: Float) {
-        val textString = "$text     $text"
+        val textString = "$text     ${fontRenderer.trimStringToWidth(text, 90)}"
         val textWidth = fontRenderer.getStringWidth(textString)
 
         val textProgressPartialTicks =
@@ -94,7 +94,7 @@ object GuiEventListener {
             return
 
         textProgressPercent += textProgressIncrement
-        if (textProgressPercent > 1.0) {
+        if (textProgressPercent > 1.0 + textProgressIncrement) {
             textProgressPercent = 0.0
         }
     }
