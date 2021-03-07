@@ -99,9 +99,13 @@ object MediaMod {
     init {
         fixedRateTimer("MediaMod: TrackMetadata", false, 0, 3000) {
             // Query the current service for some track information, if none is provided, return
-            val trackMetadata = MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
-            if (trackMetadata != currentTrackMetadata) {
-                currentTrackMetadata = trackMetadata
+            try {
+                val trackMetadata = MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
+                if (trackMetadata != currentTrackMetadata) {
+                    currentTrackMetadata = trackMetadata
+                }
+            } catch (t: Throwable) {
+                logger.error("An error occurred when fetching TrackMetadata", t)
             }
         }
     }
