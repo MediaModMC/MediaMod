@@ -22,6 +22,9 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 import java.awt.Color
@@ -36,7 +39,7 @@ object RenderUtils {
 
     /**
      * Renders a rectangle to the screen
-     * Calls [Gui.drawRect], this function is a wrapper to make the parameters easier to understand
+     * This function supports any number for width and height, converting to double inside the function
      *
      * @param cornerX The x co-ordinate of the top left corner
      * @param cornerY The y co-ordinate of the top left corner
@@ -44,8 +47,47 @@ object RenderUtils {
      * @param height The height of the rectangle
      * @param color The desired color for the rectangle
      */
-    fun drawRectangle(cornerX: Int, cornerY: Int, width: Int, height: Int, color: Color) =
-        Gui.drawRect(cornerX, cornerY, cornerX + width, cornerY + height, color.rgb)
+    fun drawRectangle(cornerX: Number, cornerY: Number, width: Number, height: Number, color: Color) {
+        var left = cornerX.toDouble()
+        var right = cornerX.toDouble() + width.toDouble()
+        var top = cornerY.toDouble()
+        var bottom = cornerY.toDouble() + height.toDouble()
+
+        val colorInt = color.rgb
+        val tessellator = Tessellator.getInstance()
+        val worldRenderer = tessellator.worldRenderer
+
+        // Ensures the right is after left
+        if (left < right)
+            left = right.also { right = left }
+
+        // Ensures that bottom is below top
+        if (top < bottom)
+            top = bottom.also { bottom = top }
+
+        // Converting colour to int
+        val f3 = (colorInt shr 24 and 255).toFloat() / 255.0f
+        val f = (colorInt shr 16 and 255).toFloat() / 255.0f
+        val f1 = (colorInt shr 8 and 255).toFloat() / 255.0f
+        val f2 = (colorInt and 255).toFloat() / 255.0f
+
+        GlStateManager.enableBlend()
+        GlStateManager.disableTexture2D()
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+        GlStateManager.color(f, f1, f2, f3)
+
+        with(worldRenderer) {
+            begin(7, DefaultVertexFormats.POSITION)
+            pos(left, bottom, 0.0).endVertex()
+            pos(right, bottom, 0.0).endVertex()
+            pos(right, top, 0.0).endVertex()
+            pos(left, top, 0.0).endVertex()
+        }
+
+        tessellator.draw()
+        GlStateManager.enableTexture2D()
+        GlStateManager.disableBlend()
+    }
 
     /**
      * Renders text to the screen
