@@ -19,7 +19,7 @@
 
 package com.mediamod.command
 
-import com.mediamod.gui.MediaModHomeGui
+import com.mediamod.gui.MediaModOnboardingScreen
 import com.mediamod.util.TickScheduler
 import net.minecraft.client.Minecraft
 import net.minecraft.command.CommandBase
@@ -36,7 +36,7 @@ class MediaModCommand : CommandBase() {
     override fun processCommand(sender: ICommandSender?, args: Array<out String>?) {
         TickScheduler.schedule(1) {
             Minecraft.getMinecraft().displayGuiScreen(
-                MediaModHomeGui()
+                MediaModOnboardingScreen()
             )
         }
     }

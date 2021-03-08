@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft
 import java.awt.Color
 import java.net.URI
 
-class MediaModHomeGui : WindowScreen() {
+class MediaModOnboardingScreen : WindowScreen() {
     private var previousGuiScale: Int = 0
     private val blockColour = Color(64, 64, 64)
 
@@ -126,8 +126,6 @@ Ready to check it out? Click "OK" to never see this GUI again."""
                 y = SiblingConstraint() + 5.pixels()
                 color = descriptionColour.toConstraint()
             } childOf rightBlock
-
-        Inspector(window) childOf window
     }
 
     override fun initScreen(width: Int, height: Int) {
