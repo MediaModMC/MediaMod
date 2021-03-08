@@ -22,21 +22,28 @@ import club.sk1er.elementa.WindowScreen
 import club.sk1er.elementa.components.UIBlock
 import club.sk1er.elementa.components.UIContainer
 import club.sk1er.elementa.components.UIText
+import club.sk1er.elementa.components.inspector.Inspector
 import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
+import club.sk1er.elementa.transitions.SlideToTransition
+import club.sk1er.mods.core.universal.UKeyboard
+import club.sk1er.mods.core.universal.UMinecraft
 import com.mediamod.gui.panel.MediaModHomeScreenPanel
 import com.mediamod.gui.panel.impl.AddonsPanel
 import com.mediamod.gui.panel.impl.HomePanel
 import net.minecraft.client.Minecraft
+import net.minecraft.client.audio.PositionedSoundRecord
+import net.minecraft.util.ResourceLocation
+import org.lwjgl.input.Keyboard
 import java.awt.Color
-import java.lang.Exception
 
 class MediaModHomeScreen(private var previousGuiScale: Int = 0) : WindowScreen() {
     private val backgroundColour = Color(64, 64, 64)
     private val selectedColour = Color(179, 179, 179)
     private val unselectedColour = Color(113, 113, 113)
     private val panels = mutableListOf<MediaModHomeScreenPanel>()
+    private var transitioning = false
 
     private val leftContainer = UIContainer()
         .constrain {
@@ -93,24 +100,26 @@ class MediaModHomeScreen(private var previousGuiScale: Int = 0) : WindowScreen()
 
         UIText(panel.title, false)
             .onMouseClick {
-                panel.isSelected = true
-                panels.forEach { if (it.title != panel.title) it.isSelected = false }
+                UMinecraft.getMinecraft().soundHandler.playSound(PositionedSoundRecord.create(ResourceLocation("gui.button.press"), 1.0f))
+                if (!transitioning) {
+                    panel.isSelected = true
+                    panels.forEach { if (it.title != panel.title) it.isSelected = false }
 
-                updateRightPanel()
+                    updateRightPanel()
+                }
             }
             .onMouseEnter {
-                animate {
-                    val color = if (panel.isSelected) selectedColour else unselectedColour
-                    setColorAnimation(Animations.IN_OUT_SIN, 0.25f, color.darker().toConstraint())
+                if (!panel.isSelected) {
+                    animate {
+                        setColorAnimation(Animations.IN_OUT_SIN, 0.25f, unselectedColour.darker().toConstraint())
+                    }
                 }
             }
             .onMouseLeave {
-                animate {
-                    setColorAnimation(
-                        Animations.IN_OUT_SIN,
-                        0.25f,
-                        (if (panel.isSelected) selectedColour else unselectedColour).toConstraint()
-                    )
+                if (!panel.isSelected) {
+                    animate {
+                        setColorAnimation(Animations.IN_OUT_SIN, 0.25f, unselectedColour.toConstraint())
+                    }
                 }
             }
             .constrain {
@@ -142,7 +151,28 @@ class MediaModHomeScreen(private var previousGuiScale: Int = 0) : WindowScreen()
             }
         }
 
-        rightBlock.clearChildren()
-        rightBlock.addChild(provider)
+        val old = rightBlock.childrenOfType<MediaModHomeScreenPanel>().firstOrNull { true }
+        if (old != null) {
+            if (old == provider) return
+            transitioning = true
+            val oid = panels.indexOf(old)
+            val nid = panels.indexOf(provider)
+            val up = oid > nid
+            provider childOf rightBlock
+            provider.constrain { y = 0.pixels(!up, true) }
+            (if (up) SlideToTransition.Bottom() else SlideToTransition.Top()).transition(old) {
+                old.constrain { y = 0.pixels(!up, true) }
+                rightBlock.removeChild(old)
+            }
+            (if (up) SlideToTransition.Bottom() else SlideToTransition.Top()).transition(provider) {
+                provider.constrain { y = 0.pixels() }
+                transitioning = false
+            }
+        } else rightBlock.addChild(provider)
+    }
+
+    override fun onKeyPressed(keyCode: Int, typedChar: Char, modifiers: UKeyboard.Modifiers?) {
+        if (keyCode == Keyboard.KEY_EQUALS) Inspector(window) childOf window
+        super.onKeyPressed(keyCode, typedChar, modifiers)
     }
 }
