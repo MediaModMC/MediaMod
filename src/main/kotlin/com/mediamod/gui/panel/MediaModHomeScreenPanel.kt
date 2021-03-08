@@ -19,13 +19,28 @@
 package com.mediamod.gui.panel
 
 import club.sk1er.elementa.components.UIContainer
+import club.sk1er.elementa.dsl.constrain
+import club.sk1er.elementa.dsl.percent
+import club.sk1er.elementa.dsl.pixels
 import club.sk1er.elementa.dsl.toConstraint
+import club.sk1er.mods.core.universal.UMinecraft
+import net.minecraft.client.Minecraft
 import java.awt.Color
 
 /**
  * A panel to be displayed on the [MediaModHomeScreen]
  */
 abstract class MediaModHomeScreenPanel(val title: String) : UIContainer() {
-    val titleColour = Color(198, 198, 198).toConstraint()
+    protected val titleColour = Color(198, 198, 198).toConstraint()
+    protected val mc: Minecraft = UMinecraft.getMinecraft()
     var isSelected: Boolean = false
+
+    init {
+        constrain {
+            x = 0.pixels()
+            y = 0.pixels()
+            height = 100.percent()
+            width = 100.percent()
+        }
+    }
 }

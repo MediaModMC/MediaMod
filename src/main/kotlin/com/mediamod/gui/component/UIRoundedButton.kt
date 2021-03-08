@@ -25,6 +25,9 @@ import club.sk1er.elementa.components.UIText
 import club.sk1er.elementa.constraints.CenterConstraint
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
+import club.sk1er.mods.core.universal.UMinecraft
+import net.minecraft.client.audio.PositionedSoundRecord
+import net.minecraft.util.ResourceLocation
 import java.awt.Color
 
 class UIRoundedButton(buttonColor: Color, text: String, buttonWidth: Int, buttonHeight: Int, onClick: () -> Unit) :
@@ -37,6 +40,7 @@ class UIRoundedButton(buttonColor: Color, text: String, buttonWidth: Int, button
                 color = buttonColor.toConstraint()
             }
             .onMouseClick {
+                UMinecraft.getMinecraft().soundHandler.playSound(PositionedSoundRecord.create(ResourceLocation("gui.button.press"), 1.0f))
                 onClick()
             } childOf this
 
