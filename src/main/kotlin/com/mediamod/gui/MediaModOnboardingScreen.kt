@@ -1,3 +1,22 @@
+/*
+ *     MediaMod is a mod for Minecraft which displays information about your current track in-game
+ *     Copyright (C) 2021 Conor Byrne
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+
 package com.mediamod.gui
 
 import club.sk1er.elementa.WindowScreen
@@ -8,6 +27,7 @@ import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.dsl.*
 import club.sk1er.mods.core.universal.UDesktop
 import com.mediamod.gui.component.UIRoundedButton
+import com.mediamod.util.TickScheduler
 import net.minecraft.client.Minecraft
 import java.awt.Color
 import java.net.URI
@@ -30,6 +50,9 @@ Even more services are supported with MediaMod 2.0, to check out all the service
 Ready to check it out? Click "OK" to never see this GUI again."""
 
     init {
+        previousGuiScale = Minecraft.getMinecraft().gameSettings.guiScale
+        Minecraft.getMinecraft().gameSettings.guiScale = 3
+
         val leftBlock = UIBlock(blockColour)
             .constrain {
                 x = 0.pixels()
@@ -80,8 +103,7 @@ Ready to check it out? Click "OK" to never see this GUI again."""
 
         UIRoundedButton(Color(69, 204, 116), "OK", 50, 20) {
             // Reset the GUI scale and close the GUI
-            Minecraft.getMinecraft().gameSettings.guiScale = previousGuiScale
-            Minecraft.getMinecraft().displayGuiScreen(null)
+            Minecraft.getMinecraft().displayGuiScreen(MediaModHomeScreen(previousGuiScale))
         }.constrain {
             x = 10.pixels()
             width = 50.pixels()
@@ -128,18 +150,16 @@ Ready to check it out? Click "OK" to never see this GUI again."""
             } childOf rightBlock
     }
 
-    override fun initScreen(width: Int, height: Int) {
-        super.initScreen(width, height)
-
-        // Force the GUI Scale to normal
-        previousGuiScale = Minecraft.getMinecraft().gameSettings.guiScale
-        Minecraft.getMinecraft().gameSettings.guiScale = 3
-    }
-
     override fun onScreenClose() {
         super.onScreenClose()
 
         // Reset the GUI scale
-        Minecraft.getMinecraft().gameSettings.guiScale = previousGuiScale
+        // Minecraft.getMinecraft().gameSettings.guiScale = previousGuiScale
+    }
+
+    override fun onResize(mcIn: Minecraft?, w: Int, h: Int) {
+        super.onResize(mcIn, w, h)
+
+        Minecraft.getMinecraft().gameSettings.guiScale = 3
     }
 }
