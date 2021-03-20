@@ -19,11 +19,11 @@
 package com.mediamod.listener
 
 import com.mediamod.MediaMod
+import com.mediamod.core.ui.ProgressBarRenderer
+import com.mediamod.core.util.render.RenderUtil
+import com.mediamod.core.util.threading.MultithreadingUtil
 import com.mediamod.ui.ImageUtils
-import com.mediamod.ui.RenderUtils
 import com.mediamod.ui.render.MarqueeingTextRenderer
-import com.mediamod.ui.render.ProgressBarRenderer
-import com.mediamod.util.MultithreadingUtils
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -53,16 +53,16 @@ object GuiEventListener {
     }
 
     private fun renderBackground() {
-        RenderUtils.drawRectangle(5, 5, 145, 45, Color.DARK_GRAY)
+        RenderUtil.instance?.drawRectangle(5, 5, 145, 45, Color.DARK_GRAY)
     }
 
     private fun renderAlbumArt() {
-        MultithreadingUtils.runAsync {
+        MultithreadingUtil.instance?.runAsync {
             val imageLocation =
                 ImageUtils.getResourceForURL(MediaMod.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
 
-            MultithreadingUtils.runBlocking {
-                RenderUtils.drawImage(imageLocation, 10, 10, 35, 35)
+            MultithreadingUtil.instance?.runBlocking {
+                // RenderUtil.instance?.drawImage(imageLocation, 10, 10, 35, 35)
             }
         }
     }

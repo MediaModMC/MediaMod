@@ -17,28 +17,35 @@
  */
 
 
-package com.mediamod.util
+package com.mediamod.provider
 
-import net.minecraft.client.Minecraft
-import java.util.concurrent.Executors
+import com.mediamod.core.util.threading.TickSchedulerUtil
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
 
 /**
+ * A class for scheduling code to run after a certain amount of ticks
  * @author Conor Byrne (dreamhopping)
  */
-object MultithreadingUtils {
-    private val threadPool = Executors.newCachedThreadPool()
-
+class TickSchedulerUtilProvider : TickSchedulerUtil() {
     /**
-     * Runs a task on a new thread using [threadPool]
+     * Schedules a [Unit] to run after a certain amount of ticks
+     *
+     * @param ticks The amount of ticks to wait
+     * @param unit The code to run
      */
-    fun runAsync(task: () -> Unit) {
-        threadPool.submit(task)
+    override fun schedule(ticks: Int, unit: () -> Unit) {
+        tasks.add(TickTask(ticks, unit))
     }
 
-    /**
-     * Runs a task on the main thread using [Minecraft.addScheduledTask]
-     */
-    fun runBlocking(task: () -> Unit) {
-        Minecraft.getMinecraft().addScheduledTask(task)
+    @SubscribeEvent
+    fun onClientTick(e: TickEvent.ClientTickEvent) {
+        if (e.phase != TickEvent.Phase.END) return
+        tasks.removeIf { it.attemptToExecute() }
+    }
+
+    init {
+        MinecraftForge.EVENT_BUS.register(this)
     }
 }

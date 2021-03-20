@@ -16,35 +16,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package com.mediamod.core.util.threading
 
-package com.mediamod.util
-
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
-
-/**
- * A class for scheduling code to run after a certain amount of ticks
- * @author Conor Byrne (dreamhopping)
- */
-object TickScheduler {
-    private val tasks = mutableListOf<TickTask>()
-
-    /**
-     * Schedules a [Unit] to run after a certain amount of ticks
-     *
-     * @param ticks The amount of ticks to wait
-     * @param unit The code to run
-     */
-    fun schedule(ticks: Int, unit: () -> Unit) {
-        tasks.add(TickTask(ticks, unit))
+abstract class TickSchedulerUtil {
+    companion object {
+        var instance: TickSchedulerUtil? = null
+            set(value) {
+                if (field != null) {
+                    field = value
+                } else {
+                    error("Instance for $this has already been set!")
+                }
+            }
     }
 
-    @SubscribeEvent
-    fun onClientTick(e: TickEvent.ClientTickEvent) {
-        if (e.phase != TickEvent.Phase.END) return
-        tasks.removeIf { it.attemptToExecute() }
-    }
+    val tasks = mutableListOf<TickTask>()
+    abstract fun schedule(ticks: Int, unit: () -> Unit)
 
     /**
      * A class which handles the execution of a [Unit] after the specified number of ticks
@@ -65,9 +52,5 @@ object TickScheduler {
                 false
             }
         }
-    }
-
-    init {
-        MinecraftForge.EVENT_BUS.register(this)
     }
 }

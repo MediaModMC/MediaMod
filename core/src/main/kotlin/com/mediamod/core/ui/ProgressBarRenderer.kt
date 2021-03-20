@@ -17,11 +17,10 @@
  */
 
 
-package com.mediamod.ui.render
+package com.mediamod.core.ui
 
-import com.mediamod.ui.RenderUtils
+import com.mediamod.core.util.render.RenderUtil
 import java.awt.Color
-import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -62,10 +61,16 @@ class ProgressBarRenderer(
 
     fun render() {
         // Background rectangle
-        RenderUtils.drawRectangle(x, y, width, height, backgroundColor)
+        RenderUtil.instance?.drawRectangle(x, y, width, height, backgroundColor)
 
         // Progress rectangle
         val progressPercent = (calculateEstimatedProgress().toFloat() / duration.toFloat())
-        RenderUtils.drawRectangle(x.toFloat(), y.toFloat(), (progressPercent * width), height.toFloat(), progressColor)
+        RenderUtil.instance?.drawRectangle(
+            x.toFloat(),
+            y.toFloat(),
+            (progressPercent * width),
+            height.toFloat(),
+            progressColor
+        )
     }
 }

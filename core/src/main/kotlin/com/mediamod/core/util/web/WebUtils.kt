@@ -17,7 +17,7 @@
  */
 
 
-package com.mediamod.core.web
+package com.mediamod.core.util.web
 
 import java.io.InputStream
 import java.net.URL

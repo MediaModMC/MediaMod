@@ -23,7 +23,13 @@ import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.track.TrackMetadata
+import com.mediamod.core.util.render.RenderUtil
+import com.mediamod.core.util.threading.MultithreadingUtil
+import com.mediamod.core.util.threading.TickSchedulerUtil
 import com.mediamod.listener.GuiEventListener
+import com.mediamod.provider.MultithreadingUtilProvider
+import com.mediamod.provider.TickSchedulerUtilProvider
+import com.mediamod.ui.RenderUtilProvider
 import net.minecraft.client.Minecraft
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
@@ -68,6 +74,11 @@ object MediaMod {
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         logger.info("Loading MediaMod v${MediaModCore.version}!")
+
+        // Set instances of any required providers
+        MultithreadingUtil.instance = MultithreadingUtilProvider()
+        TickSchedulerUtil.instance = TickSchedulerUtilProvider()
+        RenderUtil.instance = RenderUtilProvider()
 
         // Create the "./mediamod" and "./mediamod/addons" directories if they don't exist
         if (!mediamodAddonDirectory.exists())

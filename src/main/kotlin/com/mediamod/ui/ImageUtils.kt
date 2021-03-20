@@ -19,7 +19,7 @@
 
 package com.mediamod.ui
 
-import com.mediamod.core.web.WebUtils
+import com.mediamod.core.util.web.WebUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.util.ResourceLocation

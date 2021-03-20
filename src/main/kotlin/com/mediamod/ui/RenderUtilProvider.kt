@@ -18,6 +18,7 @@
 
 package com.mediamod.ui
 
+import com.mediamod.core.util.render.RenderUtil
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
@@ -34,7 +35,7 @@ import java.awt.Color
  *
  * @author Conor Byrne (dreamhopping)
  */
-object RenderUtils {
+class RenderUtilProvider : RenderUtil() {
     private val fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRendererObj
 
     /**
@@ -47,7 +48,7 @@ object RenderUtils {
      * @param height The height of the rectangle
      * @param color The desired color for the rectangle
      */
-    fun drawRectangle(cornerX: Number, cornerY: Number, width: Number, height: Number, color: Color) {
+    override fun drawRectangle(cornerX: Number, cornerY: Number, width: Number, height: Number, color: Color) {
         var left = cornerX.toDouble()
         var right = cornerX.toDouble() + width.toDouble()
         var top = cornerY.toDouble()
@@ -100,8 +101,9 @@ object RenderUtils {
      * @param y The y co-ordinate of the top left corner
      * @param color The color of the text
      */
-    fun drawText(text: String, x: Float, y: Float, color: Color) =
+    override fun drawText(text: String, x: Float, y: Float, color: Color) {
         fontRenderer.drawString(text, x, y, color.rgb, false)
+    }
 
     /**
      * Renders an image to the screen
@@ -127,7 +129,7 @@ object RenderUtils {
      * @param height The height of the scissor
      * @param drawCode The code that will be run under the scissor
      */
-    inline fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {
+    override inline fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {
         val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
         val scaleFactor = scaledResolution.scaleFactor
 

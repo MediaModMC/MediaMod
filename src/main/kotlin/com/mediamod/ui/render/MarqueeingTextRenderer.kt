@@ -19,7 +19,7 @@
 
 package com.mediamod.ui.render
 
-import com.mediamod.ui.RenderUtils
+import com.mediamod.core.util.render.RenderUtil
 import net.minecraft.client.Minecraft
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -62,8 +62,8 @@ class MarqueeingTextRenderer(
             val textWidth = fontRenderer.getStringWidth(textString)
             val textProgressPartialTicks = min((textProgressPercent + partialTicks * textProgressIncrement), 1.0)
 
-            RenderUtils.drawScissor(textX, textY, maximumWidth, maximumHeight) {
-                RenderUtils.drawText(
+            RenderUtil.instance?.drawScissor(textX, textY, maximumWidth, maximumHeight) {
+                RenderUtil.instance?.drawText(
                     textString,
                     ((textX - (textProgressPartialTicks * max(0, textWidth - 90)))).toFloat(),
                     textY.toFloat(),
@@ -71,7 +71,7 @@ class MarqueeingTextRenderer(
                 )
             }
         } else {
-            RenderUtils.drawText(text, textX.toFloat(), textY.toFloat(), textColor)
+            RenderUtil.instance?.drawText(text, textX.toFloat(), textY.toFloat(), textColor)
         }
     }
 
