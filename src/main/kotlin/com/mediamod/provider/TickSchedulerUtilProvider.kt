@@ -29,16 +29,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
  * @author Conor Byrne (dreamhopping)
  */
 class TickSchedulerUtilProvider : TickSchedulerUtil() {
-    /**
-     * Schedules a [Unit] to run after a certain amount of ticks
-     *
-     * @param ticks The amount of ticks to wait
-     * @param unit The code to run
-     */
-    override fun schedule(ticks: Int, unit: () -> Unit) {
-        tasks.add(TickTask(ticks, unit))
-    }
-
     @SubscribeEvent
     fun onClientTick(e: TickEvent.ClientTickEvent) {
         if (e.phase != TickEvent.Phase.END) return

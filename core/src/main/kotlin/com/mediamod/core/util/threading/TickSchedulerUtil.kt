@@ -18,6 +18,10 @@
 
 package com.mediamod.core.util.threading
 
+/**
+ * Providers for this class should handle the execution of tasks after a certain amount of ticks
+ * No methods need to be implemented as of yet
+ */
 abstract class TickSchedulerUtil {
     companion object {
         var instance: TickSchedulerUtil? = null
@@ -31,7 +35,16 @@ abstract class TickSchedulerUtil {
     }
 
     val tasks = mutableListOf<TickTask>()
-    abstract fun schedule(ticks: Int, unit: () -> Unit)
+
+    /**
+     * Schedules a [Unit] to run after a certain amount of ticks
+     *
+     * @param ticks The amount of ticks to wait
+     * @param unit The code to run
+     */
+    fun schedule(ticks: Int, unit: () -> Unit) {
+        tasks.add(TickTask(ticks, unit))
+    }
 
     /**
      * A class which handles the execution of a [Unit] after the specified number of ticks
