@@ -19,14 +19,12 @@
 
 package com.mediamod
 
-import com.mediamod.command.MediaModCommand
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.track.TrackMetadata
 import com.mediamod.listener.GuiEventListener
 import net.minecraft.client.Minecraft
-import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -84,7 +82,6 @@ object MediaMod {
         }
 
         registerEventListeners()
-        ClientCommandHandler.instance.registerCommand(MediaModCommand())
     }
 
     /**

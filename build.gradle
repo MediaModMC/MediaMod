@@ -53,21 +53,10 @@ configurations {
     implementation.extendsFrom(embed)
 }
 
-repositories {
-    maven {
-        url = "https://repo.sk1er.club/repository/maven-public"
-    }
-}
-
 dependencies {
     // Kotlin
     embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     embed "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
-
-    // Elementa :pog:
-    embed("club.sk1er:Elementa:241-10809-SNAPSHOT") {
-        // exclude module: "kotlin-stdlib-jdk8"
-    }
 
     // MediaMod Core
     embed project(':core')
