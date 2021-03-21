@@ -23,7 +23,7 @@ import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.track.TrackMetadata
-import com.mediamod.core.ui.listener.GuiEventListener
+import com.mediamod.core.ui.listener.PlayerRenderer
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import kotlin.concurrent.fixedRateTimer
@@ -102,14 +102,14 @@ object MediaModCore {
      * Fired on each render tick, provided by the mod entry point
      */
     fun onRender(partialTicks: Float) {
-        GuiEventListener.onRenderTick(partialTicks)
+        PlayerRenderer.onRenderTick(partialTicks)
     }
 
     /**
      * Fired on each client tick, provided by the mod entry point
      */
     fun onClientTick() {
-        GuiEventListener.onClientTick()
+        PlayerRenderer.onClientTick()
     }
 
     init {

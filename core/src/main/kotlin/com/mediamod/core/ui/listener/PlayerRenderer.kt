@@ -24,7 +24,7 @@ import com.mediamod.core.ui.MarqueeingTextRenderer
 import com.mediamod.core.ui.ProgressBarRenderer
 import java.awt.Color
 
-object GuiEventListener {
+object PlayerRenderer {
     private val titleTextRenderer = MarqueeingTextRenderer(50, 10, 90, 20)
     private val artistTextRenderer = MarqueeingTextRenderer(50, 20, 90, 20, textColor = Color.WHITE.darker())
     private val progressBarRenderer = ProgressBarRenderer(50, 35, 90, 10)
