@@ -23,7 +23,7 @@ import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.track.TrackMetadata
-import com.mediamod.core.ui.listener.PlayerRenderer
+import com.mediamod.core.ui.renderer.PlayerRenderer
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import kotlin.concurrent.fixedRateTimer

@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.ui.listener
+package com.mediamod.core.ui.renderer
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.render.RenderUtil
