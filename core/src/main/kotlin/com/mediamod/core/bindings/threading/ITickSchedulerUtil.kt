@@ -16,25 +16,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.util.threading
+package com.mediamod.core.bindings.threading
 
-/**
- * Providers for this class should handle the execution of tasks after a certain amount of ticks
- * No methods need to be implemented as of yet
- */
-abstract class TickSchedulerUtil {
-    companion object {
-        var instance: TickSchedulerUtil? = null
-            set(value) {
-                if (field != null) {
-                    field = value
-                } else {
-                    error("Instance for $this has already been set!")
-                }
-            }
-    }
-
-    val tasks = mutableListOf<TickTask>()
+interface ITickSchedulerUtil {
+    val tasks: MutableList<TickTask>
+        get() = mutableListOf()
 
     /**
      * Schedules a [Unit] to run after a certain amount of ticks
@@ -49,7 +35,7 @@ abstract class TickSchedulerUtil {
     /**
      * A class which handles the execution of a [Unit] after the specified number of ticks
      */
-    class TickTask(var remainingTicks: Int, val unit: () -> Unit) {
+    class TickTask(private var remainingTicks: Int, val unit: () -> Unit) {
         /**
          * Attempts to execute the [unit] supplied in the constructor
          * If there is still some ticks remaining, the [unit] will not be run
@@ -65,5 +51,17 @@ abstract class TickSchedulerUtil {
                 false
             }
         }
+    }
+
+    companion object {
+        internal lateinit var internalInstance: ITickSchedulerUtil
+        var instance
+            get() = if (::internalInstance.isInitialized) internalInstance else null
+            set(v) {
+                if (::internalInstance.isInitialized)
+                    error("instance has already been set")
+
+                internalInstance = v ?: error("instance cannot be null")
+            }
     }
 }

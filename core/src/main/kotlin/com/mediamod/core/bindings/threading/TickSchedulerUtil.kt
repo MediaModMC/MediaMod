@@ -16,14 +16,6 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package com.mediamod.core.bindings.threading
 
-package com.mediamod.provider
-
-import com.mediamod.core.util.threading.MultithreadingUtil
-import net.minecraft.client.Minecraft
-
-class MultithreadingUtilProvider : MultithreadingUtil() {
-    override fun runBlocking(task: () -> Unit) {
-        Minecraft.getMinecraft().addScheduledTask(task)
-    }
-}
+object TickSchedulerUtil : ITickSchedulerUtil by ITickSchedulerUtil.internalInstance

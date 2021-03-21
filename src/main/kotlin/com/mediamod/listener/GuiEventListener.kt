@@ -18,10 +18,10 @@
 
 package com.mediamod.listener
 
-import com.mediamod.MediaMod
+import com.mediamod.core.MediaModCore
+import com.mediamod.core.bindings.render.RenderUtil
+import com.mediamod.core.bindings.threading.MultithreadingUtil
 import com.mediamod.core.ui.ProgressBarRenderer
-import com.mediamod.core.util.render.RenderUtil
-import com.mediamod.core.util.threading.MultithreadingUtil
 import com.mediamod.ui.ImageUtils
 import com.mediamod.ui.render.MarqueeingTextRenderer
 import net.minecraft.util.ResourceLocation
@@ -43,7 +43,7 @@ object GuiEventListener {
 
     @SubscribeEvent
     fun onRenderTick(event: RenderGameOverlayEvent) {
-        if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || MediaMod.currentTrackMetadata == null)
+        if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || MediaModCore.currentTrackMetadata == null)
             return
 
         renderBackground()
@@ -53,31 +53,31 @@ object GuiEventListener {
     }
 
     private fun renderBackground() {
-        RenderUtil.instance?.drawRectangle(5, 5, 145, 45, Color.DARK_GRAY)
+        RenderUtil.drawRectangle(5, 5, 145, 45, Color.DARK_GRAY)
     }
 
     private fun renderAlbumArt() {
-        MultithreadingUtil.instance?.runAsync {
+        MultithreadingUtil.runAsync {
             val imageLocation =
-                ImageUtils.getResourceForURL(MediaMod.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
+                ImageUtils.getResourceForURL(MediaModCore.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
 
-            MultithreadingUtil.instance?.runBlocking {
-                // RenderUtil.instance?.drawImage(imageLocation, 10, 10, 35, 35)
+            MultithreadingUtil.runBlocking {
+                // RenderUtil.drawImage(imageLocation, 10, 10, 35, 35)
             }
         }
     }
 
     private fun renderProgressBar() {
         // We should only render the progress bar if we have the progress and duration of the track
-        progressBarRenderer.setProgress(MediaMod.currentTrackMetadata?.progress ?: return)
-        progressBarRenderer.duration = MediaMod.currentTrackMetadata?.duration ?: return
+        progressBarRenderer.setProgress(MediaModCore.currentTrackMetadata?.progress ?: return)
+        progressBarRenderer.duration = MediaModCore.currentTrackMetadata?.duration ?: return
 
         progressBarRenderer.render()
     }
 
     private fun renderText(partialTicks: Float) {
-        titleTextRenderer.text = MediaMod.currentTrackMetadata?.name ?: "Unknown Track"
-        artistTextRenderer.text = MediaMod.currentTrackMetadata?.artist ?: "Unknown Artist"
+        titleTextRenderer.text = MediaModCore.currentTrackMetadata?.name ?: "Unknown Track"
+        artistTextRenderer.text = MediaModCore.currentTrackMetadata?.artist ?: "Unknown Artist"
 
         titleTextRenderer.render(partialTicks)
         artistTextRenderer.render(partialTicks)

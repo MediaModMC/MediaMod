@@ -19,25 +19,20 @@
 
 package com.mediamod
 
+import com.mediamod.bindings.minecraft.MinecraftClientProvider
+import com.mediamod.bindings.render.RenderUtilProvider
+import com.mediamod.bindings.threading.MultithreadingUtilProvider
+import com.mediamod.bindings.threading.TickSchedulerUtilProvider
 import com.mediamod.core.MediaModCore
-import com.mediamod.core.addon.MediaModAddonRegistry
-import com.mediamod.core.service.MediaModServiceRegistry
-import com.mediamod.core.track.TrackMetadata
-import com.mediamod.core.util.render.RenderUtil
-import com.mediamod.core.util.threading.MultithreadingUtil
-import com.mediamod.core.util.threading.TickSchedulerUtil
+import com.mediamod.core.bindings.minecraft.IMinecraftClient
+import com.mediamod.core.bindings.render.IRenderUtil
+import com.mediamod.core.bindings.threading.IMultithreadingUtil
+import com.mediamod.core.bindings.threading.ITickSchedulerUtil
 import com.mediamod.listener.GuiEventListener
-import com.mediamod.provider.MultithreadingUtilProvider
-import com.mediamod.provider.TickSchedulerUtilProvider
-import com.mediamod.ui.RenderUtilProvider
-import net.minecraft.client.Minecraft
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.EventBus
-import org.apache.logging.log4j.LogManager
-import java.io.File
-import kotlin.concurrent.fixedRateTimer
 
 /**
  * The mod class for MediaMod
@@ -49,50 +44,22 @@ import kotlin.concurrent.fixedRateTimer
     modLanguageAdapter = "com.mediamod.launch.KotlinLanguageAdapter"
 )
 object MediaMod {
-    /**
-     * A logger instance for this class, used to log any issues that may occur during mod-loading
-     */
-    private val logger = LogManager.getLogger("MediaMod")
-
-    /**
-     * The data directory for MediaMod
-     * This contains addons, configuration files & more
-     */
-    private val mediamodDirectory = File(Minecraft.getMinecraft().mcDataDir, "mediamod")
-
-    /**
-     * The addons directory for MediaMod
-     * This is where MediaMod addons will be stored
-     */
-    private val mediamodAddonDirectory = File(mediamodDirectory, "addons")
-
-    /**
-     * An instance of [TrackMetadata], this is the current track information provided by a [MediaModService]
-     */
-    var currentTrackMetadata: TrackMetadata? = null
-
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
-        logger.info("Loading MediaMod v${MediaModCore.version}!")
-
-        // Set instances of any required providers
-        MultithreadingUtil.instance = MultithreadingUtilProvider()
-        TickSchedulerUtil.instance = TickSchedulerUtilProvider()
-        RenderUtil.instance = RenderUtilProvider()
-
-        // Create the "./mediamod" and "./mediamod/addons" directories if they don't exist
-        if (!mediamodAddonDirectory.exists())
-            mediamodAddonDirectory.mkdirs()
-
-        MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
-        try {
-            MediaModAddonRegistry.discoverAddons()
-            MediaModAddonRegistry.initialiseAddons()
-        } catch (t: Throwable) {
-            logger.error(t.message)
-        }
-
+        registerBindings()
         registerEventListeners()
+
+        MediaModCore.initialize()
+    }
+
+    /**
+     * Sets the instance for all bindings provided by this entry point
+     */
+    private fun registerBindings() {
+        IMultithreadingUtil.instance = MultithreadingUtilProvider()
+        ITickSchedulerUtil.instance = TickSchedulerUtilProvider()
+        IRenderUtil.instance = RenderUtilProvider()
+        IMinecraftClient.instance = MinecraftClientProvider()
     }
 
     /**
@@ -101,20 +68,5 @@ object MediaMod {
      */
     private fun registerEventListeners() {
         MinecraftForge.EVENT_BUS.register(GuiEventListener)
-    }
-
-    init {
-        fixedRateTimer("MediaMod: TrackMetadata", false, 0, 3000) {
-            // Query the current service for some track information, if none is provided, return
-            try {
-                val trackMetadata =
-                    MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
-                if (trackMetadata != currentTrackMetadata) {
-                    currentTrackMetadata = trackMetadata
-                }
-            } catch (t: Throwable) {
-                logger.error("An error occurred when fetching TrackMetadata", t)
-            }
-        }
     }
 }

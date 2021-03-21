@@ -19,6 +19,14 @@
 
 package com.mediamod.core
 
+import com.mediamod.core.addon.MediaModAddonRegistry
+import com.mediamod.core.bindings.minecraft.MinecraftClient
+import com.mediamod.core.service.MediaModServiceRegistry
+import com.mediamod.core.track.TrackMetadata
+import org.apache.logging.log4j.LogManager
+import java.io.File
+import kotlin.concurrent.fixedRateTimer
+
 /**
  * The class which handles communication between MediaMod Addons and the mod itself
  *
@@ -45,5 +53,62 @@ object MediaModCore {
      */
     val isDevelopment: Boolean by lazy {
         kotlin.runCatching { Class.forName("net.minecraft.client.Minecraft") }.isSuccess
+    }
+
+    /**
+     * A logger instance for this class, used to log any issues that may occur during mod-loading
+     */
+    private val logger = LogManager.getLogger("MediaMod")
+
+    /**
+     * The data directory for MediaMod
+     * This contains addons, configuration files & more
+     */
+    private val mediamodDirectory = File(MinecraftClient.mcDataDir, "mediamod")
+
+    /**
+     * The addons directory for MediaMod
+     * This is where MediaMod addons will be stored
+     */
+    private val mediamodAddonDirectory = File(mediamodDirectory, "mediamod")
+
+    /**
+     * An instance of [TrackMetadata], this is the current track information provided by a MediaMod Service
+     */
+    var currentTrackMetadata: TrackMetadata? = null
+
+    /**
+     * Starts MediaMod, called by a mod when the mod loader initialises it
+     */
+    fun initialize() {
+        logger.info("Loading MediaMod v$version!")
+
+        // Create the "./mediamod" and "./mediamod/addons" directories if they don't exist
+        if (!mediamodAddonDirectory.exists())
+            mediamodAddonDirectory.mkdirs()
+
+        try {
+            MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
+
+            MediaModAddonRegistry.discoverAddons()
+            MediaModAddonRegistry.initialiseAddons()
+        } catch (t: Throwable) {
+            logger.error(t.message)
+        }
+    }
+
+    init {
+        fixedRateTimer("MediaMod: TrackMetadata", false, 0, 3000) {
+            // Query the current service for some track information, if none is provided, return
+            try {
+                val trackMetadata =
+                    MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
+                if (trackMetadata != currentTrackMetadata) {
+                    currentTrackMetadata = trackMetadata
+                }
+            } catch (t: Throwable) {
+                logger.error("An error occurred when fetching TrackMetadata", t)
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@
 
 package com.mediamod.core.ui
 
-import com.mediamod.core.util.render.RenderUtil
+import com.mediamod.core.bindings.render.RenderUtil
 import java.awt.Color
 import kotlin.math.min
 
@@ -61,11 +61,11 @@ class ProgressBarRenderer(
 
     fun render() {
         // Background rectangle
-        RenderUtil.instance?.drawRectangle(x, y, width, height, backgroundColor)
+        RenderUtil.drawRectangle(x, y, width, height, backgroundColor)
 
         // Progress rectangle
         val progressPercent = (calculateEstimatedProgress().toFloat() / duration.toFloat())
-        RenderUtil.instance?.drawRectangle(
+        RenderUtil.drawRectangle(
             x.toFloat(),
             y.toFloat(),
             (progressPercent * width),

@@ -16,30 +16,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.util.threading
+package com.mediamod.bindings.minecraft
 
-import java.util.concurrent.Executors
+import com.mediamod.core.bindings.minecraft.IMinecraftClient
+import net.minecraft.client.Minecraft
+import java.io.File
 
-abstract class MultithreadingUtil {
-    companion object {
-        var instance: MultithreadingUtil? = null
-            set(value) {
-                if (field != null) {
-                    field = value
-                } else {
-                    error("Instance for $this has already been set!")
-                }
-            }
-    }
-
-    private val threadPool = Executors.newCachedThreadPool()
-
-    /**
-     * Runs a task on a new thread using [threadPool]
-     */
-    fun runAsync(task: () -> Unit) {
-        threadPool.submit(task)
-    }
-
-    abstract fun runBlocking(task: () -> Unit)
+class MinecraftClientProvider : IMinecraftClient {
+    override val mcDataDir: File = Minecraft.getMinecraft().mcDataDir
 }
