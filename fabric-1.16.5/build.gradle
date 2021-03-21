@@ -1,0 +1,28 @@
+plugins {
+    id 'fabric-loom'
+}
+
+minecraft {
+    // Force Loom to generate run configurations
+    runConfigs.configureEach {
+        ideConfigGenerated(true)
+    }
+}
+
+repositories {
+    maven { url = "http://maven.fabricmc.net/" }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "net.fabricmc:fabric-language-kotlin:1.5.0+kotlin.1.4.31"
+
+    embed(project(path: ":core", configuration: "default")) {
+        exclude group: "org.jetbrains.kotlin"
+        exclude group: "org.jetbrains.kotlinx"
+    }
+}

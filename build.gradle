@@ -1,91 +1,37 @@
-/*
- *     MediaMod is a mod for Minecraft which displays information about your current track in-game
- *     Copyright (C) 2021 Conor Byrne
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.4.31" apply false
+    id "org.jetbrains.kotlin.plugin.serialization" version "1.4.31" apply false
+    id "com.github.johnrengelman.shadow" version "5.2.0" apply false
+}
 
-buildscript {
-    ext.kotlin_version = "1.4.31"
+allprojects {
+    group "com.mediamod"
+    version "1.0-SNAPSHOT"
+
+    apply plugin: "org.jetbrains.kotlin.jvm"
+    apply plugin: "org.jetbrains.kotlin.plugin.serialization"
+    apply plugin: "com.github.johnrengelman.shadow"
 
     repositories {
-        jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url "https://jitpack.io" }
+        mavenCentral()
+    }
+
+    configurations {
+        embed
+        implementation.extendsFrom(embed)
     }
 
     dependencies {
-        classpath "com.github.ReplayMod:ForgeGradle:fab6116:all"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
-    }
-}
-
-apply plugin: "net.minecraftforge.gradle.forge"
-apply plugin: "kotlin"
-apply plugin: "com.github.johnrengelman.shadow"
-
-version = "2.0.0-rewrite"
-group = "com.mediamod"
-archivesBaseName = "MediaMod"
-sourceCompatibility = targetCompatibility = "1.8"
-
-minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
-    runDir = "run"
-    mappings = "stable_22"
-    makeObfSourceJar = true
-}
-
-configurations {
-    embed
-    implementation.extendsFrom(embed)
-}
-
-dependencies {
-    // Kotlin
-    embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    embed "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
-
-    // MediaMod Core
-    embed project(':core')
-}
-
-shadowJar {
-    archiveClassifier.set("")
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    configurations = [project.configurations.embed]
-}
-
-tasks.build.finalizedBy tasks.shadowJar
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-
-        // replace version and mcversion
-        expand "version": project.version, "mcversion": project.minecraft.version
+        embed "org.jetbrains.kotlin:kotlin-stdlib"
+        embed "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
     }
 
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
+    shadowJar {
+        archiveClassifier.set("")
+
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations = [project.configurations.embed]
     }
+
+    tasks.build.finalizedBy tasks.shadowJar
 }

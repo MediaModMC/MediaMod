@@ -17,7 +17,7 @@
  */
 
 
-package com.mediamod.bindings.impl.threading
+package com.mediamod.forge.bindings.impl.threading
 
 import com.mediamod.core.bindings.schedule.TickSchedulerService
 import net.minecraftforge.common.MinecraftForge

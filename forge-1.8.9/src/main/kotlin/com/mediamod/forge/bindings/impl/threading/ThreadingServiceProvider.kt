@@ -16,12 +16,18 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.bindings.impl.minecraft
 
-import com.mediamod.core.bindings.minecraft.MinecraftClient
+package com.mediamod.forge.bindings.impl.threading
+
+import com.mediamod.core.bindings.threading.ThreadingService
 import net.minecraft.client.Minecraft
-import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-class MinecraftClientProvider : MinecraftClient {
-    override val mcDataDir: File = Minecraft.getMinecraft().mcDataDir
+class ThreadingServiceProvider : ThreadingService {
+    override val threadPool: ExecutorService = Executors.newCachedThreadPool()
+
+    override fun runBlocking(task: () -> Unit) {
+        Minecraft.getMinecraft().addScheduledTask(task)
+    }
 }

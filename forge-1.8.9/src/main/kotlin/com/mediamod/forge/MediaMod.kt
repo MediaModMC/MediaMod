@@ -17,13 +17,13 @@
  */
 
 
-package com.mediamod
+package com.mediamod.forge
 
-import com.mediamod.bindings.impl.minecraft.FontRendererProvider
-import com.mediamod.bindings.impl.minecraft.MinecraftClientProvider
-import com.mediamod.bindings.impl.render.RenderUtilProvider
-import com.mediamod.bindings.impl.threading.ThreadingServiceProvider
-import com.mediamod.bindings.impl.threading.TickSchedulerServiceProvider
+import com.mediamod.forge.bindings.impl.minecraft.FontRendererProvider
+import com.mediamod.forge.bindings.impl.minecraft.MinecraftClientProvider
+import com.mediamod.forge.bindings.impl.render.RenderUtilProvider
+import com.mediamod.forge.bindings.impl.threading.ThreadingServiceProvider
+import com.mediamod.forge.bindings.impl.threading.TickSchedulerServiceProvider
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.BindingRegistry
 import net.minecraftforge.client.event.RenderGameOverlayEvent

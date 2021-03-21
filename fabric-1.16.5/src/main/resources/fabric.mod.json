@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "mediamod",
+  "version": "1.0.0-dev.1",
+  "name": "MediaMod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "dreamhopping"
+  ],
+  "contact": {
+    "homepage": "https://mediamodmc.github.io",
+    "sources": "https://github.com/MediaModMC/MediaMod"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/mediamod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.mediamod.fabric.MediaMod"
+    ]
+  },
+  "mixins": [
+    "mediamod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.8.7",
+    "fabric": "*",
+    "minecraft": "1.16.x",
+    "fabric-language-kotlin": ">=1.5.0+kotlin.1.4.31"
+  }
+}

@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.bindings.impl.render
+package com.mediamod.forge.bindings.impl.render
 
 import com.mediamod.core.bindings.render.RenderUtil
 import net.minecraft.client.Minecraft

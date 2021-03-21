@@ -16,18 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package com.mediamod.forge.bindings.impl.minecraft
 
-package com.mediamod.bindings.impl.threading
-
-import com.mediamod.core.bindings.threading.ThreadingService
+import com.mediamod.core.bindings.minecraft.FontRenderer
 import net.minecraft.client.Minecraft
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
-class ThreadingServiceProvider : ThreadingService {
-    override val threadPool: ExecutorService = Executors.newCachedThreadPool()
+class FontRendererProvider : FontRenderer {
+    override fun getStringWidth(string: String) = Minecraft.getMinecraft().fontRendererObj.getStringWidth(string)
 
-    override fun runBlocking(task: () -> Unit) {
-        Minecraft.getMinecraft().addScheduledTask(task)
-    }
+    override fun trimStringToWidth(string: String, width: Int): String =
+        Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(string, width)
 }

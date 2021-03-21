@@ -7,7 +7,7 @@ bin
 .project
 
 # idea
-out
+../MediaModRewrite/out
 *.ipr
 *.iws
 *.iml
