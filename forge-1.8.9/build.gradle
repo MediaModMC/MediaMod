@@ -22,6 +22,10 @@ dependencies {
     embed project(path: ":core", configuration: "default")
 }
 
+shadowJar {
+    archiveClassifier.set("1.8.9")
+}
+
 task moveResources {
     doLast {
         ant.move file: "${buildDir}/resources/main",

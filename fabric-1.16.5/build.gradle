@@ -21,8 +21,15 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:1.5.0+kotlin.1.4.31"
 
-    embed(project(path: ":core", configuration: "default")) {
-        exclude group: "org.jetbrains.kotlin"
-        exclude group: "org.jetbrains.kotlinx"
+    embed(project(path: ":core", configuration: "default"))
+}
+
+shadowJar {
+    archiveClassifier.set("1.16.5")
+
+    // Fabric will provide Kotlin through fabric-language-kotlin at runtime
+    dependencies {
+        exclude(dependency("org.jetbrains.kotlin:.*"))
+        exclude(dependency("org.jetbrains.kotlinx:.*"))
     }
 }

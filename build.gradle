@@ -27,11 +27,30 @@ allprojects {
     }
 
     shadowJar {
-        archiveClassifier.set("")
-
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         configurations = [project.configurations.embed]
+
+        setArchivesBaseName("MediaMod")
+        destinationDirectory.set(new File(rootProject.projectDir, "build/libs"))
     }
 
+    tasks {
+        task "removeAllJar" {
+            group "build"
+            description "Removes jar suffixed with -all"
+
+            def allJar = new File(rootProject.projectDir, "build/libs/MediaMod-${version}-all.jar")
+            outputs.upToDateWhen { !allJar.exists() }
+            doLast { allJar.delete() }
+        }
+    }
+
+    // Include dependencies in jar using shadow
     tasks.build.finalizedBy tasks.shadowJar
+
+    // Remove -all jar when finished building
+    tasks.shadowJar.finalizedBy tasks.removeAllJar
 }
+
+// Disable jar building for the root project
+tasks.jar.enabled = false
