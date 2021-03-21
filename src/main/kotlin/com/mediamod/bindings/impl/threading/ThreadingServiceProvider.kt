@@ -16,33 +16,18 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings.threading
 
+package com.mediamod.bindings.impl.threading
+
+import com.mediamod.core.bindings.threading.ThreadingService
+import net.minecraft.client.Minecraft
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-interface IMultithreadingUtil {
-    private val threadPool: ExecutorService
-        get() = Executors.newCachedThreadPool()
+class ThreadingServiceProvider : ThreadingService {
+    override val threadPool: ExecutorService = Executors.newCachedThreadPool()
 
-    /**
-     * Runs a task on a new thread using [threadPool]
-     */
-    fun runAsync(task: () -> Unit) {
-        threadPool.submit(task)
-    }
-
-    fun runBlocking(task: () -> Unit)
-
-    companion object {
-        internal lateinit var internalInstance: IMultithreadingUtil
-        var instance
-            get() = if (::internalInstance.isInitialized) internalInstance else null
-            set(v) {
-                if (::internalInstance.isInitialized)
-                    error("instance has already been set")
-
-                internalInstance = v ?: error("instance cannot be null")
-            }
+    override fun runBlocking(task: () -> Unit) {
+        Minecraft.getMinecraft().addScheduledTask(task)
     }
 }

@@ -18,9 +18,54 @@
 
 package com.mediamod.core.bindings.render
 
-/**
- * A class which provides commonly used methods for rendering things to the screen
- *
- * @author Conor Byrne (dreamhopping)
- */
-object RenderUtil : IRenderUtil by IRenderUtil.internalInstance
+import com.mediamod.core.bindings.BindingRegistry
+import java.awt.Color
+
+interface RenderUtil {
+    /**
+     * Renders a rectangle to the screen
+     * This function supports any number for width and height, converting to double inside the function
+     *
+     * @param cornerX The x co-ordinate of the top left corner
+     * @param cornerY The y co-ordinate of the top left corner
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     * @param color The desired color for the rectangle
+     */
+    fun drawRectangle(cornerX: Number, cornerY: Number, width: Number, height: Number, color: Color)
+
+    /**
+     * Renders text to the screen*
+     * It also accepts floats as an input by using the old drawString method
+     *
+     * @param text The text to render
+     * @param x The x co-ordinate of the top left corner
+     * @param y The y co-ordinate of the top left corner
+     * @param color The color of the text
+     */
+    fun drawText(text: String, x: Float, y: Float, color: Color)
+
+    /*/**
+     * Renders an image to the screen
+     *
+     * @param imageLocation A resource location for the image
+     * @param x The x position of the image
+     * @param y The y position of the image
+     * @param width The width of the image
+     * @param height The height of the image
+     */
+    fun drawImage(bufferedImage: BufferedImage?, x: Int, y: Int, width: Int, height: Int)*/
+
+    /**
+     * Renders elements to the screen under a scissor
+     *
+     * @param x The x co-ordinate of the top left corner
+     * @param y The y co-ordinate of the top left corner
+     * @param width The width of the scissor
+     * @param height The height of the scissor
+     * @param drawCode The code that will be run under the scissor
+     */
+    fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit)
+
+    companion object : RenderUtil by BindingRegistry.renderUtil
+}

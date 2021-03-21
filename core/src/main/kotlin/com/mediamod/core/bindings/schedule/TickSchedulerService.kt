@@ -16,11 +16,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings.threading
+package com.mediamod.core.bindings.schedule
 
-interface ITickSchedulerUtil {
+import com.mediamod.core.bindings.BindingRegistry
+
+interface TickSchedulerService {
     val tasks: MutableList<TickTask>
-        get() = mutableListOf()
 
     /**
      * Schedules a [Unit] to run after a certain amount of ticks
@@ -53,15 +54,5 @@ interface ITickSchedulerUtil {
         }
     }
 
-    companion object {
-        internal lateinit var internalInstance: ITickSchedulerUtil
-        var instance
-            get() = if (::internalInstance.isInitialized) internalInstance else null
-            set(v) {
-                if (::internalInstance.isInitialized)
-                    error("instance has already been set")
-
-                internalInstance = v ?: error("instance cannot be null")
-            }
-    }
+    companion object : TickSchedulerService by BindingRegistry.tickSchedulerService
 }

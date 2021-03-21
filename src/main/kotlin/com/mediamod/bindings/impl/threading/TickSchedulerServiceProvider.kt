@@ -16,6 +16,29 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings.threading
 
-object TickSchedulerUtil : ITickSchedulerUtil by ITickSchedulerUtil.internalInstance
+package com.mediamod.bindings.impl.threading
+
+import com.mediamod.core.bindings.schedule.TickSchedulerService
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
+
+/**
+ * A class for scheduling code to run after a certain amount of ticks
+ *
+ * @author Conor Byrne (dreamhopping)
+ */
+class TickSchedulerServiceProvider : TickSchedulerService {
+    override val tasks: MutableList<TickSchedulerService.TickTask> = mutableListOf()
+
+    @SubscribeEvent
+    fun onClientTick(e: TickEvent.ClientTickEvent) {
+        if (e.phase != TickEvent.Phase.END) return
+        tasks.removeIf { it.attemptToExecute() }
+    }
+
+    init {
+        MinecraftForge.EVENT_BUS.register(this)
+    }
+}

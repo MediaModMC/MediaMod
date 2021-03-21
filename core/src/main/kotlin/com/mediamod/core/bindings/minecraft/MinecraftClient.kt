@@ -18,4 +18,11 @@
 
 package com.mediamod.core.bindings.minecraft
 
-object MinecraftClient : IMinecraftClient by IMinecraftClient.internalInstance
+import com.mediamod.core.bindings.BindingRegistry
+import java.io.File
+
+interface MinecraftClient {
+    val mcDataDir: File
+
+    companion object : MinecraftClient by BindingRegistry.minecraftClient
+}

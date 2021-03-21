@@ -16,6 +16,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings.threading
+package com.mediamod.bindings.impl.minecraft
 
-object MultithreadingUtil : IMultithreadingUtil by IMultithreadingUtil.internalInstance
+import com.mediamod.core.bindings.minecraft.MinecraftClient
+import net.minecraft.client.Minecraft
+import java.io.File
+
+class MinecraftClientProvider : MinecraftClient {
+    override val mcDataDir: File = Minecraft.getMinecraft().mcDataDir
+}

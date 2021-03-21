@@ -20,7 +20,7 @@ package com.mediamod.listener
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.render.RenderUtil
-import com.mediamod.core.bindings.threading.MultithreadingUtil
+import com.mediamod.core.bindings.threading.ThreadingService
 import com.mediamod.core.ui.ProgressBarRenderer
 import com.mediamod.ui.ImageUtils
 import com.mediamod.ui.render.MarqueeingTextRenderer
@@ -57,11 +57,11 @@ object GuiEventListener {
     }
 
     private fun renderAlbumArt() {
-        MultithreadingUtil.runAsync {
+        ThreadingService.runAsync {
             val imageLocation =
                 ImageUtils.getResourceForURL(MediaModCore.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
 
-            MultithreadingUtil.runBlocking {
+            ThreadingService.runBlocking {
                 // RenderUtil.drawImage(imageLocation, 10, 10, 35, 35)
             }
         }

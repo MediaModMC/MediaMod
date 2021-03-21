@@ -19,15 +19,12 @@
 
 package com.mediamod
 
-import com.mediamod.bindings.minecraft.MinecraftClientProvider
-import com.mediamod.bindings.render.RenderUtilProvider
-import com.mediamod.bindings.threading.MultithreadingUtilProvider
-import com.mediamod.bindings.threading.TickSchedulerUtilProvider
+import com.mediamod.bindings.impl.minecraft.MinecraftClientProvider
+import com.mediamod.bindings.impl.render.RenderUtilProvider
+import com.mediamod.bindings.impl.threading.ThreadingServiceProvider
+import com.mediamod.bindings.impl.threading.TickSchedulerServiceProvider
 import com.mediamod.core.MediaModCore
-import com.mediamod.core.bindings.minecraft.IMinecraftClient
-import com.mediamod.core.bindings.render.IRenderUtil
-import com.mediamod.core.bindings.threading.IMultithreadingUtil
-import com.mediamod.core.bindings.threading.ITickSchedulerUtil
+import com.mediamod.core.bindings.BindingRegistry
 import com.mediamod.listener.GuiEventListener
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
@@ -56,10 +53,10 @@ object MediaMod {
      * Sets the instance for all bindings provided by this entry point
      */
     private fun registerBindings() {
-        IMultithreadingUtil.instance = MultithreadingUtilProvider()
-        ITickSchedulerUtil.instance = TickSchedulerUtilProvider()
-        IRenderUtil.instance = RenderUtilProvider()
-        IMinecraftClient.instance = MinecraftClientProvider()
+        BindingRegistry.threadingService = ThreadingServiceProvider()
+        BindingRegistry.tickSchedulerService = TickSchedulerServiceProvider()
+        BindingRegistry.renderUtil = RenderUtilProvider()
+        BindingRegistry.minecraftClient = MinecraftClientProvider()
     }
 
     /**

@@ -16,22 +16,17 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings.minecraft
+package com.mediamod.core.bindings
 
-import java.io.File
+import com.mediamod.core.bindings.minecraft.MinecraftClient
+import com.mediamod.core.bindings.render.RenderUtil
+import com.mediamod.core.bindings.threading.ThreadingService
+import com.mediamod.core.bindings.schedule.TickSchedulerService
 
-interface IMinecraftClient {
-    val mcDataDir: File
+object BindingRegistry {
+    lateinit var tickSchedulerService: TickSchedulerService
+    lateinit var threadingService: ThreadingService
+    lateinit var renderUtil: RenderUtil
 
-    companion object {
-        internal lateinit var internalInstance: IMinecraftClient
-        var instance
-            get() = if (::internalInstance.isInitialized) internalInstance else null
-            set(v) {
-                if (::internalInstance.isInitialized)
-                    error("instance has already been set")
-
-                internalInstance = v ?: error("instance cannot be null")
-            }
-    }
+    lateinit var minecraftClient: MinecraftClient
 }

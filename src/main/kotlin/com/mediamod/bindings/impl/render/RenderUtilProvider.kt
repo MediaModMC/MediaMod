@@ -16,9 +16,9 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.bindings.render
+package com.mediamod.bindings.impl.render
 
-import com.mediamod.core.bindings.render.IRenderUtil
+import com.mediamod.core.bindings.render.RenderUtil
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
@@ -35,7 +35,7 @@ import java.awt.Color
  *
  * @author Conor Byrne (dreamhopping)
  */
-class RenderUtilProvider : IRenderUtil {
+class RenderUtilProvider : RenderUtil {
     private val fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRendererObj
 
     /**
