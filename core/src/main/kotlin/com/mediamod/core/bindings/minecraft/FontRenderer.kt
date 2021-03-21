@@ -16,19 +16,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings
+package com.mediamod.core.bindings.minecraft
 
-import com.mediamod.core.bindings.minecraft.FontRenderer
-import com.mediamod.core.bindings.minecraft.MinecraftClient
-import com.mediamod.core.bindings.render.RenderUtil
-import com.mediamod.core.bindings.schedule.TickSchedulerService
-import com.mediamod.core.bindings.threading.ThreadingService
+import com.mediamod.core.bindings.BindingRegistry
 
-object BindingRegistry {
-    lateinit var tickSchedulerService: TickSchedulerService
-    lateinit var threadingService: ThreadingService
-    lateinit var renderUtil: RenderUtil
+interface FontRenderer {
+    fun getStringWidth(string: String): Int
+    fun trimStringToWidth(string: String, width: Int): String
 
-    lateinit var minecraftClient: MinecraftClient
-    lateinit var fontRenderer: FontRenderer
+    companion object : FontRenderer by BindingRegistry.fontRenderer
 }

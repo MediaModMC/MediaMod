@@ -16,40 +16,32 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.listener
+package com.mediamod.core.ui.listener
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.render.RenderUtil
-import com.mediamod.core.bindings.threading.ThreadingService
+import com.mediamod.core.ui.MarqueeingTextRenderer
 import com.mediamod.core.ui.ProgressBarRenderer
-import com.mediamod.ui.ImageUtils
-import com.mediamod.ui.render.MarqueeingTextRenderer
-import net.minecraft.util.ResourceLocation
-import net.minecraftforge.client.event.RenderGameOverlayEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
-/**
- * Listens to all events related to GUIs like [RenderGameOverlayEvent]
- *
- * @author Conor Byrne (dreamhopping)
- */
 object GuiEventListener {
-    private val mediamodIconLocation = ResourceLocation("mediamod", "mediamod.png")
-
     private val titleTextRenderer = MarqueeingTextRenderer(50, 10, 90, 20)
     private val artistTextRenderer = MarqueeingTextRenderer(50, 20, 90, 20, textColor = Color.WHITE.darker())
     private val progressBarRenderer = ProgressBarRenderer(50, 35, 90, 10)
 
-    @SubscribeEvent
-    fun onRenderTick(event: RenderGameOverlayEvent) {
-        if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || MediaModCore.currentTrackMetadata == null)
+    fun onRenderTick(partialTicks: Float) {
+        if (MediaModCore.currentTrackMetadata == null)
             return
 
         renderBackground()
-        renderText(event.partialTicks)
+        renderText(partialTicks)
         renderAlbumArt()
         renderProgressBar()
+    }
+
+    fun onClientTick() {
+        titleTextRenderer.onTick()
+        artistTextRenderer.onTick()
     }
 
     private fun renderBackground() {
@@ -57,14 +49,14 @@ object GuiEventListener {
     }
 
     private fun renderAlbumArt() {
-        ThreadingService.runAsync {
-            val imageLocation =
-                ImageUtils.getResourceForURL(MediaModCore.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
+        /* ThreadingService.runAsync {
+             val imageLocation =
+                 ImageUtils.getResourceForURL(MediaModCore.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
 
-            ThreadingService.runBlocking {
-                // RenderUtil.drawImage(imageLocation, 10, 10, 35, 35)
-            }
-        }
+             ThreadingService.runBlocking {
+                 // RenderUtil.drawImage(imageLocation, 10, 10, 35, 35)
+             }
+         }*/
     }
 
     private fun renderProgressBar() {

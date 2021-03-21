@@ -19,33 +19,31 @@
 
 package com.mediamod
 
+import com.mediamod.bindings.impl.minecraft.FontRendererProvider
 import com.mediamod.bindings.impl.minecraft.MinecraftClientProvider
 import com.mediamod.bindings.impl.render.RenderUtilProvider
 import com.mediamod.bindings.impl.threading.ThreadingServiceProvider
 import com.mediamod.bindings.impl.threading.TickSchedulerServiceProvider
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.BindingRegistry
-import com.mediamod.listener.GuiEventListener
+import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import net.minecraftforge.fml.common.eventhandler.EventBus
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
 
 /**
  * The mod class for MediaMod
  * @author Conor Byrne (dreamhopping)
  */
-@Mod(
-    modid = "mediamod",
-    version = MediaModCore.version,
-    modLanguageAdapter = "com.mediamod.launch.KotlinLanguageAdapter"
-)
-object MediaMod {
+@Mod(modid = "mediamod", version = MediaModCore.version)
+class MediaMod {
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         registerBindings()
-        registerEventListeners()
 
+        MinecraftForge.EVENT_BUS.register(this)
         MediaModCore.initialize()
     }
 
@@ -56,14 +54,18 @@ object MediaMod {
         BindingRegistry.threadingService = ThreadingServiceProvider()
         BindingRegistry.tickSchedulerService = TickSchedulerServiceProvider()
         BindingRegistry.renderUtil = RenderUtilProvider()
+
         BindingRegistry.minecraftClient = MinecraftClientProvider()
+        BindingRegistry.fontRenderer = FontRendererProvider()
     }
 
-    /**
-     * Registers all event listeners to [MinecraftForge.EVENT_BUS] via [EventBus.register]
-     * Current event listeners: [GuiEventListener]
-     */
-    private fun registerEventListeners() {
-        MinecraftForge.EVENT_BUS.register(GuiEventListener)
+    @SubscribeEvent
+    fun onRender(event: RenderGameOverlayEvent) {
+        if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) MediaModCore.onRender(event.partialTicks)
+    }
+
+    @SubscribeEvent
+    fun onTick(event: TickEvent.ClientTickEvent) {
+        if (event.phase == TickEvent.Phase.END) MediaModCore.onClientTick()
     }
 }

@@ -17,13 +17,10 @@
  */
 
 
-package com.mediamod.ui.render
+package com.mediamod.core.ui
 
+import com.mediamod.core.bindings.minecraft.FontRenderer
 import com.mediamod.core.bindings.render.RenderUtil
-import net.minecraft.client.Minecraft
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
 import java.awt.Color
 import kotlin.math.max
 import kotlin.math.min
@@ -48,7 +45,6 @@ class MarqueeingTextRenderer(
     private val textProgressIncrement: Double = 0.005,
     var text: String = ""
 ) {
-    private val fontRenderer = Minecraft.getMinecraft().fontRendererObj
     private var textProgressPercent = 0.00
 
     /**
@@ -56,10 +52,10 @@ class MarqueeingTextRenderer(
      * @param partialTicks The number of "partial ticks" between this tick and the previous tick
      */
     fun render(partialTicks: Float) {
-        if (fontRenderer.getStringWidth(text) > 90) {
-            val textString = "$text     ${fontRenderer.trimStringToWidth(text, maximumWidth)}"
+        if (FontRenderer.getStringWidth(text) > 90) {
+            val textString = "$text     ${FontRenderer.trimStringToWidth(text, maximumWidth)}"
 
-            val textWidth = fontRenderer.getStringWidth(textString)
+            val textWidth = FontRenderer.getStringWidth(textString)
             val textProgressPartialTicks = min((textProgressPercent + partialTicks * textProgressIncrement), 1.0)
 
             RenderUtil.drawScissor(textX, textY, maximumWidth, maximumHeight) {
@@ -75,16 +71,9 @@ class MarqueeingTextRenderer(
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase != TickEvent.Phase.END) return
-
+    fun onTick() {
         textProgressPercent += textProgressIncrement
         if (textProgressPercent > 1.0 + textProgressIncrement)
             textProgressPercent = 0.0
-    }
-
-    init {
-        MinecraftForge.EVENT_BUS.register(this)
     }
 }
