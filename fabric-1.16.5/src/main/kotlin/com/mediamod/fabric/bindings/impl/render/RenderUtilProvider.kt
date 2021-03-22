@@ -1,8 +1,11 @@
 package com.mediamod.fabric.bindings.impl.render
 
 import com.mediamod.core.bindings.render.RenderUtil
+import com.mediamod.core.resource.MediaModResource
+import com.mediamod.fabric.util.toIdentifier
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormats
@@ -33,23 +36,32 @@ class RenderUtilProvider : RenderUtil {
         val f1 = (colorInt shr 8 and 255).toFloat() / 255.0f
         val f2 = (colorInt and 255).toFloat() / 255.0f
 
-        val bufferBuilder = Tessellator.getInstance().buffer
         RenderSystem.enableBlend()
         RenderSystem.disableTexture()
         RenderSystem.defaultBlendFunc()
-        bufferBuilder.begin(7, VertexFormats.POSITION_COLOR)
-        bufferBuilder.vertex(matrix, left.toFloat(), bottom.toFloat(), 0.0f).color(f, f1, f2, f3).next()
-        bufferBuilder.vertex(matrix, right.toFloat(), bottom.toFloat(), 0.0f).color(f, f1, f2, f3).next()
-        bufferBuilder.vertex(matrix, right.toFloat(), top.toFloat(), 0.0f).color(f, f1, f2, f3).next()
-        bufferBuilder.vertex(matrix, left.toFloat(), top.toFloat(), 0.0f).color(f, f1, f2, f3).next()
-        bufferBuilder.end()
-        BufferRenderer.draw(bufferBuilder)
+
+        with(Tessellator.getInstance().buffer) {
+            begin(7, VertexFormats.POSITION_COLOR)
+            vertex(matrix, left.toFloat(), bottom.toFloat(), 0.0f).color(f, f1, f2, f3).next()
+            vertex(matrix, right.toFloat(), bottom.toFloat(), 0.0f).color(f, f1, f2, f3).next()
+            vertex(matrix, right.toFloat(), top.toFloat(), 0.0f).color(f, f1, f2, f3).next()
+            vertex(matrix, left.toFloat(), top.toFloat(), 0.0f).color(f, f1, f2, f3).next()
+            end()
+
+            BufferRenderer.draw(this)
+        }
+
         RenderSystem.enableTexture()
         RenderSystem.disableBlend()
     }
 
     override fun drawText(text: String, x: Float, y: Float, color: Color) {
         MinecraftClient.getInstance().textRenderer.draw(MatrixStack(), text, x, y, color.rgb)
+    }
+
+    override fun drawImage(resource: MediaModResource, x: Int, y: Int, width: Int, height: Int) {
+        MinecraftClient.getInstance().textureManager.bindTexture(resource.toIdentifier())
+        DrawableHelper.drawTexture(MatrixStack(), x, y, 999, 0f, 0f, width, height, width, height)
     }
 
     override fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {

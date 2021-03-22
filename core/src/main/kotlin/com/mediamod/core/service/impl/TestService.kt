@@ -47,7 +47,7 @@ class TestService : MediaModService("mediamod-test-addon-service") {
         "glaive",
         1,
         35000,
-        "https://images.genius.com/98253285aa46027c831f87813332953c.1000x1000x1.jpg"
+        "https://i.scdn.co/image/ab67616d0000b273c1c4b6702c901e6efcbe7490"
     )
 
     /**

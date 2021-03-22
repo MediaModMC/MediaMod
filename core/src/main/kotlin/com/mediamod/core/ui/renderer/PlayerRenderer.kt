@@ -23,6 +23,7 @@ import com.mediamod.core.bindings.render.RenderUtil
 import com.mediamod.core.ui.MarqueeingTextRenderer
 import com.mediamod.core.ui.ProgressBarRenderer
 import java.awt.Color
+import java.net.URL
 
 object PlayerRenderer {
     private val titleTextRenderer = MarqueeingTextRenderer(50, 10, 90, 20)
@@ -49,14 +50,7 @@ object PlayerRenderer {
     }
 
     private fun renderAlbumArt() {
-        /* ThreadingService.runAsync {
-             val imageLocation =
-                 ImageUtils.getResourceForURL(MediaModCore.currentTrackMetadata?.albumArtUrl) ?: mediamodIconLocation
-
-             ThreadingService.runBlocking {
-                 // RenderUtil.drawImage(imageLocation, 10, 10, 35, 35)
-             }
-         }*/
+        RenderUtil.drawImage(URL(MediaModCore.currentTrackMetadata?.albumArtUrl), 10, 10, 35, 35)
     }
 
     private fun renderProgressBar() {

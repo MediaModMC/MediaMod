@@ -19,13 +19,14 @@
 
 package com.mediamod.forge
 
+import com.mediamod.core.MediaModCore
+import com.mediamod.core.bindings.BindingRegistry
 import com.mediamod.forge.bindings.impl.minecraft.FontRendererProvider
 import com.mediamod.forge.bindings.impl.minecraft.MinecraftClientProvider
 import com.mediamod.forge.bindings.impl.render.RenderUtilProvider
+import com.mediamod.forge.bindings.impl.texture.TextureManagerProvider
 import com.mediamod.forge.bindings.impl.threading.ThreadingServiceProvider
 import com.mediamod.forge.bindings.impl.threading.TickSchedulerServiceProvider
-import com.mediamod.core.MediaModCore
-import com.mediamod.core.bindings.BindingRegistry
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
@@ -57,6 +58,7 @@ class MediaMod {
 
         BindingRegistry.minecraftClient = MinecraftClientProvider()
         BindingRegistry.fontRenderer = FontRendererProvider()
+        BindingRegistry.textureManager = TextureManagerProvider()
     }
 
     @SubscribeEvent

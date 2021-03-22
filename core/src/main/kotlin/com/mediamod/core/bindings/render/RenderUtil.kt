@@ -19,7 +19,10 @@
 package com.mediamod.core.bindings.render
 
 import com.mediamod.core.bindings.BindingRegistry
+import com.mediamod.core.resource.MediaModResource
+import com.mediamod.core.resource.ResourceFactory
 import java.awt.Color
+import java.net.URL
 
 interface RenderUtil {
     /**
@@ -45,16 +48,30 @@ interface RenderUtil {
      */
     fun drawText(text: String, x: Float, y: Float, color: Color)
 
-    /*/**
+    /**
      * Renders an image to the screen
      *
-     * @param imageLocation A resource location for the image
+     * @param url A URL for the image
      * @param x The x position of the image
      * @param y The y position of the image
      * @param width The width of the image
      * @param height The height of the image
      */
-    fun drawImage(bufferedImage: BufferedImage?, x: Int, y: Int, width: Int, height: Int)*/
+    fun drawImage(url: URL?, x: Int, y: Int, width: Int, height: Int) {
+        val resource = ResourceFactory.resourceForUrl(url)
+        drawImage(resource, x, y, width, height)
+    }
+
+    /**
+     * Renders an image to the screen
+     *
+     * @param resource A resource location for the image
+     * @param x The x position of the image
+     * @param y The y position of the image
+     * @param width The width of the image
+     * @param height The height of the image
+     */
+    fun drawImage(resource: MediaModResource, x: Int, y: Int, width: Int, height: Int)
 
     /**
      * Renders elements to the screen under a scissor

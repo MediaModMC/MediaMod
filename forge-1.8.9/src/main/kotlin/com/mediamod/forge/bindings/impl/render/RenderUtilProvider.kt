@@ -19,6 +19,8 @@
 package com.mediamod.forge.bindings.impl.render
 
 import com.mediamod.core.bindings.render.RenderUtil
+import com.mediamod.core.resource.MediaModResource
+import com.mediamod.forge.util.toResourceLocation
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
@@ -26,7 +28,6 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
@@ -83,11 +84,13 @@ class RenderUtilProvider : RenderUtil {
             pos(right, bottom, 0.0).endVertex()
             pos(right, top, 0.0).endVertex()
             pos(left, top, 0.0).endVertex()
+            endVertex()
         }
 
         tessellator.draw()
         GlStateManager.enableTexture2D()
         GlStateManager.disableBlend()
+        GlStateManager.color(1f, 1f, 1f, 1f)
     }
 
     /**
@@ -108,14 +111,14 @@ class RenderUtilProvider : RenderUtil {
     /**
      * Renders an image to the screen
      *
-     * @param imageLocation A resource location for the image
+     * @param resource A resource location for the image
      * @param x The x position of the image
      * @param y The y position of the image
      * @param width The width of the image
      * @param height The height of the image
      */
-    fun drawImage(imageLocation: ResourceLocation, x: Int, y: Int, width: Int, height: Int) {
-        Minecraft.getMinecraft().textureManager.bindTexture(imageLocation)
+    override fun drawImage(resource: MediaModResource, x: Int, y: Int, width: Int, height: Int) {
+        Minecraft.getMinecraft().textureManager.bindTexture(resource.toResourceLocation())
         Gui.drawModalRectWithCustomSizedTexture(x, y, 0f, 0f, width, height, width.toFloat(), height.toFloat())
     }
 
@@ -147,4 +150,33 @@ class RenderUtilProvider : RenderUtil {
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
     }
+    /*
+        private object ImageProvider {
+        val images = mutableMapOf<String, FutureResourceImage>()
+
+        fun resourceForUrl(url: URL?): ResourceLocation {
+            val resourceName = url?.file ?: return mediaModResourceLocation
+            val futureResource = images[resourceName]
+                ?: FutureResourceImage(resourceName, CompletableFuture.supplyAsync {
+                    ImageIO.read(WebUtils.get(url))
+                })
+
+            images[resourceName] = futureResource
+            return futureResource.resource ?: mediaModResourceLocation
+        }
+
+        class FutureResourceImage(name: String, completableFuture: CompletableFuture<BufferedImage>) {
+            var resource: ResourceLocation? = null
+
+            init {
+                completableFuture.thenAcceptAsync { image ->
+                    ThreadingService.runBlocking {
+                        val texture = DynamicTexture(image)
+                        resource = Minecraft.getMinecraft().textureManager.getDynamicTextureLocation(name, texture)
+                    }
+                }
+            }
+        }
+    }
+     */
 }

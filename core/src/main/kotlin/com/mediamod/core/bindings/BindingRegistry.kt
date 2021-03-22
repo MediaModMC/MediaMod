@@ -21,14 +21,17 @@ package com.mediamod.core.bindings
 import com.mediamod.core.bindings.minecraft.FontRenderer
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.bindings.render.RenderUtil
+import com.mediamod.core.bindings.texture.TextureManager
 import com.mediamod.core.bindings.schedule.TickSchedulerService
 import com.mediamod.core.bindings.threading.ThreadingService
 
 object BindingRegistry {
     lateinit var tickSchedulerService: TickSchedulerService
     lateinit var threadingService: ThreadingService
-    lateinit var renderUtil: RenderUtil
 
     lateinit var minecraftClient: MinecraftClient
     lateinit var fontRenderer: FontRenderer
+
+    lateinit var textureManager: TextureManager
+    lateinit var renderUtil: RenderUtil
 }

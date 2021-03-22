@@ -38,4 +38,6 @@ object WebUtils {
 
         return connection.getInputStream()
     }
+
+    fun URL.inputStreamWithAgent() = get(this)
 }
