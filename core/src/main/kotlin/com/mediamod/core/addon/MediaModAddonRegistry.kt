@@ -65,7 +65,7 @@ object MediaModAddonRegistry {
     /**
      * A logger for this class, used to print out errors with addon loading
      */
-    private val logger = LogManager.getLogger("MediaMod.AddonRegistry")
+    private val logger = LogManager.getLogger("MediaMod: Addon Registry")
 
     /**
      * A kotlinx-serialization json parser, used when parsing the mediamod-addon.json files
