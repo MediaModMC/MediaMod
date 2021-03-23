@@ -16,12 +16,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.ui.renderer
+package com.mediamod.core.render
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.render.RenderUtil
-import com.mediamod.core.ui.MarqueeingTextRenderer
-import com.mediamod.core.ui.ProgressBarRenderer
 import java.awt.Color
 import java.net.URL
 

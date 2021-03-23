@@ -17,7 +17,7 @@
  */
 
 
-package com.mediamod.core.ui
+package com.mediamod.core.render
 
 import com.mediamod.core.bindings.minecraft.FontRenderer
 import com.mediamod.core.bindings.render.RenderUtil

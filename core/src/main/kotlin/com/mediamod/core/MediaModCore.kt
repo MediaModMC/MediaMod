@@ -21,9 +21,11 @@ package com.mediamod.core
 
 import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
+import com.mediamod.core.render.PlayerRenderer
 import com.mediamod.core.service.MediaModServiceRegistry
+import com.mediamod.core.theme.MediaModThemeRegistry
 import com.mediamod.core.track.TrackMetadata
-import com.mediamod.core.ui.renderer.PlayerRenderer
+import com.mediamod.core.util.file.createIfNonExisting
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import kotlin.concurrent.fixedRateTimer
@@ -71,7 +73,13 @@ object MediaModCore {
      * The addons directory for MediaMod
      * This is where MediaMod addons will be stored
      */
-    private val mediamodAddonDirectory = File(mediamodDirectory, "mediamod")
+    private val mediamodAddonDirectory = File(mediamodDirectory, "addons")
+
+    /**
+     * The themes directory for MediaMod
+     * This is where MediaMod themes will be stored
+     */
+    private val mediamodThemeDirectory = File(mediamodDirectory, "themes")
 
     /**
      * An instance of [TrackMetadata], this is the current track information provided by a MediaMod Service
@@ -84,15 +92,20 @@ object MediaModCore {
     fun initialize() {
         logger.info("Loading MediaMod v$version!")
 
-        // Create the "./mediamod" and "./mediamod/addons" directories if they don't exist
-        if (!mediamodAddonDirectory.exists())
-            mediamodAddonDirectory.mkdirs()
 
         try {
-            MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
+            // Create "./mediamod", "./mediamod/addons" and "./mediamod/themes" if they don't exist
+            mediamodAddonDirectory.createIfNonExisting(true)
+            mediamodThemeDirectory.createIfNonExisting(true)
 
+            // Load addons
+            MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
             MediaModAddonRegistry.discoverAddons()
             MediaModAddonRegistry.initialiseAddons()
+
+            // Load themes
+            MediaModThemeRegistry.addDefaultThemes()
+            MediaModThemeRegistry.loadThemes(mediamodThemeDirectory)
         } catch (t: Throwable) {
             logger.error(t.message)
         }
