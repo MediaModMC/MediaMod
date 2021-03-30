@@ -18,14 +18,10 @@
 
 package com.mediamod.core.addon.json
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class MediaModAddonJsonEntry(
     val addonClass: String? = null,
     val apiVersion: Int? = null,
     val displayName: String? = null
 )
 
-@Serializable
 data class MediaModAddonJson(val addons: Map<String, MediaModAddonJsonEntry> = mapOf())

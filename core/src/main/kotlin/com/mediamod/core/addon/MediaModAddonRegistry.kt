@@ -18,13 +18,11 @@
 
 package com.mediamod.core.addon
 
+import com.google.gson.Gson
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.exception.AddonUnregisterException
 import com.mediamod.core.addon.json.MediaModAddonJson
 import com.mediamod.core.addon.json.MediaModAddonJsonEntry
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.lang.reflect.Method
@@ -68,12 +66,9 @@ object MediaModAddonRegistry {
     private val logger = LogManager.getLogger("MediaMod: Addon Registry")
 
     /**
-     * A kotlinx-serialization json parser, used when parsing the mediamod-addon.json files
+     * A gson json parser, used when parsing the mediamod-addon.json files
      */
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
+    private val gson = Gson()
 
     /**
      * Initialises a MediaMod Addon
@@ -130,23 +125,22 @@ object MediaModAddonRegistry {
         val time = measureTimeMillis {
             // Iterate over all "external" addon sources, get all jar or zip files and add them to the classloader
             externalAddonSources.forEach { source ->
-                source.walkTopDown()
+                source.listFiles()
                     .forEach {
-                        if (it.isFile && (it.extension == "jar" || it.extension == "zip"))
+                        if (it.name.endsWith("jar") || it.name.endsWith("zip"))
                             addUrlMethod.invoke(this.javaClass.classLoader, it.toURI().toURL())
                     }
             }
 
             // Find all mediamod-addon.json files and iterate over them
-            this.javaClass.classLoader.getResources("mediamod-addon.json").toList().forEach { file ->
+            this.javaClass.classLoader.getResources("mediamod-addon.json").iterator().forEach { file ->
                 try {
-                    val addonJson: MediaModAddonJson = json.decodeFromString(file.readText())
-
                     // Loop through all addons in the json and add them to the discovered list
+                    val addonJson = gson.fromJson(file.readText(), MediaModAddonJson::class.java)
                     addonJson.addons.forEach { addon ->
                         discoveredAddons[addon.key] = addon.value
                     }
-                } catch (e: SerializationException) {
+                } catch (e: Exception) {
                     // Ignore any exceptions thrown by this class, unless we are in a development environment
                     if (MediaModCore.isDevelopment) {
                         e.printStackTrace()

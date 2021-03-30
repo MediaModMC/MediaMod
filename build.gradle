@@ -24,7 +24,6 @@ allprojects {
 
     dependencies {
         embed "org.jetbrains.kotlin:kotlin-stdlib"
-        embed "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
     }
 
     shadowJar {

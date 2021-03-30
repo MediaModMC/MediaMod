@@ -1,10 +1,8 @@
 package com.mediamod.core.theme
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 import java.awt.Color
 
-@Serializable
 data class MediaModTheme(
     val id: String,
     val name: String? = "Theme",
@@ -12,21 +10,20 @@ data class MediaModTheme(
     val author: String? = "Unknown",
     val colors: MediaModThemeColors = MediaModThemeColors()
 ) {
-    @Serializable
     data class MediaModThemeColors(
-        @SerialName("playerPrimaryText")
+        @SerializedName("playerPrimaryText")
         private val playerPrimaryTextString: String? = "#ffffff",
 
-        @SerialName("playerSecondaryText")
+        @SerializedName("playerSecondaryText")
         private val playerSecondaryTextString: String? = "#b2b2b2",
 
-        @SerialName("playerProgressBarBackground")
+        @SerializedName("playerProgressBarBackground")
         private val playerProgressBarBackgroundString: String? = "#5b5b5b",
 
-        @SerialName("playerProgressBarAccent")
+        @SerializedName("playerProgressBarAccent")
         private val playerProgressBarAccentString: String? = "#00ff00",
 
-        @SerialName("playerBackground")
+        @SerializedName("playerBackground")
         private val playerBackgroundString: String? = "#404040",
     ) {
         val playerPrimaryText: Color by lazy {
