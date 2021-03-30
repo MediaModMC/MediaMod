@@ -73,13 +73,18 @@ object MediaModCore {
      * The addons directory for MediaMod
      * This is where MediaMod addons will be stored
      */
-    private val mediamodAddonDirectory = File(mediamodDirectory, "addons")
+    private val addonDirectory = File(mediamodDirectory, "addons")
+
+    /**
+     * The configuration directory for MediaMod Addons
+     */
+    val addonConfigDirectory = File(addonDirectory, "config")
 
     /**
      * The themes directory for MediaMod
      * This is where MediaMod themes will be stored
      */
-    private val mediamodThemeDirectory = File(mediamodDirectory, "themes")
+    private val themeDirectory = File(mediamodDirectory, "themes")
 
     /**
      * An instance of [TrackMetadata], this is the current track information provided by a MediaMod Service
@@ -92,23 +97,18 @@ object MediaModCore {
     fun initialize() {
         logger.info("Loading MediaMod v$version!")
 
+        addonDirectory.createIfNonExisting(true)
+        themeDirectory.createIfNonExisting(true)
+        addonConfigDirectory.createIfNonExisting(true)
 
-        try {
-            // Create "./mediamod", "./mediamod/addons" and "./mediamod/themes" if they don't exist
-            mediamodAddonDirectory.createIfNonExisting(true)
-            mediamodThemeDirectory.createIfNonExisting(true)
+        // Load addons
+        MediaModAddonRegistry.addAddonSource(addonDirectory)
+        MediaModAddonRegistry.discoverAddons()
+        MediaModAddonRegistry.initialiseAddons()
 
-            // Load addons
-            MediaModAddonRegistry.addAddonSource(mediamodAddonDirectory)
-            MediaModAddonRegistry.discoverAddons()
-            MediaModAddonRegistry.initialiseAddons()
-
-            // Load themes
-            MediaModThemeRegistry.addDefaultThemes()
-            MediaModThemeRegistry.loadThemes(mediamodThemeDirectory)
-        } catch (t: Throwable) {
-            logger.error(t.message)
-        }
+        // Load themes
+        MediaModThemeRegistry.addDefaultThemes()
+        MediaModThemeRegistry.loadThemes(themeDirectory)
     }
 
     /**

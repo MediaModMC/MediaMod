@@ -98,6 +98,9 @@ object MediaModAddonRegistry {
         }
 
         addonInstance.initialise()
+        addonInstance.config?.preload()
+        addonInstance.config?.initialize()
+
         initialisedAddons.add(addonInstance)
     }
 

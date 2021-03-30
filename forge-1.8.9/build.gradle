@@ -20,6 +20,7 @@ minecraft {
 
 dependencies {
     embed project(path: ":core", configuration: "default")
+    embed "club.sk1er:Vigilance:93-10809-SNAPSHOT"
 }
 
 shadowJar {

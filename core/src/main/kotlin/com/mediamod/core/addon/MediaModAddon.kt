@@ -19,6 +19,10 @@
 
 package com.mediamod.core.addon
 
+import club.sk1er.vigilance.Vigilant
+import com.mediamod.core.MediaModCore
+import java.io.File
+
 /**
  * The interface which a MediaMod Addon will implement, this will allow MediaMod to recognise it
  * @author Conor Byrne (dreamhopping)
@@ -30,7 +34,13 @@ abstract class MediaModAddon(
      * For example: "spotify-addon" or "extension-addon",
      * If a duplicate identifier is found, a warning will be print to the console and the first addon that was loaded will take priority
      */
-    val identifier: String
+    val identifier: String,
+
+    /**
+     * A vigilance config for your MediaMod Addon
+     * It is recommended to have this for your addon, but if you don't have any options it's not required
+     */
+    val config: Vigilant? = null
 ) {
     /**
      * Called when MediaMod is initialising your addon
