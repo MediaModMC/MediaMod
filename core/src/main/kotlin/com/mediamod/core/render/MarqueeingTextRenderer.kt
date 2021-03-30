@@ -56,7 +56,8 @@ class MarqueeingTextRenderer(
             val textString = "$text     ${FontRenderer.trimStringToWidth(text, maximumWidth)}"
 
             val textWidth = FontRenderer.getStringWidth(textString)
-            val textProgressPartialTicks = min((textProgressPercent + partialTicks * textProgressIncrement), 1.0)
+            val textProgressPartialTicks =
+                min((textProgressPercent + partialTicks * textProgressIncrement), 1.0 + textProgressIncrement)
 
             RenderUtil.drawScissor(textX, textY, maximumWidth, maximumHeight) {
                 RenderUtil.drawText(
