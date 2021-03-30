@@ -20,7 +20,9 @@ minecraft {
 
 dependencies {
     embed project(path: ":core", configuration: "default")
-    embed "club.sk1er:Vigilance:93-10809-SNAPSHOT"
+    embed ("club.sk1er:Vigilance:94-10809-SNAPSHOT")  {
+        exclude module: "lwjgl"
+    }
 }
 
 shadowJar {
