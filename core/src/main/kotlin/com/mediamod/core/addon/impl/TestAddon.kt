@@ -20,6 +20,7 @@ package com.mediamod.core.addon.impl
 
 import com.mediamod.core.addon.MediaModAddon
 import com.mediamod.core.addon.impl.config.TestAddonConfig
+import com.mediamod.core.config.MediaModConfigRegistry
 import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.service.impl.TestService
 import org.apache.logging.log4j.LogManager
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.LogManager
  * A test addon for MediaMod which registers a service ([TestService])
  * @author Conor Byrne (dreamhopping)
  */
-class TestAddon : MediaModAddon("mediamod-test-addon", TestAddonConfig) {
+class TestAddon : MediaModAddon("mediamod-test-addon") {
     private val logger = LogManager.getLogger("TestAddon")
 
     /**
@@ -38,6 +39,9 @@ class TestAddon : MediaModAddon("mediamod-test-addon", TestAddonConfig) {
     override fun initialise() {
         logger.info("Registering my service")
         MediaModServiceRegistry.registerService(identifier, TestService())
+
+        logger.info("Registering my config")
+        MediaModConfigRegistry.registerConfig(identifier, TestAddonConfig)
     }
 
     /**

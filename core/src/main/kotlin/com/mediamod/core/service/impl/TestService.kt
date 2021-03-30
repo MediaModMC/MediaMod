@@ -45,7 +45,7 @@ class TestService : MediaModService("mediamod-test-addon-service") {
     override fun fetchTrackMetadata() = TrackMetadata(
         "i wanna slam my head against the wall",
         "glaive",
-        1,
+        2,
         35000,
         "https://i.scdn.co/image/ab67616d0000b273c1c4b6702c901e6efcbe7490"
     )
