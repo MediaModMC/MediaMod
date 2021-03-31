@@ -48,18 +48,6 @@ object MediaModCore {
     const val apiVersion = 1
 
     /**
-     * Check if the current instance of Minecraft is a development environment
-     * The check is done by checking if the class net.minecraft.client.Minecraft exists
-     * In a production environment, this would be obfuscated and would not be found
-     *
-     * This value is cached after the first call as the environment state can not change without a reboot of the client
-     * @return true if we are in a development environment, otherwise false
-     */
-    val isDevelopment: Boolean by lazy {
-        kotlin.runCatching { Class.forName("net.minecraft.client.Minecraft") }.isSuccess
-    }
-
-    /**
      * A logger instance for this class, used to log any issues that may occur during mod-loading
      */
     private val logger = LogManager.getLogger("MediaMod")

@@ -141,10 +141,7 @@ object MediaModAddonRegistry {
                         discoveredAddons[addon.key] = addon.value
                     }
                 } catch (e: Exception) {
-                    // Ignore any exceptions thrown by this class, unless we are in a development environment
-                    if (MediaModCore.isDevelopment) {
-                        e.printStackTrace()
-                    }
+                    e.printStackTrace()
                 }
             }
         }
