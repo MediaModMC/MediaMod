@@ -125,7 +125,7 @@ object MediaModAddonRegistry {
         val time = measureTimeMillis {
             // Iterate over all "external" addon sources, get all jar or zip files and add them to the classloader
             externalAddonSources.forEach { source ->
-                source.listFiles()
+                (source.listFiles() ?: return@forEach)
                     .forEach {
                         if (it.name.endsWith("jar") || it.name.endsWith("zip"))
                             addUrlMethod.invoke(this.javaClass.classLoader, it.toURI().toURL())
