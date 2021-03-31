@@ -29,9 +29,14 @@ interface TickSchedulerService {
      * @param ticks The amount of ticks to wait
      * @param unit The code to run
      */
-    fun schedule(ticks: Int, unit: () -> Unit) {
+    fun schedule(ticks: Int, unit: () -> Unit) =
         tasks.add(TickTask(ticks, unit))
-    }
+
+    /**
+     * Fired every client tick, allows for the scheduler to know when to execute a task
+     */
+    fun onClientTick() =
+        tasks.removeIf(TickTask::attemptToExecute)
 
     /**
      * A class which handles the execution of a [Unit] after the specified number of ticks
