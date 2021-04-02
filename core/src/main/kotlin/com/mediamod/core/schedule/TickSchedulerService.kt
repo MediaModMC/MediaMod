@@ -37,7 +37,7 @@ object TickSchedulerService {
      * loops instead of one! :p
      */
     fun onClientTick() =
-        tasks.forEach { if(it.attemptToExecute()) tasks.remove(it) }
+        tasks.removeIf { it.attemptToExecute() }
 
     /**
      * A class which handles the execution of a [Unit] after the specified number of ticks
