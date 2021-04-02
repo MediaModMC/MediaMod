@@ -11,7 +11,8 @@ bin
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/*
+!.idea/copyright/
 
 # gradle
 build
@@ -24,3 +25,4 @@ run
 
 # macOS
 .DS_Store
+

@@ -21,8 +21,8 @@ package com.mediamod.core
 
 import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
-import com.mediamod.core.schedule.TickSchedulerService
 import com.mediamod.core.render.PlayerRenderer
+import com.mediamod.core.schedule.TickSchedulerService
 import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.theme.MediaModThemeRegistry
 import com.mediamod.core.track.TrackMetadata

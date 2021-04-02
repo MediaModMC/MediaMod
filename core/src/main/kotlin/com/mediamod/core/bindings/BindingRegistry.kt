@@ -21,8 +21,8 @@ package com.mediamod.core.bindings
 import com.mediamod.core.bindings.minecraft.FontRenderer
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.bindings.render.RenderUtil
-import com.mediamod.core.bindings.texture.TextureManager
 import com.mediamod.core.bindings.screen.IWindowScreen
+import com.mediamod.core.bindings.texture.TextureManager
 import com.mediamod.core.bindings.threading.ThreadingService
 
 object BindingRegistry {
