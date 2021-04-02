@@ -5,7 +5,6 @@ import com.mediamod.core.bindings.BindingRegistry
 import com.mediamod.fabric.bindings.impl.minecraft.FontRendererProvider
 import com.mediamod.fabric.bindings.impl.minecraft.MinecraftClientProvider
 import com.mediamod.fabric.bindings.impl.render.RenderUtilProvider
-import com.mediamod.fabric.bindings.impl.schedule.TickSchedulerServiceProvider
 import com.mediamod.fabric.bindings.impl.texture.TextureManagerProvider
 import com.mediamod.fabric.bindings.impl.threading.ThreadingServiceProvider
 import com.mediamod.fabric.event.ClientTickEvent
@@ -28,9 +27,7 @@ class MediaMod : ModInitializer {
      */
     private fun registerBindings() {
         BindingRegistry.threadingService = ThreadingServiceProvider()
-        BindingRegistry.tickSchedulerService = TickSchedulerServiceProvider()
         BindingRegistry.renderUtil = RenderUtilProvider()
-
         BindingRegistry.minecraftClient = MinecraftClientProvider()
         BindingRegistry.fontRenderer = FontRendererProvider()
         BindingRegistry.textureManager = TextureManagerProvider()

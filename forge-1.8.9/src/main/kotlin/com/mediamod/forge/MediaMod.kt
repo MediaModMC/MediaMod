@@ -26,7 +26,7 @@ import com.mediamod.forge.bindings.impl.minecraft.MinecraftClientProvider
 import com.mediamod.forge.bindings.impl.render.RenderUtilProvider
 import com.mediamod.forge.bindings.impl.texture.TextureManagerProvider
 import com.mediamod.forge.bindings.impl.threading.ThreadingServiceProvider
-import com.mediamod.forge.bindings.impl.schedule.TickSchedulerServiceProvider
+import com.mediamod.forge.bindings.impl.screen.IWindowScreenProvider
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
@@ -53,12 +53,11 @@ class MediaMod {
      */
     private fun registerBindings() {
         BindingRegistry.threadingService = ThreadingServiceProvider()
-        BindingRegistry.tickSchedulerService = TickSchedulerServiceProvider()
         BindingRegistry.renderUtil = RenderUtilProvider()
-
         BindingRegistry.minecraftClient = MinecraftClientProvider()
         BindingRegistry.fontRenderer = FontRendererProvider()
         BindingRegistry.textureManager = TextureManagerProvider()
+        BindingRegistry.windowScreen = IWindowScreenProvider()
     }
 
     @SubscribeEvent

@@ -16,12 +16,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings.schedule
+package com.mediamod.core.schedule
 
-import com.mediamod.core.bindings.BindingRegistry
-
-interface TickSchedulerService {
-    val tasks: MutableList<TickTask>
+object TickSchedulerService {
+    private val tasks: MutableList<TickTask> = mutableListOf()
 
     /**
      * Schedules a [Unit] to run after a certain amount of ticks
@@ -34,9 +32,12 @@ interface TickSchedulerService {
 
     /**
      * Fired every client tick, allows for the scheduler to know when to execute a task
+     *
+     * Yes, I am aware that I could use .filter().forEach(), but this would be worse for performance as there is two
+     * loops instead of one! :p
      */
     fun onClientTick() =
-        tasks.removeIf(TickTask::attemptToExecute)
+        tasks.forEach { if(it.attemptToExecute()) tasks.remove(it) }
 
     /**
      * A class which handles the execution of a [Unit] after the specified number of ticks
@@ -58,6 +59,4 @@ interface TickSchedulerService {
             }
         }
     }
-
-    companion object : TickSchedulerService by BindingRegistry.tickSchedulerService
 }

@@ -22,11 +22,10 @@ import com.mediamod.core.bindings.minecraft.FontRenderer
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.bindings.render.RenderUtil
 import com.mediamod.core.bindings.texture.TextureManager
-import com.mediamod.core.bindings.schedule.TickSchedulerService
+import com.mediamod.core.bindings.screen.IWindowScreen
 import com.mediamod.core.bindings.threading.ThreadingService
 
 object BindingRegistry {
-    lateinit var tickSchedulerService: TickSchedulerService
     lateinit var threadingService: ThreadingService
 
     lateinit var minecraftClient: MinecraftClient
@@ -34,4 +33,5 @@ object BindingRegistry {
 
     lateinit var textureManager: TextureManager
     lateinit var renderUtil: RenderUtil
+    lateinit var windowScreen: IWindowScreen
 }
