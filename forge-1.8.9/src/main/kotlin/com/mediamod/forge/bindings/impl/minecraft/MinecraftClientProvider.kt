@@ -18,10 +18,15 @@
 
 package com.mediamod.forge.bindings.impl.minecraft
 
+import club.sk1er.elementa.WindowScreen
 import com.mediamod.core.bindings.minecraft.MinecraftClient
+import com.mediamod.core.bindings.screen.IWindowScreen
 import net.minecraft.client.Minecraft
 import java.io.File
 
 class MinecraftClientProvider : MinecraftClient {
     override val mcDataDir: File = Minecraft.getMinecraft().mcDataDir
+
+    override fun openScreen(screen: IWindowScreen) =
+        Minecraft.getMinecraft().displayGuiScreen(screen as WindowScreen)
 }

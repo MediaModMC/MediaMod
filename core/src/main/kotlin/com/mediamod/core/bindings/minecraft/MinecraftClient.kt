@@ -19,10 +19,12 @@
 package com.mediamod.core.bindings.minecraft
 
 import com.mediamod.core.bindings.BindingRegistry
+import com.mediamod.core.bindings.screen.IWindowScreen
 import java.io.File
 
 interface MinecraftClient {
     val mcDataDir: File
+    fun openScreen(screen: IWindowScreen)
 
     companion object : MinecraftClient by BindingRegistry.minecraftClient
 }
