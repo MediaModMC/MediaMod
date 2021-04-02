@@ -23,7 +23,7 @@ import club.sk1er.elementa.dsl.childOf
 import club.sk1er.elementa.dsl.constrain
 import club.sk1er.elementa.dsl.percent
 import com.mediamod.core.bindings.minecraft.MinecraftClient
-import com.mediamod.core.bindings.screen.IWindowScreen
+import com.mediamod.core.gui.screen.IWindowScreen
 import net.minecraft.client.Minecraft
 import java.io.File
 

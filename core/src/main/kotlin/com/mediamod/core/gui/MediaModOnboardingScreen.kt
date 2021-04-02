@@ -25,8 +25,8 @@ import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.dsl.*
 import club.sk1er.mods.core.universal.UDesktop
 import com.mediamod.core.bindings.minecraft.MinecraftClient
-import com.mediamod.core.bindings.screen.IWindowScreen
 import com.mediamod.core.gui.component.UIRoundedButton
+import com.mediamod.core.gui.screen.IWindowScreen
 import java.awt.Color
 import java.net.URI
 

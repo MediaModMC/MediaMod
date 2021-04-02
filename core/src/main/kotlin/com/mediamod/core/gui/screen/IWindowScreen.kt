@@ -17,7 +17,7 @@
  */
 
 
-package com.mediamod.core.bindings.screen
+package com.mediamod.core.gui.screen
 
 import club.sk1er.elementa.UIComponent
 

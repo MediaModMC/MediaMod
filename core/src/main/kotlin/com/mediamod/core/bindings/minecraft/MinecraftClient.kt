@@ -19,7 +19,7 @@
 package com.mediamod.core.bindings.minecraft
 
 import com.mediamod.core.bindings.BindingRegistry
-import com.mediamod.core.bindings.screen.IWindowScreen
+import com.mediamod.core.gui.screen.IWindowScreen
 import java.io.File
 
 interface MinecraftClient {
