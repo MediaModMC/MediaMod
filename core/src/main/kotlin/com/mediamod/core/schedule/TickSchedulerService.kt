@@ -32,9 +32,6 @@ object TickSchedulerService {
 
     /**
      * Fired every client tick, allows for the scheduler to know when to execute a task
-     *
-     * Yes, I am aware that I could use .filter().forEach(), but this would be worse for performance as there is two
-     * loops instead of one! :p
      */
     fun onClientTick() =
         tasks.removeIf { it.attemptToExecute() }
