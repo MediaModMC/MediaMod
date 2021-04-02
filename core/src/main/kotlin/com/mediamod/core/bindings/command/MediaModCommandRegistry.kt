@@ -16,20 +16,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.forge.bindings.impl.screen
+package com.mediamod.core.bindings.command
 
-import club.sk1er.elementa.WindowScreen
-import com.mediamod.core.bindings.screen.IWindowScreen
-import net.minecraft.client.Minecraft
+import com.mediamod.core.bindings.BindingRegistry
+import com.mediamod.core.command.ICommand
 
-class IWindowScreenProvider : IWindowScreen, WindowScreen() {
-    override fun onResize(mcIn: Minecraft?, w: Int, h: Int) {
-        super<WindowScreen>.onResize(mcIn, w, h)
-        this.onResize(w, h)
-    }
+interface MediaModCommandRegistry {
+    fun registerCommand(command: ICommand)
 
-    override fun onScreenClose() {
-        super.onScreenClose()
-        this.onClose()
-    }
+    companion object : MediaModCommandRegistry by BindingRegistry.commandRegistry
 }

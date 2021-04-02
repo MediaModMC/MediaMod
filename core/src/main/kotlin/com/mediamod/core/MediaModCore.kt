@@ -20,7 +20,9 @@
 package com.mediamod.core
 
 import com.mediamod.core.addon.MediaModAddonRegistry
+import com.mediamod.core.bindings.command.MediaModCommandRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
+import com.mediamod.core.command.impl.MediaModCommand
 import com.mediamod.core.render.PlayerRenderer
 import com.mediamod.core.schedule.TickSchedulerService
 import com.mediamod.core.service.MediaModServiceRegistry
@@ -98,6 +100,9 @@ object MediaModCore {
         // Load themes
         MediaModThemeRegistry.addDefaultThemes()
         MediaModThemeRegistry.loadThemes(themeDirectory)
+
+        // Register commands
+        MediaModCommandRegistry.registerCommand(MediaModCommand())
     }
 
     /**

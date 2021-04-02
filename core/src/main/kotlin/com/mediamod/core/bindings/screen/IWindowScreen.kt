@@ -19,9 +19,9 @@
 
 package com.mediamod.core.bindings.screen
 
-import com.mediamod.core.bindings.BindingRegistry
+import club.sk1er.elementa.UIComponent
 
-interface IWindowScreen {
+abstract class IWindowScreen : UIComponent() {
     fun onClose() {
 
     }
@@ -29,6 +29,4 @@ interface IWindowScreen {
     fun onResize(width: Int, height: Int) {
 
     }
-
-    companion object : IWindowScreen by BindingRegistry.windowScreen
 }

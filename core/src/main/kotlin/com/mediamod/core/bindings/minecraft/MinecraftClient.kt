@@ -24,7 +24,7 @@ import java.io.File
 
 interface MinecraftClient {
     val mcDataDir: File
-    fun openScreen(screen: IWindowScreen)
+    fun openScreen(screen: IWindowScreen?)
 
     companion object : MinecraftClient by BindingRegistry.minecraftClient
 }

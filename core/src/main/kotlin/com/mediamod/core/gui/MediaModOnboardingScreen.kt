@@ -19,29 +19,35 @@
 
 package com.mediamod.core.gui
 
-import club.sk1er.elementa.UIComponent
 import club.sk1er.elementa.components.*
 import club.sk1er.elementa.constraints.CenterConstraint
 import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.dsl.*
 import club.sk1er.mods.core.universal.UDesktop
+import com.mediamod.core.bindings.minecraft.MinecraftClient
+import com.mediamod.core.bindings.screen.IWindowScreen
 import com.mediamod.core.gui.component.UIRoundedButton
 import java.awt.Color
 import java.net.URI
 
-class MediaModOnboardingScreen : UIComponent() {
+class MediaModOnboardingScreen : IWindowScreen() {
     private var previousGuiScale: Int = 0
     private val blockColour = Color(64, 64, 64)
 
     private val descriptionColour = Color(142, 142, 142)
     private val descriptionText = """
-MediaMod has changed since 1.0!
+MediaMod has changed a lot since 1.0, with many new features!
+
+Some of these features include
 - New addons system
 - Improved reliability and performance
 - Better player customisation
 - and more...
-Even more services are supported with MediaMod 2.0, to check out all the services you can install, check out the "Store" pane in the GUI!
-Ready to check it out? Click "OK" to never see this GUI again."""
+
+Even more services are supported with MediaMod 2.0, to check out all the services you can install, check out the "Discover" pane in the GUI!
+Ready to check it out? 
+
+Click "OK" to never see this GUI again."""
 
     init {
         val leftBlock = UIBlock(blockColour)
@@ -93,7 +99,7 @@ Ready to check it out? Click "OK" to never see this GUI again."""
             } childOf bottomContainer
 
         UIRoundedButton(Color(69, 204, 116), "OK", 50, 20) {
-            // Minecraft.getMinecraft().displayGuiScreen(MediaModHomeScreen(previousGuiScale))
+            MinecraftClient.openScreen(null)
         }.constrain {
             x = 10.pixels()
             width = 50.pixels()

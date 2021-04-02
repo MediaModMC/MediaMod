@@ -19,6 +19,9 @@
 package com.mediamod.forge.bindings.impl.minecraft
 
 import club.sk1er.elementa.WindowScreen
+import club.sk1er.elementa.dsl.childOf
+import club.sk1er.elementa.dsl.constrain
+import club.sk1er.elementa.dsl.percent
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.bindings.screen.IWindowScreen
 import net.minecraft.client.Minecraft
@@ -27,6 +30,26 @@ import java.io.File
 class MinecraftClientProvider : MinecraftClient {
     override val mcDataDir: File = Minecraft.getMinecraft().mcDataDir
 
-    override fun openScreen(screen: IWindowScreen) =
-        Minecraft.getMinecraft().displayGuiScreen(screen as WindowScreen)
+    override fun openScreen(screen: IWindowScreen?) {
+        if (screen == null) return Minecraft.getMinecraft().displayGuiScreen(null)
+
+        Minecraft.getMinecraft().displayGuiScreen(object : WindowScreen() {
+            init {
+                screen.constrain {
+                    width = 100.percent()
+                    height = 100.percent()
+                } childOf window
+            }
+
+            override fun onResize(mcIn: Minecraft?, w: Int, h: Int) {
+                super.onResize(mcIn, w, h)
+                screen.onResize(w, h)
+            }
+
+            override fun onScreenClose() {
+                super.onScreenClose()
+                screen.onClose()
+            }
+        })
+    }
 }

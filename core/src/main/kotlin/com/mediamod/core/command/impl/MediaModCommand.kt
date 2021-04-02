@@ -16,23 +16,24 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings
+package com.mediamod.core.command.impl
 
-import com.mediamod.core.bindings.command.MediaModCommandRegistry
-import com.mediamod.core.bindings.minecraft.FontRenderer
 import com.mediamod.core.bindings.minecraft.MinecraftClient
-import com.mediamod.core.bindings.render.RenderUtil
-import com.mediamod.core.bindings.texture.TextureManager
-import com.mediamod.core.bindings.threading.ThreadingService
+import com.mediamod.core.command.ICommand
+import com.mediamod.core.gui.MediaModOnboardingScreen
+import com.mediamod.core.schedule.TickSchedulerService
 
-object BindingRegistry {
-    lateinit var threadingService: ThreadingService
-
-    lateinit var minecraftClient: MinecraftClient
-    lateinit var fontRenderer: FontRenderer
-
-    lateinit var textureManager: TextureManager
-    lateinit var renderUtil: RenderUtil
-
-    lateinit var commandRegistry: MediaModCommandRegistry
+/**
+ * The main command for MediaMod
+ *
+ * @author Conor Byrne (dreamhopping)
+ */
+class MediaModCommand : ICommand {
+    override val commandName = "mediamod"
+    override val commandUsage = "/mediamod"
+    override fun execute(args: List<String>) {
+        TickSchedulerService.schedule(1) {
+            MinecraftClient.openScreen(MediaModOnboardingScreen())
+        }
+    }
 }
