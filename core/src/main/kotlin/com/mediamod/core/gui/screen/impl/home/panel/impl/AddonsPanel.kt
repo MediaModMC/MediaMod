@@ -113,7 +113,7 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                 .constrain {
                     x = 5.pixels()
                     y = SiblingConstraint(5f)
-                    width = 100.percent() - 5.pixels()
+                    width = 100.percent() - 10.pixels()
                     height = FillConstraint() - 5.pixels()
                     color = titleColour.darker().toConstraint()
                 } childOf textContainer
