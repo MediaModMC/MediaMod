@@ -48,14 +48,14 @@ class MediaModHomeScreen : IWindowScreen(3) {
 
     private val leftContainer = UIContainer()
         .constrain {
-            width = 30.percent()
+            width = 25.percent()
             height = 100.percent()
         } childOf this
 
     private val rightContainer = UIContainer()
         .constrain {
-            x = 30.percent()
-            width = 70.percent()
+            x = 25.percent()
+            width = 75.percent()
             height = 100.percent()
         } childOf this
 
@@ -76,7 +76,7 @@ class MediaModHomeScreen : IWindowScreen(3) {
             .constrain {
                 x = 10.pixels()
                 y = 20.pixels()
-                textScale = 2.25.pixels()
+                textScale = 2.pixels()
             } childOf leftBlock
     }
 
@@ -119,7 +119,7 @@ class MediaModHomeScreen : IWindowScreen(3) {
             .constrain {
                 x = 10.pixels()
                 y = SiblingConstraint(if (firstPanel) 20f else 5f)
-                textScale = 2.pixels()
+                textScale = 1.75.pixels()
                 color = if (panel.isSelected) selectedColour.toConstraint() else unselectedColour.toConstraint()
             } childOf leftBlock
 

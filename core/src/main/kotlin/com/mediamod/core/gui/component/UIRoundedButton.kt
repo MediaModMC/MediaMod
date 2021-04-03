@@ -27,27 +27,36 @@ import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
 import java.awt.Color
 
-class UIRoundedButton(buttonColor: Color, text: String, buttonWidth: Int, buttonHeight: Int, onClick: () -> Unit) :
-    UIComponent() {
+class UIRoundedButton(
+    buttonColor: Color,
+    text: String,
+    buttonWidth: Int,
+    buttonHeight: Int,
+    disabled: Boolean = false,
+    onClick: () -> Unit
+) : UIComponent() {
     init {
         val rectangle = UIRoundedRectangle(5F)
             .constrain {
                 width = buttonWidth.pixels()
                 height = buttonHeight.pixels()
-                color = buttonColor.toConstraint()
+                color = if (disabled) buttonColor.darker().toConstraint() else buttonColor.toConstraint()
             }
             .onMouseClick {
-                onClick()
+                if (!disabled) onClick()
             } childOf this
 
         val textElement = UIText(text, false)
             .constrain {
                 x = CenterConstraint()
                 y = CenterConstraint()
+                color = if (disabled) Color.white.darker().toConstraint() else Color.white.toConstraint()
             } childOf rectangle
 
         rectangle.onMouseEnter {
             animate {
+                if (disabled) return@animate
+
                 setColorAnimation(
                     Animations.IN_OUT_SIN,
                     0.25f,
@@ -56,6 +65,8 @@ class UIRoundedButton(buttonColor: Color, text: String, buttonWidth: Int, button
             }
 
             textElement.animate {
+                if (disabled) return@animate
+
                 setColorAnimation(
                     Animations.IN_OUT_SIN,
                     0.25f,
@@ -65,6 +76,8 @@ class UIRoundedButton(buttonColor: Color, text: String, buttonWidth: Int, button
         }
 
         rectangle.onMouseLeave {
+            if (disabled) return@onMouseLeave
+
             animate { setColorAnimation(Animations.IN_OUT_SIN, 0.25f, buttonColor.toConstraint()) }
             textElement.animate { setColorAnimation(Animations.IN_OUT_SIN, 0.25f, Color.WHITE.toConstraint()) }
         }

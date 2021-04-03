@@ -19,12 +19,10 @@
 package com.mediamod.core.gui.screen.impl.home.panel.impl
 
 import club.sk1er.elementa.UIComponent
-import club.sk1er.elementa.components.UIContainer
-import club.sk1er.elementa.components.UIRoundedRectangle
-import club.sk1er.elementa.components.UIText
-import club.sk1er.elementa.components.UIWrappedText
-import club.sk1er.elementa.components.inspector.Inspector
+import club.sk1er.elementa.components.*
+import club.sk1er.elementa.constraints.CenterConstraint
 import club.sk1er.elementa.constraints.CramSiblingConstraint
+import club.sk1er.elementa.constraints.FillConstraint
 import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.dsl.*
 import com.mediamod.core.addon.MediaModAddonRegistry
@@ -50,12 +48,12 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                 textScale = 2.pixels()
             } childOf this
 
-        val addonsContainer = UIContainer()
+        val addonsContainer = ScrollComponent("You have no addons installed! Go to the \"Discover\" tab to find some!")
             .constrain {
                 x = 20.pixels()
                 y = SiblingConstraint(10f)
                 width = 100.percent()
-                height = 100.percent() - 30.pixels()
+                height = FillConstraint() + 20.pixels()
             } childOf this
 
         MediaModAddonRegistry.initialisedAddons.forEach { addon ->
@@ -64,24 +62,20 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
             repeat(10) {
                 AddonComponent(addon.identifier, metadata.displayName)
                     .constrain {
-                        x = CramSiblingConstraint(10f)
+                        x = CramSiblingConstraint(20f)
                         y = CramSiblingConstraint(10f)
-                        height = 20.percent()
+                        height = 25.percent()
                         width = 35.percent()
                     } childOf addonsContainer
             }
         }
-
-
     }
 
-    override fun afterInitialization() {
-        super.afterInitialization()
-
-        Inspector(this) childOf this
-    }
-
-    class AddonComponent(identifier: String, name: String, description: String = "An awesome MediaMod addon!") :
+    class AddonComponent(
+        identifier: String,
+        name: String,
+        description: String = "An awesome MediaMod addon! aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ) :
         UIComponent() {
         private val backgroundColour = Color(64, 64, 64).brighter()
         private val titleColour = Color(198, 198, 198)
@@ -94,30 +88,44 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                     color = backgroundColour.toConstraint()
                 } childOf this
 
+            val textContainer = UIContainer()
+                .constrain {
+                    width = 100.percent()
+                    height = 65.percent()
+                } childOf backgroundBlock
+
+            val buttonContainer = UIContainer()
+                .constrain {
+                    y = SiblingConstraint(5f)
+                    width = 100.percent()
+                    height = 35.percent() - 5.pixels()
+                } childOf backgroundBlock
+
             UIText(name, false)
                 .constrain {
                     x = 5.pixels()
                     y = 5.pixels()
                     color = titleColour.toConstraint()
                     textScale = 1.25.pixels()
-                } childOf backgroundBlock
+                } childOf textContainer
 
             UIWrappedText(description, false, trimText = true)
                 .constrain {
                     x = 5.pixels()
                     y = SiblingConstraint(5f)
-                    width = 100.percent()
+                    width = 100.percent() - 5.pixels()
+                    height = FillConstraint() - 5.pixels()
                     color = titleColour.darker().toConstraint()
-                } childOf backgroundBlock
+                } childOf textContainer
 
-            UIRoundedButton(Color(69, 130, 204), "Config", 40, 15) {
+            UIRoundedButton(Color(69, 130, 204), "Settings", 50, 15) {
                 MinecraftClient.openConfigScreen(MediaModConfigRegistry.getConfig(identifier))
             }.constrain {
                 x = 5.pixels()
-                y = SiblingConstraint(10f)
-                width = 40.pixels()
+                y = CenterConstraint()
+                width = 45.percent()
                 height = 15.pixels()
-            } childOf backgroundBlock
+            } childOf buttonContainer
         }
     }
 }

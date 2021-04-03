@@ -76,7 +76,7 @@ class HomePanel : MediaModHomeScreenPanel("Home") {
             textScale = 2.pixels()
         } childOf updateHeaderContainer
 
-        UIRoundedButton(Color(69, 204, 116), "Update", 50, updateHeaderContainer.getHeight().toInt()) {
+        UIRoundedButton(Color(69, 204, 116), "Update", 50, updateHeaderContainer.getHeight().toInt(), true) {
             // TODO update mod or something lol
         }.constrain {
             x = SiblingConstraint(10f)
@@ -85,7 +85,7 @@ class HomePanel : MediaModHomeScreenPanel("Home") {
             height = basicHeightConstraint { updateHeaderContainer.getHeight() }
         } childOf updateHeaderContainer
 
-        UIText("An update is available! (${MediaModCore.version})", false).constrain {
+        UIText("You are on the latest version of MediaMod! (${MediaModCore.version})", false).constrain {
             x = 20.pixels()
             y = SiblingConstraint(7f)
             textScale = 1.3f.pixels()
