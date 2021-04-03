@@ -18,10 +18,12 @@
 
 package com.mediamod.core.addon.json
 
+import com.mediamod.core.MediaModCore
+
 data class MediaModAddonJsonEntry(
     val addonClass: String? = null,
-    val apiVersion: Int? = null,
-    val displayName: String? = null
+    val apiVersion: Int = MediaModCore.apiVersion,
+    val displayName: String = ""
 )
 
 data class MediaModAddonJson(val addons: Map<String, MediaModAddonJsonEntry> = mapOf())

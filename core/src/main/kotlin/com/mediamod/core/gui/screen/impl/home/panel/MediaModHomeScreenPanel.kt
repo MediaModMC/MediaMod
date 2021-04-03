@@ -16,17 +16,31 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings.minecraft
+package com.mediamod.core.gui.screen.impl.home.panel
 
-import club.sk1er.vigilance.Vigilant
-import com.mediamod.core.bindings.BindingRegistry
-import com.mediamod.core.gui.screen.IWindowScreen
-import java.io.File
+import club.sk1er.elementa.components.UIContainer
+import club.sk1er.elementa.dsl.constrain
+import club.sk1er.elementa.dsl.percent
+import club.sk1er.elementa.dsl.pixels
+import club.sk1er.elementa.dsl.toConstraint
+import java.awt.Color
 
-interface MinecraftClient {
-    val mcDataDir: File
-    fun openScreen(screen: IWindowScreen?)
-    fun openConfigScreen(vigilant: Vigilant?)
+/**
+ * A panel to be displayed on the [MediaModHomeScreen]
+ *
+ * @author Conor Byrne (dreamhopping) & Nora
+ */
+abstract class MediaModHomeScreenPanel(val title: String) : UIContainer() {
+    protected val titleColour = Color(198, 198, 198).toConstraint()
 
-    companion object : MinecraftClient by BindingRegistry.minecraftClient
+    var isSelected: Boolean = false
+
+    init {
+        constrain {
+            x = 0.pixels()
+            y = 0.pixels()
+            height = 100.percent()
+            width = 100.percent()
+        }
+    }
 }

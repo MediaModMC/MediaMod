@@ -46,7 +46,7 @@ object MediaModAddonRegistry {
     /**
      * A mutable list of all initialised addons, these are instances of [MediaModAddon]
      */
-    private val initialisedAddons = mutableListOf<MediaModAddon>()
+    internal val initialisedAddons = mutableListOf<MediaModAddon>()
 
     /**
      * A mutable map of all discovered addons, these addons are not registered yet and their classes have not been loaded
@@ -175,6 +175,14 @@ object MediaModAddonRegistry {
 
         logger.info("Initialised ${initialisedAddons.size} addon${if (initialisedAddons.size == 1) "" else "s"} in ${time}ms!")
     }
+
+    /**
+     * Gets a [MediaModAddonJsonEntry] from the addon identifier
+     *
+     * @param identifier the identifier of the MediaMod Addon
+     * @return a [MediaModAddonJsonEntry] instance if it exists, otherwise null
+     */
+    fun getAddonMetadata(identifier: String) = discoveredAddons[identifier]
 
     /**
      * Adds an external addon source to the list ([externalAddonSources])

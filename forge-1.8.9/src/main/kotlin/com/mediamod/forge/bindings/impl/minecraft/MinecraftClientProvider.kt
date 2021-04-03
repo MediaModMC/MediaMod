@@ -22,6 +22,7 @@ import club.sk1er.elementa.WindowScreen
 import club.sk1er.elementa.dsl.childOf
 import club.sk1er.elementa.dsl.constrain
 import club.sk1er.elementa.dsl.percent
+import club.sk1er.vigilance.Vigilant
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.gui.screen.IWindowScreen
 import net.minecraft.client.Minecraft
@@ -52,4 +53,6 @@ class MinecraftClientProvider : MinecraftClient {
             }
         })
     }
+
+    override fun openConfigScreen(vigilant: Vigilant?) = Minecraft.getMinecraft().displayGuiScreen(vigilant?.gui())
 }

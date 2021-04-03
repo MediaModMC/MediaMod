@@ -20,7 +20,7 @@ package com.mediamod.core.command.impl
 
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.command.ICommand
-import com.mediamod.core.gui.MediaModOnboardingScreen
+import com.mediamod.core.gui.screen.impl.onboarding.MediaModOnboardingScreen
 import com.mediamod.core.schedule.TickSchedulerService
 
 /**
