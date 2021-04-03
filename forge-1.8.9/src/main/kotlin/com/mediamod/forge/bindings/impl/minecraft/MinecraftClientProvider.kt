@@ -33,7 +33,7 @@ class MinecraftClientProvider : MinecraftClient {
     override fun openScreen(screen: IWindowScreen?) {
         if (screen == null) return Minecraft.getMinecraft().displayGuiScreen(null)
 
-        Minecraft.getMinecraft().displayGuiScreen(object : WindowScreen() {
+        Minecraft.getMinecraft().displayGuiScreen(object : WindowScreen(newGuiScale = screen.newScale) {
             init {
                 screen.constrain {
                     width = 100.percent()

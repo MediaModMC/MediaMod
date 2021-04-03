@@ -30,8 +30,7 @@ import com.mediamod.core.gui.screen.IWindowScreen
 import java.awt.Color
 import java.net.URI
 
-class MediaModOnboardingScreen : IWindowScreen() {
-    private var previousGuiScale: Int = 0
+class MediaModOnboardingScreen : IWindowScreen(3) {
     private val blockColour = Color(64, 64, 64)
 
     private val descriptionColour = Color(142, 142, 142)
