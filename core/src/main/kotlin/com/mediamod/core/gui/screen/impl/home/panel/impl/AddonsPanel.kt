@@ -20,7 +20,6 @@ package com.mediamod.core.gui.screen.impl.home.panel.impl
 
 import club.sk1er.elementa.UIComponent
 import club.sk1er.elementa.components.*
-import club.sk1er.elementa.constraints.CenterConstraint
 import club.sk1er.elementa.constraints.CramSiblingConstraint
 import club.sk1er.elementa.constraints.FillConstraint
 import club.sk1er.elementa.constraints.SiblingConstraint
@@ -121,7 +120,6 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                 MinecraftClient.openConfigScreen(MediaModConfigRegistry.getConfig(identifier))
             }.constrain {
                 x = 5.pixels()
-                y = CenterConstraint()
                 width = 45.percent()
                 height = 15.pixels()
             } childOf buttonContainer
