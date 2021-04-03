@@ -58,15 +58,13 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
         MediaModAddonRegistry.initialisedAddons.forEach { addon ->
             val metadata = MediaModAddonRegistry.getAddonMetadata(addon.identifier) ?: return@forEach
 
-            repeat(10) {
-                AddonComponent(addon.identifier, metadata.name, metadata.description ?: "An awesome MediaMod Addon!")
-                    .constrain {
-                        x = CramSiblingConstraint(20f)
-                        y = CramSiblingConstraint(10f)
-                        height = 25.percent()
-                        width = 35.percent()
-                    } childOf addonsContainer
-            }
+            AddonComponent(addon.identifier, metadata.name, metadata.description ?: "An awesome MediaMod Addon!")
+                .constrain {
+                    x = CramSiblingConstraint(20f)
+                    y = CramSiblingConstraint(10f)
+                    height = 25.percent()
+                    width = 35.percent()
+                } childOf addonsContainer
         }
     }
 
