@@ -53,7 +53,7 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                 x = 20.pixels()
                 y = SiblingConstraint(10f)
                 width = 100.percent()
-                height = FillConstraint() + 20.pixels()
+                height = FillConstraint() - 35.pixels()
             } childOf this
 
         MediaModAddonRegistry.initialisedAddons.forEach { addon ->
