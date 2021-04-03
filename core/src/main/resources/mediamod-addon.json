@@ -1,9 +1,8 @@
 {
-  "addons": {
-    "mediamod-test-addon": {
-      "addonClass": "com.mediamod.core.addon.impl.TestAddon",
-      "displayName": "MediaMod Test Addon",
-      "apiVersion": 1
-    }
+  "mediamod-test-addon": {
+    "name": "MediaMod Test Addon",
+    "description": "The test addon for MediaMod",
+    "class": "com.mediamod.core.addon.impl.TestAddon"
   }
 }
+  

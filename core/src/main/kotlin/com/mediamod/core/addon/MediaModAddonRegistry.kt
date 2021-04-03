@@ -19,10 +19,9 @@
 package com.mediamod.core.addon
 
 import com.google.gson.Gson
-import com.mediamod.core.MediaModCore
 import com.mediamod.core.addon.exception.AddonUnregisterException
-import com.mediamod.core.addon.json.MediaModAddonJson
-import com.mediamod.core.addon.json.MediaModAddonJsonEntry
+import com.mediamod.core.addon.json.AddonJsonEntry
+import com.mediamod.core.util.gson.fromJson
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.lang.reflect.Method
@@ -52,7 +51,7 @@ object MediaModAddonRegistry {
      * A mutable map of all discovered addons, these addons are not registered yet and their classes have not been loaded
      * The key for this map is the addon's identifier and the value is the addon's json entry
      */
-    private val discoveredAddons = mutableMapOf<String, MediaModAddonJsonEntry>()
+    private val discoveredAddons = mutableMapOf<String, AddonJsonEntry>()
 
     /**
      * A list of [File]s which are "external" sources which MediaMod will load addons from
@@ -136,9 +135,11 @@ object MediaModAddonRegistry {
             this.javaClass.classLoader.getResources("mediamod-addon.json").iterator().forEach { file ->
                 try {
                     // Loop through all addons in the json and add them to the discovered list
-                    val addonJson = gson.fromJson(file.readText(), MediaModAddonJson::class.java)
-                    addonJson.addons.forEach { addon ->
-                        discoveredAddons[addon.key] = addon.value
+                    val addonJson: HashMap<String, AddonJsonEntry> =
+                        file.readText().fromJson() ?: return@forEach logger.error("Failed to read '${file}'!")
+
+                    addonJson.entries.forEach { entry ->
+                        discoveredAddons[entry.key] = entry.value
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -164,12 +165,8 @@ object MediaModAddonRegistry {
                 if (existingAddon != null)
                     return@forEach logger.error("Failed to register addon $addonId: Another addon already exists with this identifier! (class: ${existingAddon.javaClass.name}) Please contact the developer for more information")
 
-                // Verify that the API version matches
-                if (addonEntry.apiVersion != MediaModCore.apiVersion)
-                    return@forEach logger.error("Failed to register addon $addonId: The addon's API version (${addonEntry.apiVersion}) does not match MediaMod's (${MediaModCore.apiVersion})! Please contact the developer for more information")
-
                 // Register the addon
-                initialiseAddon(addonId, addonEntry.addonClass)
+                initialiseAddon(addonId, addonEntry.clazz)
             }
         }
 
@@ -177,10 +174,10 @@ object MediaModAddonRegistry {
     }
 
     /**
-     * Gets a [MediaModAddonJsonEntry] from the addon identifier
+     * Gets a [AddonJsonEntry] from the addon identifier
      *
      * @param identifier the identifier of the MediaMod Addon
-     * @return a [MediaModAddonJsonEntry] instance if it exists, otherwise null
+     * @return a [AddonJsonEntry] instance if it exists, otherwise null
      */
     fun getAddonMetadata(identifier: String) = discoveredAddons[identifier]
 

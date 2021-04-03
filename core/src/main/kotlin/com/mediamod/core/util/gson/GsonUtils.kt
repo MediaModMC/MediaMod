@@ -16,14 +16,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.addon.json
+package com.mediamod.core.util.gson
 
-import com.mediamod.core.MediaModCore
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
-data class MediaModAddonJsonEntry(
-    val addonClass: String? = null,
-    val apiVersion: Int = MediaModCore.apiVersion,
-    val displayName: String = ""
-)
-
-data class MediaModAddonJson(val addons: Map<String, MediaModAddonJsonEntry> = mapOf())
+inline fun <reified T : Any> String?.fromJson(): T? = this?.let {
+    val type = object : TypeToken<T>() {}.type
+    Gson().fromJson(this, type)
+}

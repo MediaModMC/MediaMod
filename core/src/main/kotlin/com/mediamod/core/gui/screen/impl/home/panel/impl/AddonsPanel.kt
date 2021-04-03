@@ -60,7 +60,7 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
             val metadata = MediaModAddonRegistry.getAddonMetadata(addon.identifier) ?: return@forEach
 
             repeat(10) {
-                AddonComponent(addon.identifier, metadata.displayName)
+                AddonComponent(addon.identifier, metadata.name, metadata.description ?: "An awesome MediaMod Addon!")
                     .constrain {
                         x = CramSiblingConstraint(20f)
                         y = CramSiblingConstraint(10f)
@@ -74,9 +74,8 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
     class AddonComponent(
         identifier: String,
         name: String,
-        description: String = "An awesome MediaMod addon! aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    ) :
-        UIComponent() {
+        description: String
+    ) : UIComponent() {
         private val backgroundColour = Color(64, 64, 64).brighter()
         private val titleColour = Color(198, 198, 198)
 
