@@ -54,14 +54,5 @@ task moveResources {
     }
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId = "MediaMod"
-            version = "1.0-SNAPSHOT-1.8.9"
-        }
-    }
-}
-
 moveResources.dependsOn processResources
 classes.dependsOn moveResources
