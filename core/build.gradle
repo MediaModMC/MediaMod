@@ -8,3 +8,12 @@ dependencies {
 shadowJar {
     archiveClassifier.set("core")
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = "MediaMod"
+            version = "1.0-SNAPSHOT-core"
+        }
+    }
+}

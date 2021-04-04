@@ -45,6 +45,19 @@ dependencies {
     embed "club.sk1er:Vigilance:93-11602-SNAPSHOT"
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = "MediaMod"
+            version = "1.0-SNAPSHOT-1.16.5"
+
+            artifact(jar.archivePath) {
+                builtBy remapJar
+            }
+        }
+    }
+}
+
 shadowJar {
     archiveClassifier.set("1.16.5")
 
