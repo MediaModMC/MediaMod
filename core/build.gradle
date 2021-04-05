@@ -26,13 +26,3 @@ dependencies {
 shadowJar {
     archiveClassifier.set("core")
 }
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId = "MediaMod"
-            from components.java
-        }
-    }
-}
-
