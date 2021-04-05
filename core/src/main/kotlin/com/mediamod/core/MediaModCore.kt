@@ -22,6 +22,7 @@ package com.mediamod.core
 import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.bindings.command.MediaModCommandRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
+import com.mediamod.core.bindings.threading.ThreadingService
 import com.mediamod.core.command.impl.MediaModCommand
 import com.mediamod.core.render.PlayerRenderer
 import com.mediamod.core.schedule.TickSchedulerService
@@ -31,7 +32,6 @@ import com.mediamod.core.track.TrackMetadata
 import com.mediamod.core.util.file.createIfNonExisting
 import org.apache.logging.log4j.LogManager
 import java.io.File
-import kotlin.concurrent.fixedRateTimer
 
 /**
  * The class which handles communication between MediaMod Addons and the mod itself
@@ -121,11 +121,11 @@ object MediaModCore {
     }
 
     init {
-        fixedRateTimer("MediaMod: TrackMetadata", false, 0, 3000) {
+        ThreadingService.schedule(3000, 0) {
             // Query the current service for some track information, if none is provided, return
             try {
                 val trackMetadata =
-                    MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@fixedRateTimer
+                    MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@schedule
                 if (trackMetadata != currentTrackMetadata) {
                     currentTrackMetadata = trackMetadata
                 }
