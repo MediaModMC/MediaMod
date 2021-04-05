@@ -20,13 +20,19 @@ package com.mediamod.core.bindings.threading
 
 import com.mediamod.core.bindings.BindingRegistry
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 interface ThreadingService {
     val threadPool: ExecutorService
+    val scheduledThreadPool: ScheduledExecutorService
 
     fun runAsync(task: () -> Unit) {
         threadPool.submit(task)
     }
+
+    fun schedule(interval: Long, initialDelay: Long = 0, task: () -> Unit) =
+        scheduledThreadPool.scheduleAtFixedRate(task, initialDelay, interval, TimeUnit.MILLISECONDS)
 
     fun runBlocking(task: () -> Unit)
 

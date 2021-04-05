@@ -23,9 +23,11 @@ import com.mediamod.core.bindings.threading.ThreadingService
 import net.minecraft.client.Minecraft
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 
 class ThreadingServiceProvider : ThreadingService {
     override val threadPool: ExecutorService = Executors.newCachedThreadPool()
+    override val scheduledThreadPool: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
 
     override fun runBlocking(task: () -> Unit) {
         Minecraft.getMinecraft().addScheduledTask(task)
