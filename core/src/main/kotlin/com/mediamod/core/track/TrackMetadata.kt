@@ -27,5 +27,6 @@ data class TrackMetadata(
     val artist: String,
     val progress: Long = 0,
     val duration: Long = 0,
-    val albumArtUrl: String? = null
+    val albumArtUrl: String? = null,
+    val paused: Boolean = false
 )
