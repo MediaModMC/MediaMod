@@ -121,7 +121,7 @@ public class SpotifyService implements IServiceHandler {
      * Returns an estimation of the current progress of the track
      */
     public int getEstimatedProgress() {
-        if (cachedMediaInfo == null) return 0;
+        if (cachedMediaInfo == null || cachedMediaInfo.track == null) return 0;
 
         if (cachedMediaInfo.isPlaying) {
             int estimate = (int) (lastTimestamp + (System.currentTimeMillis() - lastEstimationUpdate));
