@@ -1,9 +1,9 @@
 {
   "versions": {
     "1.8.9": {
-      "version": 17,
-      "name": "2.0.0-beta.9",
-      "changelog": "Fix spotify not automatically refreshing + more"
+      "version": 18,
+      "name": "2.0.0-beta.10",
+      "changelog": "Fix crash when spotify plays an ad (Spotify Free only)"
     },
     "1.12.2": {
       "version": 16,
