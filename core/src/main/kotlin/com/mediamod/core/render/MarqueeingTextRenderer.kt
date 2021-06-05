@@ -75,6 +75,6 @@ class MarqueeingTextRenderer(
     fun onTick() {
         textProgressPercent += textProgressIncrement
         if (textProgressPercent > 1.0 + textProgressIncrement)
-            textProgressPercent = 0.0
+            textProgressPercent = -textProgressIncrement
     }
 }
