@@ -46,7 +46,7 @@ class ProgressBarRenderer(
     private val progressColor: Color = Color.GREEN,
     var duration: Long = 0
 ) {
-    private var paused: Boolean = false
+    var paused: Boolean = false
     private var lastProgress: Long = 0
     private var setProgressTime: Long = 0
     private var previousEstimatedProgress: Long = 0
@@ -60,7 +60,7 @@ class ProgressBarRenderer(
     }
 
     fun setProgress(newProgress: Long) {
-        paused = newProgress == lastProgress
+        if (newProgress == lastProgress) return
 
         lastProgress = newProgress
         setProgressTime = System.currentTimeMillis()
