@@ -34,7 +34,7 @@ import java.awt.Color
 /**
  * A class which provides commonly used methods for rendering things to the screen
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 class RenderUtilProvider : RenderUtil {
     private val fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRendererObj
@@ -132,7 +132,7 @@ class RenderUtilProvider : RenderUtil {
      * @param height The height of the scissor
      * @param drawCode The code that will be run under the scissor
      */
-    override inline fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {
+    override fun drawScissor(x: Int, y: Int, width: Int, height: Int, drawCode: () -> Unit) {
         val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
         val scaleFactor = scaledResolution.scaleFactor
 

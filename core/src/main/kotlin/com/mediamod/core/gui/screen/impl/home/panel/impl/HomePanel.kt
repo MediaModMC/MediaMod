@@ -18,14 +18,14 @@
 
 package com.mediamod.core.gui.screen.impl.home.panel.impl
 
-import club.sk1er.elementa.components.UIContainer
-import club.sk1er.elementa.components.UIImage
-import club.sk1er.elementa.components.UIText
-import club.sk1er.elementa.constraints.*
-import club.sk1er.elementa.dsl.*
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.gui.component.UIRoundedButton
 import com.mediamod.core.gui.screen.impl.home.panel.MediaModHomeScreenPanel
+import gg.essential.elementa.components.UIContainer
+import gg.essential.elementa.components.UIImage
+import gg.essential.elementa.components.UIText
+import gg.essential.elementa.constraints.*
+import gg.essential.elementa.dsl.*
 import java.awt.Color
 import java.net.URL
 
@@ -33,7 +33,7 @@ import java.net.URL
  * The first panel that the user will see on a MediaMod GUI
  * This displays information like news on MediaMod and if there is any available updates
  *
- * @author Conor Byrne (dreamhopping) & Nora
+ * @author Conor Byrne & Nora
  */
 class HomePanel : MediaModHomeScreenPanel("Home") {
     init {

@@ -22,7 +22,7 @@ package com.mediamod.core.command
  * A class that all commands should implement
  * This will allow you to register commands without having a version specific implementation for it
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 interface ICommand {
     /**

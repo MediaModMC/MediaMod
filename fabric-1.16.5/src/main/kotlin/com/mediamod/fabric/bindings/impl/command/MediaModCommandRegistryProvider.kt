@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
  * Provides an implementation for [MediaModCommandRegistry]
  * This allows the core submodule to make commands without touching Minecraft classes directly
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 class MediaModCommandRegistryProvider : MediaModCommandRegistry {
     /**

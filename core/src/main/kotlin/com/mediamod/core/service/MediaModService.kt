@@ -23,7 +23,7 @@ import com.mediamod.core.track.TrackMetadata
 /**
  * The class which all MediaMod Services should extend
  * @see MediaModServiceRegistry
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 abstract class MediaModService(val identifier: String) {
     /**

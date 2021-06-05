@@ -20,7 +20,7 @@ package com.mediamod.core.addon
 
 /**
  * The interface which a MediaMod Addon will implement, this will allow MediaMod to recognise it
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 abstract class MediaModAddon(
     /**

@@ -22,7 +22,7 @@ package com.mediamod.core.service
  * The class which handles the registration and management of MediaMod Services
  * A service must extend the [MediaModService] class
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 object MediaModServiceRegistry {
     /**

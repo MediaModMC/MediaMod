@@ -26,7 +26,7 @@ import com.mediamod.core.schedule.TickSchedulerService
 /**
  * The main command for MediaMod
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 class MediaModCommand : ICommand {
     override val commandName = "mediamod"

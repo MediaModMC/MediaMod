@@ -36,7 +36,7 @@ import java.io.File
 /**
  * The class which handles communication between MediaMod Addons and the mod itself
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 object MediaModCore {
     /**

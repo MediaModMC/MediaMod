@@ -18,9 +18,9 @@
 
 package com.mediamod.core.bindings.minecraft
 
-import club.sk1er.vigilance.Vigilant
 import com.mediamod.core.bindings.BindingRegistry
 import com.mediamod.core.gui.screen.IWindowScreen
+import gg.essential.vigilance.Vigilant
 import java.io.File
 
 interface MinecraftClient {

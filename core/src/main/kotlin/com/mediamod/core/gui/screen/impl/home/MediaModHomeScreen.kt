@@ -18,17 +18,17 @@
 
 package com.mediamod.core.gui.screen.impl.home
 
-import club.sk1er.elementa.components.UIBlock
-import club.sk1er.elementa.components.UIContainer
-import club.sk1er.elementa.components.UIText
-import club.sk1er.elementa.constraints.SiblingConstraint
-import club.sk1er.elementa.constraints.animation.Animations
-import club.sk1er.elementa.dsl.*
-import club.sk1er.elementa.transitions.SlideToTransition
 import com.mediamod.core.gui.screen.IWindowScreen
 import com.mediamod.core.gui.screen.impl.home.panel.MediaModHomeScreenPanel
 import com.mediamod.core.gui.screen.impl.home.panel.impl.AddonsPanel
 import com.mediamod.core.gui.screen.impl.home.panel.impl.HomePanel
+import gg.essential.elementa.components.UIBlock
+import gg.essential.elementa.components.UIContainer
+import gg.essential.elementa.components.UIText
+import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.constraints.animation.Animations
+import gg.essential.elementa.dsl.*
+import gg.essential.elementa.transitions.SlideToTransition
 import java.awt.Color
 
 /**
@@ -37,7 +37,7 @@ import java.awt.Color
  *
  * @see AddonsPanel
  * @see HomePanel
- * @author Conor Byrne (dreamhopping) & Nora
+ * @author Conor Byrne & Nora
  */
 class MediaModHomeScreen : IWindowScreen(3) {
     private val backgroundColour = Color(64, 64, 64)
@@ -149,19 +149,24 @@ class MediaModHomeScreen : IWindowScreen(3) {
         if (old != null) {
             if (old == provider) return
             transitioning = true
-            val oid = panels.indexOf(old)
-            val nid = panels.indexOf(provider)
-            val up = oid > nid
+
+            val oldId = panels.indexOf(old)
+            val newId = panels.indexOf(provider)
+            val slidingUp = oldId > newId
+
             provider childOf rightBlock
-            provider.constrain { y = 0.pixels(!up, true) }
-            (if (up) SlideToTransition.Bottom() else SlideToTransition.Top()).transition(old) {
-                old.constrain { y = 0.pixels(!up, true) }
+            provider.constrain { y = 0.pixels(!slidingUp, true) }
+            slideTransition(slidingUp).transition(old) {
+                old.constrain { y = 0.pixels(!slidingUp, true) }
                 rightBlock.removeChild(old)
             }
-            (if (up) SlideToTransition.Bottom() else SlideToTransition.Top()).transition(provider) {
+            slideTransition(slidingUp).transition(provider) {
                 provider.constrain { y = 0.pixels() }
                 transitioning = false
             }
         } else rightBlock.addChild(provider)
     }
+
+    private fun slideTransition(slidingUpwards: Boolean) =
+        if (slidingUpwards) SlideToTransition.Bottom() else SlideToTransition.Top()
 }

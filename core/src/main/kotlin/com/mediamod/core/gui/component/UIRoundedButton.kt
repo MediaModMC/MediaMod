@@ -19,12 +19,12 @@
 
 package com.mediamod.core.gui.component
 
-import club.sk1er.elementa.UIComponent
-import club.sk1er.elementa.components.UIRoundedRectangle
-import club.sk1er.elementa.components.UIText
-import club.sk1er.elementa.constraints.CenterConstraint
-import club.sk1er.elementa.constraints.animation.Animations
-import club.sk1er.elementa.dsl.*
+import gg.essential.elementa.UIComponent
+import gg.essential.elementa.components.UIRoundedRectangle
+import gg.essential.elementa.components.UIText
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.animation.Animations
+import gg.essential.elementa.dsl.*
 import java.awt.Color
 
 class UIRoundedButton(

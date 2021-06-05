@@ -53,6 +53,15 @@ allprojects {
         destinationDirectory.set(new File(rootProject.projectDir, "build/libs"))
     }
 
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
     // Include dependencies in jar using shadow
     tasks.build.finalizedBy tasks.shadowJar
 }

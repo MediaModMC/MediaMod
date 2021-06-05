@@ -18,24 +18,25 @@
 
 package com.mediamod.core.gui.screen.impl.home.panel.impl
 
-import club.sk1er.elementa.UIComponent
-import club.sk1er.elementa.components.*
-import club.sk1er.elementa.constraints.CramSiblingConstraint
-import club.sk1er.elementa.constraints.FillConstraint
-import club.sk1er.elementa.constraints.SiblingConstraint
-import club.sk1er.elementa.dsl.*
 import com.mediamod.core.addon.MediaModAddonRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.config.MediaModConfigRegistry
 import com.mediamod.core.gui.component.UIRoundedButton
 import com.mediamod.core.gui.screen.impl.home.panel.MediaModHomeScreenPanel
+import gg.essential.elementa.UIComponent
+import gg.essential.elementa.components.*
+import gg.essential.elementa.constraints.CramSiblingConstraint
+import gg.essential.elementa.constraints.FillConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.dsl.*
+import gg.essential.vigilance.Vigilant
 import java.awt.Color
 
 /**
  * The panel that displays information about the currently installed addons
  * Here is where an addon's [Vigilant] gui can be opened by the user
  *
- * @author Conor Byrne (dreamhopping) & Nora
+ * @author Conor Byrne & Nora
  */
 class AddonsPanel : MediaModHomeScreenPanel("Addons") {
     init {

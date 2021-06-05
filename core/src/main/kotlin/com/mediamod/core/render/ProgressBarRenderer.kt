@@ -35,7 +35,7 @@ import kotlin.math.min
  * @param width The width of the progress bar
  * @param height The height of the progress bar
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 class ProgressBarRenderer(
     private val x: Int,

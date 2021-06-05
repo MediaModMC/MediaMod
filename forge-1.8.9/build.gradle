@@ -18,12 +18,12 @@
 
 buildscript {
     repositories {
-        maven { url "https://files.minecraftforge.net/maven" }
+        maven { url "https://maven.minecraftforge.net" }
         maven { url "https://jitpack.io" }
     }
 
     dependencies {
-        classpath "com.github.ReplayMod:ForgeGradle:fab6116:all"
+        classpath "com.github.asbyth:ForgeGradle:d583588"
     }
 }
 
@@ -38,7 +38,7 @@ minecraft {
 
 dependencies {
     embed project(path: ":core", configuration: "default")
-    embed ("club.sk1er:Vigilance:94-10809-SNAPSHOT")  {
+    embed ("gg.essential:Vigilance:107-10809-SNAPSHOT")  {
         exclude module: "lwjgl"
     }
 }

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager
 
 /**
  * A test service for MediaMod
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 class TestService : MediaModService("mediamod-test-addon-service") {
     private val logger = LogManager.getLogger("TestService")

@@ -19,7 +19,7 @@
 
 package com.mediamod.core.gui.screen
 
-import club.sk1er.elementa.UIComponent
+import gg.essential.elementa.UIComponent
 
 abstract class IWindowScreen(val newScale: Int = -1) : UIComponent() {
     fun onClose() {

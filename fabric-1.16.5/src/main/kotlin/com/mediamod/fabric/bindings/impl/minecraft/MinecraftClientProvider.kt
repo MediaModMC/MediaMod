@@ -18,13 +18,13 @@
 
 package com.mediamod.fabric.bindings.impl.minecraft
 
-import club.sk1er.elementa.WindowScreen
-import club.sk1er.elementa.dsl.childOf
-import club.sk1er.elementa.dsl.constrain
-import club.sk1er.elementa.dsl.percent
-import club.sk1er.vigilance.Vigilant
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.gui.screen.IWindowScreen
+import gg.essential.elementa.WindowScreen
+import gg.essential.elementa.dsl.childOf
+import gg.essential.elementa.dsl.constrain
+import gg.essential.elementa.dsl.percent
+import gg.essential.vigilance.Vigilant
 import java.io.File
 import net.minecraft.client.MinecraftClient as MinecraftClientImpl
 

@@ -28,7 +28,7 @@ minecraft {
 }
 
 repositories {
-    maven { url = "http://maven.fabricmc.net/" }
+    maven { url "https://maven.fabricmc.net" }
 }
 
 dependencies {
@@ -37,12 +37,24 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "net.fabricmc:fabric-language-kotlin:1.5.0+kotlin.1.4.31"
+    modImplementation "net.fabricmc:fabric-language-kotlin:1.6.1+kotlin.1.5.10"
 
     embed project(path: ":core", configuration: "default")
 
-    // TODO: Replace this with fabric whenever I am bothered to pr it
-    embed "club.sk1er:Vigilance:93-11602-SNAPSHOT"
+    modApi(include("gg.essential:Vigilance:next-116-11602-fabric-SNAPSHOT") {
+        exclude module: "UniversalCraft"
+        exclude module: "Elementa"
+        exclude module: 'kotlin-stdlib-jdk8'
+        exclude module: 'kotlin-reflect'
+    })
+    modApi(include("gg.essential:UniversalCraft:next-130-11602-fabric-SNAPSHOT") {
+        exclude module: 'kotlin-stdlib-jdk8'
+    })
+    modApi(include("gg.essential:Elementa:next-305-11602-fabric-SNAPSHOT") {
+        exclude module: "UniversalCraft"
+        exclude module: 'kotlin-stdlib-jdk8'
+        exclude module: 'kotlin-reflect'
+    })
 }
 
 shadowJar {

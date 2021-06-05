@@ -19,15 +19,15 @@
 
 package com.mediamod.core.gui.screen.impl.onboarding
 
-import club.sk1er.elementa.components.*
-import club.sk1er.elementa.constraints.CenterConstraint
-import club.sk1er.elementa.constraints.SiblingConstraint
-import club.sk1er.elementa.dsl.*
-import club.sk1er.mods.core.universal.UDesktop
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.gui.component.UIRoundedButton
 import com.mediamod.core.gui.screen.IWindowScreen
 import com.mediamod.core.gui.screen.impl.home.MediaModHomeScreen
+import gg.essential.elementa.components.*
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.dsl.*
+import gg.essential.universal.UDesktop
 import java.awt.Color
 import java.net.URI
 

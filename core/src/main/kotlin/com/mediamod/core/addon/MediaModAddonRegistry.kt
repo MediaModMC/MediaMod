@@ -32,7 +32,7 @@ import kotlin.system.measureTimeMillis
 /**
  * The registry class handling the loading, unloading and management of all instances of a [MediaModAddon]
  *
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 object MediaModAddonRegistry {
     /**

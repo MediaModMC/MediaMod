@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 
 /**
  * The mod class for MediaMod
- * @author Conor Byrne (dreamhopping)
+ * @author Conor Byrne
  */
 @Mod(modid = "mediamod", version = MediaModCore.version)
 class MediaMod {

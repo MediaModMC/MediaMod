@@ -2,13 +2,15 @@
 {
   "modid": "mediamod",
   "name": "MediaMod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "description": "",
+  "version": "1.0.0-dev.1",
+  "mcversion": "1.8.9",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": [
+    "Conor Byrne"
+  ],
+  "credits": "",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
