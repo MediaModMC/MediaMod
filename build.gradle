@@ -17,8 +17,8 @@
  */
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.4.31" apply false
-    id "org.jetbrains.kotlin.plugin.serialization" version "1.4.31" apply false
+    id "org.jetbrains.kotlin.jvm" version "1.5.10" apply false
+    id "org.jetbrains.kotlin.plugin.serialization" version "1.5.10" apply false
     id "com.github.johnrengelman.shadow" version "5.2.0" apply false
 }
 
@@ -42,7 +42,11 @@ allprojects {
     }
 
     dependencies {
-        embed "org.jetbrains.kotlin:kotlin-stdlib"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    }
+
+    jar {
+        exclude "META-INF", "META-INF/**"
     }
 
     shadowJar {
@@ -61,7 +65,4 @@ allprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-
-    // Include dependencies in jar using shadow
-    tasks.build.finalizedBy tasks.shadowJar
 }

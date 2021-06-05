@@ -29,6 +29,8 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
+version = "1.0-SNAPSHOT-1.8.9"
+
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
@@ -36,15 +38,18 @@ minecraft {
     makeObfSourceJar = false
 }
 
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
+
 dependencies {
     embed project(path: ":core", configuration: "default")
     embed ("gg.essential:Vigilance:107-10809-SNAPSHOT")  {
         exclude module: "lwjgl"
     }
-}
-
-shadowJar {
-    archiveClassifier.set("1.8.9")
+    embed "org.jetbrains.kotlin:kotlin-stdlib"
 }
 
 task moveResources {

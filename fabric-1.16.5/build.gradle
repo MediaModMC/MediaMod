@@ -27,6 +27,8 @@ minecraft {
     }
 }
 
+version = "1.0-SNAPSHOT-1.16.5"
+
 repositories {
     maven { url "https://maven.fabricmc.net" }
 }
@@ -39,30 +41,25 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:1.6.1+kotlin.1.5.10"
 
-    embed project(path: ":core", configuration: "default")
+    include(implementation(project(path: ":core", configuration: "default")))
+    include(implementation("com.electronwill.night-config:toml:3.6.3"))
+    include(implementation("com.electronwill.night-config:core:3.6.3"))
+    include(implementation("org.dom4j:dom4j:2.1.1"))
 
-    modApi(include("gg.essential:Vigilance:next-116-11602-fabric-SNAPSHOT") {
+    include(modApi("gg.essential:Vigilance:next-116-11602-fabric-SNAPSHOT") {
         exclude module: "UniversalCraft"
         exclude module: "Elementa"
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
     })
-    modApi(include("gg.essential:UniversalCraft:next-130-11602-fabric-SNAPSHOT") {
+
+    include(modApi("gg.essential:UniversalCraft:next-130-11602-fabric-SNAPSHOT") {
         exclude module: 'kotlin-stdlib-jdk8'
     })
-    modApi(include("gg.essential:Elementa:next-305-11602-fabric-SNAPSHOT") {
+
+    include(modApi("gg.essential:Elementa:next-305-11602-fabric-SNAPSHOT") {
         exclude module: "UniversalCraft"
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
     })
-}
-
-shadowJar {
-    archiveClassifier.set("1.16.5")
-
-    // Fabric will provide Kotlin through fabric-language-kotlin at runtime
-    dependencies {
-        exclude(dependency("org.jetbrains.kotlin:.*"))
-        exclude(dependency("org.jetbrains.kotlinx:.*"))
-    }
 }

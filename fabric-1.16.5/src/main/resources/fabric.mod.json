@@ -16,7 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.mediamod.fabric.MediaMod"
+      {
+        "adapter": "kotlin",
+        "value": "com.mediamod.fabric.MediaMod"
+      }
     ]
   },
   "mixins": [
