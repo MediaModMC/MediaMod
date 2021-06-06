@@ -62,6 +62,14 @@ allprojects {
         }
     }
 
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
