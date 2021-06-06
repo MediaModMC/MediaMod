@@ -1,3 +1,21 @@
+/*
+ *     MediaMod is a mod for Minecraft which displays information about your current track in-game
+ *     Copyright (C) 2021 Conor Byrne
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.mediamod.fabric.bindings.impl.render
 
 import com.mediamod.core.bindings.render.RenderUtil
@@ -30,11 +48,11 @@ class RenderUtilProvider : RenderUtil {
         if (top < bottom)
             top = bottom.also { bottom = top }
 
-        // Converting colour to int
-        val f3 = (colorInt shr 24 and 255).toFloat() / 255.0f
-        val f = (colorInt shr 16 and 255).toFloat() / 255.0f
-        val f1 = (colorInt shr 8 and 255).toFloat() / 255.0f
-        val f2 = (colorInt and 255).toFloat() / 255.0f
+        // Converting a color to rgba
+        val alpha = (colorInt shr 24 and 255).toFloat() / 255.0f
+        val red = (colorInt shr 16 and 255).toFloat() / 255.0f
+        val green = (colorInt shr 8 and 255).toFloat() / 255.0f
+        val blue = (colorInt and 255).toFloat() / 255.0f
 
         RenderSystem.enableBlend()
         RenderSystem.disableTexture()
@@ -42,10 +60,10 @@ class RenderUtilProvider : RenderUtil {
 
         with(Tessellator.getInstance().buffer) {
             begin(7, VertexFormats.POSITION_COLOR)
-            vertex(matrix, left.toFloat(), bottom.toFloat(), 0.0f).color(f, f1, f2, f3).next()
-            vertex(matrix, right.toFloat(), bottom.toFloat(), 0.0f).color(f, f1, f2, f3).next()
-            vertex(matrix, right.toFloat(), top.toFloat(), 0.0f).color(f, f1, f2, f3).next()
-            vertex(matrix, left.toFloat(), top.toFloat(), 0.0f).color(f, f1, f2, f3).next()
+            vertex(matrix, left.toFloat(), bottom.toFloat(), 0.0f).color(red, green, blue, alpha).next()
+            vertex(matrix, right.toFloat(), bottom.toFloat(), 0.0f).color(red, green, blue, alpha).next()
+            vertex(matrix, right.toFloat(), top.toFloat(), 0.0f).color(red, green, blue, alpha).next()
+            vertex(matrix, left.toFloat(), top.toFloat(), 0.0f).color(red, green, blue, alpha).next()
             end()
 
             BufferRenderer.draw(this)
