@@ -20,9 +20,9 @@ package com.mediamod.core.gui.screen.impl.home.panel.impl
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.gui.component.UIRoundedButton
+import com.mediamod.core.gui.screen.impl.home.component.NewsComponent
 import com.mediamod.core.gui.screen.impl.home.panel.MediaModHomeScreenPanel
 import gg.essential.elementa.components.UIContainer
-import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
@@ -54,7 +54,7 @@ class HomePanel : MediaModHomeScreenPanel("Home") {
 
     init {
         repeat(3) {
-            UIImage.ofURL(URL("https://i.imgur.com/jEIS7Yd.png")).constrain {
+            NewsComponent(URL("https://i.imgur.com/jEIS7Yd.png"), "Hello world!").constrain {
                 x = CramSiblingConstraint(10f)
                 y = CramSiblingConstraint(10f)
                 height = basicHeightConstraint { imageHolder.getHeight() / 2 * 1.5f }
