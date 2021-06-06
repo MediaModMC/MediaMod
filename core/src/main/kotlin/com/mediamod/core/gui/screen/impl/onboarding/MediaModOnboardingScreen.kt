@@ -115,7 +115,7 @@ Click "OK" to never see this GUI again."""
         } childOf buttonContainer
 
         UIRoundedButton(Color(126, 92, 236), "Discord", 50, 20) {
-            UDesktop.browse(URI("https://inv.wtf/mediamod"))
+            UDesktop.browse(URI("https://discord.gg/GdAc3mmFnh"))
         }.constrain {
             x = SiblingConstraint(5f)
             width = 50.pixels()
