@@ -16,13 +16,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+version = "${project.mediamod_version}-core"
+
 dependencies {
     compileOnly "org.apache.logging.log4j:log4j-api:2.0-beta9"
     compileOnly "org.apache.logging.log4j:log4j-core:2.0-beta9"
     compileOnly 'com.google.code.gson:gson:2.8.6'
     compileOnly "gg.essential:Vigilance:next-116-11602-SNAPSHOT"
-}
-
-shadowJar {
-    archiveClassifier.set("core")
 }

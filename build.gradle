@@ -24,7 +24,7 @@ plugins {
 
 allprojects {
     group "com.mediamod"
-    version "1.0-SNAPSHOT"
+    version project.mediamod_version
 
     apply plugin: "org.jetbrains.kotlin.jvm"
     apply plugin: "org.jetbrains.kotlin.plugin.serialization"
@@ -53,8 +53,7 @@ allprojects {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         configurations = [project.configurations.embed]
 
-        setArchivesBaseName("MediaMod")
-        destinationDirectory.set(new File(rootProject.projectDir, "build/libs"))
+        archiveClassifier.set("")
     }
 
     compileKotlin {

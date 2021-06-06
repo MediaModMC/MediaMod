@@ -23,13 +23,14 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.github.asbyth:ForgeGradle:d583588"
+        classpath "com.github.asbyth:ForgeGradle:6f53277"
     }
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-version = "1.0-SNAPSHOT-1.8.9"
+archivesBaseName = "MediaMod"
+version = "${project.mediamod_version}-1.8.9"
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"

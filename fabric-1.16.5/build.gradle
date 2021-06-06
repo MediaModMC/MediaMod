@@ -27,7 +27,8 @@ minecraft {
     }
 }
 
-version = "1.0-SNAPSHOT-1.16.5"
+archivesBaseName = "MediaMod"
+version = "${project.mediamod_version}-1.16.5"
 
 repositories {
     maven { url "https://maven.fabricmc.net" }
