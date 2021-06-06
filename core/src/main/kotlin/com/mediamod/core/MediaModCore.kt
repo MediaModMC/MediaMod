@@ -30,6 +30,7 @@ import com.mediamod.core.service.MediaModServiceRegistry
 import com.mediamod.core.theme.MediaModThemeRegistry
 import com.mediamod.core.track.TrackMetadata
 import com.mediamod.core.util.file.createIfNonExisting
+import gg.essential.elementa.effects.StencilEffect
 import org.apache.logging.log4j.LogManager
 import java.io.File
 
@@ -87,6 +88,8 @@ object MediaModCore {
      */
     fun initialize() {
         logger.info("Loading MediaMod v$version!")
+
+        StencilEffect.enableStencil()
 
         addonDirectory.createIfNonExisting(true)
         themeDirectory.createIfNonExisting(true)
