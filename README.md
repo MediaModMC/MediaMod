@@ -4,8 +4,9 @@
     
 # MediaMod
 
-View your current song in Minecraft with support for services like Spotify, YouTube, SoundCloud & more! 
+View your current song in Minecraft with support for services like Spotify, YouTube, SoundCloud & more.
 
+If you want to chat with other MediaMod users, join our [discord server](https://discord.gg/GdAc3mmFnh)!
 
 ## Features
 
@@ -43,7 +44,8 @@ Contributions are always welcome!
   
 ## Support
 
-For support, please open an [issue](https://github.com/MediaModMC/MediaMod/issues/new) describing your problem.
+If you have a bug to report, please open an [issue](https://github.com/MediaModMC/MediaMod/issues/new) describing your problem.
+If you can't install MediaMod or you have issues with it, join our [discord server](https://discord.gg/GdAc3mmFnh) and we can help you. You can also report bugs here if you like.
   
 ## License
 
