@@ -48,7 +48,13 @@ object PlayerRenderer {
     }
 
     private fun renderAlbumArt() {
-        RenderUtil.drawImage(URL(MediaModCore.currentTrackMetadata?.albumArtUrl), 10, 10, 35, 35)
+        RenderUtil.drawImage(
+            if (MediaModCore.currentTrackMetadata?.albumArtUrl == null) null else URL(MediaModCore.currentTrackMetadata?.albumArtUrl),
+            10,
+            10,
+            35,
+            35
+        )
     }
 
     private fun renderProgressBar() {
