@@ -16,25 +16,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.bindings
+package com.mediamod.core.bindings.desktop
 
-import com.mediamod.core.bindings.command.MediaModCommandRegistry
-import com.mediamod.core.bindings.desktop.Desktop
-import com.mediamod.core.bindings.minecraft.FontRenderer
-import com.mediamod.core.bindings.minecraft.MinecraftClient
-import com.mediamod.core.bindings.render.RenderUtil
-import com.mediamod.core.bindings.texture.TextureManager
-import com.mediamod.core.bindings.threading.ThreadingService
+import com.mediamod.core.bindings.BindingRegistry
+import java.net.URL
 
-object BindingRegistry {
-    lateinit var threadingService: ThreadingService
+interface Desktop {
+    companion object : Desktop by BindingRegistry.desktop
 
-    lateinit var minecraftClient: MinecraftClient
-    lateinit var fontRenderer: FontRenderer
-
-    lateinit var textureManager: TextureManager
-    lateinit var renderUtil: RenderUtil
-
-    lateinit var commandRegistry: MediaModCommandRegistry
-    lateinit var desktop: Desktop
+    fun open(url: URL): Boolean
 }

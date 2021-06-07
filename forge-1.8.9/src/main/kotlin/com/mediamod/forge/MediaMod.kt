@@ -22,6 +22,7 @@ package com.mediamod.forge
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.BindingRegistry
 import com.mediamod.forge.bindings.impl.command.MediaModCommandRegistryProvider
+import com.mediamod.forge.bindings.impl.desktop.DesktopProvider
 import com.mediamod.forge.bindings.impl.minecraft.FontRendererProvider
 import com.mediamod.forge.bindings.impl.minecraft.MinecraftClientProvider
 import com.mediamod.forge.bindings.impl.render.RenderUtilProvider
@@ -58,6 +59,7 @@ class MediaMod {
         BindingRegistry.fontRenderer = FontRendererProvider()
         BindingRegistry.textureManager = TextureManagerProvider()
         BindingRegistry.commandRegistry = MediaModCommandRegistryProvider()
+        BindingRegistry.desktop = DesktopProvider()
     }
 
     @SubscribeEvent

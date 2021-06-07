@@ -21,6 +21,7 @@ package com.mediamod.fabric
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.BindingRegistry
 import com.mediamod.fabric.bindings.impl.command.MediaModCommandRegistryProvider
+import com.mediamod.fabric.bindings.impl.desktop.DesktopProvider
 import com.mediamod.fabric.bindings.impl.minecraft.FontRendererProvider
 import com.mediamod.fabric.bindings.impl.minecraft.MinecraftClientProvider
 import com.mediamod.fabric.bindings.impl.render.RenderUtilProvider
@@ -51,6 +52,7 @@ class MediaMod : ModInitializer {
         BindingRegistry.fontRenderer = FontRendererProvider()
         BindingRegistry.textureManager = TextureManagerProvider()
         BindingRegistry.commandRegistry = MediaModCommandRegistryProvider()
+        BindingRegistry.desktop = DesktopProvider()
     }
 
     /**
