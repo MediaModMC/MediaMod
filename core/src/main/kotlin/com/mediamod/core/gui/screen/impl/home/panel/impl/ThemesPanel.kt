@@ -18,29 +18,26 @@
 
 package com.mediamod.core.gui.screen.impl.home.panel.impl
 
-import com.mediamod.core.addon.MediaModAddonRegistry
-import com.mediamod.core.bindings.minecraft.MinecraftClient
-import com.mediamod.core.config.MediaModConfigRegistry
 import com.mediamod.core.gui.component.UIRoundedButton
 import com.mediamod.core.gui.screen.impl.home.panel.MediaModHomeScreenPanel
+import com.mediamod.core.theme.MediaModThemeRegistry
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.*
+import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.CramSiblingConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
-import gg.essential.vigilance.Vigilant
 import java.awt.Color
 
 /**
- * The panel that displays information about the currently installed addons
- * Here is where an addon's [Vigilant] gui can be opened by the user
+ * The panel that displays information about the themes available to the user
  *
- * @author Conor Byrne & Nora
+ * @author Conor Byrne
  */
-class AddonsPanel : MediaModHomeScreenPanel("Addons") {
+class ThemesPanel : MediaModHomeScreenPanel("Themes") {
     init {
-        UIText("Addons", false)
+        UIText("Themes", false)
             .constrain {
                 x = 20.pixels()
                 y = 20.pixels()
@@ -48,31 +45,33 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                 textScale = 2.pixels()
             } childOf this
 
-        val addonsContainer = ScrollComponent("You have no addons installed! Go to the \"Discover\" tab to find some!")
-            .constrain {
-                x = 20.pixels()
-                y = SiblingConstraint(10f)
-                width = 100.percent()
-                height = FillConstraint() - 35.pixels()
-            } childOf this
-
-        MediaModAddonRegistry.initialisedAddons.forEach { addon ->
-            val metadata = MediaModAddonRegistry.getAddonMetadata(addon.identifier) ?: return@forEach
-
-            AddonComponent(addon.identifier, metadata.name, metadata.description ?: "An awesome MediaMod Addon!")
+        val addonsContainer =
+            ScrollComponent("You have no themes installed! Open the .minecraft/mediamod/themes directory to add some.")
                 .constrain {
-                    x = CramSiblingConstraint(20f)
-                    y = CramSiblingConstraint(10f)
-                    height = 25.percent()
-                    width = 35.percent()
-                } childOf addonsContainer
+                    x = 20.pixels()
+                    y = SiblingConstraint(10f)
+                    width = 100.percent()
+                    height = FillConstraint() - 35.pixels()
+                } childOf this
+
+        MediaModThemeRegistry.loadedThemes.forEachIndexed { index, theme ->
+            ThemeComponent(
+                theme.name ?: "Unnamed theme",
+                theme.description ?: "An awesome MediaMod theme!",
+                index == 0
+            ).constrain {
+                x = CramSiblingConstraint(20f)
+                y = CramSiblingConstraint(10f)
+                height = 25.percent()
+                width = 35.percent()
+            } childOf addonsContainer
         }
     }
 
-    class AddonComponent(
-        identifier: String,
+    class ThemeComponent(
         name: String,
-        description: String
+        description: String,
+        applied: Boolean = false
     ) : UIComponent() {
         private val backgroundColour = Color(64, 64, 64).brighter()
         private val titleColour = Color(198, 198, 198)
@@ -106,6 +105,24 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                     textScale = 1.25.pixels()
                 } childOf textContainer
 
+            if (applied) {
+                val rectangle = UIRoundedRectangle(3f)
+                    .constrain {
+                        x = SiblingConstraint(5f)
+                        y = 5.pixels()
+                        width = 35.pixels()
+                        height = 10.pixels()
+                        color = Color(69, 204, 116).toConstraint()
+                    } childOf textContainer
+
+                UIText("Applied", false)
+                    .constrain {
+                        x = CenterConstraint()
+                        y = CenterConstraint()
+                        textScale = 0.75.pixels()
+                    } childOf rectangle
+            }
+
             UIWrappedText(description, false, trimText = true)
                 .constrain {
                     x = 5.pixels()
@@ -115,11 +132,27 @@ class AddonsPanel : MediaModHomeScreenPanel("Addons") {
                     color = titleColour.darker().toConstraint()
                 } childOf textContainer
 
-            UIRoundedButton(Color(92, 160, 236), "Settings", 45, 15) {
-                MinecraftClient.openConfigScreen(MediaModConfigRegistry.getConfig(identifier))
+            UIRoundedButton(Color(69, 204, 116), "Apply", 45, 15) {
+
             }.constrain {
                 x = 5.pixels()
-                width = 45.percent()
+                width = 45.pixels()
+                height = 15.pixels()
+            } childOf buttonContainer
+
+            UIRoundedButton(Color(92, 160, 236), "Preview", 45, 15) {
+
+            }.constrain {
+                x = SiblingConstraint(5f)
+                width = 45.pixels()
+                height = 15.pixels()
+            } childOf buttonContainer
+
+            UIRoundedButton(Color(126, 92, 236), "Delete", 45, 15) {
+
+            }.constrain {
+                x = SiblingConstraint(5f)
+                width = 45.pixels()
                 height = 15.pixels()
             } childOf buttonContainer
         }

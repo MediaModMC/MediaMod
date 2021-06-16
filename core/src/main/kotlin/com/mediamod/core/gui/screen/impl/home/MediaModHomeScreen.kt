@@ -22,6 +22,7 @@ import com.mediamod.core.gui.screen.IWindowScreen
 import com.mediamod.core.gui.screen.impl.home.panel.MediaModHomeScreenPanel
 import com.mediamod.core.gui.screen.impl.home.panel.impl.AddonsPanel
 import com.mediamod.core.gui.screen.impl.home.panel.impl.HomePanel
+import com.mediamod.core.gui.screen.impl.home.panel.impl.ThemesPanel
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
@@ -85,6 +86,7 @@ class MediaModHomeScreen : IWindowScreen(3) {
 
         addPanel(HomePanel())
         addPanel(AddonsPanel())
+        addPanel(ThemesPanel())
     }
 
     private fun addPanel(panel: MediaModHomeScreenPanel) {
