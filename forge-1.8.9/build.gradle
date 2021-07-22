@@ -37,6 +37,7 @@ minecraft {
     runDir = "run"
     mappings = "stable_22"
     makeObfSourceJar = false
+    clientRunArgs += "--tweakClass=gg.essential.loader.stage0.EssentialSetupTweaker"
 }
 
 reobf {
@@ -46,11 +47,10 @@ reobf {
 }
 
 dependencies {
+    implementation "gg.essential:essential-1.8.9-forge:1237"
+
     embed project(path: ":core", configuration: "default")
-    embed ("gg.essential:Vigilance:107-10809-SNAPSHOT")  {
-        exclude module: "lwjgl"
-    }
-    embed "org.jetbrains.kotlin:kotlin-stdlib"
+    embed "gg.essential:loader-launchwrapper:1.0.2"
 }
 
 task moveResources {

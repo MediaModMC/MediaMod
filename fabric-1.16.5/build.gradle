@@ -47,18 +47,18 @@ dependencies {
     include(implementation("com.electronwill.night-config:core:3.6.3"))
     include(implementation("org.dom4j:dom4j:2.1.1"))
 
-    include(modApi("gg.essential:Vigilance:next-116-11602-fabric-SNAPSHOT") {
+    include(modApi("gg.essential:Vigilance:next-148-11602-fabric-SNAPSHOT") {
         exclude module: "UniversalCraft"
         exclude module: "Elementa"
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
     })
 
-    include(modApi("gg.essential:UniversalCraft:next-130-11602-fabric-SNAPSHOT") {
+    include(modApi("gg.essential:UniversalCraft:next-143-11602-fabric-SNAPSHOT") {
         exclude module: 'kotlin-stdlib-jdk8'
     })
 
-    include(modApi("gg.essential:Elementa:next-305-11602-fabric-SNAPSHOT") {
+    include(modApi("gg.essential:Elementa:next-345-11602-fabric-SNAPSHOT") {
         exclude module: "UniversalCraft"
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'

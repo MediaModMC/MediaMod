@@ -17,8 +17,8 @@
  */
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.5.10" apply false
-    id "org.jetbrains.kotlin.plugin.serialization" version "1.5.10" apply false
+    id "org.jetbrains.kotlin.jvm" version "1.5.20" apply false
+    id "org.jetbrains.kotlin.plugin.serialization" version "1.5.20" apply false
     id "com.github.johnrengelman.shadow" version "5.2.0" apply false
 }
 
@@ -33,6 +33,8 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven { url "https://repo.spongepowered.org/maven" }
+        maven { url "https://jitpack.io" }
         maven { url "https://repo.sk1er.club/repository/maven-public" }
     }
 
