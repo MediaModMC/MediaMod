@@ -20,6 +20,8 @@ package com.mediamod.core.theme
 
 import com.google.gson.Gson
 import com.mediamod.core.config.impl.MediaModConfig
+import com.mediamod.core.theme.impl.MediaModDefaultTheme
+import com.mediamod.core.theme.impl.MediaModDynamicTheme
 import org.apache.logging.log4j.LogManager
 import java.io.File
 
@@ -34,23 +36,8 @@ object MediaModThemeRegistry {
                 ?: loadedThemes.first { it.identifier == "mediamod-classic" }
 
     fun addDefaultThemes() {
-        loadedThemes.add(
-            MediaModTheme(
-                "mediamod-classic",
-                "MediaMod Classic",
-                "The classic theme for MediaMod",
-                "MediaMod"
-            )
-        )
-
-        loadedThemes.add(
-            MediaModTheme(
-                "mediamod-dynamic",
-                "MediaMod Dynamic",
-                "Adjusts the colors of the player depending on the artwork",
-                "MediaMod"
-            )
-        )
+        loadedThemes.add(MediaModDefaultTheme())
+        loadedThemes.add(MediaModDynamicTheme())
     }
 
     fun loadThemes(mediamodThemeDirectory: File) {

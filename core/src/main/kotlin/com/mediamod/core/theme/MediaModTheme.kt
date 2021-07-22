@@ -21,13 +21,16 @@ package com.mediamod.core.theme
 import com.google.gson.annotations.SerializedName
 import java.awt.Color
 
-data class MediaModTheme(
+abstract class MediaModTheme(
     val identifier: String,
     val name: String? = "Theme",
     val description: String? = "An awesome theme for MediaMod",
-    val author: String? = "Unknown",
-    val colors: MediaModThemeColors = MediaModThemeColors()
+    val author: String? = "Unknown"
 ) {
+    open val colors: MediaModThemeColors = MediaModThemeColors()
+
+    open fun updateTheme() {}
+
     data class MediaModThemeColors(
         @SerializedName("playerPrimaryText")
         private val playerPrimaryTextString: String? = "#ffffff",

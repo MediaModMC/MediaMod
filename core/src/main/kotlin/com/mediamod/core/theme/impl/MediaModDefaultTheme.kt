@@ -16,18 +16,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.mediamod.core.config.impl
+package com.mediamod.core.theme.impl
 
-import gg.essential.vigilance.Vigilant
-import gg.essential.vigilance.data.Property
-import gg.essential.vigilance.data.PropertyType
-import java.io.File
+import com.mediamod.core.theme.MediaModTheme
 
-object MediaModConfig : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
-    @Property(
-        type = PropertyType.TEXT, name = "Selected theme",
-        description = "The theme used to change the colour of the Player HUD",
-        category = "Customization", subcategory = "Theme"
-    )
-    var selectedTheme = "mediamod-dynamic"
-}
+class MediaModDefaultTheme : MediaModTheme(
+    "mediamod-classic",
+    "MediaMod Classic",
+    "The classic theme for MediaMod",
+    "MediaMod"
+)

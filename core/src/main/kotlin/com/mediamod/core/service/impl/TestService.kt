@@ -43,11 +43,11 @@ class TestService : MediaModService("mediamod-test-addon-service") {
      * If you do not have one, return null
      */
     override fun fetchTrackMetadata() = TrackMetadata(
-        "i wanna slam my head against the wall",
-        "glaive",
+        "i have finally hit rock bottom",
+        "d0llywood1",
         2,
         35000,
-        "https://i.scdn.co/image/ab67616d0000b273c1c4b6702c901e6efcbe7490"
+        "https://images.genius.com/5ea42d4ab2315984f17300c37dee6d5d.1000x1000x1.jpg"
     )
 
     /**

@@ -131,9 +131,12 @@ object MediaModCore {
             try {
                 val trackMetadata =
                     MediaModServiceRegistry.currentService?.fetchTrackMetadata() ?: return@schedule
+
                 if (trackMetadata != currentTrackMetadata) {
                     currentTrackMetadata = trackMetadata
                 }
+
+                MediaModThemeRegistry.selectedTheme.updateTheme()
             } catch (t: Throwable) {
                 logger.error("An error occurred when fetching TrackMetadata", t)
             }
