@@ -20,13 +20,35 @@ package com.mediamod.core.render
 
 import com.mediamod.core.MediaModCore
 import com.mediamod.core.bindings.render.RenderUtil
+import com.mediamod.core.theme.MediaModThemeRegistry
 import java.awt.Color
 import java.net.URL
 
 object PlayerRenderer {
-    private val titleTextRenderer = MarqueeingTextRenderer(50, 10, 90, 20)
-    private val artistTextRenderer = MarqueeingTextRenderer(50, 20, 90, 20, textColor = Color.WHITE.darker())
-    private val progressBarRenderer = ProgressBarRenderer(50, 35, 90, 10)
+    private val titleTextRenderer = MarqueeingTextRenderer(
+        50,
+        10,
+        90,
+        20,
+        textColor = MediaModThemeRegistry.selectedTheme.colors.playerPrimaryText
+    )
+
+    private val artistTextRenderer = MarqueeingTextRenderer(
+        50,
+        20,
+        90,
+        20,
+        textColor = MediaModThemeRegistry.selectedTheme.colors.playerSecondaryText
+    )
+
+    private val progressBarRenderer = ProgressBarRenderer(
+        50,
+        35,
+        90,
+        10,
+        backgroundColor = MediaModThemeRegistry.selectedTheme.colors.playerProgressBarBackground,
+        progressColor = MediaModThemeRegistry.selectedTheme.colors.playerProgressBarAccent
+    )
 
     fun onRenderTick(partialTicks: Float) {
         if (MediaModCore.currentTrackMetadata == null)
@@ -44,7 +66,7 @@ object PlayerRenderer {
     }
 
     private fun renderBackground() {
-        RenderUtil.drawRectangle(5, 5, 145, 45, Color.DARK_GRAY)
+        RenderUtil.drawRectangle(5, 5, 145, 45, MediaModThemeRegistry.selectedTheme.colors.playerBackground)
     }
 
     private fun renderAlbumArt() {

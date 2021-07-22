@@ -19,13 +19,19 @@
 package com.mediamod.core.theme
 
 import com.google.gson.Gson
+import com.mediamod.core.config.impl.MediaModConfig
 import org.apache.logging.log4j.LogManager
 import java.io.File
 
 object MediaModThemeRegistry {
     private val gson = Gson()
     private val logger = LogManager.getLogger("MediaMod: Theme Registry")
+
     val loadedThemes = mutableListOf<MediaModTheme>()
+    val selectedTheme: MediaModTheme
+        get() =
+            loadedThemes.firstOrNull { it.identifier == MediaModConfig.selectedTheme }
+                ?: loadedThemes.first { it.identifier == "mediamod-classic" }
 
     fun addDefaultThemes() {
         loadedThemes.add(

@@ -24,6 +24,7 @@ import com.mediamod.core.bindings.command.MediaModCommandRegistry
 import com.mediamod.core.bindings.minecraft.MinecraftClient
 import com.mediamod.core.bindings.threading.ThreadingService
 import com.mediamod.core.command.impl.MediaModCommand
+import com.mediamod.core.config.impl.MediaModConfig
 import com.mediamod.core.render.PlayerRenderer
 import com.mediamod.core.schedule.TickSchedulerService
 import com.mediamod.core.service.MediaModServiceRegistry
@@ -90,6 +91,7 @@ object MediaModCore {
         logger.info("Loading MediaMod v$version!")
 
         StencilEffect.enableStencil()
+        MediaModConfig.preload()
 
         addonDirectory.createIfNonExisting(true)
         themeDirectory.createIfNonExisting(true)
