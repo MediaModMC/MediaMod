@@ -3,18 +3,19 @@ package dev.mediamod.ui
 import dev.mediamod.MediaMod
 import dev.mediamod.data.Track
 import gg.essential.elementa.UIComponent
-import gg.essential.elementa.components.*
+import gg.essential.elementa.components.UIBlock
+import gg.essential.elementa.components.UIContainer
+import gg.essential.elementa.components.UIImage
+import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
-import gg.essential.elementa.state.BasicState
 import java.awt.Color
 
 class PlayerComponent : UIComponent() {
-    private val currentTrack = BasicState<Track?>(null)
-    private val previousTrack: Track? = null
+    private var previousTrack: Track? = null
 
     private val background = UIBlock(Color.darkGray.darker()).constrain {
         x = 5.pixels()
@@ -58,25 +59,25 @@ class PlayerComponent : UIComponent() {
     private var image = UIImage.ofResource("")
 
     init {
-        MediaMod.serviceManager.onTrack {
-            Window.enqueueRenderOperation { currentTrack.set(this) }
-        }
+        MediaMod.serviceManager.onTrack(this::updateInformation)
+    }
 
-        currentTrack.onSetValue {
-            trackNameText.setText(it?.name ?: "Unknown track")
-            artistNameText.setText("by ${it?.artist ?: "Unknown artist"}")
+    private fun updateInformation(track: Track) {
+        trackNameText.setText(track.name)
+        artistNameText.setText("by ${track.artist}")
 
-            if (previousTrack?.artwork != it?.artwork) {
-                imageContainer.removeChild(image)
+        progressBar.update(track)
 
-                image = it?.let { UIImage.ofURL(it.artwork) } ?: UIImage.ofResource("")
-                image.constrain {
+        if (previousTrack?.artwork != track.artwork) {
+            imageContainer.removeChild(image)
+
+            image = UIImage.ofURL(track.artwork)
+                .constrain {
                     width = 100.percent()
                     height = 100.percent()
                 } childOf imageContainer
-            }
-
-            it?.let { progressBar.update(it) }
         }
+
+        previousTrack = track
     }
 }

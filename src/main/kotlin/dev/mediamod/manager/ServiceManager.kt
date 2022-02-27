@@ -3,6 +3,7 @@ package dev.mediamod.manager
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
 import dev.mediamod.service.impl.TestService
+import net.minecraft.client.MinecraftClient
 import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.thread
 
@@ -27,8 +28,10 @@ class ServiceManager {
     fun onTrack(callback: Track.() -> Unit) =
         listeners.add(callback)
 
-    fun emit(track: Track) =
-        listeners.forEach { it(track) }
+    private fun emit(track: Track) =
+        listeners.forEach {
+            MinecraftClient.getInstance().execute { it(track) }
+        }
 
     private fun addService(service: Service) {
         services.add(service)
