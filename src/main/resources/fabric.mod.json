@@ -1,0 +1,34 @@
+{
+    "schemaVersion": 1,
+    "id": "mediamod",
+    "version": "${version}",
+    "name": "MediaMod",
+    "description": "View your current song inside of Minecraft!",
+    "authors": [
+        "Conor Byrne"
+    ],
+    "contact": {
+        "homepage": "https://mediamod.dev/",
+        "sources": "https://github.com/MediaModMC/MediaMod"
+    },
+    "license": "LGPL-3",
+    "icon": "assets/mediamod/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            {
+                "adapter": "kotlin",
+                "value": "dev.mediamod.MediaMod"
+            }
+        ]
+    },
+    "mixins": [
+    ],
+    "depends": {
+        "fabricloader": ">=0.12.12",
+        "fabric": "*",
+        "minecraft": "1.18.x",
+        "java": ">=17",
+        "fabric-language-kotlin": ">=1.7.1+kotlin.1.6.10"
+    }
+}
