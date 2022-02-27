@@ -6,6 +6,7 @@ import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.*
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
+import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
@@ -13,6 +14,7 @@ import java.awt.Color
 
 class PlayerComponent : UIComponent() {
     private val currentTrack = BasicState<Track?>(null)
+    private val previousTrack: Track? = null
 
     private val background = UIBlock(Color.darkGray.darker()).constrain {
         x = 5.pixels()
@@ -35,6 +37,7 @@ class PlayerComponent : UIComponent() {
         x = SiblingConstraint(5f)
         y = CenterConstraint()
 
+        width = FillConstraint(false)
         height = ChildBasedSizeConstraint()
     } childOf background
 
@@ -45,6 +48,13 @@ class PlayerComponent : UIComponent() {
         y = SiblingConstraint(3f)
     } childOf textContainer
 
+    private val progressBar = ProgressBarComponent().constrain {
+        y = SiblingConstraint(5f)
+
+        width = 100.percent() - 5.pixels()
+        height = 8.pixels()
+    } childOf textContainer
+
     private var image = UIImage.ofResource("")
 
     init {
@@ -53,18 +63,20 @@ class PlayerComponent : UIComponent() {
         }
 
         currentTrack.onSetValue {
-            imageContainer.removeChild(image)
-
             trackNameText.setText(it?.name ?: "Unknown track")
             artistNameText.setText("by ${it?.artist ?: "Unknown artist"}")
 
-            image = it?.let { UIImage.ofURL(it.artwork) } ?: UIImage.ofResource("")
-            image
-                .constrain {
+            if (previousTrack?.artwork != it?.artwork) {
+                imageContainer.removeChild(image)
+
+                image = it?.let { UIImage.ofURL(it.artwork) } ?: UIImage.ofResource("")
+                image.constrain {
                     width = 100.percent()
                     height = 100.percent()
-                }
-                .childOf(imageContainer)
+                } childOf imageContainer
+            }
+
+            it?.let { progressBar.update(it) }
         }
     }
 }
