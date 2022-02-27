@@ -5,6 +5,7 @@ fabric-loader = "0.13.3"
 fabric-api = "0.46.4+1.18"
 fabric-kotlin = "1.7.1+kotlin.1.6.10"
 elementa = "435"
+databreaker = "0.2.8"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -13,3 +14,4 @@ fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-l
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
 elementa = { module = "gg.essential:elementa-1.18.1-fabric", version.ref = "elementa" }
+databreaker = { module = "supercoder79:databreaker", version.ref = "databreaker" }

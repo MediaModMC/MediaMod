@@ -11,6 +11,7 @@ version = "1.0.0"
 
 repositories {
     maven("https://repo.sk1er.club/repository/maven-public")
+    maven("https://maven.gegy.dev")
 }
 
 dependencies {
@@ -23,6 +24,7 @@ dependencies {
     modImplementation(libs.fabric.api)
     modImplementation(libs.fabric.kotlin)
     modImplementation(libs.elementa)
+    modRuntimeOnly(libs.databreaker)
 
     include(libs.elementa)
 }
