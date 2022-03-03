@@ -2,6 +2,8 @@ package dev.mediamod.ui
 
 import dev.mediamod.MediaMod
 import dev.mediamod.data.Track
+import dev.mediamod.theme.Theme
+import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
@@ -60,6 +62,7 @@ class PlayerComponent : UIComponent() {
 
     init {
         MediaMod.serviceManager.onTrack(this::updateInformation)
+        MediaMod.themeManager.onChange(this::updateTheme)
     }
 
     private fun updateInformation(track: Track) {
@@ -79,5 +82,11 @@ class PlayerComponent : UIComponent() {
         }
 
         previousTrack = track
+    }
+
+    private fun updateTheme(theme: Theme) {
+        background.setColorAnimated(theme.colors.background.constraint)
+        trackNameText.setColorAnimated(theme.colors.text.constraint)
+        artistNameText.setColorAnimated(theme.colors.text.darker().constraint)
     }
 }

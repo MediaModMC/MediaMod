@@ -13,7 +13,10 @@ class ThemeManager {
     private val themesDirectory = File(MediaMod.dataDirectory, "themes")
 
     var currentTheme: Theme = DefaultTheme()
-        private set
+        set(value) {
+            field = value
+            emitThemeChange(value)
+        }
 
     val loadedThemes = mutableListOf<Theme>()
 
@@ -37,8 +40,9 @@ class ThemeManager {
         }
     }
 
-    // TODO
-    @Suppress("unused")
     fun onChange(callback: Theme.() -> Unit) =
         changeSubscribers.add(callback)
+
+    private fun emitThemeChange(theme: Theme) =
+        changeSubscribers.forEach { it.invoke(theme) }
 }

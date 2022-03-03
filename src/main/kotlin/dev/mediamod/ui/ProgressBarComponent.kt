@@ -2,11 +2,10 @@ package dev.mediamod.ui
 
 import dev.mediamod.MediaMod
 import dev.mediamod.data.Track
+import dev.mediamod.theme.Theme
+import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.components.UIBlock
-import gg.essential.elementa.dsl.childOf
-import gg.essential.elementa.dsl.constrain
-import gg.essential.elementa.dsl.percent
-import gg.essential.elementa.dsl.pixels
+import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.universal.UMatrixStack
 import java.lang.Float.min
@@ -29,6 +28,8 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
                 progressBlock.setWidth(0.pixels())
             }
         }
+
+        MediaMod.themeManager.onChange(this::updateTheme)
     }
 
     fun update(track: Track) {
@@ -48,5 +49,10 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
         }
 
         super.draw(matrixStack)
+    }
+
+    private fun updateTheme(theme: Theme) {
+        setColorAnimated(theme.colors.progressBarBackground.constraint)
+        progressBlock.setColorAnimated(theme.colors.progressBar.constraint)
     }
 }
