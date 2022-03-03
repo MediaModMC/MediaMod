@@ -12,12 +12,11 @@ import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
-import java.awt.Color
 
 class PlayerComponent : UIComponent() {
     private var previousTrack: Track? = null
 
-    private val background = UIBlock(Color.darkGray.darker()).constrain {
+    private val background = UIBlock(MediaMod.themeManager.currentTheme.colors.background.constraint).constrain {
         x = 5.pixels()
         y = 5.pixels()
 
@@ -28,7 +27,6 @@ class PlayerComponent : UIComponent() {
     private val imageContainer = UIContainer().constrain {
         x = 5.pixels()
         y = CenterConstraint()
-        color = Color(0, 0, 0, 0).constraint
 
         width = 40.pixels()
         height = 40.pixels()
@@ -42,10 +40,12 @@ class PlayerComponent : UIComponent() {
         height = ChildBasedSizeConstraint()
     } childOf background
 
-    private val trackNameText = UIText("Unknown track") childOf textContainer
+    private val trackNameText = UIText("Unknown track").constrain {
+        color = MediaMod.themeManager.currentTheme.colors.text.constraint
+    } childOf textContainer
 
     private val artistNameText = UIText("by Unknown artist").constrain {
-        color = Color.lightGray.constraint
+        color = MediaMod.themeManager.currentTheme.colors.text.darker().constraint
         y = SiblingConstraint(3f)
     } childOf textContainer
 

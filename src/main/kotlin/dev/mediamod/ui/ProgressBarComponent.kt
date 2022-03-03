@@ -1,5 +1,6 @@
 package dev.mediamod.ui
 
+import dev.mediamod.MediaMod
 import dev.mediamod.data.Track
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.dsl.childOf
@@ -8,14 +9,13 @@ import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.pixels
 import gg.essential.elementa.state.BasicState
 import gg.essential.universal.UMatrixStack
-import java.awt.Color
 import java.lang.Float.min
 
-class ProgressBarComponent : UIBlock(Color.gray) {
+class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.progressBarBackground) {
     private val trackState = BasicState<Track?>(null)
     private var lastUpdate = 0L
 
-    private val progressBlock = UIBlock(Color.green)
+    private val progressBlock = UIBlock(MediaMod.themeManager.currentTheme.colors.progressBar)
         .constrain {
             width = 1.pixels()
             height = 100.percent()
