@@ -34,7 +34,7 @@ dependencies {
     modImplementation(libs.fabric.api)
     modImplementation(libs.fabric.kotlin)
     modImplementation(libs.elementa)
-    modRuntimeOnly(libs.databreaker)
+    modImplementation(libs.modmenu)
 
     shade(libs.elementa)
     shade(libs.universalcraft)
