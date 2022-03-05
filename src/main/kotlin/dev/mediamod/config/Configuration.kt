@@ -22,16 +22,26 @@ object Configuration : Vigilant(File("./config/mediamod.toml")) {
         }
 
     init {
-        category("Appearance") {
-            selector(
-                ::_selectedTheme,
-                "Theme",
-                "Change the appearance of the MediaMod Player",
-                MediaMod.themeManager.loadedThemes.map { it.name }
-            )
+        category("General") {
+            subcategory("Appearance") {
+                selector(
+                    ::_selectedTheme,
+                    "Theme",
+                    "Change the appearance of the MediaMod Player",
+                    MediaMod.themeManager.loadedThemes.map { it.name }
+                )
 
-            text(::selectedTheme, "Theme Name", hidden = true)
+                text(::selectedTheme, "Theme Name", hidden = true)
+            }
         }
+
+        MediaMod.serviceManager.services
+            .filter { it.hasConfiguration }
+            .forEach {
+                with(it) {
+                    category(displayName) { configuration() }
+                }
+            }
 
         initialize()
 

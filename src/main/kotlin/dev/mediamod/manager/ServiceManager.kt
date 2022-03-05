@@ -8,8 +8,8 @@ import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.thread
 
 class ServiceManager {
-    private val services = mutableSetOf<Service>()
     private val listeners = mutableSetOf<Track.() -> Unit>()
+    val services = mutableSetOf<Service>()
 
     fun init() {
         addService(TestService())

@@ -2,11 +2,13 @@ package dev.mediamod.service.impl
 
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
+import dev.mediamod.utils.logger
+import gg.essential.vigilance.Vigilant
 import java.net.URL
 
-class TestService : Service {
-    override fun init() {
-    }
+class TestService : Service() {
+    override val displayName = "Test Service"
+    override val hasConfiguration = true
 
     override fun pollTrack() = Track(
         "daisy",
@@ -16,4 +18,10 @@ class TestService : Service {
         30000,
         false
     )
+
+    override fun Vigilant.CategoryPropertyBuilder.configuration() {
+        button("Test", "This is a test!", "Click me!") {
+            logger.info("Test")
+        }
+    }
 }

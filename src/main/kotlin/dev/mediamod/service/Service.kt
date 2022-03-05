@@ -1,8 +1,14 @@
 package dev.mediamod.service
 
 import dev.mediamod.data.Track
+import gg.essential.vigilance.Vigilant
 
-interface Service {
-    fun init()
-    fun pollTrack(): Track?
+abstract class Service {
+    abstract val displayName: String
+    abstract fun pollTrack(): Track?
+
+    open val hasConfiguration: Boolean = false
+
+    open fun init() {}
+    open fun Vigilant.CategoryPropertyBuilder.configuration() {}
 }
