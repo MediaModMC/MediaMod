@@ -9,6 +9,7 @@ universalcraft = "185"
 modmenu = "3.1.0"
 dom4j = "2.1.1"
 vigilance = "200"
+nightconfig = "3.6.0"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -21,3 +22,5 @@ universalcraft = { module = "gg.essential:universalcraft-1.18.1-fabric", version
 dom4j = { module = "org.dom4j:dom4j", version.ref = "dom4j" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 vigilance = { module = "gg.essential:vigilance-1.18.1-fabric", version.ref = "vigilance" }
+nightconfig-core = { module = "com.electronwill.night-config:core", version.ref = "nightconfig" }
+nightconfig-toml = { module = "com.electronwill.night-config:toml", version.ref = "nightconfig" }

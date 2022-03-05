@@ -38,8 +38,11 @@ dependencies {
     modImplementation(libs.modmenu)
 
     shade(libs.elementa)
-    shade(libs.universalcraft)
-    shade(libs.dom4j)
+    shade(libs.universalcraft) // Dependency of Elementa
+    shade(libs.dom4j) // Dependency of Elementa
+    shade(libs.vigilance)
+    shade(libs.nightconfig.core) // Dependency of Vigilance
+    shade(libs.nightconfig.toml) // Dependency of Vigilance
 }
 
 tasks {
