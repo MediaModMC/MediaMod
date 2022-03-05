@@ -62,4 +62,11 @@ tasks {
         val shadowJar = named<ShadowJar>("shadowJar").get()
         inputFile.set(shadowJar.archiveFile)
     }
+
+    "processResources"(ProcessResources::class) {
+        inputs.property("version", project.version)
+        filesMatching("fabric.mod.json") {
+            expand(mapOf("version" to project.version))
+        }
+    }
 }
