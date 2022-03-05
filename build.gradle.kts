@@ -34,6 +34,7 @@ dependencies {
     modImplementation(libs.fabric.api)
     modImplementation(libs.fabric.kotlin)
     modImplementation(libs.elementa)
+    modImplementation(libs.vigilance)
     modImplementation(libs.modmenu)
 
     shade(libs.elementa)
@@ -54,6 +55,7 @@ tasks {
 
         relocate("gg.essential.elementa", "dev.mediamod.relocated.elementa")
         relocate("gg.essential.universal", "dev.mediamod.relocated.universal")
+        relocate("gg.essential.vigilance", "dev.mediamod.relocated.vigilance")
     }
 
     "remapJar"(RemapJarTask::class) {

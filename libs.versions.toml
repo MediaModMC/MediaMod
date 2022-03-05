@@ -8,6 +8,7 @@ elementa = "440"
 universalcraft = "185"
 modmenu = "3.1.0"
 dom4j = "2.1.1"
+vigilance = "200"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -19,3 +20,4 @@ elementa = { module = "gg.essential:elementa-1.18.1-fabric", version.ref = "elem
 universalcraft = { module = "gg.essential:universalcraft-1.18.1-fabric", version.ref = "universalcraft" }
 dom4j = { module = "org.dom4j:dom4j", version.ref = "dom4j" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
+vigilance = { module = "gg.essential:vigilance-1.18.1-fabric", version.ref = "vigilance" }
