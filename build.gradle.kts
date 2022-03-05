@@ -11,7 +11,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "dev.cbyrne"
+group = "dev.mediamod"
 version = "1.0.0"
 
 repositories {
