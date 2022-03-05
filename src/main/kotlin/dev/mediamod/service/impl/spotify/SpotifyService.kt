@@ -1,4 +1,4 @@
-package dev.mediamod.service.impl
+package dev.mediamod.service.impl.spotify
 
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
@@ -6,8 +6,8 @@ import dev.mediamod.utils.logger
 import gg.essential.vigilance.Vigilant
 import java.net.URL
 
-class TestService : Service() {
-    override val displayName = "Test Service"
+class SpotifyService : Service() {
+    override val displayName = "Spotify"
     override val hasConfiguration = true
 
     override fun pollTrack() = Track(
@@ -20,8 +20,14 @@ class TestService : Service() {
     )
 
     override fun Vigilant.CategoryPropertyBuilder.configuration() {
-        button("Test", "This is a test!", "Click me!") {
-            logger.info("Test")
+        subcategory("Authentication") {
+            button(
+                "Login",
+                "This will open a new tab in your browser to authenticate with the Spotify API.",
+                "Login"
+            ) {
+                logger.info("Test")
+            }
         }
     }
 }
