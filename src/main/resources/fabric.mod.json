@@ -20,6 +20,9 @@
                 "adapter": "kotlin",
                 "value": "dev.mediamod.MediaMod"
             }
+        ],
+        "modmenu": [
+            "dev.mediamod.modmenu.ModMenuImpl"
         ]
     },
     "mixins": [
