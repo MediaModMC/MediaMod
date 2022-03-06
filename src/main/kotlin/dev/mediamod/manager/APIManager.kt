@@ -15,12 +15,12 @@ class APIManager {
     fun exchangeCode(code: String) =
         Fuel.post("$baseURL/api/v1/spotify/auth")
             .jsonBody(json.encodeToString(mapOf("code" to code)))
-            .responseObject<APIResponse>()
+            .responseObject<APIResponse>(json)
             .third
 
     fun refreshAccessToken(refreshToken: String) =
         Fuel.post("$baseURL/api/v1/spotify/refresh")
             .jsonBody(json.encodeToString(mapOf("refresh_token" to refreshToken)))
-            .responseObject<APIResponse>()
+            .responseObject<APIResponse>(json)
             .third
 }

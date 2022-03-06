@@ -29,7 +29,8 @@ data class Actions(
 
 @Serializable
 data class Disallows(
-    val resuming: Boolean
+    val resuming: Boolean? = null,
+    val pausing: Boolean? = null
 )
 
 @Serializable
