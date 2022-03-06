@@ -37,12 +37,19 @@ dependencies {
     modImplementation(libs.vigilance)
     modImplementation(libs.modmenu)
 
+    implementation(libs.fuel)
+    implementation(libs.fuel.kotlinxserialization)
+    implementation(libs.result)
+
     shade(libs.elementa)
     shade(libs.universalcraft) // Dependency of Elementa
     shade(libs.dom4j) // Dependency of Elementa
     shade(libs.vigilance)
     shade(libs.nightconfig.core) // Dependency of Vigilance
     shade(libs.nightconfig.toml) // Dependency of Vigilance
+    shade(libs.fuel)
+    shade(libs.fuel.kotlinxserialization)
+    shade(libs.result)
 }
 
 tasks {
