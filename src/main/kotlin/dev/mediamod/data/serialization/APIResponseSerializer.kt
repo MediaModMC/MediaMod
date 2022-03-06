@@ -1,8 +1,8 @@
 package dev.mediamod.data.serialization
 
-import dev.mediamod.data.api.APIResponse
-import dev.mediamod.data.api.ErrorResponse
-import dev.mediamod.data.api.SpotifyTokenResponse
+import dev.mediamod.data.api.mediamod.APIResponse
+import dev.mediamod.data.api.mediamod.ErrorResponse
+import dev.mediamod.data.api.mediamod.SpotifyTokenResponse
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.*
 

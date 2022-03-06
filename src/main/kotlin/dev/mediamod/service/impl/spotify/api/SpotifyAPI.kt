@@ -1,11 +1,13 @@
 package dev.mediamod.service.impl.spotify.api
 
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.serialization.responseObject
+import com.github.kittinunf.result.Result
 import dev.mediamod.config.Configuration
-import dev.mediamod.data.Track
+import dev.mediamod.data.api.spotify.SpotifyAPIResponse
 import dev.mediamod.data.api.spotify.SpotifyCurrentTrackResponse
-import dev.mediamod.utils.get
-import dev.mediamod.utils.json
-import kotlinx.serialization.decodeFromString
+import dev.mediamod.utils.logger
 import org.apache.http.client.utils.URIBuilder
 import java.net.URL
 
@@ -29,27 +31,27 @@ class SpotifyAPI(
             addParameter("state", state)
         }.build().toURL()
 
-    fun getCurrentTrack(): Track? {
-        // TODO: Check if refresh token is out of date
+    fun getCurrentTrack(): SpotifyCurrentTrackResponse? {
         val accessToken = Configuration.spotifyAccessToken
-        val result = get(
-            "https://$apiBaseURL/me/player/currently-playing",
-            mapOf("Authorization" to "Bearer $accessToken")
-        )
 
-        // TODO: Error handling
-        return try {
-            val response: SpotifyCurrentTrackResponse = json.decodeFromString(result)
-            Track(
-                name = response.item.name,
-                artist = response.item.artists.first().name,
-                artwork = URL(response.item.album.images.first().url),
-                elapsed = response.progressMs,
-                duration = response.item.durationMS,
-                paused = !response.isPlaying
-            )
-        } catch (e: Error) {
-            null
+        val (_, response, result) = Fuel
+            .get("https://$apiBaseURL/me/player/currently-playing")
+            .authentication()
+            .bearer(accessToken)
+            .responseObject<SpotifyAPIResponse>()
+
+        return when (result) {
+            is Result.Success -> {
+                result.get() as SpotifyCurrentTrackResponse
+            }
+            is Result.Failure -> {
+                if (response.statusCode == 400) {
+                    // TODO: Let's try refreshing our access token
+                } else {
+                    logger.error("Error occurred when getting the current track: ", result.error.message)
+                }
+                null
+            }
         }
     }
 }

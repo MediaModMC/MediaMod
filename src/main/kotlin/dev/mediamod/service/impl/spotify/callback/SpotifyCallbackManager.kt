@@ -1,16 +1,18 @@
 package dev.mediamod.service.impl.spotify.callback
 
+import com.github.kittinunf.fuel.core.FuelError
+import com.github.kittinunf.result.Result
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpServer
 import dev.mediamod.MediaMod
-import dev.mediamod.data.api.SpotifyTokenResponse
+import dev.mediamod.data.api.mediamod.APIResponse
 import dev.mediamod.utils.logger
 import java.net.InetSocketAddress
 import kotlin.concurrent.thread
 
 class SpotifyCallbackManager {
-    private val callbackResultListeners = mutableSetOf<(Result<SpotifyTokenResponse>.() -> Unit)>()
+    private val callbackResultListeners = mutableSetOf<(Result<APIResponse, FuelError>.() -> Unit)>()
 
     fun init() {
         try {
@@ -24,7 +26,7 @@ class SpotifyCallbackManager {
         }
     }
 
-    fun onCallback(callback: Result<SpotifyTokenResponse>.() -> Unit) =
+    fun onCallback(callback: Result<APIResponse, FuelError>.() -> Unit) =
         callbackResultListeners.add(callback)
 
     class CallbackRoute(private val manager: SpotifyCallbackManager) : HttpHandler {
@@ -36,7 +38,6 @@ class SpotifyCallbackManager {
                     left to right
                 }
 
-            // TODO: Error handling
             val code = params["code"] ?: return exchange.sendResponse("Invalid oauth code!")
 
             thread(true) {

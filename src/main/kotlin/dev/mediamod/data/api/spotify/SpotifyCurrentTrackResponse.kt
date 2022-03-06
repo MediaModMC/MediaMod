@@ -1,10 +1,10 @@
 package dev.mediamod.data.api.spotify
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-data class SpotifyCurrentTrackResponse (
+data class SpotifyCurrentTrackResponse(
     val timestamp: Long,
     val context: Context,
 
@@ -20,20 +20,20 @@ data class SpotifyCurrentTrackResponse (
 
     @SerialName("is_playing")
     val isPlaying: Boolean
-)
+) : SpotifyAPIResponse()
 
 @Serializable
-data class Actions (
+data class Actions(
     val disallows: Disallows
 )
 
 @Serializable
-data class Disallows (
+data class Disallows(
     val resuming: Boolean
 )
 
 @Serializable
-data class Context (
+data class Context(
     @SerialName("external_urls")
     val externalUrls: ExternalUrls,
 
@@ -43,12 +43,12 @@ data class Context (
 )
 
 @Serializable
-data class ExternalUrls (
+data class ExternalUrls(
     val spotify: String
 )
 
 @Serializable
-data class Item (
+data class Item(
     val album: Album,
     val artists: List<Artist>,
 
@@ -89,7 +89,7 @@ data class Item (
 )
 
 @Serializable
-data class Album (
+data class Album(
     @SerialName("album_type")
     val albumType: String,
 
@@ -120,7 +120,7 @@ data class Album (
 )
 
 @Serializable
-data class Artist (
+data class Artist(
     @SerialName("external_urls")
     val externalUrls: ExternalUrls,
 
@@ -132,13 +132,13 @@ data class Artist (
 )
 
 @Serializable
-data class Image (
+data class Image(
     val height: Long,
     val url: String,
     val width: Long
 )
 
 @Serializable
-data class ExternalIDS (
+data class ExternalIDS(
     val isrc: String
 )

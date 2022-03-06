@@ -1,13 +1,17 @@
 package dev.mediamod.service.impl.spotify
 
+import com.github.kittinunf.result.Result
 import dev.mediamod.config.Configuration
-import dev.mediamod.data.api.SpotifyTokenResponse
+import dev.mediamod.data.Track
+import dev.mediamod.data.api.mediamod.ErrorResponse
+import dev.mediamod.data.api.mediamod.SpotifyTokenResponse
 import dev.mediamod.service.Service
 import dev.mediamod.service.impl.spotify.api.SpotifyAPI
 import dev.mediamod.service.impl.spotify.callback.SpotifyCallbackManager
 import dev.mediamod.utils.logger
 import dev.mediamod.utils.spotifyClientID
 import gg.essential.vigilance.Vigilant
+import java.net.URL
 import java.util.*
 
 class SpotifyService : Service() {
@@ -20,21 +24,38 @@ class SpotifyService : Service() {
     override fun init() {
         callbackManager.init()
         callbackManager.onCallback {
-            onSuccess(::login)
-            onFailure {
-                // TODO: Error handling
-                logger.error("Failed to login to Spotify: ", it)
+            when (this) {
+                is Result.Success -> when (val value = this.get()) {
+                    is SpotifyTokenResponse -> login(value)
+                    is ErrorResponse -> loginError(value.message)
+                }
+                is Result.Failure -> loginError(error.message ?: error.response.responseMessage)
             }
         }
     }
 
-    private fun login(response: SpotifyTokenResponse) {
-        logger.info("Successfully logged in to Spotify!")
-        Configuration.spotifyAccessToken = response.accessToken
-        Configuration.spotifyRefreshToken = response.refreshToken
+    private fun loginError(error: String) {
+        logger.error("Failed to log in to spotify: ", error)
     }
 
-    override fun pollTrack() = api.getCurrentTrack()
+    private fun login(response: SpotifyTokenResponse) {
+        Configuration.spotifyAccessToken = response.accessToken
+        response.refreshToken?.let { Configuration.spotifyRefreshToken = it }
+
+        logger.info("Successfully logged in to Spotify!")
+    }
+
+    override fun pollTrack(): Track? {
+        val response = api.getCurrentTrack() ?: return null
+        return Track(
+            name = response.item.name,
+            artist = response.item.artists.first().name,
+            artwork = URL(response.item.album.images.first().url),
+            elapsed = response.progressMs,
+            duration = response.item.durationMS,
+            paused = !response.isPlaying
+        )
+    }
 
     override fun Vigilant.CategoryPropertyBuilder.configuration() {
         subcategory("Authentication") {

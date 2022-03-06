@@ -1,4 +1,4 @@
-package dev.mediamod.data.api
+package dev.mediamod.data.api.mediamod
 
 import dev.mediamod.data.serialization.APIResponseSerializer
 import kotlinx.serialization.SerialName
@@ -12,7 +12,7 @@ data class SpotifyTokenResponse(
     @SerialName("access_token")
     val accessToken: String,
     @SerialName("refresh_token")
-    val refreshToken: String,
+    val refreshToken: String? = null,
     @SerialName("token_type")
     val tokenType: String,
     @SerialName("expires_in")
