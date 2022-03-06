@@ -17,4 +17,10 @@ class APIManager {
             .jsonBody(json.encodeToString(mapOf("code" to code)))
             .responseObject<APIResponse>()
             .third
+
+    fun refreshAccessToken(refreshToken: String) =
+        Fuel.post("$baseURL/api/v1/spotify/refresh")
+            .jsonBody(json.encodeToString(mapOf("refresh_token" to refreshToken)))
+            .responseObject<APIResponse>()
+            .third
 }

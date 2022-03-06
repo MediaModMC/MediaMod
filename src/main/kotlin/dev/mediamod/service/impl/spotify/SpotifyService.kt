@@ -40,7 +40,7 @@ class SpotifyService : Service() {
 
     private fun login(response: SpotifyTokenResponse) {
         Configuration.spotifyAccessToken = response.accessToken
-        response.refreshToken?.let { Configuration.spotifyRefreshToken = it }
+        Configuration.spotifyRefreshToken = response.refreshToken
 
         logger.info("Successfully logged in to Spotify!")
     }

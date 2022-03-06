@@ -1,10 +1,14 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package dev.mediamod.service.impl.spotify.api
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.serialization.responseObject
 import com.github.kittinunf.result.Result
+import dev.mediamod.MediaMod
 import dev.mediamod.config.Configuration
+import dev.mediamod.data.api.mediamod.SpotifyTokenResponse
 import dev.mediamod.data.api.spotify.SpotifyAPIResponse
 import dev.mediamod.data.api.spotify.SpotifyCurrentTrackResponse
 import dev.mediamod.utils.logger
@@ -45,13 +49,27 @@ class SpotifyAPI(
                 result.get() as SpotifyCurrentTrackResponse
             }
             is Result.Failure -> {
-                if (response.statusCode == 400) {
-                    // TODO: Let's try refreshing our access token
+                if (response.statusCode == 401) {
+                    refreshAccessToken(Configuration.spotifyRefreshToken)
                 } else {
-                    logger.error("Error occurred when getting the current track: ", result.error.message)
+                    logger.error("Error occurred when getting the current track: ", result.error)
                 }
                 null
             }
         }
     }
+
+    fun refreshAccessToken(refreshToken: String) =
+        when (val result = MediaMod.apiManager.refreshAccessToken(refreshToken)) {
+            is Result.Success -> {
+                val response = result.get() as SpotifyTokenResponse
+                Configuration.spotifyAccessToken = response.accessToken
+                Configuration.spotifyRefreshToken = response.refreshToken
+
+                logger.info("Successfully refreshed access token!")
+            }
+            is Result.Failure -> {
+                logger.error("Error occurred when refreshing access token: ", result.error.message)
+            }
+        }
 }
