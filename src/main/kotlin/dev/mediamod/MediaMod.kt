@@ -1,5 +1,6 @@
 package dev.mediamod
 
+import dev.mediamod.manager.APIManager
 import dev.mediamod.manager.RenderManager
 import dev.mediamod.manager.ServiceManager
 import dev.mediamod.manager.ThemeManager
@@ -11,6 +12,7 @@ import java.io.File
 object MediaMod : ModInitializer {
     val dataDirectory = File(MinecraftClient.getInstance().runDirectory, "mediamod")
 
+    val apiManager = APIManager()
     val serviceManager = ServiceManager()
     val renderManager = RenderManager()
     val themeManager = ThemeManager()
