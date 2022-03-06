@@ -23,7 +23,9 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
     init {
         trackState.onSetValue {
             it?.let {
-                progressBlock.setWidth((it.elapsed / it.duration).percent())
+                val progress = (it.elapsed / it.duration.toFloat())
+                progressBlock.setWidth((progress * 100).percent())
+                lastUpdate = System.currentTimeMillis()
             } ?: run {
                 progressBlock.setWidth(0.pixels())
             }
@@ -34,7 +36,6 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
 
     fun update(track: Track) {
         trackState.set(track)
-        lastUpdate = System.currentTimeMillis()
     }
 
     override fun draw(matrixStack: UMatrixStack) {
