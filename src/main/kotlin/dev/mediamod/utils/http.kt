@@ -18,3 +18,15 @@ fun post(url: String, body: Map<String, String>): String {
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
     return response.body()
 }
+
+fun get(url: String, headers: Map<String, String>): String {
+    val request = HttpRequest.newBuilder()
+        .uri(URI.create(url))
+        .header("Accept", "application/json")
+        .header("Content-Type", "application/json")
+
+    headers.forEach(request::setHeader)
+
+    val response = client.send(request.build(), HttpResponse.BodyHandlers.ofString())
+    return response.body()
+}

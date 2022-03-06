@@ -1,7 +1,6 @@
 package dev.mediamod.service.impl.spotify
 
 import dev.mediamod.config.Configuration
-import dev.mediamod.data.Track
 import dev.mediamod.data.api.SpotifyTokenResponse
 import dev.mediamod.service.Service
 import dev.mediamod.service.impl.spotify.api.SpotifyAPI
@@ -9,7 +8,6 @@ import dev.mediamod.service.impl.spotify.callback.SpotifyCallbackManager
 import dev.mediamod.utils.logger
 import dev.mediamod.utils.spotifyClientID
 import gg.essential.vigilance.Vigilant
-import java.net.URL
 import java.util.*
 
 class SpotifyService : Service() {
@@ -36,14 +34,7 @@ class SpotifyService : Service() {
         Configuration.spotifyRefreshToken = response.refreshToken
     }
 
-    override fun pollTrack() = Track(
-        "daisy",
-        "still_bloom",
-        URL("https://lite-images-i.scdn.co/image/ab67616d0000b273bc10f89a8eb0fc4262848992"),
-        0,
-        30000,
-        false
-    )
+    override fun pollTrack() = api.getCurrentTrack()
 
     override fun Vigilant.CategoryPropertyBuilder.configuration() {
         subcategory("Authentication") {
@@ -53,7 +44,7 @@ class SpotifyService : Service() {
                 buttonText = "Login"
             ) {
                 val url = api.generateAuthorizationURL(
-                    scopes = "user-read-private user-read-email",
+                    scopes = "user-read-currently-playing user-read-playback-position",
                     redirectURI = "http://localhost:9103/callback",
                     state = UUID.randomUUID().toString()
                 )
