@@ -1,7 +1,6 @@
 package dev.mediamod.ui
 
 import dev.mediamod.MediaMod
-import dev.mediamod.data.Track
 import dev.mediamod.theme.Theme
 import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.components.UIBlock
@@ -11,11 +10,13 @@ import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.universal.UMatrixStack
 import java.lang.Float.min
-import java.time.Duration
-
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.progressBarBackground) {
-    private val trackState = BasicState<Track?>(null)
+    private val elapsedTextState = BasicState("0:00")
+    private val durationTextState = BasicState("0:00")
+
     private var lastUpdate = 0L
 
     private val progressBlock = UIBlock(MediaMod.themeManager.currentTheme.colors.progressBar)
@@ -41,12 +42,12 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
         } childOf this
 
     init {
-        trackState.onSetValue {
-            it?.let {
-                val progress = (it.elapsed / it.duration.toFloat())
-                progressBlock.setWidth((progress * 100).percent())
-                setProgressText(it.elapsed, it.duration)
+        elapsedText.bindText(elapsedTextState)
+        durationText.bindText(durationTextState)
 
+        MediaMod.serviceManager.currentTrack.onSetValue {
+            it?.let {
+                updateProgress(it.elapsed, it.duration)
                 lastUpdate = System.currentTimeMillis()
             } ?: progressBlock.setWidth(0.pixels())
         }
@@ -54,19 +55,12 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
         MediaMod.themeManager.onChange(this::updateTheme)
     }
 
-    fun update(track: Track) {
-        trackState.set(track)
-    }
-
     override fun draw(matrixStack: UMatrixStack) {
-        trackState.get()?.let {
+        MediaMod.serviceManager.currentTrack.get()?.let {
             if (lastUpdate != 0L && !it.paused) {
                 val change = System.currentTimeMillis() - lastUpdate
                 val elapsed = it.elapsed + change
-                val progress = min(elapsed / it.duration.toFloat(), 1f)
-
-                setProgressText(elapsed, it.duration)
-                progressBlock.setWidth((progress * 100).percent())
+                updateProgress(elapsed, it.duration)
             }
         }
 
@@ -80,10 +74,18 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
         durationText.setColorAnimated(theme.colors.background.constraint)
     }
 
-    private fun setProgressText(elapsed: Long, duration: Long) {
-        val parsedElapsed = Duration.ofMillis(elapsed)
-        val parsedDuration = Duration.ofMillis(duration)
-        elapsedText.setText(String.format("%d:%02d", parsedElapsed.toMinutes() % 60, parsedElapsed.seconds % 60))
-        durationText.setText(String.format("%d:%02d", parsedDuration.toMinutes() % 60, parsedDuration.seconds % 60))
+    private fun updateProgress(elapsed: Long, duration: Long) {
+        val progress = min(elapsed / duration.toFloat(), 1f)
+        progressBlock.setWidth((progress * 100).percent())
+
+        updateProgressText(elapsed, duration)
     }
+
+    private fun updateProgressText(elapsed: Long, duration: Long) {
+        elapsedTextState.set(elapsed.milliseconds.format("%02d:%02d"))
+        durationTextState.set(duration.milliseconds.format("%02d:%02d"))
+    }
+
+    private fun Duration.format(format: String) =
+        toComponents { minutes, seconds, _ -> String.format(format, minutes, seconds) }
 }

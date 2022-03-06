@@ -3,12 +3,12 @@ package dev.mediamod.manager
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
 import dev.mediamod.service.impl.spotify.SpotifyService
-import net.minecraft.client.MinecraftClient
+import gg.essential.elementa.state.BasicState
 import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.thread
 
 class ServiceManager {
-    private val listeners = mutableSetOf<Track.() -> Unit>()
+    val currentTrack = BasicState<Track?>(null)
     val services = mutableSetOf<Service>()
 
     fun init() {
@@ -19,19 +19,11 @@ class ServiceManager {
                 services
                     .firstNotNullOfOrNull { it.pollTrack() }
                     ?.let {
-                        emit(it)
+                        currentTrack.set(it)
                     }
             }
         }
     }
-
-    fun onTrack(callback: Track.() -> Unit) =
-        listeners.add(callback)
-
-    private fun emit(track: Track) =
-        listeners.forEach {
-            MinecraftClient.getInstance().execute { it(track) }
-        }
 
     private fun addService(service: Service) {
         services.add(service)
