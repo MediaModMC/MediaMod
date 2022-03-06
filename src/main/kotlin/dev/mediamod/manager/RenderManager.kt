@@ -1,7 +1,5 @@
 package dev.mediamod.manager
 
-import dev.mediamod.MediaMod
-import dev.mediamod.theme.impl.DefaultTheme
 import dev.mediamod.ui.PlayerComponent
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.components.Window
@@ -37,15 +35,6 @@ class RenderManager {
             )
         )
 
-        val themeKey = KeyBindingHelper.registerKeyBinding(
-            KeyBinding(
-                "theme",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_SEMICOLON,
-                KeyBinding.UI_CATEGORY
-            )
-        )
-
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
             while (testKey.wasPressed()) {
                 window.children.remove(playerComponent)
@@ -53,18 +42,6 @@ class RenderManager {
                 window.addChild(playerComponent)
 
                 it.player?.sendMessage(LiteralText("Reloaded player component"), false)
-            }
-
-            while (themeKey.wasPressed()) {
-                val previous = MediaMod.themeManager.currentTheme
-                MediaMod.themeManager.currentTheme =
-                    if (previous == MediaMod.themeManager.loadedThemes.first()) {
-                        DefaultTheme()
-                    } else {
-                        MediaMod.themeManager.loadedThemes.first()
-                    }
-
-                it.player?.sendMessage(LiteralText("Changed theme to ${MediaMod.themeManager.currentTheme.name}!"), false)
             }
         })
     }
