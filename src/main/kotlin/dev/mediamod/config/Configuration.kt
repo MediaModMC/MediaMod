@@ -21,6 +21,9 @@ object Configuration : Vigilant(File("./config/mediamod.toml")) {
             manager.emitUpdate()
         }
 
+    var spotifyAccessToken = ""
+    var spotifyRefreshToken = ""
+
     init {
         category("General") {
             subcategory("Appearance") {

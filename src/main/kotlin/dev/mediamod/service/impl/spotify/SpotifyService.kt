@@ -1,9 +1,12 @@
 package dev.mediamod.service.impl.spotify
 
+import dev.mediamod.config.Configuration
 import dev.mediamod.data.Track
+import dev.mediamod.data.api.SpotifyTokenResponse
 import dev.mediamod.service.Service
 import dev.mediamod.service.impl.spotify.api.SpotifyAPI
 import dev.mediamod.service.impl.spotify.callback.SpotifyCallbackManager
+import dev.mediamod.utils.logger
 import dev.mediamod.utils.spotifyClientID
 import gg.essential.vigilance.Vigilant
 import java.net.URL
@@ -16,7 +19,22 @@ class SpotifyService : Service() {
     override val displayName = "Spotify"
     override val hasConfiguration = true
 
-    override fun init() = callbackManager.init()
+    override fun init() {
+        callbackManager.init()
+        callbackManager.onCallback {
+            onSuccess(::login)
+            onFailure {
+                // TODO: Error handling
+                logger.error("Failed to login to Spotify: ", it)
+            }
+        }
+    }
+
+    private fun login(response: SpotifyTokenResponse) {
+        logger.info("Successfully logged in to Spotify!")
+        Configuration.spotifyAccessToken = response.accessToken
+        Configuration.spotifyRefreshToken = response.refreshToken
+    }
 
     override fun pollTrack() = Track(
         "daisy",
@@ -30,11 +48,10 @@ class SpotifyService : Service() {
     override fun Vigilant.CategoryPropertyBuilder.configuration() {
         subcategory("Authentication") {
             button(
-                "Login",
-                "This will open a new tab in your browser to authenticate with the Spotify API.",
-                "Login"
+                name = "Login",
+                description = "This will open a new tab in your browser to authenticate with the Spotify API.",
+                buttonText = "Login"
             ) {
-                // TODO: Replace with UDesktop when PR #14 is merged
                 val url = api.generateAuthorizationURL(
                     scopes = "user-read-private user-read-email",
                     redirectURI = "http://localhost:9103/callback",
@@ -43,6 +60,18 @@ class SpotifyService : Service() {
                 val args = arrayOf("bash", "-c", "open \"$url\"")
                 Runtime.getRuntime().exec(args)
             }
+
+            text(
+                field = Configuration::spotifyAccessToken,
+                name = "accessToken",
+                hidden = true
+            )
+
+            text(
+                field = Configuration::spotifyRefreshToken,
+                name = "refreshToken",
+                hidden = true
+            )
         }
     }
 }

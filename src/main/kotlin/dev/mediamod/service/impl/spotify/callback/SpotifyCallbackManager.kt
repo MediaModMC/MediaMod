@@ -4,15 +4,18 @@ import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpServer
 import dev.mediamod.MediaMod
+import dev.mediamod.data.api.SpotifyTokenResponse
 import dev.mediamod.utils.logger
 import java.net.InetSocketAddress
 import kotlin.concurrent.thread
 
 class SpotifyCallbackManager {
+    private val callbackResultListeners = mutableSetOf<(Result<SpotifyTokenResponse>.() -> Unit)>()
+
     fun init() {
         try {
             val server = HttpServer.create(InetSocketAddress("localhost", 9103), 0)
-            server.createContext("/callback", CallbackRoute())
+            server.createContext("/callback", CallbackRoute(this))
             server.start()
 
             logger.info("Spotify callback server started on localhost:9103!")
@@ -21,7 +24,10 @@ class SpotifyCallbackManager {
         }
     }
 
-    class CallbackRoute : HttpHandler {
+    fun onCallback(callback: Result<SpotifyTokenResponse>.() -> Unit) =
+        callbackResultListeners.add(callback)
+
+    class CallbackRoute(private val manager: SpotifyCallbackManager) : HttpHandler {
         override fun handle(exchange: HttpExchange) {
             val params = exchange.requestURI.query
                 .split("&")
@@ -35,12 +41,7 @@ class SpotifyCallbackManager {
 
             thread(true) {
                 val result = MediaMod.apiManager.exchangeCode(code)
-                result.onSuccess {
-                    logger.info(it)
-                }
-                result.onFailure {
-                    logger.error(it.message)
-                }
+                manager.callbackResultListeners.forEach { it.invoke(result) }
             }
 
             exchange.sendResponse("You can close this window and return to Minecraft.")
