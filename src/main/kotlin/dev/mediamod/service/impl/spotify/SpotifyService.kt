@@ -2,11 +2,15 @@ package dev.mediamod.service.impl.spotify
 
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
-import dev.mediamod.utils.logger
+import dev.mediamod.service.impl.spotify.api.SpotifyAPI
+import dev.mediamod.utils.spotifyClientID
 import gg.essential.vigilance.Vigilant
 import java.net.URL
+import java.util.*
 
 class SpotifyService : Service() {
+    private val api = SpotifyAPI(spotifyClientID)
+
     override val displayName = "Spotify"
     override val hasConfiguration = true
 
@@ -26,7 +30,14 @@ class SpotifyService : Service() {
                 "This will open a new tab in your browser to authenticate with the Spotify API.",
                 "Login"
             ) {
-                logger.info("Test")
+                // TODO: Replace with UDesktop when PR #14 is merged
+                val url = api.generateAuthorizationURL(
+                    scopes = "user-read-private user-read-email",
+                    redirectURI = "http://localhost:9103/callback",
+                    state = UUID.randomUUID().toString()
+                )
+                val args = arrayOf("bash", "-c", "open \"$url\"")
+                Runtime.getRuntime().exec(args)
             }
         }
     }
