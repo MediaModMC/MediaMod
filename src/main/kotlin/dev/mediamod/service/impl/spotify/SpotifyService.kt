@@ -3,6 +3,7 @@ package dev.mediamod.service.impl.spotify
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
 import dev.mediamod.service.impl.spotify.api.SpotifyAPI
+import dev.mediamod.service.impl.spotify.callback.SpotifyCallbackManager
 import dev.mediamod.utils.spotifyClientID
 import gg.essential.vigilance.Vigilant
 import java.net.URL
@@ -10,9 +11,12 @@ import java.util.*
 
 class SpotifyService : Service() {
     private val api = SpotifyAPI(spotifyClientID)
+    private val callbackManager = SpotifyCallbackManager()
 
     override val displayName = "Spotify"
     override val hasConfiguration = true
+
+    override fun init() = callbackManager.init()
 
     override fun pollTrack() = Track(
         "daisy",
