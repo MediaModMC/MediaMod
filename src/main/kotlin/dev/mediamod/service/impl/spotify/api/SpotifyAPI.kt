@@ -4,15 +4,14 @@ package dev.mediamod.service.impl.spotify.api
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.authentication
-import com.github.kittinunf.fuel.serialization.responseObject
 import com.github.kittinunf.result.Result
 import dev.mediamod.MediaMod
 import dev.mediamod.config.Configuration
 import dev.mediamod.data.api.mediamod.SpotifyTokenResponse
-import dev.mediamod.data.api.spotify.SpotifyAPIResponse
 import dev.mediamod.data.api.spotify.SpotifyCurrentTrackResponse
 import dev.mediamod.utils.json
 import dev.mediamod.utils.logger
+import kotlinx.serialization.decodeFromString
 import org.apache.http.client.utils.URIBuilder
 import java.net.URL
 
@@ -43,11 +42,14 @@ class SpotifyAPI(
             .get("https://$apiBaseURL/me/player/currently-playing")
             .authentication()
             .bearer(accessToken)
-            .responseObject<SpotifyAPIResponse>(json)
+            .responseString()
 
         return when (result) {
             is Result.Success -> {
-                result.get() as SpotifyCurrentTrackResponse
+                if (response.statusCode == 204)
+                    return null
+
+                return json.decodeFromString(result.get())
             }
             is Result.Failure -> {
                 if (response.statusCode == 401) {
