@@ -36,7 +36,6 @@ class ThemeManager {
             logger.info("Loaded theme: ${theme.name} from ${it.path}")
 
             loadedThemes.add(theme)
-            currentTheme = theme
         }
     }
 
