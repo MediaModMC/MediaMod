@@ -20,8 +20,8 @@ object MediaMod : ModInitializer {
     override fun onInitialize() {
         logger.info("MediaMod has started!")
 
+        themeManager.init()
         renderManager.init()
         serviceManager.init()
-        themeManager.init()
     }
 }
