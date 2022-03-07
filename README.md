@@ -2,9 +2,17 @@
 
 View your current song in Minecraft with support for services like Spotify, YouTube, SoundCloud & more.
 
-MediaMod is for Fabric 1.18.1.
-
 **More documentation & an actual README coming soon**
+
+### Supported Versions
+
+**Fabric:**
+- 1.18.x
+
+**Forge:**
+- ~~1.18.x~~ (planned)
+- 1.12.2
+- 1.8.9
 
 ## License
 
