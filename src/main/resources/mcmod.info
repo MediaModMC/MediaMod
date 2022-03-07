@@ -1,0 +1,18 @@
+[
+    {
+        "modid": "mediamod",
+        "name": "MediaMod",
+        "description": "View your current song inside of Minecraft!",
+        "version": "${version}",
+        "mcversion": "${mcversion}",
+        "url": "",
+        "updateUrl": "",
+        "authorList": [
+            "Conor Byrne"
+        ],
+        "credits": "",
+        "logoFile": "",
+        "screenshots": [],
+        "dependencies": []
+    }
+]

@@ -9,9 +9,8 @@ import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.universal.UMatrixStack
+import org.apache.commons.lang3.time.DurationFormatUtils
 import java.lang.Float.min
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.progressBarBackground) {
     private val elapsedTextState = BasicState("0:00")
@@ -82,10 +81,7 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
     }
 
     private fun updateProgressText(elapsed: Long, duration: Long) {
-        elapsedTextState.set(elapsed.milliseconds.format("%02d:%02d"))
-        durationTextState.set(duration.milliseconds.format("%02d:%02d"))
+        elapsedTextState.set(DurationFormatUtils.formatDuration(elapsed, "mm:ss"))
+        durationTextState.set(DurationFormatUtils.formatDuration(duration, "mm:ss"))
     }
-
-    private fun Duration.format(format: String) =
-        toComponents { minutes, seconds, _ -> String.format(format, minutes, seconds) }
 }

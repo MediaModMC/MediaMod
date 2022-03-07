@@ -13,7 +13,7 @@ import dev.mediamod.utils.json
 import dev.mediamod.utils.logger
 import kotlinx.serialization.decodeFromString
 import org.apache.http.client.utils.URIBuilder
-import java.net.URL
+import java.net.URI
 
 class SpotifyAPI(
     private val clientID: String
@@ -23,7 +23,7 @@ class SpotifyAPI(
         private const val apiBaseURL = "api.spotify.com/v1"
     }
 
-    fun generateAuthorizationURL(scopes: String, redirectURI: String, state: String): URL =
+    fun generateAuthorizationURI(scopes: String, redirectURI: String, state: String): URI =
         URIBuilder().apply {
             scheme = "https"
             host = authBaseURL
@@ -33,7 +33,7 @@ class SpotifyAPI(
             addParameter("scope", scopes)
             addParameter("redirect_uri", redirectURI)
             addParameter("state", state)
-        }.build().toURL()
+        }.build()
 
     fun getCurrentTrack(): SpotifyCurrentTrackResponse? {
         val accessToken = Configuration.spotifyAccessToken

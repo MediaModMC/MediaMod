@@ -18,7 +18,7 @@
         "main": [
             {
                 "adapter": "kotlin",
-                "value": "dev.mediamod.MediaMod"
+                "value": "dev.mediamod.MediaMod::init"
             }
         ],
         "modmenu": [
@@ -26,10 +26,10 @@
         ]
     },
     "mixins": [
+        "mediamod.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.12.12",
-        "fabric": "*",
         "minecraft": "1.18.x",
         "java": ">=17",
         "fabric-language-kotlin": ">=1.7.1+kotlin.1.6.10"

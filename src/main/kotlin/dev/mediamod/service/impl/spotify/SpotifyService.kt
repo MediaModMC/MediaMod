@@ -10,6 +10,7 @@ import dev.mediamod.service.impl.spotify.api.SpotifyAPI
 import dev.mediamod.service.impl.spotify.callback.SpotifyCallbackManager
 import dev.mediamod.utils.logger
 import dev.mediamod.utils.spotifyClientID
+import gg.essential.universal.UDesktop
 import gg.essential.vigilance.Vigilant
 import java.net.URL
 import java.util.*
@@ -64,13 +65,13 @@ class SpotifyService : Service() {
                 description = "This will open a new tab in your browser to authenticate with the Spotify API.",
                 buttonText = "Login"
             ) {
-                val url = api.generateAuthorizationURL(
+                val uri = api.generateAuthorizationURI(
                     scopes = "user-read-currently-playing user-read-playback-position",
                     redirectURI = "http://localhost:9103/callback",
                     state = UUID.randomUUID().toString()
                 )
-                val args = arrayOf("bash", "-c", "open \"$url\"")
-                Runtime.getRuntime().exec(args)
+
+                UDesktop.browse(uri)
             }
 
             text(
