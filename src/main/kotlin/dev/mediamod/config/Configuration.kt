@@ -18,7 +18,7 @@ object Configuration : Vigilant(File("./config/mediamod.toml")) {
 
             val manager = MediaMod.themeManager
             manager.currentTheme = manager.loadedThemes.firstOrNull { it.name == value } ?: manager.loadedThemes.first()
-            manager.emitUpdate()
+            manager.emitChange()
         }
 
     var spotifyAccessToken = ""

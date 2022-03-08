@@ -2,6 +2,7 @@ package dev.mediamod.ui
 
 import dev.mediamod.MediaMod
 import dev.mediamod.data.Track
+import dev.mediamod.theme.Theme
 import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
@@ -75,17 +76,21 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
         }
 
         MediaMod.themeManager.onChange {
-            setColorAnimated(colors.background.constraint)
-            trackText.setColorAnimated(colors.text.constraint)
-            artistText.setColorAnimated(colors.text.darker().constraint)
+            MediaMod.serviceManager.currentTrack.get()?.let {
+                updateInformation(it, true)
+            }
+
+            updateTheme(this)
         }
+
+        MediaMod.themeManager.onUpdate(this::updateTheme)
     }
 
-    private fun updateInformation(track: Track) {
+    private fun updateInformation(track: Track, forceUpdate: Boolean = false) {
         trackNameText.set(track.name)
         artistNameText.set("by ${track.artist}")
 
-        if (previousTrack?.artwork != track.artwork) {
+        if (forceUpdate || previousTrack?.artwork != track.artwork) {
             imageContainer.removeChild(image)
 
             val future = CompletableFuture.supplyAsync {
@@ -99,4 +104,11 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
                 } childOf imageContainer
         }
     }
+
+    private fun updateTheme(theme: Theme) =
+        theme.apply {
+            setColorAnimated(colors.background.constraint)
+            trackText.setColorAnimated(colors.text.constraint)
+            artistText.setColorAnimated(colors.text.darker().constraint)
+        }
 }

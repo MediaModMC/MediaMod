@@ -51,6 +51,7 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
             } ?: progressBlock.setWidth(0.pixels())
         }
 
+        MediaMod.themeManager.onUpdate(this::updateTheme)
         MediaMod.themeManager.onChange(this::updateTheme)
     }
 
