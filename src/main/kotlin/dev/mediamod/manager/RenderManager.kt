@@ -1,6 +1,6 @@
 package dev.mediamod.manager
 
-import dev.mediamod.ui.PlayerComponent
+import dev.mediamod.hud.PlayerComponent
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.components.Window
 import gg.essential.universal.UMatrixStack

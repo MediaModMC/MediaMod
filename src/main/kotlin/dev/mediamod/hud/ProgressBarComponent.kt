@@ -1,4 +1,4 @@
-package dev.mediamod.ui
+package dev.mediamod.hud
 
 import dev.mediamod.MediaMod
 import dev.mediamod.theme.Theme
