@@ -64,7 +64,6 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
 
         MediaMod.serviceManager.currentTrack.onSetValue {
             it?.let { updateInformation(it) }
-            previousTrack = it
         }
 
         MediaMod.themeManager.onChange {
@@ -76,6 +75,7 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
         }
 
         MediaMod.themeManager.onUpdate(this::updateTheme)
+        MediaMod.serviceManager.currentTrack.get()?.let { updateInformation(it) }
     }
 
     private fun updateInformation(track: Track, forceUpdate: Boolean = false) {
@@ -95,6 +95,8 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
                     height = 100.percent()
                 } childOf imageContainer
         }
+
+        previousTrack = track
     }
 
     private fun updateTheme(theme: Theme) =

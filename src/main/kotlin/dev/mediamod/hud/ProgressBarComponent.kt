@@ -53,6 +53,11 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
 
         MediaMod.themeManager.onUpdate(this::updateTheme)
         MediaMod.themeManager.onChange(this::updateTheme)
+
+        MediaMod.serviceManager.currentTrack.get()?.let {
+            updateProgress(it.elapsed, it.duration)
+            lastUpdate = System.currentTimeMillis()
+        }
     }
 
     override fun draw(matrixStack: UMatrixStack) {
