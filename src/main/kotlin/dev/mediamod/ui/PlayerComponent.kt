@@ -3,13 +3,17 @@ package dev.mediamod.ui
 import dev.mediamod.MediaMod
 import dev.mediamod.data.Track
 import dev.mediamod.utils.setColorAnimated
-import gg.essential.elementa.components.*
+import gg.essential.elementa.components.UIBlock
+import gg.essential.elementa.components.UIContainer
+import gg.essential.elementa.components.UIImage
+import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
+import java.util.concurrent.CompletableFuture
 
 class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.background.constraint) {
     private var previousTrack: Track? = null
@@ -31,7 +35,21 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
     } childOf this
 
     private val trackNameText = BasicState("Unknown track")
+    private val trackText = UIText("Unknown track")
+        .constrain {
+            color = MediaMod.themeManager.currentTheme.colors.text.constraint
+        }
+        .childOf(textContainer)
+        .bindText(trackNameText)
+
     private val artistNameText = BasicState("Unknown artist")
+    private val artistText = UIText("Unknown artist")
+        .constrain {
+            color = MediaMod.themeManager.currentTheme.colors.text.darker().constraint
+            y = SiblingConstraint(3f)
+        }
+        .childOf(textContainer)
+        .bindText(artistNameText)
 
     private var image = UIImage.ofResource("")
 
@@ -43,21 +61,6 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
             width = 150.pixels()
             height = 50.pixels()
         }
-
-        val trackText = UIText("Unknown track")
-            .constrain {
-                color = MediaMod.themeManager.currentTheme.colors.text.constraint
-            }
-            .childOf(textContainer)
-            .bindText(trackNameText)
-
-        val artistText = UIText("Unknown artist")
-            .constrain {
-                color = MediaMod.themeManager.currentTheme.colors.text.darker().constraint
-                y = SiblingConstraint(3f)
-            }
-            .childOf(textContainer)
-            .bindText(artistNameText)
 
         ProgressBarComponent().constrain {
             y = SiblingConstraint(5f)
@@ -85,7 +88,11 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
         if (previousTrack?.artwork != track.artwork) {
             imageContainer.removeChild(image)
 
-            image = UIImage.ofURL(track.artwork)
+            val future = CompletableFuture.supplyAsync {
+                UIImage.get(track.artwork).apply(MediaMod.themeManager::updateTheme)
+            }
+
+            image = UIImage(future)
                 .constrain {
                     width = 100.percent()
                     height = 100.percent()

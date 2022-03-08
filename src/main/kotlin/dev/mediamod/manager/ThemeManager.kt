@@ -3,16 +3,18 @@ package dev.mediamod.manager
 import dev.mediamod.MediaMod
 import dev.mediamod.theme.Theme
 import dev.mediamod.theme.impl.DefaultTheme
+import dev.mediamod.theme.impl.DynamicTheme
 import dev.mediamod.utils.json
 import dev.mediamod.utils.logger
 import kotlinx.serialization.decodeFromString
+import java.awt.image.BufferedImage
 import java.io.File
 
 class ThemeManager {
     private val changeSubscribers = mutableSetOf<Theme.() -> Unit>()
     private val themesDirectory = File(MediaMod.dataDirectory, "themes")
 
-    val loadedThemes = mutableListOf<Theme>(DefaultTheme())
+    val loadedThemes = mutableListOf(DefaultTheme(), DynamicTheme())
 
     var currentTheme: Theme = loadedThemes.first()
         set(value) {
@@ -42,6 +44,12 @@ class ThemeManager {
     fun onChange(callback: Theme.() -> Unit) =
         changeSubscribers.add(callback)
 
+    // TODO: When the theme changes, we need some way to get the current image so we can update the theme
     fun emitUpdate() =
         changeSubscribers.forEach { it.invoke(currentTheme) }
+
+    fun updateTheme(image: BufferedImage) {
+        currentTheme.update(image)
+        emitUpdate()
+    }
 }

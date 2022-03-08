@@ -3,7 +3,7 @@ package dev.mediamod.theme.impl
 import dev.mediamod.theme.Theme
 import java.awt.Color
 
-class DefaultTheme(): Theme(
+class DefaultTheme : Theme(
     name = "Default",
     colors = Colors(
         background = Color.darkGray.darker(),

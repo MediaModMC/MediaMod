@@ -7,11 +7,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.awt.Color
+import java.awt.image.BufferedImage
 
 @Serializable
 open class Theme(
     val name: String,
-    val colors: Colors
+    var colors: Colors
 ) {
     @Serializable
     data class Colors(
@@ -22,4 +23,6 @@ open class Theme(
         @SerialName("progress_bar_background")
         val progressBarBackground: Color
     )
+
+    open fun update(image: BufferedImage) {}
 }
