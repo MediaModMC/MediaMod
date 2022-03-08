@@ -1,6 +1,8 @@
 package dev.mediamod.config
 
 import dev.mediamod.MediaMod
+import dev.mediamod.screen.RepositionScreen
+import gg.essential.universal.UScreen
 import gg.essential.vigilance.Vigilant
 import java.io.File
 
@@ -23,10 +25,20 @@ object Configuration : Vigilant(File("./config/mediamod.toml")) {
 
     var spotifyAccessToken = ""
     var spotifyRefreshToken = ""
+    var playerX = 5f
+    var playerY = 5f
 
     init {
         category("General") {
             subcategory("Appearance") {
+                button(
+                    "Reposition Player",
+                    "Change the position of the MediaMod Player",
+                    "Open"
+                ) {
+                    UScreen.displayScreen(RepositionScreen())
+                }
+
                 selector(
                     ::_selectedTheme,
                     "Theme",
@@ -34,6 +46,8 @@ object Configuration : Vigilant(File("./config/mediamod.toml")) {
                     MediaMod.themeManager.loadedThemes.map { it.name }
                 )
 
+                decimalSlider(::playerX, "Player X", hidden = true)
+                decimalSlider(::playerY, "Player Y", hidden = true)
                 text(::selectedTheme, "Theme Name", hidden = true)
             }
         }

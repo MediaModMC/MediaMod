@@ -55,14 +55,6 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
     private var image = UIImage.ofResource("")
 
     init {
-        constrain {
-            x = 5.pixels()
-            y = 5.pixels()
-
-            width = 150.pixels()
-            height = 50.pixels()
-        }
-
         ProgressBarComponent().constrain {
             y = SiblingConstraint(5f)
 
