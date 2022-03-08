@@ -52,7 +52,7 @@ class SpotifyAPI(
                 return json.decodeFromString(result.get())
             }
             is Result.Failure -> {
-                if (response.statusCode == 401) {
+                if (response.statusCode == 400 || response.statusCode == 401) {
                     refreshAccessToken(Configuration.spotifyRefreshToken)
                 } else {
                     logger.error("Error occurred when getting the current track: ", result.error)
@@ -72,7 +72,8 @@ class SpotifyAPI(
                 logger.info("Successfully refreshed access token!")
             }
             is Result.Failure -> {
-                logger.error("Error occurred when refreshing access token: ", result.error.message)
+                // TODO: Let's find a way to make this less spammy when the API isn't available
+                logger.error("Error occurred when refreshing access token: ", result.error)
             }
         }
 }
