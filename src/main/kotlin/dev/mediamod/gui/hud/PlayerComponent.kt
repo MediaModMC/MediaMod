@@ -1,4 +1,4 @@
-package dev.mediamod.hud
+package dev.mediamod.gui.hud
 
 import dev.mediamod.MediaMod
 import dev.mediamod.data.Track

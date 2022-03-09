@@ -1,7 +1,7 @@
-package dev.mediamod.screen
+package dev.mediamod.gui.screen
 
 import dev.mediamod.config.Configuration
-import dev.mediamod.hud.PlayerComponent
+import dev.mediamod.gui.hud.PlayerComponent
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.UIBlock
