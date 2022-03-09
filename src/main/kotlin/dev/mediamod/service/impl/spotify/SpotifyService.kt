@@ -50,7 +50,7 @@ class SpotifyService : Service() {
         val response = api.getCurrentTrack() ?: return null
         return Track(
             name = response.item.name,
-            artist = response.item.artists.first().name,
+            artist = response.item.artists.joinToString(", ") { it.name },
             artwork = URL(response.item.album.images.first().url),
             elapsed = response.progressMs,
             duration = response.item.durationMS,
