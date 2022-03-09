@@ -7,17 +7,19 @@ import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIImage
-import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
+import gg.essential.elementa.effects.ScissorEffect
 import gg.essential.elementa.state.BasicState
 import java.util.concurrent.CompletableFuture
 
 class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.background.constraint) {
     private var previousTrack: Track? = null
+    private val trackNameText = BasicState("Unknown track")
+    private val artistNameText = BasicState("Unknown artist")
 
     private val imageContainer = UIContainer().constrain {
         x = 5.pixels()
@@ -33,34 +35,29 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
 
         width = FillConstraint(false)
         height = ChildBasedSizeConstraint()
-    } childOf this
+    } childOf this effect ScissorEffect()
 
-    private val trackNameText = BasicState("Unknown track")
-    private val trackText = UIText("Unknown track")
-        .constrain {
-            color = MediaMod.themeManager.currentTheme.colors.text.constraint
-        }
+    private val trackText = RotatingTextComponent(trackNameText)
+        .color(MediaMod.themeManager.currentTheme.colors.text.constraint)
         .childOf(textContainer)
-        .bindText(trackNameText)
 
-    private val artistNameText = BasicState("Unknown artist")
-    private val artistText = UIText("Unknown artist")
+    private val artistText = RotatingTextComponent(artistNameText)
         .constrain {
-            color = MediaMod.themeManager.currentTheme.colors.text.darker().constraint
             y = SiblingConstraint(3f)
         }
+        .color(MediaMod.themeManager.currentTheme.colors.text.darker().constraint)
         .childOf(textContainer)
-        .bindText(artistNameText)
 
     private var image = UIImage.ofResource("")
 
     init {
-        ProgressBarComponent().constrain {
-            y = SiblingConstraint(5f)
+        ProgressBarComponent()
+            .constrain {
+                y = SiblingConstraint(5f)
 
-            width = 100.percent() - 5.pixels()
-            height = 8.pixels()
-        } childOf textContainer
+                width = 100.percent() - 5.pixels()
+                height = 8.pixels()
+            } childOf textContainer
 
         MediaMod.serviceManager.currentTrack.onSetValue {
             it?.let { updateInformation(it) }
@@ -102,7 +99,7 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
     private fun updateTheme(theme: Theme) =
         theme.apply {
             setColorAnimated(colors.background.constraint)
-            trackText.setColorAnimated(colors.text.constraint)
-            artistText.setColorAnimated(colors.text.darker().constraint)
+            trackText.changeColorAnimated(colors.text.constraint)
+            artistText.changeColorAnimated(colors.text.darker().constraint)
         }
 }
