@@ -29,7 +29,7 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
             x = 2.pixels()
             y = CenterConstraint()
             textScale = 0.7f.pixels()
-            color = MediaMod.themeManager.currentTheme.colors.background.constraint
+            color = MediaMod.themeManager.currentTheme.colors.progressBarText.constraint
         } childOf this
 
     private val durationText = UIText("0:00", false)
@@ -37,7 +37,7 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
             x = 2.pixels(alignOpposite = true)
             y = CenterConstraint()
             textScale = 0.7f.pixels()
-            color = MediaMod.themeManager.currentTheme.colors.background.constraint
+            color = MediaMod.themeManager.currentTheme.colors.progressBarText.constraint
         } childOf this
 
     init {
@@ -75,8 +75,8 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
     private fun updateTheme(theme: Theme) {
         setColorAnimated(theme.colors.progressBarBackground.constraint)
         progressBlock.setColorAnimated(theme.colors.progressBar.constraint)
-        elapsedText.setColorAnimated(theme.colors.background.constraint)
-        durationText.setColorAnimated(theme.colors.background.constraint)
+        elapsedText.setColorAnimated(theme.colors.progressBarText.constraint)
+        durationText.setColorAnimated(theme.colors.progressBarText.constraint)
     }
 
     private fun updateProgress(elapsed: Long, duration: Long) {

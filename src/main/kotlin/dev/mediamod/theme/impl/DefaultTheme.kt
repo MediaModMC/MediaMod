@@ -9,6 +9,7 @@ class DefaultTheme : Theme(
         background = Color.darkGray.darker(),
         text = Color.white,
         progressBar = Color.green,
-        progressBarBackground = Color.gray
+        progressBarBackground = Color.gray,
+        progressBarText = Color.darkGray.darker()
     )
 )

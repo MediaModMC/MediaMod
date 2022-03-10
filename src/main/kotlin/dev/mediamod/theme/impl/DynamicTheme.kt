@@ -11,7 +11,8 @@ class DynamicTheme : Theme(
         background = Color.darkGray.darker(),
         text = Color.white,
         progressBar = Color.green,
-        progressBarBackground = Color.gray
+        progressBarBackground = Color.gray,
+        progressBarText = Color.darkGray.darker()
     )
 ) {
     override fun update(image: BufferedImage) {
@@ -19,8 +20,10 @@ class DynamicTheme : Theme(
         colors = Colors(
             background = color,
             text = Color.white,
-            progressBar = color.brighter().brighter(),
-            progressBarBackground = color.darker()
+            progressBar = color.brighter(),
+            progressBarBackground = color.darker(),
+            // This is *very* temporary
+            progressBarText = color.brighter().brighter().brighter()
         )
     }
 

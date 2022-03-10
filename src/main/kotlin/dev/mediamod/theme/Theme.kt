@@ -21,7 +21,9 @@ open class Theme(
         @SerialName("progress_bar")
         val progressBar: Color,
         @SerialName("progress_bar_background")
-        val progressBarBackground: Color
+        val progressBarBackground: Color,
+        @SerialName("progress_bar_text")
+        val progressBarText: Color
     )
 
     open fun update(image: BufferedImage) {}
