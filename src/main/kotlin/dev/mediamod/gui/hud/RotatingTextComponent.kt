@@ -19,6 +19,7 @@ class RotatingTextComponent(
     private val state: BasicState<String>,
 ) : UIComponent() {
     private val firstXPosition = BasicState(0f)
+    private val textPadding = 25f
 
     private val firstText = UIText()
         .constrain {
@@ -27,7 +28,7 @@ class RotatingTextComponent(
 
     private val secondText = UIText()
         .constrain {
-            x = SiblingConstraint(25f)
+            x = SiblingConstraint(textPadding)
         } childOf this
 
     init {
@@ -58,8 +59,7 @@ class RotatingTextComponent(
             secondText.unhide()
         }
 
-        // TODO: This needs to be fixed, it doesnt line up perfectly on some songs
-        if (secondText.constraints.x.cachedValue <= 50) {
+        if (secondText.getLeft() <= parent.getLeft()) {
             firstXPosition.set(0f)
             return
         }
