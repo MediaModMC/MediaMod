@@ -1,3 +1,5 @@
+<img src="https://github.com/MediaModMC/MediaMod/raw/main/.github/images/screenshot.png" width="500" />
+
 # MediaMod
 
 View your current song in Minecraft with support for services like Spotify, YouTube, SoundCloud & more.
