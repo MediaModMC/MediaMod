@@ -7,7 +7,7 @@ import gg.essential.vigilance.Vigilant
 import java.io.File
 
 @Suppress("ObjectPropertyName")
-object Configuration : Vigilant(File("./config/mediamod.toml")) {
+object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
     private var _selectedTheme = 0
         set(value) {
             field = value
@@ -27,6 +27,7 @@ object Configuration : Vigilant(File("./config/mediamod.toml")) {
     var spotifyRefreshToken = ""
     var playerX = 5f
     var playerY = 5f
+    var textScrollSpeed = 0.25f
 
     init {
         category("General") {
@@ -49,6 +50,17 @@ object Configuration : Vigilant(File("./config/mediamod.toml")) {
                 decimalSlider(::playerX, "Player X", hidden = true)
                 decimalSlider(::playerY, "Player Y", hidden = true)
                 text(::selectedTheme, "Theme Name", hidden = true)
+            }
+
+            subcategory("Behaviour") {
+                decimalSlider(
+                    ::textScrollSpeed,
+                    "Text Scroll Speed",
+                    "Determines how fast the text will scroll when it exceeds the width of the player",
+                    min = 0.05f,
+                    max = 0.75f,
+                    decimalPlaces = 2
+                )
             }
         }
 

@@ -1,5 +1,6 @@
 package dev.mediamod.gui.hud
 
+import dev.mediamod.config.Configuration
 import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIText
@@ -57,12 +58,13 @@ class RotatingTextComponent(
             secondText.unhide()
         }
 
+        // TODO: This needs to be fixed, it doesnt line up perfectly on some songs
         if (secondText.constraints.x.cachedValue <= 50) {
             firstXPosition.set(0f)
             return
         }
 
-        firstXPosition.set(firstCurrentPosition - 0.25f)
+        firstXPosition.set(firstCurrentPosition - Configuration.textScrollSpeed)
     }
 
     internal fun changeColorAnimated(constraint: ConstantColorConstraint) = apply {
