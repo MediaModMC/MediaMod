@@ -7,6 +7,7 @@ import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.result.Result
 import dev.mediamod.MediaMod
 import dev.mediamod.config.Configuration
+import dev.mediamod.data.api.mediamod.ErrorResponse
 import dev.mediamod.data.api.mediamod.SpotifyTokenResponse
 import dev.mediamod.data.api.spotify.SpotifyCurrentTrackResponse
 import dev.mediamod.utils.json
@@ -65,11 +66,17 @@ class SpotifyAPI(
     fun refreshAccessToken(refreshToken: String) =
         when (val result = MediaMod.apiManager.refreshAccessToken(refreshToken)) {
             is Result.Success -> {
-                val response = result.get() as SpotifyTokenResponse
-                Configuration.spotifyAccessToken = response.accessToken
-                Configuration.spotifyRefreshToken = response.refreshToken
+                when (val response = result.get()) {
+                    is ErrorResponse -> logger.error("Error occurred when refreshing access token: ${response.message}")
+                    is SpotifyTokenResponse -> {
+                        Configuration.spotifyAccessToken = response.accessToken
+                        Configuration.spotifyRefreshToken = response.refreshToken
+                        Configuration.markDirty()
 
-                logger.info("Successfully refreshed access token!")
+                        logger.info("Successfully refreshed access token!")
+                    }
+                    else -> logger.error("Error occurred when refreshing access token: ${result.get()}")
+                }
             }
             is Result.Failure -> {
                 // TODO: Let's find a way to make this less spammy when the API isn't available

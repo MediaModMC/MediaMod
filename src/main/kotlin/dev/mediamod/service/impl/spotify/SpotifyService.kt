@@ -42,6 +42,7 @@ class SpotifyService : Service() {
     private fun login(response: SpotifyTokenResponse) {
         Configuration.spotifyAccessToken = response.accessToken
         Configuration.spotifyRefreshToken = response.refreshToken
+        Configuration.markDirty()
 
         logger.info("Successfully logged in to Spotify!")
     }
@@ -71,6 +72,7 @@ class SpotifyService : Service() {
                     state = UUID.randomUUID().toString()
                 )
 
+                logger.info("Opening $uri")
                 UDesktop.browse(uri)
             }
 
