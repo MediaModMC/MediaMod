@@ -45,7 +45,13 @@ class SpotifyCallbackManager {
                 manager.callbackResultListeners.forEach { it.invoke(result) }
             }
 
-            exchange.sendResponse("You can close this window and return to Minecraft.")
+            val resource = javaClass.getResource("/assets/mediamod/success.html")
+                ?: run {
+                    exchange.sendResponse("You can now return to Minecraft.")
+                    return
+                }
+
+            exchange.sendResponse(resource.readText())
         }
 
         private fun HttpExchange.sendResponse(message: String) {
