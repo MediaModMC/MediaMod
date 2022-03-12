@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SpotifyCurrentTrackResponse(
     val timestamp: Long,
-    val context: Context,
+    val context: Context? = null,
 
     @SerialName("progress_ms")
     val progressMs: Long,
