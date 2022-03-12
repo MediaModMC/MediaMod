@@ -1,11 +1,11 @@
 package dev.mediamod.gui.screen
 
 import dev.mediamod.gui.ColorPalette
+import dev.mediamod.gui.component.UIButton
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
-import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.FillConstraint
@@ -43,25 +43,22 @@ class ThemeEditorScreen(private val parentScreen: UScreen) :
                 textScale = 1.25f.pixels()
             } childOf leftContainer
 
-        val buttonContainer = UIRoundedRectangle(5f)
-            .onMouseClick {
-                displayScreen(parentScreen)
-            }
+        UIButton(text = "Close", textColor = Color.white)
             .constrain {
                 x = CenterConstraint()
                 y = 15.pixels(true)
                 width = 80.percent()
                 height = 25.pixels()
                 color = ColorPalette.secondaryBackground.brighter().constraint
+            }
+            .onClick {
+                displayScreen(parentScreen)
             } childOf leftContainer
 
-        UIText("Close")
-            .constrain {
-                x = CenterConstraint()
-                y = CenterConstraint()
-                color = Color.white.constraint
-            } childOf buttonContainer
-
         UIText("TODO") childOf rightContainer
+    }
+
+    override fun onClose() {
+        displayScreen(parentScreen)
     }
 }
