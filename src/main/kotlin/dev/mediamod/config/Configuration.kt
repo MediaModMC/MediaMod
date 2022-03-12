@@ -47,7 +47,7 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
                     "Change the position of the MediaMod Player",
                     "Open"
                 ) {
-                    gui()?.let { UScreen.displayScreen(RepositionScreen(it)) }
+                    UScreen.displayScreen(RepositionScreen())
                 }
 
                 selector(
@@ -62,7 +62,7 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
                     "Create or edit themes for the MediaMod Player",
                     "Open"
                 ) {
-                    gui()?.let { UScreen.displayScreen(ThemeEditorScreen(it)) }
+                    UScreen.displayScreen(ThemeEditorScreen())
                 }
 
                 decimalSlider(::playerX, "Player X", hidden = true)

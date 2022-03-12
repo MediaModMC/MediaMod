@@ -14,10 +14,9 @@ import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
-import gg.essential.universal.UScreen
 import java.awt.Color
 
-class ThemeEditorScreen(private val parentScreen: UScreen) : WindowScreen(
+class ThemeEditorScreen : WindowScreen(
     version = ElementaVersion.V1,
     restoreCurrentGuiOnClose = true
 ) {
@@ -76,18 +75,13 @@ class ThemeEditorScreen(private val parentScreen: UScreen) : WindowScreen(
                 color = ColorPalette.secondaryBackground.brighter().constraint
             }
             .onClick {
-                displayScreen(parentScreen)
+                restorePreviousScreen()
             } childOf leftContainer
 
         UIText("TODO") childOf rightContainer
     }
 
-
     private fun editTheme(theme: Theme) {
         // TODO: Not implemented yet
-    }
-
-    override fun onClose() {
-        displayScreen(parentScreen)
     }
 }

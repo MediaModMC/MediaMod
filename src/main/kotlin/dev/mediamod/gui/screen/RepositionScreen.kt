@@ -16,10 +16,12 @@ import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.elementa.state.pixels
 import gg.essential.elementa.utils.withAlpha
-import gg.essential.universal.UScreen
 import java.awt.Color
 
-class RepositionScreen(private val parentScreen: UScreen) : WindowScreen(ElementaVersion.V1) {
+class RepositionScreen : WindowScreen(
+    version = ElementaVersion.V1,
+    restoreCurrentGuiOnClose = true
+) {
     private val xState = BasicState(Configuration.playerX)
     private val yState = BasicState(Configuration.playerY)
 
@@ -112,16 +114,12 @@ class RepositionScreen(private val parentScreen: UScreen) : WindowScreen(Element
                 color = ColorPalette.secondaryBackground.brighter().constraint
             }
             .onClick {
-                close()
+                restorePreviousScreen()
             } childOf container
     }
 
-    override fun onClose() {
-        close()
-    }
-
-    private fun close() {
+    override fun onScreenClose() {
+        super.onScreenClose()
         Configuration.markDirty()
-        displayScreen(parentScreen)
     }
 }
