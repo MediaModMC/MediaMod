@@ -1,6 +1,7 @@
 package dev.mediamod.gui.component
 
 import gg.essential.elementa.UIComponent
+import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
@@ -13,7 +14,7 @@ import java.awt.Color
 class UIButton(
     text: String,
     textColor: Color,
-) : UIRoundedRectangle(5f) {
+) : UIBlock() {
     private var action: (UIComponent.() -> Unit)? = null
 
     init {
