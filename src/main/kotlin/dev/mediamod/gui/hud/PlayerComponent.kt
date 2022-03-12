@@ -1,6 +1,7 @@
 package dev.mediamod.gui.hud
 
 import dev.mediamod.MediaMod
+import dev.mediamod.config.Configuration
 import dev.mediamod.data.Track
 import dev.mediamod.theme.Theme
 import dev.mediamod.utils.setColorAnimated
@@ -18,8 +19,8 @@ import java.util.concurrent.CompletableFuture
 
 class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.background.constraint) {
     private var previousTrack: Track? = null
-    private val trackNameText = BasicState("Unknown track")
-    private val artistNameText = BasicState("Unknown artist")
+    private val trackNameState = BasicState("Unknown track")
+    private val artistNameState = BasicState("Unknown artist")
 
     private val imageContainer = UIContainer().constrain {
         x = 5.pixels()
@@ -37,11 +38,11 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
         height = ChildBasedSizeConstraint()
     } childOf this effect ScissorEffect()
 
-    private val trackText = RotatingTextComponent(trackNameText)
+    private val trackText = RotatingTextComponent(trackNameState)
         .color(MediaMod.themeManager.currentTheme.colors.text.constraint)
         .childOf(textContainer)
 
-    private val artistText = RotatingTextComponent(artistNameText)
+    private val artistText = RotatingTextComponent(artistNameState)
         .constrain {
             y = SiblingConstraint(3f)
         }
@@ -71,13 +72,21 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
             updateTheme(this)
         }
 
+        Configuration.listen(Configuration::playerFirstFormatString) {
+            previousTrack?.let { trackNameState.set(this.formatTrack(it)) }
+        }
+
+        Configuration.listen(Configuration::playerSecondFormatString) {
+            previousTrack?.let { artistNameState.set(this.formatTrack(it)) }
+        }
+
         MediaMod.themeManager.onUpdate(this::updateTheme)
         MediaMod.serviceManager.currentTrack.get()?.let { updateInformation(it) }
     }
 
     private fun updateInformation(track: Track, forceUpdate: Boolean = false) {
-        trackNameText.set(track.name)
-        artistNameText.set("by ${track.artist}")
+        trackNameState.set(Configuration.playerFirstFormatString.formatTrack(track))
+        artistNameState.set(Configuration.playerSecondFormatString.formatTrack(track))
 
         if (forceUpdate || previousTrack?.artwork != track.artwork) {
             imageContainer.removeChild(image)
@@ -102,4 +111,7 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
             trackText.changeColorAnimated(colors.text.constraint)
             artistText.changeColorAnimated(colors.text.darker().constraint)
         }
+
+    private fun String.formatTrack(track: Track) =
+        replace("[track]", track.name).replace("[artist]", track.artist)
 }

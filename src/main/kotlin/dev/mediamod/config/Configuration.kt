@@ -6,9 +6,13 @@ import dev.mediamod.gui.screen.editor.ThemeEditorScreen
 import gg.essential.universal.UScreen
 import gg.essential.vigilance.Vigilant
 import java.io.File
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 @Suppress("ObjectPropertyName")
 object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
+    private val updateListeners = mutableMapOf<KProperty<*>, MutableList<(Any.() -> Unit)>>()
+
     private var _selectedTheme = 0
         set(value) {
             field = value
@@ -26,8 +30,13 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
 
     var spotifyAccessToken = ""
     var spotifyRefreshToken = ""
+
+    var playerFirstFormatString by observable("[track]")
+    var playerSecondFormatString by observable("by [artist]")
+
     var playerX = 5f
     var playerY = 5f
+
     var textScrollSpeed = 0.25f
 
     init {
@@ -62,6 +71,20 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
             }
 
             subcategory("Behaviour") {
+                text(
+                    ::playerFirstFormatString,
+                    "Track name format",
+                    "Customise the way the track name appears on the MediaMod Player. You can use [track] for the track name, and [artist] for the artist name.",
+                    "[track]"
+                )
+
+                text(
+                    ::playerSecondFormatString,
+                    "Artist name format",
+                    "Customise the way the artist name appears on the MediaMod Player. You can use [track] for the track name, and [artist] for the artist name.",
+                    "by [artist]"
+                )
+
                 decimalSlider(
                     ::textScrollSpeed,
                     "Text Scroll Speed",
@@ -86,5 +109,17 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
         _selectedTheme = MediaMod.themeManager.loadedThemes
             .indexOfFirst { it.name == selectedTheme }
             .takeIf { it >= 0 } ?: 0
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> observable(default: T) = Delegates.observable(default) { property, _, newValue ->
+        updateListeners[property]?.forEach { it.invoke(newValue as Any) }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> listen(property: KProperty<T>, block: T.() -> Unit) {
+        updateListeners
+            .computeIfAbsent(property) { mutableListOf() }
+            .add(block as Any.() -> Unit)
     }
 }
