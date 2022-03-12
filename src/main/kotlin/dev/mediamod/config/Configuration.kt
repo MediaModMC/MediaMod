@@ -38,7 +38,7 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
                     "Change the position of the MediaMod Player",
                     "Open"
                 ) {
-                    UScreen.displayScreen(RepositionScreen())
+                    gui()?.let { UScreen.displayScreen(RepositionScreen(it)) }
                 }
 
                 selector(

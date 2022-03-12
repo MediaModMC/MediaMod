@@ -1,6 +1,8 @@
 package dev.mediamod.gui.screen
 
 import dev.mediamod.config.Configuration
+import dev.mediamod.gui.ColorPalette
+import dev.mediamod.gui.component.UIButton
 import dev.mediamod.gui.hud.PlayerComponent
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
@@ -14,13 +16,14 @@ import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.elementa.state.pixels
 import gg.essential.elementa.utils.withAlpha
+import gg.essential.universal.UScreen
 import java.awt.Color
 
-class RepositionScreen : WindowScreen(ElementaVersion.V1) {
+class RepositionScreen(private val parentScreen: UScreen) : WindowScreen(ElementaVersion.V1) {
     private val xState = BasicState(Configuration.playerX)
     private val yState = BasicState(Configuration.playerY)
 
-    private val container by UIBlock(Color.black.withAlpha(0.5f))
+    private val container by UIBlock(ColorPalette.background.withAlpha(0.8f))
         .constrain {
             width = 100.percent()
             height = 100.percent()
@@ -99,10 +102,26 @@ class RepositionScreen : WindowScreen(ElementaVersion.V1) {
                     yState.set(newY)
                 }
             } childOf container
+
+        UIButton("Close", Color.white)
+            .constrain {
+                x = CenterConstraint()
+                y = 15.pixels(true)
+                width = ChildBasedMaxSizeConstraint() + 50.pixels()
+                height = 25.pixels()
+                color = ColorPalette.secondaryBackground.brighter().constraint
+            }
+            .onClick {
+                close()
+            } childOf container
     }
 
-    override fun onScreenClose() {
+    override fun onClose() {
+        close()
+    }
+
+    private fun close() {
         Configuration.markDirty()
-        super.onScreenClose()
+        displayScreen(parentScreen)
     }
 }
