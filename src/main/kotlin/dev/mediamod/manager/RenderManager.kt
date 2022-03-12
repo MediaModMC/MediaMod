@@ -3,7 +3,7 @@ package dev.mediamod.manager
 import dev.mediamod.config.Configuration
 import dev.mediamod.gui.hud.PlayerComponent
 import dev.mediamod.gui.screen.RepositionScreen
-import dev.mediamod.gui.screen.ThemeEditorScreen
+import dev.mediamod.gui.screen.editor.ThemeEditorScreen
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.components.Window
 import gg.essential.elementa.dsl.constrain

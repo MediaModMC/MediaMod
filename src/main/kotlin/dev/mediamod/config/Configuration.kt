@@ -2,7 +2,7 @@ package dev.mediamod.config
 
 import dev.mediamod.MediaMod
 import dev.mediamod.gui.screen.RepositionScreen
-import dev.mediamod.gui.screen.ThemeEditorScreen
+import dev.mediamod.gui.screen.editor.ThemeEditorScreen
 import gg.essential.universal.UScreen
 import gg.essential.vigilance.Vigilant
 import java.io.File

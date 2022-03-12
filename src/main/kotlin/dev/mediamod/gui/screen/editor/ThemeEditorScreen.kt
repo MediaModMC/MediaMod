@@ -1,4 +1,4 @@
-package dev.mediamod.gui.screen
+package dev.mediamod.gui.screen.editor
 
 import dev.mediamod.gui.ColorPalette
 import dev.mediamod.gui.component.UIButton
