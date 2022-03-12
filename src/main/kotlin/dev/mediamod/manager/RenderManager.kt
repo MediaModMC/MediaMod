@@ -3,6 +3,7 @@ package dev.mediamod.manager
 import dev.mediamod.config.Configuration
 import dev.mediamod.gui.hud.PlayerComponent
 import dev.mediamod.gui.screen.RepositionScreen
+import dev.mediamod.gui.screen.ThemeEditorScreen
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.components.Window
 import gg.essential.elementa.dsl.constrain
@@ -15,7 +16,7 @@ class RenderManager {
     private lateinit var playerComponent: PlayerComponent
 
     fun onRenderTick(stack: UMatrixStack) {
-        if (UScreen.currentScreen is RepositionScreen)
+        if (UScreen.currentScreen is RepositionScreen || UScreen.currentScreen is ThemeEditorScreen)
             return
 
         if (window.children.isEmpty()) {

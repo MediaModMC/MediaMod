@@ -2,6 +2,7 @@ package dev.mediamod.config
 
 import dev.mediamod.MediaMod
 import dev.mediamod.gui.screen.RepositionScreen
+import dev.mediamod.gui.screen.ThemeEditorScreen
 import gg.essential.universal.UScreen
 import gg.essential.vigilance.Vigilant
 import java.io.File
@@ -46,6 +47,14 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
                     "Change the appearance of the MediaMod Player",
                     MediaMod.themeManager.loadedThemes.map { it.name }
                 )
+
+                button(
+                    "Theme Editor",
+                    "Create or edit themes for the MediaMod Player",
+                    "Open"
+                ) {
+                    gui()?.let { UScreen.displayScreen(ThemeEditorScreen(it)) }
+                }
 
                 decimalSlider(::playerX, "Player X", hidden = true)
                 decimalSlider(::playerY, "Player Y", hidden = true)
