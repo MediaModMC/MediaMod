@@ -11,6 +11,7 @@ import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
+import gg.essential.elementa.components.UIWrappedText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
@@ -47,6 +48,16 @@ class ThemeEditorScreen : WindowScreen(
         .constrain {
             width = FillConstraint()
             height = FillConstraint()
+        } childOf rightContainer
+
+    private val welcomeText by UIWrappedText(
+        text = "Choose a theme on the left side of your screen to edit it!",
+        centered = true
+    )
+        .constrain {
+            x = CenterConstraint()
+            y = CenterConstraint()
+            width = 90.percent()
         } childOf rightContainer
 
     init {
@@ -97,5 +108,6 @@ class ThemeEditorScreen : WindowScreen(
 
     private fun editTheme(theme: Theme) {
         themeEditor.theme.set(theme)
+        welcomeText.hide()
     }
 }
