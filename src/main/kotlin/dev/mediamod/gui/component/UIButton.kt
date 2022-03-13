@@ -8,6 +8,7 @@ import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
 import gg.essential.elementa.dsl.percent
+import gg.essential.universal.USound
 import java.awt.Color
 
 class UIButton(
@@ -24,6 +25,7 @@ class UIButton(
         }
 
         onMouseClick {
+            USound.playButtonPress()
             action?.invoke(this)
         }
 
