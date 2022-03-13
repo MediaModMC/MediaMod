@@ -2,13 +2,12 @@ package dev.mediamod.gui.component
 
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
-import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
-import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
+import gg.essential.elementa.dsl.percent
 import java.awt.Color
 
 class UIButton(
@@ -18,13 +17,13 @@ class UIButton(
     private var action: (UIComponent.() -> Unit)? = null
 
     init {
-        onMouseClick {
-            action?.invoke(this)
+        constrain {
+            width = 100.percent()
+            height = 100.percent()
         }
 
-        constrain {
-            width = FillConstraint()
-            height = FillConstraint()
+        onMouseClick {
+            action?.invoke(this)
         }
 
         UIText(text)

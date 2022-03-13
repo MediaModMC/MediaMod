@@ -3,6 +3,7 @@ package dev.mediamod.gui.screen.editor
 import dev.mediamod.MediaMod
 import dev.mediamod.gui.ColorPalette
 import dev.mediamod.gui.component.UIButton
+import dev.mediamod.gui.screen.editor.component.ThemeEditorContainer
 import dev.mediamod.gui.screen.editor.component.ThemeListItem
 import dev.mediamod.theme.Theme
 import gg.essential.elementa.ElementaVersion
@@ -11,6 +12,7 @@ import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
@@ -41,6 +43,12 @@ class ThemeEditorScreen : WindowScreen(
             height = 100.percent()
         } childOf mainContainer
 
+    private val themeEditor by ThemeEditorContainer()
+        .constrain {
+            width = FillConstraint()
+            height = FillConstraint()
+        } childOf rightContainer
+
     init {
         UIText("Theme Editor")
             .constrain {
@@ -60,8 +68,16 @@ class ThemeEditorScreen : WindowScreen(
                 .constrain {
                     x = 10.percent()
                     y = SiblingConstraint(if (index == 0) 10f else 5f)
+                    width = 100.percent()
+                    height = ChildBasedMaxSizeConstraint()
                 }
                 .onClick {
+                    leftContainer.children
+                        .filterIsInstance<ThemeListItem>()
+                        .forEach {
+                            it.unselect()
+                        }
+
                     editTheme(this)
                 } childOf leftContainer
         }
@@ -77,11 +93,9 @@ class ThemeEditorScreen : WindowScreen(
             .onClick {
                 restorePreviousScreen()
             } childOf leftContainer
-
-        UIText("TODO") childOf rightContainer
     }
 
     private fun editTheme(theme: Theme) {
-        // TODO: Not implemented yet
+        themeEditor.theme.set(theme)
     }
 }
