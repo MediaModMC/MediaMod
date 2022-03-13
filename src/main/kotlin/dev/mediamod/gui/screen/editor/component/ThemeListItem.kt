@@ -39,7 +39,10 @@ class ThemeListItem(
         } childOf this
 
     init {
-        if (theme !is Theme.InbuiltTheme) removeChild(lockImage)
+        if (theme !is Theme.InbuiltTheme) {
+            lockImage.hide()
+            text.setX(11.pixels())
+        }
 
         constrain {
             height = ChildBasedMaxSizeConstraint()
