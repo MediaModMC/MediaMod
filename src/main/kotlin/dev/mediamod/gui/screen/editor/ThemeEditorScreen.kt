@@ -21,7 +21,8 @@ import java.awt.Color
 
 class ThemeEditorScreen : WindowScreen(
     version = ElementaVersion.V1,
-    restoreCurrentGuiOnClose = true
+    restoreCurrentGuiOnClose = true,
+    newGuiScale = 3
 ) {
     private val manager = MediaMod.themeManager
 
@@ -44,11 +45,7 @@ class ThemeEditorScreen : WindowScreen(
             height = 100.percent()
         } childOf mainContainer
 
-    private val themeEditor by ThemeEditorContainer()
-        .constrain {
-            width = FillConstraint()
-            height = FillConstraint()
-        } childOf rightContainer
+    private val themeEditor by ThemeEditorContainer() childOf rightContainer
 
     private val welcomeText by UIWrappedText(
         text = "Choose a theme on the left side of your screen to edit it!",
@@ -63,21 +60,21 @@ class ThemeEditorScreen : WindowScreen(
     init {
         UIText("Theme Editor")
             .constrain {
-                x = CenterConstraint()
+                x = 15.pixels()
                 y = 15.pixels()
-                textScale = 1.25f.pixels()
+                textScale = 1.5f.pixels()
             } childOf leftContainer
 
         UIText("Themes")
             .constrain {
-                x = 10.percent()
+                x = 15.pixels()
                 y = SiblingConstraint(20f)
             } childOf leftContainer
 
         manager.loadedThemes.forEachIndexed { index, theme ->
             ThemeListItem(theme)
                 .constrain {
-                    x = 10.percent()
+                    x = 15.pixels()
                     y = SiblingConstraint(if (index == 0) 10f else 5f)
                     width = 100.percent()
                     height = ChildBasedMaxSizeConstraint()
