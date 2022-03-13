@@ -12,6 +12,7 @@ import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.universal.ChatColor
+import gg.essential.universal.USound
 import java.awt.Color
 
 class ThemeListItem(
@@ -49,6 +50,7 @@ class ThemeListItem(
         }
 
         onMouseClick {
+            USound.playButtonPress()
             action?.invoke(theme)
             select()
         }
