@@ -5,8 +5,8 @@ import gg.essential.elementa.constraints.ColorConstraint
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.animate
 
-internal fun UIComponent.setColorAnimated(color: ColorConstraint) = apply {
+internal fun UIComponent.setColorAnimated(color: ColorConstraint, time: Float = 0.5f) = apply {
     animate {
-        setColorAnimation(Animations.IN_OUT_EXP, 0.5f, color, 0f)
+        setColorAnimation(Animations.IN_OUT_EXP, time, color, 0f)
     }
 }

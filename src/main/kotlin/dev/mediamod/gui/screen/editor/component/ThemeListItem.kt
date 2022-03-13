@@ -1,11 +1,11 @@
 package dev.mediamod.gui.screen.editor.component
 
 import dev.mediamod.theme.Theme
+import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
-import gg.essential.elementa.constraints.animation.Animations
-import gg.essential.elementa.dsl.animate
+import gg.essential.elementa.constraints.ColorConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
@@ -13,14 +13,18 @@ import gg.essential.elementa.state.BasicState
 import gg.essential.universal.ChatColor
 import java.awt.Color
 
-class ThemeListItem(private val theme: Theme) : UIContainer() {
+class ThemeListItem(
+    private val theme: Theme,
+    private val selectedColor: ColorConstraint = Color.white.constraint,
+    private val unselectedColor: ColorConstraint = Color.white.darker().constraint
+) : UIContainer() {
     private var action: (Theme.() -> Unit)? = null
 
     private val textState = BasicState(theme.name)
     private val text = UIText()
         .bindText(textState)
         .constrain {
-            color = Color.white.darker().constraint
+            color = unselectedColor
         } childOf this
 
     init {
@@ -30,19 +34,18 @@ class ThemeListItem(private val theme: Theme) : UIContainer() {
 
         onMouseClick {
             action?.invoke(theme)
-
-            textState.set("${ChatColor.BOLD}${theme.name}")
-            text.animate {
-                setColorAnimation(Animations.IN_OUT_QUAD, 0.1f, Color.white.constraint)
-            }
+            select()
         }
     }
 
-    fun unselect() = apply {
+    fun select() {
+        textState.set("${ChatColor.BOLD}${theme.name}")
+        text.setColorAnimated(selectedColor, 0.1f)
+    }
+
+    fun unselect() {
         textState.set(theme.name)
-        text.animate {
-            setColorAnimation(Animations.IN_OUT_QUAD, 0.1f, Color.white.darker().constraint)
-        }
+        text.setColorAnimated(unselectedColor, 0.1f)
     }
 
     fun onClick(block: Theme.() -> Unit) = apply { this.action = block }
