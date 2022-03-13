@@ -1,20 +1,15 @@
 package dev.mediamod.theme.impl
 
+import dev.mediamod.theme.Colors
 import dev.mediamod.theme.Theme
 import java.awt.Color
 import java.awt.image.BufferedImage
 import kotlin.math.roundToInt
 
-class DynamicTheme : Theme(
-    name = "Dynamic",
-    colors = Colors(
-        background = Color.darkGray.darker(),
-        text = Color.white,
-        progressBar = Color.green,
-        progressBarBackground = Color.gray,
-        progressBarText = Color.darkGray.darker()
-    )
-) {
+class DynamicTheme : Theme.InbuiltTheme("Dynamic") {
+    override var colors = defaultColors
+        private set
+
     override fun update(image: BufferedImage) {
         val color = getAverageColor(image)
         colors = Colors(

@@ -15,7 +15,7 @@ class ThemeManager {
     private val updateSubscribers = mutableSetOf<Theme.() -> Unit>()
     private val themesDirectory = File(MediaMod.dataDirectory, "themes")
 
-    val loadedThemes = mutableListOf(DefaultTheme(), DynamicTheme())
+    val loadedThemes = mutableListOf<Theme>(DefaultTheme(), DynamicTheme())
     var currentTheme: Theme = loadedThemes.first()
         set(value) {
             field = value
@@ -34,7 +34,7 @@ class ThemeManager {
             if (it.extension != "json")
                 return@forEach
 
-            val theme: Theme = json.decodeFromString(it.readText())
+            val theme: Theme.LoadedTheme = json.decodeFromString(it.readText())
             logger.info("Loaded theme: ${theme.name} from ${it.path}")
 
             loadedThemes.add(theme)
