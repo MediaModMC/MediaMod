@@ -10,7 +10,7 @@ import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.universal.UMatrixStack
 import org.apache.commons.lang3.time.DurationFormatUtils
-import java.lang.Float.min
+import kotlin.math.min
 
 class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.progressBarBackground) {
     private val elapsedTextState = BasicState("0:00")
@@ -65,7 +65,7 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
             if (lastUpdate != 0L && !it.paused) {
                 val change = System.currentTimeMillis() - lastUpdate
                 val elapsed = it.elapsed + change
-                updateProgress(elapsed, it.duration)
+                updateProgress(min(elapsed, it.duration), it.duration)
             }
         }
 
@@ -80,7 +80,7 @@ class ProgressBarComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.p
     }
 
     private fun updateProgress(elapsed: Long, duration: Long) {
-        val progress = min(elapsed / duration.toFloat(), 1f)
+        val progress = elapsed / duration.toFloat()
         progressBlock.setWidth((progress * 100).percent())
 
         updateProgressText(elapsed, duration)
