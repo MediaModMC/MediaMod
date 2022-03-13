@@ -9,12 +9,16 @@ import gg.essential.elementa.dsl.animate
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
+import gg.essential.elementa.state.BasicState
+import gg.essential.universal.ChatColor
 import java.awt.Color
 
-class ThemeListItem(theme: Theme) : UIContainer() {
+class ThemeListItem(private val theme: Theme) : UIContainer() {
     private var action: (Theme.() -> Unit)? = null
 
-    private val text = UIText(theme.name)
+    private val textState = BasicState(theme.name)
+    private val text = UIText()
+        .bindText(textState)
         .constrain {
             color = Color.white.darker().constraint
         } childOf this
@@ -27,6 +31,7 @@ class ThemeListItem(theme: Theme) : UIContainer() {
         onMouseClick {
             action?.invoke(theme)
 
+            textState.set("${ChatColor.BOLD}${theme.name}")
             text.animate {
                 setColorAnimation(Animations.IN_OUT_QUAD, 0.1f, Color.white.constraint)
             }
@@ -34,6 +39,7 @@ class ThemeListItem(theme: Theme) : UIContainer() {
     }
 
     fun unselect() = apply {
+        textState.set(theme.name)
         text.animate {
             setColorAnimation(Animations.IN_OUT_QUAD, 0.1f, Color.white.darker().constraint)
         }
