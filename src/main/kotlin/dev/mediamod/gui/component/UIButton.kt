@@ -13,6 +13,7 @@ import java.awt.Color
 class UIButton(
     text: String,
     textColor: Color,
+    shadow: Boolean = true
 ) : UIBlock() {
     private var action: (UIComponent.() -> Unit)? = null
 
@@ -26,7 +27,7 @@ class UIButton(
             action?.invoke(this)
         }
 
-        UIText(text)
+        UIText(text, shadow)
             .constrain {
                 x = CenterConstraint()
                 y = CenterConstraint()
