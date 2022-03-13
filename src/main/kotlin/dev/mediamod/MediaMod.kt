@@ -6,6 +6,11 @@ import dev.mediamod.manager.ServiceManager
 import dev.mediamod.manager.ThemeManager
 import dev.mediamod.utils.logger
 import java.io.File
+import kotlin.concurrent.thread
+import kotlin.reflect.KParameter
+import kotlin.reflect.jvm.javaMethod
+import kotlin.reflect.jvm.kotlinFunction
+import kotlin.system.measureTimeMillis
 
 //#if FABRIC==0
 //$$ import net.minecraftforge.fml.common.Mod
@@ -32,8 +37,12 @@ object MediaMod {
     //$$ fun init(event: FMLInitializationEvent) {
     //#else
     fun init() {
-    //#endif
+        //#endif
         logger.info("MediaMod has started!")
+
+        //#if FABRIC==1
+        initializeReflect()
+        //#endif
 
         themeManager.init()
         serviceManager.init()
@@ -41,5 +50,21 @@ object MediaMod {
         //#if MC<=11202
         //$$ EssentialAPI.getCommandRegistry().registerCommand(MediaModCommand())
         //#endif
+    }
+
+    private fun initializeReflect() {
+        thread(start = true, isDaemon = false, name = "MediaMod kreflect warmup") {
+            val time = measureTimeMillis {
+                themeManager::onChange.javaMethod
+                    ?.kotlinFunction?.parameters
+                    ?.filter { it.kind == KParameter.Kind.VALUE }
+                    ?: run {
+                        logger.warn("Failed to locate method for kreflect warmup!")
+                        return@measureTimeMillis
+                    }
+            }
+
+            logger.info("Took $time ms to warm up kreflect")
+        }
     }
 }
