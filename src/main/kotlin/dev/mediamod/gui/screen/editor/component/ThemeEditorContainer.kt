@@ -8,6 +8,7 @@ import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import java.awt.Color
+import kotlin.reflect.KMutableProperty
 
 @Suppress("unused")
 class ThemeEditorContainer : UIContainer() {
@@ -46,17 +47,27 @@ class ThemeEditorContainer : UIContainer() {
     private fun loadColors(colors: Colors) {
         colorsContainer.children.clear()
 
-        colorComponent(colors.background, "Background")
-        colorComponent(colors.progressBar, "Progress Bar")
-        colorComponent(colors.progressBarBackground, "Progress Bar Background")
-        colorComponent(colors.progressBarText, "Progress Bar Text")
-        colorComponent(colors.text, "Text")
+        fun complete() = theme.get()?.let {
+            if (it !is Theme.LoadedTheme) return@let
+            it.colors = colors
+
+            // TODO: Write to file
+        }
+
+        colorComponent(colors::background, "Background", ::complete)
+        colorComponent(colors::progressBar, "Progress Bar", ::complete)
+        colorComponent(colors::progressBarBackground, "Progress Bar Background", ::complete)
+        colorComponent(colors::progressBarText, "Progress Bar Text", ::complete)
+        colorComponent(colors::text, "Text", ::complete)
     }
 
-    private fun colorComponent(color: Color, name: String) {
-        ThemeColorComponent(color, name)
+    private fun colorComponent(color: KMutableProperty<Color>, name: String, block: () -> Unit) {
+        ThemeColorComponent(color.getter.call(), name)
             .constrain {
                 y = SiblingConstraint(5f)
+            }.onChange {
+                color.setter.call(it)
+                block()
             } childOf colorsContainer
     }
 }

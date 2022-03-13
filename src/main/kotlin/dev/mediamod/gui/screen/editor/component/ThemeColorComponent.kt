@@ -17,6 +17,7 @@ import java.awt.Color
 
 class ThemeColorComponent(themeColor: Color, text: String) : UIContainer() {
     private val colorState = BasicState(themeColor)
+    private var onChange: ((Color) -> Unit)? = null
 
     init {
         constrain {
@@ -47,6 +48,9 @@ class ThemeColorComponent(themeColor: Color, text: String) : UIContainer() {
         colorPicker.onValueChange {
             if (it !is Color) return@onValueChange
             colorState.set(it)
+            onChange?.invoke(it)
         }
     }
+
+    fun onChange(block: (Color) -> Unit) = apply { this.onChange = block }
 }
