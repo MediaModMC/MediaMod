@@ -5,7 +5,10 @@ import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.UIText
-import gg.essential.elementa.constraints.*
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
+import gg.essential.elementa.constraints.ColorConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import gg.essential.universal.ChatColor
@@ -20,7 +23,7 @@ class ThemeListItem(
     private val textState = BasicState(theme.name)
 
     @Suppress("unused")
-    private val image by UIImage.ofResource("/assets/mediamod/textures/icon/lock.png")
+    private val lockImage by UIImage.ofResource("/assets/mediamod/textures/icon/lock.png")
         .constrain {
             y = CenterConstraint() - 0.5f.pixels()
             width = 8.pixels()
@@ -36,6 +39,8 @@ class ThemeListItem(
         } childOf this
 
     init {
+        if (theme !is Theme.InbuiltTheme) removeChild(lockImage)
+
         constrain {
             height = ChildBasedMaxSizeConstraint()
         }
