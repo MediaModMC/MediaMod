@@ -3,7 +3,6 @@ package dev.mediamod.gui.screen.editor
 import dev.mediamod.MediaMod
 import dev.mediamod.gui.ColorPalette
 import dev.mediamod.gui.component.UIButton
-import dev.mediamod.gui.component.UIDialog
 import dev.mediamod.gui.screen.editor.component.CreateThemeListItem
 import dev.mediamod.gui.screen.editor.component.ThemeEditorContainer
 import dev.mediamod.gui.screen.editor.component.ThemeListItem
@@ -14,10 +13,7 @@ import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.components.UIWrappedText
-import gg.essential.elementa.constraints.CenterConstraint
-import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
-import gg.essential.elementa.constraints.FillConstraint
-import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
 import java.awt.Color
 
@@ -32,14 +28,6 @@ class ThemeEditorScreen : WindowScreen(
         .constrain {
             width = 100.percent()
             height = 100.percent()
-        } childOf window
-
-    private val dialogContainer by UIDialog("Create a new theme")
-        .content {
-            UIText("Hello world")
-                .constrain {
-                    color = Color.white.darker().constraint
-                }
         } childOf window
 
     private val leftContainer by UIBlock(ColorPalette.secondaryBackground)
@@ -137,6 +125,5 @@ class ThemeEditorScreen : WindowScreen(
     }
 
     private fun createTheme() {
-        dialogContainer.unhide()
     }
 }
