@@ -40,6 +40,9 @@ class ThemeEditorContainer : UIContainer() {
             it?.let {
                 themeNameState.set(it.name)
                 loadColors(it.colors)
+            } ?: run {
+                themeNameState.set("")
+                colorsContainer.children.clear()
             }
         }
     }

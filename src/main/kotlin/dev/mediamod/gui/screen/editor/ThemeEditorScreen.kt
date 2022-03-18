@@ -119,9 +119,14 @@ class ThemeEditorScreen : WindowScreen(
             } childOf leftContainer
     }
 
-    private fun editTheme(theme: Theme) {
+    private fun editTheme(theme: Theme?) {
         themeEditor.theme.set(theme)
-        welcomeText.hide()
+
+        if (theme == null) {
+            welcomeText.unhide()
+        } else {
+            welcomeText.hide()
+        }
     }
 
     private fun createTheme() {
