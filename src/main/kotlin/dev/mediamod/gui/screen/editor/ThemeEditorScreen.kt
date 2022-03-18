@@ -3,6 +3,7 @@ package dev.mediamod.gui.screen.editor
 import dev.mediamod.MediaMod
 import dev.mediamod.gui.ColorPalette
 import dev.mediamod.gui.component.UIButton
+import dev.mediamod.gui.screen.editor.component.CreateThemeListItem
 import dev.mediamod.gui.screen.editor.component.ThemeEditorContainer
 import dev.mediamod.gui.screen.editor.component.ThemeListItem
 import dev.mediamod.theme.Theme
@@ -17,6 +18,7 @@ import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
+import gg.essential.elementa.utils.withAlpha
 import java.awt.Color
 
 class ThemeEditorScreen : WindowScreen(
@@ -30,6 +32,13 @@ class ThemeEditorScreen : WindowScreen(
         .constrain {
             width = 100.percent()
             height = 100.percent()
+        } childOf window
+
+    private val dialogContainer by UIBlock(Color.black.withAlpha(0.5f))
+        .constrain {
+            width = 100.percent()
+            height = 100.percent()
+            zOffset = 100
         } childOf window
 
     private val leftContainer by UIBlock(ColorPalette.secondaryBackground)
@@ -58,6 +67,8 @@ class ThemeEditorScreen : WindowScreen(
         } childOf rightContainer
 
     init {
+        dialogContainer.hide(true)
+
         UIText("Theme Editor")
             .constrain {
                 x = 15.pixels()
@@ -86,9 +97,27 @@ class ThemeEditorScreen : WindowScreen(
                             it.unselect()
                         }
 
+                    // Just in case for some weird reason it says selected
                     editTheme(this)
                 } childOf leftContainer
         }
+
+        CreateThemeListItem()
+            .constrain {
+                x = 15.pixels()
+                y = SiblingConstraint(5f)
+                width = 100.percent()
+                height = ChildBasedMaxSizeConstraint()
+            }
+            .onClick {
+                leftContainer.children
+                    .filterIsInstance<ThemeListItem>()
+                    .forEach {
+                        it.unselect()
+                    }
+
+                createTheme()
+            } childOf leftContainer
 
         UIButton(text = "Close", textColor = Color.white)
             .constrain {
@@ -106,5 +135,9 @@ class ThemeEditorScreen : WindowScreen(
     private fun editTheme(theme: Theme) {
         themeEditor.theme.set(theme)
         welcomeText.hide()
+    }
+
+    private fun createTheme() {
+        dialogContainer.unhide()
     }
 }
