@@ -15,7 +15,7 @@ import gg.essential.elementa.state.BasicState
 import gg.essential.vigilance.gui.settings.ColorComponent
 import java.awt.Color
 
-class ThemeColorComponent(themeColor: Color, text: String) : UIContainer() {
+class ThemeColorComponent(themeColor: Color, text: String, locked: Boolean) : UIContainer() {
     private val colorState = BasicState(themeColor)
     private var onChange: ((Color) -> Unit)? = null
 
@@ -44,6 +44,9 @@ class ThemeColorComponent(themeColor: Color, text: String) : UIContainer() {
                 x = 0.pixels(true)
                 y = CenterConstraint()
             } childOf this
+
+        if (locked)
+            colorPicker.mouseClickListeners.clear()
 
         colorPicker.onValueChange {
             if (it !is Color) return@onValueChange

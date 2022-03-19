@@ -65,7 +65,7 @@ class ThemeEditorContainer : UIContainer() {
     }
 
     private fun colorComponent(color: KMutableProperty<Color>, name: String, block: () -> Unit) {
-        ThemeColorComponent(color.getter.call(), name)
+        ThemeColorComponent(color.getter.call(), name, theme.get() is Theme.InbuiltTheme)
             .constrain {
                 y = SiblingConstraint(5f)
             }.onChange {
