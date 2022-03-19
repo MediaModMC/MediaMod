@@ -122,11 +122,11 @@ class RepositionScreen : WindowScreen(
                 val newX = getLeft() + deltaX
                 val newY = getTop() + deltaY
 
-                if (newX >= 0 && newX <= (this@RepositionScreen.width - this.getWidth())) {
+                if (newX >= 0 && newX <= (this@RepositionScreen.window.getWidth() - this.getWidth())) {
                     xState.set(newX)
                 }
 
-                if (newY >= 0 && newY <= (this@RepositionScreen.height - this.getHeight())) {
+                if (newY >= 0 && newY <= (this@RepositionScreen.window.getHeight() - this.getHeight())) {
                     yState.set(newY)
                 }
             } childOf container
