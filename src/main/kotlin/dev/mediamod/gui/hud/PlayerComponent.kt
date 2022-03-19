@@ -15,9 +15,15 @@ import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.ScissorEffect
 import gg.essential.elementa.state.BasicState
+import java.awt.image.BufferedImage
+import java.net.URL
 import java.util.concurrent.CompletableFuture
 
 class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.background.constraint) {
+    companion object {
+        private val cache = HashMap<URL, BufferedImage>()
+    }
+
     private var previousTrack: Track? = null
     private val trackNameState = BasicState("Unknown track")
     private val artistNameState = BasicState("Unknown artist")
@@ -91,11 +97,7 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
         if (forceUpdate || previousTrack?.artwork != track.artwork) {
             imageContainer.removeChild(image)
 
-            val future = CompletableFuture.supplyAsync {
-                UIImage.get(track.artwork).apply(MediaMod.themeManager::updateTheme)
-            }
-
-            image = UIImage(future)
+            image = UIImage(fetchImage(track.artwork))
                 .constrain {
                     width = 100.percent()
                     height = 100.percent()
@@ -103,6 +105,18 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
         }
 
         previousTrack = track
+    }
+
+    private fun fetchImage(artwork: URL) = CompletableFuture.supplyAsync {
+        val image = cache[artwork] ?: UIImage.get(artwork)
+        with(image) {
+            MediaMod.themeManager.updateTheme(this)
+            cache.computeIfAbsent(artwork) {
+                // TODO: Make this configurable
+                if (cache.size >= 20) cache.clear()
+                this
+            }
+        }
     }
 
     private fun updateTheme(theme: Theme) =
