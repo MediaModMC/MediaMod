@@ -17,16 +17,17 @@ import gg.essential.universal.UMatrixStack
 
 class RotatingTextComponent(
     private val state: BasicState<String>,
+    shadow: Boolean = false
 ) : UIComponent() {
     private val firstXPosition = BasicState(0f)
     private val textPadding = 25f
 
-    private val firstText = UIText()
+    private val firstText = UIText(shadow = shadow)
         .constrain {
             x = firstXPosition.pixels()
         } childOf this
 
-    private val secondText = UIText()
+    private val secondText = UIText(shadow = shadow)
         .constrain {
             x = SiblingConstraint(textPadding)
         } childOf this
