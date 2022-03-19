@@ -7,7 +7,7 @@ import java.util.*
 /**
  * A color quantizer
  *
- * Based of leptonica's colorquant.c "Modified median cut color quantization"
+ * Based of leptonica's colorquant2.c "Modified median cut color quantization"
  *
  * References:
  * - [colorquant2.c](https://github.com/DanBloomberg/leptonica/blob/master/src/colorquant2.c)
@@ -23,7 +23,9 @@ object ColorQuantizer {
     private const val rshift = 8 - sigbits
     private const val mask = 0xff shr rshift
 
-    fun quantize(image: BufferedImage, maxcolors: Int = 16): Array<Color> {
+    fun quantize(image: BufferedImage, maxcolors: Int = 16): List<ColorData> {
+        val pixelCount = image.width * image.height
+
         val histosize = 1 shl (3 * sigbits)
         val histo = IntArray(histosize)
 
@@ -51,16 +53,16 @@ object ColorQuantizer {
         }
 
         if (smalln) {
-            val queue = PriorityQueue<Pair<Color, Int>>(Collections.reverseOrder(Comparator.comparingInt { it.second }))
+            val list = mutableListOf<ColorData>()
             for (i in 0 until histosize) {
                 if (histo[i] > 0) {
                     val rval = (i shr (2 * sigbits)) shl rshift
                     val gval = ((i shr sigbits) and mask) shl rshift
                     val bval = (i and mask) shl rshift
-                    queue.add(Color(rval, gval, bval) to histo[i])
+                    list.add(ColorData(Color(rval, gval, bval), histo[i] / pixelCount.toFloat()))
                 }
             }
-            return queue.map { it.first }.toTypedArray()
+            return list.sortedByDescending { it.fraction }
         }
 
         var rmin = 1000000
@@ -87,7 +89,7 @@ object ColorQuantizer {
 
         val initialVbox = VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo)
 
-        val queueByPop = PriorityQueue(Collections.reverseOrder(Comparator.comparingInt(VBox::count)))
+        val queueByPop = PriorityQueue(Comparator.comparingInt(VBox::count).reversed())
         queueByPop.add(initialVbox)
 
         var ncolors = 1
@@ -121,7 +123,7 @@ object ColorQuantizer {
         }
         val norm = if (maxprod == 0f) 1f else 1000000.0f / maxprod
 
-        val queueByVol = PriorityQueue<VBox>(Collections.reverseOrder(Comparator.comparingDouble { (norm * it.count() * it.volume()).toDouble() } ))
+        val queueByVol = PriorityQueue(Comparator.comparingDouble<VBox> { (norm * it.count() * it.volume()).toDouble() }.reversed())
         queueByVol.addAll(queueByPop)
 
         while (true) {
@@ -145,10 +147,9 @@ object ColorQuantizer {
             }
         }
 
-        queueByPop.clear()
-        queueByPop.addAll(queueByVol)
-
-        return queueByPop.map(VBox::avg).map(::Color).toTypedArray()
+        return queueByVol.toList()
+            .sortedByDescending(VBox::count)
+            .map { ColorData(Color(it.avg()), it.count() / pixelCount.toFloat()) }
     }
 
     private fun medianCutApply(histo: IntArray, vbox: VBox): Pair<VBox, VBox?> {
@@ -315,4 +316,5 @@ object ColorQuantizer {
         fun copy() = VBox(r1, r2, g1, g2, b1, b2, histo)
     }
 
+    class ColorData(val color: Color, val fraction: Float)
 }

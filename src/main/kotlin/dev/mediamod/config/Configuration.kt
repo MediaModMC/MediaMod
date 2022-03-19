@@ -39,8 +39,6 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
 
     var textScrollSpeed = 0.25f
 
-    var constrastMode = false
-
     init {
         category("General") {
             subcategory("Appearance") {
@@ -65,14 +63,6 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
                     "Open"
                 ) {
                     UScreen.displayScreen(ThemeEditorScreen())
-                }
-
-                switch(
-                    ::constrastMode,
-                    "Adjust colors for contrast",
-                    "When using the dynamic theme, adjust the colors to make text readable"
-                ) {
-                    MediaMod.themeManager.emitChange()
                 }
 
                 decimalSlider(::playerX, "Player X", hidden = true)
