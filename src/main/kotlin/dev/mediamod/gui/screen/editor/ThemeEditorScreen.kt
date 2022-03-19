@@ -6,6 +6,8 @@ import dev.mediamod.gui.component.UIButton
 import dev.mediamod.gui.screen.editor.component.CreateThemeListItem
 import dev.mediamod.gui.screen.editor.component.ThemeEditorContainer
 import dev.mediamod.gui.screen.editor.component.ThemeListItem
+import dev.mediamod.gui.style.styled
+import dev.mediamod.gui.style.stylesheet
 import dev.mediamod.theme.Theme
 import dev.mediamod.theme.impl.defaultColors
 import gg.essential.elementa.ElementaVersion
@@ -23,72 +25,100 @@ class ThemeEditorScreen : WindowScreen(
     restoreCurrentGuiOnClose = true,
     newGuiScale = 5
 ) {
-    private val mainContainer by UIBlock(ColorPalette.background)
-        .constrain {
+    private val stylesheet = stylesheet {
+        "mainContainer" {
             width = 100.percent()
             height = 100.percent()
-        } childOf window
+        }
 
-    private val leftContainer by UIBlock(ColorPalette.secondaryBackground)
-        .constrain {
+        "leftContainer" {
             width = 35.percent()
             height = 100.percent()
-        } childOf mainContainer
+        }
 
-    private val themesList = ScrollComponent()
-        .constrain {
+        "rightContainer" {
+            x = SiblingConstraint()
+            width = FillConstraint()
+            height = 100.percent()
+        }
+
+        "themesList" {
             x = 15.pixels()
             y = SiblingConstraint(10f)
             width = 100.percent()
             height = FillConstraint()
         }
 
-    private val rightContainer by UIContainer()
-        .constrain {
-            x = SiblingConstraint()
-            width = FillConstraint()
-            height = 100.percent()
-        } childOf mainContainer
+        "themesListItem" {
+            y = SiblingConstraint(5f)
+            width = 100.percent()
+            height = ChildBasedMaxSizeConstraint()
+        }
 
+        "welcomeText" {
+            x = CenterConstraint()
+            y = CenterConstraint()
+            width = 90.percent()
+        }
+
+        "title" {
+            x = 15.pixels()
+            y = 15.pixels()
+            textScale = 1.5f.pixels()
+        }
+
+        "subtitle" {
+            x = 15.pixels()
+            y = SiblingConstraint(20f)
+        }
+
+        "closeButton" {
+            x = CenterConstraint()
+            y = 15.pixels(true)
+            width = 80.percent()
+            height = 25.pixels()
+            color = ColorPalette.secondaryBackground.brighter().constraint
+        }
+    }
+
+    private val mainContainer by UIBlock(ColorPalette.background)
+        .styled(stylesheet["mainContainer"])
+        .childOf(window)
+
+    private val leftContainer by UIBlock(ColorPalette.secondaryBackground)
+        .styled(stylesheet["leftContainer"])
+        .childOf(mainContainer)
+
+    private val rightContainer by UIContainer()
+        .styled(stylesheet["rightContainer"])
+        .childOf(mainContainer)
+
+    private val themesList = ScrollComponent() styled stylesheet["themesList"]
     private val themeEditor by ThemeEditorContainer() childOf rightContainer
 
     private val welcomeText by UIWrappedText(
         text = "Choose a theme on the left side of your screen to edit it!",
         centered = true
     )
-        .constrain {
-            x = CenterConstraint()
-            y = CenterConstraint()
-            width = 90.percent()
-        } childOf rightContainer
+        .styled(stylesheet["welcomeText"])
+        .childOf(rightContainer)
 
     init {
         MediaMod.themeManager.onLoadedThemesUpdate(::addLoadedThemes)
 
         UIText("Theme Editor")
-            .constrain {
-                x = 15.pixels()
-                y = 15.pixels()
-                textScale = 1.5f.pixels()
-            } childOf leftContainer
+            .styled(stylesheet["title"])
+            .childOf(leftContainer)
 
         UIText("Themes")
-            .constrain {
-                x = 15.pixels()
-                y = SiblingConstraint(20f)
-            } childOf leftContainer
+            .styled(stylesheet["subtitle"])
+            .childOf(leftContainer)
 
         addLoadedThemes(MediaMod.themeManager.loadedThemes)
         themesList childOf leftContainer
 
         UIButton(text = "Close", textColor = Color.white)
-            .constrain {
-                x = CenterConstraint()
-                y = 15.pixels(true)
-                width = 80.percent()
-                height = 25.pixels()
-                color = ColorPalette.secondaryBackground.brighter().constraint
-            }
+            .styled(stylesheet["closeButton"])
             .onClick {
                 restorePreviousScreen()
             } childOf leftContainer
@@ -119,11 +149,7 @@ class ThemeEditorScreen : WindowScreen(
 
         themes.forEach { theme ->
             ThemeListItem(theme)
-                .constrain {
-                    y = SiblingConstraint(5f)
-                    width = 100.percent()
-                    height = ChildBasedMaxSizeConstraint()
-                }
+                .styled(stylesheet["themesListItem"])
                 .onClick {
                     select(null)
                     editTheme(this)
@@ -131,11 +157,7 @@ class ThemeEditorScreen : WindowScreen(
         }
 
         CreateThemeListItem()
-            .constrain {
-                y = SiblingConstraint(5f)
-                width = 100.percent()
-                height = ChildBasedMaxSizeConstraint()
-            }
+            .styled(stylesheet["themesListItem"])
             .onClick {
                 select(null)
                 createTheme()

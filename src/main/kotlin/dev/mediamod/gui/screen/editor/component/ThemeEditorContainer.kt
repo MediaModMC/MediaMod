@@ -1,5 +1,7 @@
 package dev.mediamod.gui.screen.editor.component
 
+import dev.mediamod.gui.style.styled
+import dev.mediamod.gui.style.stylesheet
 import dev.mediamod.theme.Colors
 import dev.mediamod.theme.Theme
 import gg.essential.elementa.components.UIContainer
@@ -14,6 +16,21 @@ import kotlin.reflect.KMutableProperty
 class ThemeEditorContainer : UIContainer() {
     val theme = BasicState<Theme?>(null)
 
+    private val stylesheet = stylesheet {
+        "this" {
+            x = 15.pixels()
+            y = 15.pixels()
+            width = 100.percent() - 30.pixels()
+            height = 100.percent() - 30.pixels()
+        }
+
+        "colorsContainer" {
+            y = SiblingConstraint(7.5f)
+            width = 100.percent()
+            height = 100.percent()
+        }
+    }
+
     private val themeNameState = BasicState("")
     private val themeNameText = UIText()
         .bindText(themeNameState)
@@ -22,19 +39,11 @@ class ThemeEditorContainer : UIContainer() {
         } childOf this
 
     private val colorsContainer by UIContainer()
-        .constrain {
-            y = SiblingConstraint(7.5f)
-            width = 100.percent()
-            height = 100.percent()
-        } childOf this
+        .styled(stylesheet["colorsContainer"])
+        .childOf(this)
 
     init {
-        constrain {
-            x = 15.pixels()
-            y = 15.pixels()
-            width = 100.percent() - 30.pixels()
-            height = 100.percent() - 30.pixels()
-        }
+        styled(stylesheet["this"])
 
         theme.onSetValue {
             it?.let {

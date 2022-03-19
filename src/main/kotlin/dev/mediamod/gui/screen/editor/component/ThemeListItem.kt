@@ -1,5 +1,7 @@
 package dev.mediamod.gui.screen.editor.component
 
+import dev.mediamod.gui.style.styled
+import dev.mediamod.gui.style.stylesheet
 import dev.mediamod.theme.Theme
 import dev.mediamod.utils.setColorAnimated
 import gg.essential.elementa.components.UIContainer
@@ -23,35 +25,45 @@ class ThemeListItem(
     private var action: (Theme.() -> Unit)? = null
     private val textState = BasicState(theme.name)
 
-    @Suppress("unused")
-    private val lockImage by UIImage.ofResource("/assets/mediamod/textures/icon/lock.png")
-        .constrain {
+    private val stylesheet = stylesheet {
+        "this" {
+            height = ChildBasedMaxSizeConstraint()
+        }
+
+        "lockImage" {
             y = CenterConstraint() - 0.5f.pixels()
             width = 8.pixels()
             height = 8.pixels()
-        } childOf this
+        }
 
-    private val text by UIText()
-        .bindText(textState)
-        .constrain {
+        "text" {
             x = SiblingConstraint(3f)
             y = CenterConstraint()
             color = unselectedColor
-        } childOf this
+        }
+    }
+
+    private val lockImage by UIImage.ofResource("/assets/mediamod/textures/icon/lock.png")
+        .styled(stylesheet["lockImage"])
+        .childOf(this)
+
+    private val text by UIText()
+        .bindText(textState)
+        .styled(stylesheet["text"])
+        .childOf(this)
 
     init {
+        styled(stylesheet["this"])
+
         if (theme !is Theme.InbuiltTheme) {
             lockImage.hide()
             text.setX(11.pixels())
         }
 
-        constrain {
-            height = ChildBasedMaxSizeConstraint()
-        }
-
         onMouseClick {
             USound.playButtonPress()
             action?.invoke(theme)
+
             select()
         }
     }
