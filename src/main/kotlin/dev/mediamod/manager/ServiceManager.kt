@@ -16,11 +16,9 @@ class ServiceManager {
 
         thread(true, name = "MediaMod Track Polling") {
             fixedRateTimer("MediaMod Track Polling", true, period = 3000L) {
-                services
-                    .firstNotNullOfOrNull { it.pollTrack() }
-                    ?.let {
-                        currentTrack.set(it)
-                    }
+                services.firstNotNullOfOrNull {
+                    runCatching { it.pollTrack() }.getOrNull()
+                }?.let { currentTrack.set(it) }
             }
         }
     }
