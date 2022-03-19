@@ -16,7 +16,7 @@ import gg.essential.universal.USound
 import java.awt.Color
 
 class ThemeListItem(
-    private val theme: Theme,
+    val theme: Theme,
     private val selectedColor: ColorConstraint = Color.white.constraint,
     private val unselectedColor: ColorConstraint = Color.white.darker().constraint
 ) : UIContainer() {

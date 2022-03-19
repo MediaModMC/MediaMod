@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage
 import java.io.File
 
 class ThemeManager {
+    private val loadedThemesUpdateSubscribers = mutableSetOf<(List<Theme>) -> Unit>()
     private val changeSubscribers = mutableSetOf<Theme.() -> Unit>()
     private val updateSubscribers = mutableSetOf<Theme.() -> Unit>()
     private val themesDirectory = File(MediaMod.dataDirectory, "themes")
@@ -40,6 +41,17 @@ class ThemeManager {
             loadedThemes.add(theme)
         }
     }
+
+    fun addTheme(theme: Theme) {
+        loadedThemes.add(theme)
+        emitLoadedThemesUpdate()
+    }
+
+    fun onLoadedThemesUpdate(callback: (List<Theme>) -> Unit) =
+        loadedThemesUpdateSubscribers.add(callback)
+
+    fun emitLoadedThemesUpdate() =
+        loadedThemesUpdateSubscribers.forEach { it.invoke(loadedThemes) }
 
     fun onChange(callback: Theme.() -> Unit) =
         changeSubscribers.add(callback)

@@ -7,13 +7,14 @@ import dev.mediamod.gui.screen.editor.component.CreateThemeListItem
 import dev.mediamod.gui.screen.editor.component.ThemeEditorContainer
 import dev.mediamod.gui.screen.editor.component.ThemeListItem
 import dev.mediamod.theme.Theme
+import dev.mediamod.theme.impl.defaultColors
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
-import gg.essential.elementa.components.UIBlock
-import gg.essential.elementa.components.UIContainer
-import gg.essential.elementa.components.UIText
-import gg.essential.elementa.components.UIWrappedText
-import gg.essential.elementa.constraints.*
+import gg.essential.elementa.components.*
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
+import gg.essential.elementa.constraints.FillConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import java.awt.Color
 
@@ -22,8 +23,6 @@ class ThemeEditorScreen : WindowScreen(
     restoreCurrentGuiOnClose = true,
     newGuiScale = 5
 ) {
-    private val manager = MediaMod.themeManager
-
     private val mainContainer by UIBlock(ColorPalette.background)
         .constrain {
             width = 100.percent()
@@ -35,6 +34,14 @@ class ThemeEditorScreen : WindowScreen(
             width = 35.percent()
             height = 100.percent()
         } childOf mainContainer
+
+    private val themesList = ScrollComponent()
+        .constrain {
+            x = 15.pixels()
+            y = SiblingConstraint(10f)
+            width = 100.percent()
+            height = FillConstraint()
+        }
 
     private val rightContainer by UIContainer()
         .constrain {
@@ -56,6 +63,8 @@ class ThemeEditorScreen : WindowScreen(
         } childOf rightContainer
 
     init {
+        MediaMod.themeManager.onLoadedThemesUpdate(::addLoadedThemes)
+
         UIText("Theme Editor")
             .constrain {
                 x = 15.pixels()
@@ -69,42 +78,8 @@ class ThemeEditorScreen : WindowScreen(
                 y = SiblingConstraint(20f)
             } childOf leftContainer
 
-        manager.loadedThemes.forEachIndexed { index, theme ->
-            ThemeListItem(theme)
-                .constrain {
-                    x = 15.pixels()
-                    y = SiblingConstraint(if (index == 0) 10f else 5f)
-                    width = 100.percent()
-                    height = ChildBasedMaxSizeConstraint()
-                }
-                .onClick {
-                    leftContainer.children
-                        .filterIsInstance<ThemeListItem>()
-                        .forEach {
-                            it.unselect()
-                        }
-
-                    // Just in case for some weird reason it says selected
-                    editTheme(this)
-                } childOf leftContainer
-        }
-
-        CreateThemeListItem()
-            .constrain {
-                x = 15.pixels()
-                y = SiblingConstraint(5f)
-                width = 100.percent()
-                height = ChildBasedMaxSizeConstraint()
-            }
-            .onClick {
-                leftContainer.children
-                    .filterIsInstance<ThemeListItem>()
-                    .forEach {
-                        it.unselect()
-                    }
-
-                createTheme()
-            } childOf leftContainer
+        addLoadedThemes(MediaMod.themeManager.loadedThemes)
+        themesList childOf leftContainer
 
         UIButton(text = "Close", textColor = Color.white)
             .constrain {
@@ -130,5 +105,51 @@ class ThemeEditorScreen : WindowScreen(
     }
 
     private fun createTheme() {
+        val count = MediaMod.themeManager.loadedThemes.filter { it.name.lowercase().startsWith("my theme") }.size
+        val suffix = if (count == 0) "" else " (${count + 1})"
+        val theme = Theme.LoadedTheme("My Theme$suffix", defaultColors)
+
+        MediaMod.themeManager.addTheme(theme)
+        editTheme(theme)
+        select(theme)
+    }
+
+    private fun addLoadedThemes(themes: List<Theme>) {
+        themesList.clearChildren()
+
+        themes.forEach { theme ->
+            ThemeListItem(theme)
+                .constrain {
+                    y = SiblingConstraint(5f)
+                    width = 100.percent()
+                    height = ChildBasedMaxSizeConstraint()
+                }
+                .onClick {
+                    select(null)
+                    editTheme(this)
+                } childOf themesList
+        }
+
+        CreateThemeListItem()
+            .constrain {
+                y = SiblingConstraint(5f)
+                width = 100.percent()
+                height = ChildBasedMaxSizeConstraint()
+            }
+            .onClick {
+                select(null)
+                createTheme()
+            } childOf themesList
+    }
+
+    private fun select(theme: Theme?) {
+        themesList.allChildren
+            .filterIsInstance<ThemeListItem>()
+            .forEach {
+                when (theme) {
+                    it.theme -> it.select()
+                    else -> it.unselect()
+                }
+            }
     }
 }
