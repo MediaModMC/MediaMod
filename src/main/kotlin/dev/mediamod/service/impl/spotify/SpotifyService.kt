@@ -49,14 +49,16 @@ class SpotifyService : Service() {
 
     override fun pollTrack(): Track? {
         val response = api.getCurrentTrack() ?: return null
-        return Track(
-            name = response.item.name,
-            artist = response.item.artists.joinToString(", ") { it.name },
-            artwork = URL(response.item.album.images.first().url),
-            elapsed = response.progressMs,
-            duration = response.item.durationMS,
-            paused = !response.isPlaying
-        )
+        return response.item?.let {
+            Track(
+                name = it.name,
+                artist = it.artists.joinToString(", ") { artist -> artist.name },
+                artwork = URL(it.album.images.first().url),
+                elapsed = response.progressMs,
+                duration = it.durationMS,
+                paused = !response.isPlaying
+            )
+        }
     }
 
     override fun Vigilant.CategoryPropertyBuilder.configuration() {
