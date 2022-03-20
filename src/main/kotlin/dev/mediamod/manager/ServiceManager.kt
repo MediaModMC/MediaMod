@@ -2,6 +2,7 @@ package dev.mediamod.manager
 
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
+import dev.mediamod.service.impl.browser.BrowserService
 import dev.mediamod.service.impl.spotify.SpotifyService
 import gg.essential.elementa.state.BasicState
 import kotlin.concurrent.fixedRateTimer
@@ -13,6 +14,7 @@ class ServiceManager {
 
     fun init() {
         addService(SpotifyService())
+        addService(BrowserService())
 
         thread(true, name = "MediaMod Track Polling") {
             fixedRateTimer("MediaMod Track Polling", true, period = 3000L) {
