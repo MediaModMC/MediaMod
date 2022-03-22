@@ -14,7 +14,7 @@ class BrowserService : Service() {
 
     override fun init() {
         extensionManager.init()
-        extensionManager.onTrack { track = it }
+//        extensionManager.onTrack { track = it }
     }
 
     override fun pollTrack() = track?.let {
