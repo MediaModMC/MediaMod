@@ -4,9 +4,9 @@ import dev.mediamod.websocket.message.impl.incoming.IncomingSocketMessage
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class IncomingHandshakeMessage(
-    override val id: String = "HANDSHAKE",
+data class IncomingHeartbeatMessage(
+    override val id: String = "HEARTBEAT",
     override val data: Data? = null,
-    override val token: String? = null
+    override val token: String
 ) : IncomingSocketMessage() {
 }

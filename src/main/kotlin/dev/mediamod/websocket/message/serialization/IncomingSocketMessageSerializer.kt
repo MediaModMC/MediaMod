@@ -2,6 +2,7 @@ package dev.mediamod.websocket.message.serialization
 
 import dev.mediamod.websocket.message.impl.incoming.IncomingSocketMessage
 import dev.mediamod.websocket.message.impl.incoming.impl.IncomingHandshakeMessage
+import dev.mediamod.websocket.message.impl.incoming.impl.IncomingHeartbeatMessage
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.*
 
@@ -10,6 +11,7 @@ object IncomingSocketMessageSerializer :
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<out IncomingSocketMessage> =
         when (val id = element.contentOrNull("id")) {
             "HANDSHAKE" -> IncomingHandshakeMessage.serializer()
+            "HEARTBEAT" -> IncomingHeartbeatMessage.serializer()
             else -> error("Unknown incoming message id: $id")
         }
 
