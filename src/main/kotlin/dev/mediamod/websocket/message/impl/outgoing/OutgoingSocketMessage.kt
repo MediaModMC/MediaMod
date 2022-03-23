@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable(with = OutgoingSocketMessageSerializer::class)
 abstract class OutgoingSocketMessage {
     abstract val id: String
-    abstract val data: Data
+    abstract val data: Data?
 
     @Serializable
     open class Data
