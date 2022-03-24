@@ -38,6 +38,7 @@ val mixinVersion: String by project
 val nightconfigVersion: String by project
 val dom4jVersion: String by project
 val javaWebsocketVersion: String by project
+val kotlinxCoroutinesVersion: String by project
 
 preprocess {
     vars.put("MC", mcVersion)
@@ -128,6 +129,7 @@ dependencies {
 
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
 
     customApi("gg.essential:elementa-${minecraftVersion}-${mcPlatform}:${elementaVersion}")
     customApi("gg.essential:universalcraft-${minecraftVersion}-${mcPlatform}:${universalCraftVersion}")
