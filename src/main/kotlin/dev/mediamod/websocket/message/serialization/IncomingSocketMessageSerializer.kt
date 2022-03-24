@@ -3,6 +3,7 @@ package dev.mediamod.websocket.message.serialization
 import dev.mediamod.websocket.message.impl.incoming.IncomingSocketMessage
 import dev.mediamod.websocket.message.impl.incoming.impl.IncomingHandshakeMessage
 import dev.mediamod.websocket.message.impl.incoming.impl.IncomingHeartbeatMessage
+import dev.mediamod.websocket.message.impl.incoming.impl.IncomingTrackMessage
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.*
 
@@ -12,6 +13,7 @@ object IncomingSocketMessageSerializer :
         when (val id = element.contentOrNull("id")) {
             "HANDSHAKE" -> IncomingHandshakeMessage.serializer()
             "HEARTBEAT" -> IncomingHeartbeatMessage.serializer()
+            "TRACK" -> IncomingTrackMessage.serializer()
             else -> error("Unknown incoming message id: $id")
         }
 

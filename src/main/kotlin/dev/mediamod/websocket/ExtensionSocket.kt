@@ -8,6 +8,8 @@ import dev.mediamod.websocket.message.impl.incoming.impl.IncomingHeartbeatMessag
 import dev.mediamod.websocket.message.impl.outgoing.OutgoingSocketMessage
 import dev.mediamod.websocket.message.impl.outgoing.impl.OutgoingHandshakeMessage
 import dev.mediamod.websocket.message.impl.outgoing.impl.OutgoingHeartbeatMessage
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -18,7 +20,11 @@ import java.net.InetSocketAddress
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
-class ExtensionSocket(host: String, port: Int) : WebSocketServer(InetSocketAddress(host, port)) {
+class ExtensionSocket(
+    host: String,
+    port: Int,
+    private val messageFlow: MutableSharedFlow<IncomingSocketMessage>
+) : WebSocketServer(InetSocketAddress(host, port)) {
     private var token: String? = null
     private var lastHeartbeat: Long = 0
 
@@ -57,19 +63,17 @@ class ExtensionSocket(host: String, port: Int) : WebSocketServer(InetSocketAddre
         logger.error("Extension socket encountered an error: ", ex)
     }
 
-    override fun onMessage(socket: WebSocket, message: String) {
-        logger.info("Received message: $message")
+    override fun onMessage(socket: WebSocket, data: String) {
+        val message = runCatching { json.decodeFromString<IncomingSocketMessage>(data) }.getOrNull()
+            ?: return logger.error("Failed to parse message from websocket: $data")
 
-        val data = runCatching { json.decodeFromString<IncomingSocketMessage>(message) }.getOrNull()
-            ?: return logger.error("Failed to parse message from websocket: $message")
+        if (token != message.token) {
+            logger.error("Received mismatched token!")
+            return
+        }
 
-        when (data) {
+        when (message) {
             is IncomingHandshakeMessage -> {
-                if (token != null) {
-                    // TODO: Terminate connection
-                    logger.error("Attempt to create a connection when a client was already connected!")
-                }
-
                 UUID.randomUUID().toString().let {
                     token = it
                     sendMessage(OutgoingHandshakeMessage(it))
@@ -77,18 +81,15 @@ class ExtensionSocket(host: String, port: Int) : WebSocketServer(InetSocketAddre
             }
 
             is IncomingHeartbeatMessage -> {
-                if (token != data.token) {
-                    logger.error("Received mismatched token!")
-                    return
-                }
-                
                 lastHeartbeat = System.currentTimeMillis()
                 sendMessage(OutgoingHeartbeatMessage())
             }
         }
+
+        runBlocking { messageFlow.emit(message) }
     }
 
-    private fun sendMessage(packet: OutgoingSocketMessage) {
+    internal fun sendMessage(packet: OutgoingSocketMessage) {
         val string = strictJson.encodeToString(packet)
         broadcast(string)
     }

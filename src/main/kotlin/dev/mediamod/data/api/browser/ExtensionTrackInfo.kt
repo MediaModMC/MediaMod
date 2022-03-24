@@ -9,7 +9,8 @@ data class ExtensionTrackInfo(
     val artist: String,
     @SerialName("album_art")
     val albumArt: String,
-    val timestamps: Timestamps
+    val timestamps: Timestamps,
+    val paused: Boolean
 ) {
     @Serializable
     data class Timestamps(

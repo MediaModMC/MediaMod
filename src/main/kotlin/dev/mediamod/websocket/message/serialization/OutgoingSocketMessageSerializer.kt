@@ -3,6 +3,7 @@ package dev.mediamod.websocket.message.serialization
 import dev.mediamod.websocket.message.impl.outgoing.OutgoingSocketMessage
 import dev.mediamod.websocket.message.impl.outgoing.impl.OutgoingHandshakeMessage
 import dev.mediamod.websocket.message.impl.outgoing.impl.OutgoingHeartbeatMessage
+import dev.mediamod.websocket.message.impl.outgoing.impl.OutgoingTrackMessage
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.*
 
@@ -13,6 +14,7 @@ object OutgoingSocketMessageSerializer : JsonContentPolymorphicSerializer<Outgoi
         when (val id = element.contentOrNull("id")) {
             "HANDSHAKE" -> OutgoingHandshakeMessage.serializer()
             "HEARTBEAT" -> OutgoingHeartbeatMessage.serializer()
+            "TRACK" -> OutgoingTrackMessage.serializer()
             else -> error("Unknown outgoing message id: $id")
         }
 

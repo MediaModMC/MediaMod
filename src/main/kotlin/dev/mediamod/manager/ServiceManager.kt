@@ -6,22 +6,19 @@ import dev.mediamod.service.impl.browser.BrowserService
 import dev.mediamod.service.impl.spotify.SpotifyService
 import gg.essential.elementa.state.BasicState
 import kotlin.concurrent.fixedRateTimer
-import kotlin.concurrent.thread
 
 class ServiceManager {
     val currentTrack = BasicState<Track?>(null)
     val services = mutableSetOf<Service>()
 
     fun init() {
-        addService(SpotifyService())
         addService(BrowserService())
+        addService(SpotifyService())
 
-        thread(true, name = "MediaMod Track Polling") {
-            fixedRateTimer("MediaMod Track Polling", true, period = 3000L) {
-                services.firstNotNullOfOrNull {
-                    runCatching { it.pollTrack() }.getOrNull()
-                }?.let { currentTrack.set(it) }
-            }
+        fixedRateTimer("MediaMod Track Polling", true, period = 3000L) {
+            services.map {
+                it.pollTrack()
+            }.firstOrNull()?.let { currentTrack.set(it) }
         }
     }
 
