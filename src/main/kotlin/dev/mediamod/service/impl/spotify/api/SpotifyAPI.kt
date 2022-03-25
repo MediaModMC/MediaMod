@@ -80,7 +80,7 @@ class SpotifyAPI(
             }
             is Result.Failure -> {
                 // TODO: Let's find a way to make this less spammy when the API isn't available
-                logger.error("Error occurred when refreshing access token: ", result.error)
+                logger.error("Error occurred when refreshing access token! (API not accessible)")
             }
         }
 }
