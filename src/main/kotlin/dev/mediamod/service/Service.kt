@@ -5,7 +5,7 @@ import gg.essential.vigilance.Vigilant
 
 abstract class Service {
     abstract val displayName: String
-    abstract fun pollTrack(): Track?
+    abstract suspend fun pollTrack(): Track?
 
     open val hasConfiguration: Boolean = false
 

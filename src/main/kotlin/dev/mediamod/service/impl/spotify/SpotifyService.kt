@@ -47,7 +47,7 @@ class SpotifyService : Service() {
         logger.info("Successfully logged in to Spotify!")
     }
 
-    override fun pollTrack(): Track? {
+    override suspend fun pollTrack(): Track? {
         val response = api.getCurrentTrack() ?: return null
         return response.item?.let {
             Track(

@@ -4,6 +4,7 @@ package dev.mediamod.service.impl.spotify.api
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.github.kittinunf.result.Result
 import dev.mediamod.MediaMod
 import dev.mediamod.config.Configuration
@@ -36,28 +37,21 @@ class SpotifyAPI(
             addParameter("state", state)
         }.build()
 
-    fun getCurrentTrack(): SpotifyCurrentTrackResponse? {
+    suspend fun getCurrentTrack(): SpotifyCurrentTrackResponse? {
         val accessToken = Configuration.spotifyAccessToken
 
-        val (_, response, result) = Fuel
+        val result = Fuel
             .get("https://$apiBaseURL/me/player/currently-playing")
             .authentication()
             .bearer(accessToken)
-            .responseString()
+            .awaitStringResult()
 
         return when (result) {
-            is Result.Success -> {
-                if (response.statusCode == 204)
-                    return null
-
-                return json.decodeFromString(result.get())
-            }
+            is Result.Success -> json.decodeFromString(result.get())
             is Result.Failure -> {
-                if (response.statusCode == 400 || response.statusCode == 401) {
-                    refreshAccessToken(Configuration.spotifyRefreshToken)
-                } else {
-                    logger.error("Error occurred when getting the current track: ", result.error)
-                }
+                refreshAccessToken(Configuration.spotifyRefreshToken)
+                logger.error("Error occurred when getting the current track: ", result.error)
+
                 null
             }
         }
