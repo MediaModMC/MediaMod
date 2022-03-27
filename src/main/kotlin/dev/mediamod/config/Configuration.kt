@@ -39,6 +39,14 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
 
     var textScrollSpeed = 0.25f
 
+    private var _preferredService = 0
+        set(value) {
+            field = value
+            preferredService = MediaMod.serviceManager.services[value].displayName
+        }
+
+    var preferredService = ""
+
     init {
         category("General") {
             subcategory("Appearance") {
@@ -96,6 +104,19 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
             }
         }
 
+        category("Services") {
+            subcategory("Behaviour") {
+                selector(
+                    ::_preferredService,
+                    "Preferred Service",
+                    "Choose the service which will take priority over others. If that service isn't playing anything, it will fallback to the others.",
+                    MediaMod.serviceManager.services.map { it.displayName }
+                )
+
+                text(::preferredService, "Preferred Service Name", hidden = true)
+            }
+        }
+
         MediaMod.serviceManager.services
             .filter { it.hasConfiguration }
             .forEach {
@@ -108,6 +129,10 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
 
         _selectedTheme = MediaMod.themeManager.loadedThemes
             .indexOfFirst { it.name == selectedTheme }
+            .takeIf { it >= 0 } ?: 0
+
+        _preferredService = MediaMod.serviceManager.services
+            .indexOfFirst { it.displayName == preferredService }
             .takeIf { it >= 0 } ?: 0
     }
 

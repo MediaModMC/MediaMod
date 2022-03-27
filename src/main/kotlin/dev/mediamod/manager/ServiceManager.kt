@@ -1,5 +1,6 @@
 package dev.mediamod.manager
 
+import dev.mediamod.config.Configuration
 import dev.mediamod.data.Track
 import dev.mediamod.service.Service
 import dev.mediamod.service.impl.browser.BrowserService
@@ -9,16 +10,19 @@ import kotlin.concurrent.fixedRateTimer
 
 class ServiceManager {
     val currentTrack = BasicState<Track?>(null)
-    val services = mutableSetOf<Service>()
+    val services = mutableListOf<Service>()
 
     fun init() {
         addService(BrowserService())
         addService(SpotifyService())
 
         fixedRateTimer("MediaMod Track Polling", true, period = 3000L) {
-            services.map {
-                it.pollTrack()
-            }.firstOrNull()?.let { currentTrack.set(it) }
+            services
+                .sortedByDescending {
+                    it.displayName == Configuration.preferredService
+                }.map {
+                    it.pollTrack()
+                }.firstOrNull()?.let { currentTrack.set(it) }
         }
     }
 
