@@ -137,6 +137,7 @@ dependencies {
 
     shadeImplementation("com.github.kittinunf.fuel:fuel:${fuelVersion}")
     shadeImplementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:${fuelVersion}")
+    shadeImplementation("com.github.kittinunf.fuel:fuel-coroutines:${fuelVersion}")
     shadeImplementation("com.github.kittinunf.result:result:${resultVersion}")
     shadeImplementation("org.java-websocket:Java-WebSocket:${javaWebsocketVersion}")
 }
