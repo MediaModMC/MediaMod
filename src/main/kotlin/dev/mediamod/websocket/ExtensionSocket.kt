@@ -38,7 +38,9 @@ class ExtensionSocket(
 
             val difference = System.currentTimeMillis() - lastHeartbeat
             if (difference >= 3000) {
-                logger.warn("Haven't received a heartbeat from the extension in 5 seconds! Invalidating connection.")
+                logger.warn("Haven't received a heartbeat from the extension in 3 seconds! Invalidating all connections.")
+
+                connections.forEach { it.close(1000, "No heartbeat") }
                 token = null
             }
         }
