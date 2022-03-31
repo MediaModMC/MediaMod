@@ -7,14 +7,19 @@ import dev.mediamod.theme.impl.DynamicTheme
 import dev.mediamod.utils.json
 import dev.mediamod.utils.logger
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import java.awt.image.BufferedImage
 import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.div
+import kotlin.io.path.writeText
 
 class ThemeManager {
     private val loadedThemesUpdateSubscribers = mutableSetOf<(List<Theme>) -> Unit>()
     private val changeSubscribers = mutableSetOf<Theme.() -> Unit>()
     private val updateSubscribers = mutableSetOf<Theme.() -> Unit>()
     private val themesDirectory = File(MediaMod.dataDirectory, "themes")
+    private val themeLocations = mutableMapOf<String, String>()
 
     val loadedThemes = mutableListOf<Theme>(DefaultTheme(), DynamicTheme())
     var currentTheme: Theme = loadedThemes.first()
@@ -36,8 +41,14 @@ class ThemeManager {
                 return@forEach
 
             val theme: Theme.LoadedTheme = json.decodeFromString(it.readText())
+            if (themeLocations[theme.name] != null) {
+                logger.warn("Found theme with the same name as another from ${it.path}! Refusing to load it.")
+                return
+            }
+
             logger.info("Loaded theme: ${theme.name} from ${it.path}")
 
+            themeLocations[theme.name] = it.name
             loadedThemes.add(theme)
         }
     }
@@ -68,5 +79,11 @@ class ThemeManager {
     fun updateTheme(image: BufferedImage) {
         currentTheme.update(image)
         emitUpdate()
+    }
+
+    fun saveTheme(theme: Theme.LoadedTheme) {
+        val fileName = themeLocations[theme.name] ?: return
+        val path = Path(themesDirectory.absolutePath) / fileName
+        path.writeText(json.encodeToString(theme))
     }
 }

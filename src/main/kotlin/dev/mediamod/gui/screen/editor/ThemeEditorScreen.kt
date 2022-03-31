@@ -124,7 +124,13 @@ class ThemeEditorScreen : WindowScreen(
             } childOf leftContainer
     }
 
+    override fun onScreenClose() {
+        super.onScreenClose()
+        saveTheme(themeEditor.theme.get())
+    }
+
     private fun editTheme(theme: Theme?) {
+        saveTheme(themeEditor.theme.get())
         themeEditor.theme.set(theme)
 
         if (theme == null) {
@@ -173,5 +179,12 @@ class ThemeEditorScreen : WindowScreen(
                     else -> it.unselect()
                 }
             }
+    }
+
+    private fun saveTheme(theme: Theme?) {
+        theme?.let {
+            if (it !is Theme.LoadedTheme) return@let
+            MediaMod.themeManager.saveTheme(it)
+        }
     }
 }

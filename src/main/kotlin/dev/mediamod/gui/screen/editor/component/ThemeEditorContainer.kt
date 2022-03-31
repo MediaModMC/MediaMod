@@ -63,7 +63,7 @@ class ThemeEditorContainer : UIContainer() {
             if (it !is Theme.LoadedTheme) return@let
             it.colors = colors
 
-            // TODO: Write to file
+            theme.set(it)
         }
 
         colorComponent(colors::background, "Background", ::complete)
