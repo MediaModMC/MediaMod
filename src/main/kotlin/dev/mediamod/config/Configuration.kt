@@ -37,7 +37,7 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
     var playerX = 5f
     var playerY = 5f
 
-    var textScrollSpeed = 0.25f
+    var textScrollSpeed = 0.09f
 
     private var _preferredService = 0
         set(value) {
@@ -97,9 +97,9 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
                     ::textScrollSpeed,
                     "Text Scroll Speed",
                     "Determines how fast the text will scroll when it exceeds the width of the player",
-                    min = 0.05f,
-                    max = 0.75f,
-                    decimalPlaces = 2
+                    min = 0.025f,
+                    max = 0.4f,
+                    decimalPlaces = 3
                 )
             }
         }

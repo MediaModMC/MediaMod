@@ -13,7 +13,6 @@ import gg.essential.elementa.dsl.pixels
 import gg.essential.elementa.state.BasicState
 import gg.essential.elementa.state.pixels
 import gg.essential.universal.UGraphics
-import gg.essential.universal.UMatrixStack
 
 class RotatingTextComponent(
     private val state: BasicState<String>,
@@ -42,8 +41,8 @@ class RotatingTextComponent(
         secondText.bindText(state)
     }
 
-    override fun draw(matrixStack: UMatrixStack) {
-        super.draw(matrixStack)
+    override fun animationFrame() {
+        super.animationFrame()
 
         val text = state.get()
         val textWidth = UGraphics.getStringWidth(text)
