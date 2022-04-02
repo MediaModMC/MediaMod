@@ -9,7 +9,7 @@ import kotlinx.serialization.encodeToString
 
 class APIManager {
     companion object {
-        private const val baseURL = "http://localhost:3000"
+        private const val baseURL = "https://staging-api.mediamod.dev"
     }
 
     fun exchangeCode(code: String) =
