@@ -9,7 +9,7 @@ import dev.mediamod.gui.screen.editor.component.ThemeListItem
 import dev.mediamod.gui.style.styled
 import dev.mediamod.gui.style.stylesheet
 import dev.mediamod.theme.Theme
-import dev.mediamod.theme.impl.defaultColors
+import dev.mediamod.theme.impl.classicColors
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
@@ -143,7 +143,7 @@ class ThemeEditorScreen : WindowScreen(
     private fun createTheme() {
         val count = MediaMod.themeManager.loadedThemes.filter { it.name.lowercase().startsWith("my theme") }.size
         val suffix = if (count == 0) "" else " (${count + 1})"
-        val theme = Theme.LoadedTheme("My Theme$suffix", defaultColors)
+        val theme = Theme.LoadedTheme("My Theme$suffix", classicColors)
 
         MediaMod.themeManager.addTheme(theme)
         editTheme(theme)

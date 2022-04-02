@@ -5,7 +5,7 @@ import dev.mediamod.theme.Theme
 import java.awt.Color
 import java.awt.image.BufferedImage
 
-internal val defaultColors = Colors(
+internal val classicColors = Colors(
     background = Color.darkGray.darker(),
     text = Color.white,
     progressBar = Color.green,
@@ -13,7 +13,7 @@ internal val defaultColors = Colors(
     progressBarText = Color.darkGray.darker()
 )
 
-class DefaultTheme : Theme.InbuiltTheme("Default") {
-    override val colors = defaultColors
+class ClassicTheme : Theme.InbuiltTheme("Classic") {
+    override val colors = classicColors
     override fun update(image: BufferedImage) {}
 }

@@ -10,7 +10,7 @@ import kotlin.math.abs
 import kotlin.math.pow
 
 class DynamicTheme : Theme.InbuiltTheme("Dynamic") {
-    override var colors = defaultColors
+    override var colors = classicColors
         private set
 
     override fun update(image: BufferedImage) {

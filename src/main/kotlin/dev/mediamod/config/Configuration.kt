@@ -19,7 +19,7 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
             selectedTheme = MediaMod.themeManager.loadedThemes[value].name
         }
 
-    var selectedTheme = "Default"
+    var selectedTheme = "Dynamic"
         set(value) {
             field = value
 

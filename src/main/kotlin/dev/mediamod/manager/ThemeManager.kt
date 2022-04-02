@@ -2,7 +2,7 @@ package dev.mediamod.manager
 
 import dev.mediamod.MediaMod
 import dev.mediamod.theme.Theme
-import dev.mediamod.theme.impl.DefaultTheme
+import dev.mediamod.theme.impl.ClassicTheme
 import dev.mediamod.theme.impl.DynamicTheme
 import dev.mediamod.utils.json
 import dev.mediamod.utils.logger
@@ -21,7 +21,7 @@ class ThemeManager {
     private val themesDirectory = File(MediaMod.dataDirectory, "themes")
     private val themeLocations = mutableMapOf<String, String>()
 
-    val loadedThemes = mutableListOf<Theme>(DefaultTheme(), DynamicTheme())
+    val loadedThemes = mutableListOf<Theme>(DynamicTheme(), ClassicTheme())
     var currentTheme: Theme = loadedThemes.first()
         set(value) {
             field = value
