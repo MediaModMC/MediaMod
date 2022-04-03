@@ -48,6 +48,9 @@ class SpotifyService : Service() {
     }
 
     override suspend fun pollTrack(): Track? {
+        if (Configuration.spotifyAccessToken.isEmpty())
+            return null
+
         val response = api.getCurrentTrack() ?: return null
         return response.item?.let {
             Track(
