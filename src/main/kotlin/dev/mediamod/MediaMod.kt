@@ -25,6 +25,7 @@ object MediaMod {
     val dataDirectory = File("./mediamod")
 
     val apiManager = APIManager()
+    val notificationManager = NotificationManager()
     val serviceManager = ServiceManager()
     val renderManager = RenderManager()
     val sessionManager = SessionManager()

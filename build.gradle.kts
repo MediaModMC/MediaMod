@@ -42,6 +42,7 @@ val kotlinxCoroutinesVersion: String by project
 val devauthModuleName =
     if (mcPlatform == "fabric") "fabric" else (if (mcVersion <= 11202) "forge-legacy" else "forge-latest")
 val devauthVersion: String by project
+val toastsVersion: String by project
 
 preprocess {
     vars.put("MC", mcVersion)
@@ -79,6 +80,7 @@ repositories {
     maven("https://maven.gegy.dev")
     maven("https://maven.terraformersmc.com")
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    maven("https://jitpack.io")
 }
 
 val shade by configurations.creating { isTransitive = false }
@@ -120,6 +122,9 @@ dependencies {
         modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
         modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
         modImplementation("com.terraformersmc:modmenu:$modMenuVersion")
+
+        modImplementation("com.github.cbyrneee:Toasts:$toastsVersion")
+        shade("com.github.cbyrneee:Toasts:$toastsVersion")
 
         shade("gg.essential:elementa-${minecraftVersion}-${mcPlatform}:${elementaVersion}")
         shade("org.dom4j:dom4j:$dom4jVersion")

@@ -1,6 +1,8 @@
 package dev.mediamod.gui.screen.editor.component
 
+import com.github.kittinunf.result.getOrNull
 import dev.mediamod.MediaMod
+import dev.mediamod.data.api.mediamod.PublishThemeResponse
 import dev.mediamod.gui.ColorPalette
 import dev.mediamod.gui.component.UIButton
 import dev.mediamod.gui.style.styled
@@ -63,10 +65,7 @@ class ThemeEditorContainer : UIContainer() {
             .onClick {
                 theme.get()?.let {
                     if (it !is Theme.LoadedTheme) return@let
-                    thread(true) {
-                        // TODO: Show when a theme is being published, and also show if it was a failure or success
-                        MediaMod.apiManager.publishTheme(it)
-                    }
+                    thread(true) { publishTheme(it) }
                 }
             } childOf this
 
@@ -87,6 +86,23 @@ class ThemeEditorContainer : UIContainer() {
             } else {
                 publish.unhide()
             }
+        }
+    }
+
+    private fun publishTheme(it: Theme.LoadedTheme) {
+        MediaMod.notificationManager.showNotification("MediaMod", "Publishing theme...")
+
+        val response = MediaMod.apiManager.publishTheme(it).getOrNull()
+            ?: return MediaMod.notificationManager.showNotification("MediaMod", "Failed to publish theme!")
+
+        if (response is PublishThemeResponse) {
+            MediaMod.notificationManager.showNotification(
+                "Theme published!",
+                "URL copied to clipboard."
+            )
+            // TODO: Copy to clipboard
+        } else {
+            MediaMod.notificationManager.showNotification("MediaMod", "Failed to publish theme!")
         }
     }
 
