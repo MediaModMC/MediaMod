@@ -2,9 +2,9 @@ package dev.mediamod.manager
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.jsonBody
-import dev.mediamod.utils.Session
 import dev.mediamod.utils.json
 import dev.mediamod.utils.hex
+import gg.essential.universal.UMinecraft
 import kotlinx.serialization.encodeToString
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -18,8 +18,8 @@ class SessionManager {
         val serverIdHash = generateServerIdHash(sharedSecret)
 
         val body = mapOf(
-            "accessToken" to Session.accessToken,
-            "selectedProfile" to Session.uuid,
+            "accessToken" to UMinecraft.getMinecraft().session.accessToken,
+            "selectedProfile" to UMinecraft.getMinecraft().session.uuid,
             "serverId" to serverIdHash
         )
 

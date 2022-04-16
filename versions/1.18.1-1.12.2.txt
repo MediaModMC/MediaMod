@@ -1,0 +1,5 @@
+net.minecraft.client.Minecraft getUser() net.minecraft.client.Minecraft getSession()
+
+net.minecraft.client.User getName() net.minecraft.util.Session getUsername()
+net.minecraft.client.User getAccessToken() net.minecraft.util.Session getToken()
+net.minecraft.client.User getUuid() net.minecraft.util.Session getPlayerID()
