@@ -43,6 +43,7 @@ val devauthModuleName =
     if (mcPlatform == "fabric") "fabric" else (if (mcVersion <= 11202) "forge-legacy" else "forge-latest")
 val devauthVersion: String by project
 val toastsVersion: String by project
+val slf4jVersion: String by project
 
 preprocess {
     vars.put("MC", mcVersion)
@@ -101,6 +102,8 @@ dependencies {
     if (mcPlatform == "forge") {
         if (mcVersion <= 11202) {
             mappings("de.oceanlabs.mcp:$mappingsVersion")
+
+            shade("org.slf4j:slf4j-api:$slf4jVersion")
 
             shade("gg.essential:loader-launchwrapper:$essentialLoaderVersion")
             modRuntimeOnly("gg.essential:loader-launchwrapper:$essentialLoaderVersion")
@@ -176,6 +179,7 @@ tasks {
             relocate("gg.essential.elementa", "dev.mediamod.relocated.elementa")
             relocate("gg.essential.universal", "dev.mediamod.relocated.universal")
             relocate("gg.essential.vigilance", "dev.mediamod.relocated.vigilance")
+            relocate("org.slf4j", "dev.mediamod.relocated.slf4j")
         }
     }
 
