@@ -1,9 +1,6 @@
 package dev.mediamod
 
-import dev.mediamod.manager.APIManager
-import dev.mediamod.manager.RenderManager
-import dev.mediamod.manager.ServiceManager
-import dev.mediamod.manager.ThemeManager
+import dev.mediamod.manager.*
 import dev.mediamod.utils.logger
 import java.io.File
 import kotlin.concurrent.thread
@@ -30,6 +27,7 @@ object MediaMod {
     val apiManager = APIManager()
     val serviceManager = ServiceManager()
     val renderManager = RenderManager()
+    val sessionManager = SessionManager()
     val themeManager = ThemeManager()
 
     //#if MC<=11202
