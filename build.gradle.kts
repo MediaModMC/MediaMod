@@ -39,6 +39,9 @@ val nightconfigVersion: String by project
 val dom4jVersion: String by project
 val javaWebsocketVersion: String by project
 val kotlinxCoroutinesVersion: String by project
+val devauthModuleName =
+    if (mcPlatform == "fabric") "fabric" else (if (mcVersion <= 11202) "forge-legacy" else "forge-latest")
+val devauthVersion: String by project
 
 preprocess {
     vars.put("MC", mcVersion)
@@ -75,6 +78,7 @@ repositories {
     maven("https://repo.sk1er.club/repository/maven-public")
     maven("https://maven.gegy.dev")
     maven("https://maven.terraformersmc.com")
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
 val shade by configurations.creating { isTransitive = false }
@@ -140,6 +144,8 @@ dependencies {
     shadeImplementation("com.github.kittinunf.fuel:fuel-coroutines:${fuelVersion}")
     shadeImplementation("com.github.kittinunf.result:result:${resultVersion}")
     shadeImplementation("org.java-websocket:Java-WebSocket:${javaWebsocketVersion}")
+
+    modRuntimeOnly("me.djtheredstoner:DevAuth-${devauthModuleName}:${devauthVersion}")
 }
 
 tasks {
