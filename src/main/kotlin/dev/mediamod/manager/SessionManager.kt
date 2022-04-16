@@ -2,6 +2,7 @@ package dev.mediamod.manager
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.jsonBody
+import dev.mediamod.data.api.mojang.SessionJoinRequest
 import dev.mediamod.utils.json
 import dev.mediamod.utils.hex
 import gg.essential.universal.UMinecraft
@@ -17,10 +18,10 @@ class SessionManager {
         val sharedSecret = generateSharedSecret()
         val serverIdHash = generateServerIdHash(sharedSecret)
 
-        val body = mapOf(
-            "accessToken" to UMinecraft.getMinecraft().session.accessToken,
-            "selectedProfile" to UMinecraft.getMinecraft().session.uuid,
-            "serverId" to serverIdHash
+        val body = SessionJoinRequest(
+            UMinecraft.getMinecraft().session.accessToken,
+            UMinecraft.getMinecraft().session.uuid,
+            serverIdHash
         )
 
         val (_, response, _) = Fuel.post("${baseURL}/session/minecraft/join")
