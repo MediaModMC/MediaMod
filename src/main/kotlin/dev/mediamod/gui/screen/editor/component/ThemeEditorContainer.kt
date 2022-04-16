@@ -1,15 +1,20 @@
 package dev.mediamod.gui.screen.editor.component
 
+import dev.mediamod.MediaMod
+import dev.mediamod.gui.ColorPalette
+import dev.mediamod.gui.component.UIButton
 import dev.mediamod.gui.style.styled
 import dev.mediamod.gui.style.stylesheet
 import dev.mediamod.theme.Colors
 import dev.mediamod.theme.Theme
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
+import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.state.BasicState
 import java.awt.Color
+import kotlin.concurrent.thread
 import kotlin.reflect.KMutableProperty
 
 @Suppress("unused")
@@ -29,6 +34,14 @@ class ThemeEditorContainer : UIContainer() {
             width = 100.percent()
             height = 100.percent()
         }
+
+        "publishButton" {
+            x = 0.pixels(true)
+            y = 0.pixels(true)
+            width = ChildBasedSizeConstraint() + 50.pixels()
+            height = 25.pixels()
+            color = ColorPalette.secondaryBackground.brighter().constraint
+        }
     }
 
     private val themeNameState = BasicState("")
@@ -45,6 +58,21 @@ class ThemeEditorContainer : UIContainer() {
     init {
         styled(stylesheet["this"])
 
+        val publish = UIButton("Publish", Color.white)
+            .styled(stylesheet["publishButton"])
+            .onClick {
+                theme.get()?.let {
+                    if (it !is Theme.LoadedTheme) return@let
+                    thread(true) {
+                        // TODO: Show when a theme is being published, and also show if it was a failure or success
+                        MediaMod.apiManager.publishTheme(it)
+                    }
+                }
+            } childOf this
+
+        if (theme.get() !is Theme.LoadedTheme)
+            publish.hide(true)
+
         theme.onSetValue {
             it?.let {
                 themeNameState.set(it.name)
@@ -52,6 +80,12 @@ class ThemeEditorContainer : UIContainer() {
             } ?: run {
                 themeNameState.set("")
                 colorsContainer.children.clear()
+            }
+
+            if (theme.get() !is Theme.LoadedTheme) {
+                publish.hide(true)
+            } else {
+                publish.unhide()
             }
         }
     }
