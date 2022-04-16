@@ -16,7 +16,7 @@ import gg.essential.universal.UMinecraft
 
 class APIManager {
     companion object {
-        private const val baseURL = "http://localhost:3001"
+        private const val baseURL = "https://staging-api.mediamod.dev"
     }
 
     fun exchangeCode(code: String) =
