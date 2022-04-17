@@ -179,7 +179,10 @@ tasks {
             relocate("gg.essential.elementa", "dev.mediamod.relocated.elementa")
             relocate("gg.essential.universal", "dev.mediamod.relocated.universal")
             relocate("gg.essential.vigilance", "dev.mediamod.relocated.vigilance")
-            relocate("org.slf4j", "dev.mediamod.relocated.slf4j")
+
+            if (mcVersion <= 11202) {
+                relocate("org.slf4j", "dev.mediamod.relocated.slf4j")
+            }
         }
     }
 
