@@ -12,16 +12,17 @@ import gg.essential.elementa.dsl.constraint
 import gg.essential.universal.USound
 import java.awt.Color
 
-class CreateThemeListItem(
+class CustomThemeListItem(
+    text: String,
     private val color: ColorConstraint = Color.white.darker().constraint
 ) : UIContainer() {
     private var action: (UIComponent.() -> Unit)? = null
 
     init {
-        UIText("+ Create new theme...")
+        UIText(text)
             .constrain {
                 y = CenterConstraint()
-                color = this@CreateThemeListItem.color
+                color = this@CustomThemeListItem.color
             } childOf this
 
         constrain {

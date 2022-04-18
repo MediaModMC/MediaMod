@@ -3,7 +3,7 @@ package dev.mediamod.gui.screen.editor
 import dev.mediamod.MediaMod
 import dev.mediamod.gui.ColorPalette
 import dev.mediamod.gui.component.UIButton
-import dev.mediamod.gui.screen.editor.component.CreateThemeListItem
+import dev.mediamod.gui.screen.editor.component.CustomThemeListItem
 import dev.mediamod.gui.screen.editor.component.ThemeEditorContainer
 import dev.mediamod.gui.screen.editor.component.ThemeListItem
 import dev.mediamod.gui.style.styled
@@ -162,7 +162,7 @@ class ThemeEditorScreen : WindowScreen(
                 } childOf themesList
         }
 
-        CreateThemeListItem()
+        CustomThemeListItem("+ Create new theme...")
             .styled(stylesheet["themesListItem"])
             .onClick {
                 select(null)
