@@ -18,7 +18,9 @@ import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
 import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
+import gg.essential.universal.UDesktop
 import java.awt.Color
+import java.net.URL
 
 class ThemeEditorScreen : WindowScreen(
     version = ElementaVersion.V1,
@@ -168,6 +170,13 @@ class ThemeEditorScreen : WindowScreen(
                 select(null)
                 createTheme()
             } childOf themesList
+
+        CustomThemeListItem("↓ Import theme...")
+            .styled(stylesheet["themesListItem"])
+            .onClick {
+                select(null)
+                importTheme()
+            } childOf themesList
     }
 
     private fun select(theme: Theme?) {
@@ -188,5 +197,13 @@ class ThemeEditorScreen : WindowScreen(
             if (it !is Theme.LoadedTheme) return@let
             MediaMod.themeManager.saveTheme(it)
         }
+    }
+
+    private fun importTheme() {
+        fun error(message: String) = MediaMod.notificationManager.showNotification("Import theme", message)
+
+        val contents = UDesktop.getClipboardString()
+        val url = runCatching { URL(contents) }.getOrNull() ?: return error("Invalid theme URL!")
+        // TODO: Read contents of URL
     }
 }
