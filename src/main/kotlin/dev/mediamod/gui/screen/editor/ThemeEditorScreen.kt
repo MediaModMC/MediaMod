@@ -171,6 +171,8 @@ class ThemeEditorScreen : WindowScreen(
     }
 
     private fun select(theme: Theme?) {
+        if (theme == null) themeEditor.theme.set(null)
+
         themesList.allChildren
             .filterIsInstance<ThemeListItem>()
             .forEach {
