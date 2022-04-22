@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PublishThemeRequest(
     val username: String,
+    val uuid: String,
     val sharedSecret: String,
     val theme: Theme.LoadedTheme
 )

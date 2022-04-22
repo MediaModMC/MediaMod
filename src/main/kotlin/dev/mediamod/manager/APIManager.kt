@@ -16,7 +16,7 @@ import gg.essential.universal.UMinecraft
 
 class APIManager {
     companion object {
-        private const val baseURL = "https://staging-api.mediamod.dev"
+        private const val baseURL = "http://localhost:3001"
     }
 
     fun exchangeCode(code: String) =
@@ -35,7 +35,13 @@ class APIManager {
         val sharedSecret = MediaMod.sessionManager.joinServer()
             ?: error("Failed to contact Session Server!")
 
-        val body = PublishThemeRequest(UMinecraft.getMinecraft().session.username, sharedSecret.hex(), theme)
+        val body = PublishThemeRequest(
+            UMinecraft.getMinecraft().session.username,
+            UMinecraft.getMinecraft().session.uuid,
+            sharedSecret.hex(),
+            theme
+        )
+
         return Fuel.post("$baseURL/api/v1/themes/publish")
             .jsonBody(json.encodeToString(body))
             .responseObject<APIResponse>(json)
