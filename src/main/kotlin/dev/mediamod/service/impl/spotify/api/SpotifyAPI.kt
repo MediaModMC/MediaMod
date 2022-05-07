@@ -13,6 +13,8 @@ import dev.mediamod.data.api.mediamod.SpotifyTokenResponse
 import dev.mediamod.data.api.spotify.SpotifyCurrentTrackResponse
 import dev.mediamod.utils.json
 import dev.mediamod.utils.logger
+import gg.essential.universal.UMinecraft
+import gg.essential.universal.UScreen
 import kotlinx.serialization.decodeFromString
 import org.apache.http.client.utils.URIBuilder
 import java.net.URI
@@ -72,11 +74,17 @@ class SpotifyAPI(
                     else -> logger.error("Error occurred when refreshing access token: ${result.get()}")
                 }
             }
-            is Result.Failure -> {
-                // TODO: Let's find a way to make this less spammy when the API isn't available
-                if (!warnedNotAvailable)
+            is Result.Failure -> run {
+                if (!warnedNotAvailable) {
                     logger.error("Error occurred when refreshing access token! (API not accessible)")
-                warnedNotAvailable = true
+                    //#if MC>=11801
+                    if (UScreen.currentScreen == null || UMinecraft.getMinecraft().overlay != null) return
+                    //#else
+                    //$$ if (UScreen.currentScreen == null) return
+                    //#endif
+                    MediaMod.notificationManager.showNotification("MediaMod", "API features may be limited.")
+                    warnedNotAvailable = true
+                }
             }
         }
 }
