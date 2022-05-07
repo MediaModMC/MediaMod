@@ -9,6 +9,8 @@ import dev.mediamod.gui.style.styled
 import dev.mediamod.gui.style.stylesheet
 import dev.mediamod.theme.Colors
 import dev.mediamod.theme.Theme
+import gg.essential.elementa.components.ScrollComponent
+import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
@@ -34,7 +36,14 @@ class ThemeEditorContainer : UIContainer() {
         "colorsContainer" {
             y = SiblingConstraint(7.5f)
             width = 100.percent()
-            height = 100.percent()
+            height = 100.percent() - 50.pixels()
+        }
+
+        "scrollBar" {
+            x = (-7.5f).pixels(true)
+            y = 5.pixels()
+            width = 3.pixels()
+            height = 90.percent()
         }
 
         "publishButton" {
@@ -53,11 +62,15 @@ class ThemeEditorContainer : UIContainer() {
             textScale = 1.5f.pixels()
         } childOf this
 
-    private val colorsContainer by UIContainer()
+    private val colorsContainer by ScrollComponent()
         .styled(stylesheet["colorsContainer"])
+        .childOf(this)
+    private val colorsContainerScrollbar by UIBlock(ColorPalette.secondaryBackground.brighter().brighter())
+        .styled(stylesheet["scrollBar"])
         .childOf(this)
 
     init {
+        colorsContainer.setVerticalScrollBarComponent(colorsContainerScrollbar, hideWhenUseless = true)
         styled(stylesheet["this"])
 
         val publish = UIButton("Publish", Color.white)
@@ -78,7 +91,7 @@ class ThemeEditorContainer : UIContainer() {
                 loadColors(it.colors)
             } ?: run {
                 themeNameState.set("")
-                colorsContainer.children.clear()
+                colorsContainer.clearChildren()
             }
 
             if (theme.get() !is Theme.LoadedTheme) {
@@ -107,7 +120,7 @@ class ThemeEditorContainer : UIContainer() {
     }
 
     private fun loadColors(colors: Colors) {
-        colorsContainer.children.clear()
+        colorsContainer.clearChildren()
 
         fun complete() = theme.get()?.let {
             if (it !is Theme.LoadedTheme) return@let
