@@ -45,10 +45,22 @@ class ThemeEditorScreen : WindowScreen(
         }
 
         "themesList" {
+            width = 100.percent()
+            height = 100.percent()
+        }
+
+        "themesListContainer" {
             x = 15.pixels()
             y = SiblingConstraint(10f)
-            width = 100.percent()
-            height = FillConstraint()
+            width = 100.percent() - 15.pixels()
+            height = FillConstraint() - 65.pixels()
+        }
+
+        "scrollBar" {
+            x = 2.5.pixels(true)
+            y = 5.pixels()
+            width = 3.pixels()
+            height = 90.percent()
         }
 
         "themesListItem" {
@@ -95,7 +107,14 @@ class ThemeEditorScreen : WindowScreen(
         .styled(stylesheet["rightContainer"])
         .childOf(mainContainer)
 
-    private val themesList = ScrollComponent() styled stylesheet["themesList"]
+    private val themesListContainer by UIContainer() styled stylesheet["themesListContainer"]
+    private val themesList = ScrollComponent()
+        .styled(stylesheet["themesList"])
+        .childOf(themesListContainer)
+    private val themesListScrollBar by UIBlock(ColorPalette.secondaryBackground.brighter().brighter())
+        .styled(stylesheet["scrollBar"])
+        .childOf(themesListContainer)
+
     private val themeEditor by ThemeEditorContainer() childOf rightContainer
 
     private val welcomeText by UIWrappedText(
@@ -106,6 +125,7 @@ class ThemeEditorScreen : WindowScreen(
         .childOf(rightContainer)
 
     init {
+        themesList.setVerticalScrollBarComponent(themesListScrollBar, hideWhenUseless = true)
         MediaMod.themeManager.onLoadedThemesUpdate(::addLoadedThemes)
 
         UIText("Theme Editor")
@@ -117,7 +137,7 @@ class ThemeEditorScreen : WindowScreen(
             .childOf(leftContainer)
 
         addLoadedThemes(MediaMod.themeManager.loadedThemes)
-        themesList childOf leftContainer
+        themesListContainer childOf leftContainer
 
         UIButton(text = "Close", textColor = Color.white)
             .styled(stylesheet["closeButton"])
