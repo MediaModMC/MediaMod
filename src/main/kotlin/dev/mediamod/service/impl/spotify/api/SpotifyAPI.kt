@@ -20,6 +20,8 @@ import java.net.URI
 class SpotifyAPI(
     private val clientID: String
 ) {
+    private var warnedNotAvailable = false
+
     companion object {
         private const val authBaseURL = "accounts.spotify.com"
         private const val apiBaseURL = "api.spotify.com/v1"
@@ -50,8 +52,6 @@ class SpotifyAPI(
             is Result.Success -> json.decodeFromString(result.get())
             is Result.Failure -> {
                 refreshAccessToken(Configuration.spotifyRefreshToken)
-                logger.error("Error occurred when getting the current track: ", result.error)
-
                 null
             }
         }
@@ -74,7 +74,9 @@ class SpotifyAPI(
             }
             is Result.Failure -> {
                 // TODO: Let's find a way to make this less spammy when the API isn't available
-                logger.error("Error occurred when refreshing access token! (API not accessible)")
+                if (!warnedNotAvailable)
+                    logger.error("Error occurred when refreshing access token! (API not accessible)")
+                warnedNotAvailable = true
             }
         }
 }
