@@ -165,7 +165,7 @@ class ThemeEditorScreen : WindowScreen(
     private fun createTheme() {
         val count = MediaMod.themeManager.loadedThemes.filter { it.name.lowercase().startsWith("my theme") }.size
         val suffix = if (count == 0) "" else " (${count + 1})"
-        val theme = Theme.LoadedTheme("My Theme$suffix", classicColors)
+        val theme = Theme.LoadedTheme("My Theme$suffix", classicColors.copy())
 
         MediaMod.themeManager.addTheme(theme)
         editTheme(theme)
