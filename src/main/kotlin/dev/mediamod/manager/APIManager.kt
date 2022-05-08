@@ -15,9 +15,8 @@ import dev.mediamod.data.api.mediamod.PublishThemeRequest
 import gg.essential.universal.UMinecraft
 
 class APIManager {
-    companion object {
-        private const val baseURL = "http://localhost:3001"
-    }
+    private val baseURL = runCatching { System.getProperty("mediamod.overrideApiUrl") }.getOrNull()
+        ?: "https://staging-api.mediamod.dev"
 
     fun exchangeCode(code: String) =
         Fuel.post("$baseURL/api/v1/spotify/auth")
