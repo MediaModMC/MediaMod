@@ -86,4 +86,12 @@ class ThemeManager {
         val path = Path(themesDirectory.absolutePath) / fileName
         path.writeText(json.encodeToString(theme))
     }
+
+    fun importTheme(theme: Theme.LoadedTheme) {
+        val fileName = "${theme.name.trim().lowercase().replace("[\\\\/:*?\"<>|]", "_")}.json"
+        themeLocations[theme.name] = fileName
+
+        saveTheme(theme)
+        addTheme(theme)
+    }
 }

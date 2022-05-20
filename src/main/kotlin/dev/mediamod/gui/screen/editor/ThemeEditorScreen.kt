@@ -1,5 +1,6 @@
 package dev.mediamod.gui.screen.editor
 
+import com.github.kittinunf.fuel.Fuel
 import dev.mediamod.MediaMod
 import dev.mediamod.gui.ColorPalette
 import dev.mediamod.gui.component.UIButton
@@ -10,6 +11,8 @@ import dev.mediamod.gui.style.styled
 import dev.mediamod.gui.style.stylesheet
 import dev.mediamod.theme.Theme
 import dev.mediamod.theme.impl.classicColors
+import dev.mediamod.utils.json
+import dev.mediamod.utils.logger
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
@@ -19,6 +22,8 @@ import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.universal.UDesktop
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import java.awt.Color
 import java.net.URL
 
@@ -194,8 +199,10 @@ class ThemeEditorScreen : WindowScreen(
         CustomThemeListItem("↓ Import theme...")
             .styled(stylesheet["themesListItem"])
             .onClick {
-                select(null)
-                importTheme()
+                attemptToImportTheme()?.let {
+                    select(it)
+                    editTheme(it)
+                }
             } childOf themesList
     }
 
@@ -219,11 +226,52 @@ class ThemeEditorScreen : WindowScreen(
         }
     }
 
-    private fun importTheme() {
-        fun error(message: String) = MediaMod.notificationManager.showNotification("Import theme", message)
+    @Serializable
+    data class ThemeResponse(val ok: Boolean, val theme: Theme.LoadedTheme?)
+
+    private fun attemptToImportTheme(): Theme.LoadedTheme? {
+        fun errorNotification(message: String = "Invalid theme URL!") =
+            MediaMod.notificationManager.showNotification("Import theme", message)
 
         val contents = UDesktop.getClipboardString()
-        val url = runCatching { URL(contents) }.getOrNull() ?: return error("Invalid theme URL!")
-        // TODO: Read contents of URL
+        runCatching { URL(contents) }.getOrNull() ?: run {
+            errorNotification()
+            return null
+        }
+
+        val (_, _, result) = Fuel.get(contents)
+            .set("User-Agent", "MediaMod")
+            .responseString()
+
+        result.fold(
+            success = { string ->
+                try {
+                    val response: ThemeResponse = json.decodeFromString(string)
+                    val theme = response.theme ?: error("Invalid response: $response")
+
+                    val existingTheme = MediaMod.themeManager.loadedThemes.firstOrNull {
+                        it.name.lowercase().trim() == theme.name.lowercase().trim()
+                    }
+                    if (existingTheme != null) {
+                        errorNotification("Theme name already exists!")
+                        return null
+                    }
+
+                    MediaMod.themeManager.importTheme(theme)
+                    MediaMod.notificationManager.showNotification("Theme imported!", theme.name)
+
+                    return theme
+                } catch (e: Exception) {
+                    errorNotification()
+                    logger.error("Failed to fetch theme $contents:", e)
+                }
+            },
+            failure = {
+                errorNotification()
+                logger.error("Failed to fetch theme $contents:", it)
+            }
+        )
+
+        return null
     }
 }
