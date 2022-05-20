@@ -2,7 +2,7 @@ package dev.mediamod.gui.hud
 
 import dev.mediamod.config.Configuration
 import dev.mediamod.utils.setColorAnimated
-import gg.essential.elementa.UIComponent
+import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.ConstantColorConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
@@ -17,7 +17,7 @@ import gg.essential.universal.UGraphics
 class RotatingTextComponent(
     private val state: BasicState<String>,
     shadow: Boolean = false
-) : UIComponent() {
+) : UIContainer() {
     private val firstXPosition = BasicState(0f)
     private val textPadding = 25f
 
