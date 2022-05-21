@@ -39,6 +39,8 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
 
     var textScrollSpeed = 0.09f
 
+    var trackNotifications = false
+
     private var _preferredService = 0
         set(value) {
             field = value
@@ -114,6 +116,16 @@ object Configuration : Vigilant(File("./config/mediamod.toml"), "MediaMod") {
                 )
 
                 text(::preferredService, "Preferred Service Name", hidden = true)
+            }
+        }
+
+        category("Notifications") {
+            subcategory("General") {
+                switch(
+                    ::trackNotifications,
+                    "Now playing notifications",
+                    "Show a notification whenever the current track changes"
+                )
             }
         }
 

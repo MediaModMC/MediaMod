@@ -45,6 +45,7 @@ object MediaMod {
 
         themeManager.init()
         serviceManager.init()
+        notificationManager.init()
 
         //#if MC<=11202
         //$$ EssentialAPI.getCommandRegistry().registerCommand(MediaModCommand())
