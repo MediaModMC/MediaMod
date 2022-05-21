@@ -44,6 +44,7 @@ val devauthModuleName =
 val devauthVersion: String by project
 val toastsVersion: String by project
 val slf4jVersion: String by project
+val kotlinForForgeVersion: String by project
 
 preprocess {
     vars.put("MC", mcVersion)
@@ -82,6 +83,7 @@ repositories {
     maven("https://maven.terraformersmc.com")
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
     maven("https://jitpack.io")
+    maven("https://thedarkcolour.github.io/KotlinForForge")
 }
 
 val shade by configurations.creating { isTransitive = false }
@@ -112,6 +114,7 @@ dependencies {
             compileOnly("org.spongepowered:mixin:$mixinVersion")
         } else {
             mappings(loom.officialMojangMappings())
+            modImplementation("thedarkcolour:kotlinforforge:$kotlinForForgeVersion")
         }
 
         "forge"("net.minecraftforge:forge:$forgeVersion")
