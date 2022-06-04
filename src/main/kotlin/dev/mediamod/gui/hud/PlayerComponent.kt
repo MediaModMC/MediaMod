@@ -95,7 +95,7 @@ class PlayerComponent : UIBlock(MediaMod.themeManager.currentTheme.colors.backgr
         artistNameState.set(Configuration.playerSecondFormatString.formatTrack(track))
 
         if (forceUpdate || previousTrack?.artwork != track.artwork) {
-            imageContainer.removeChild(image)
+            imageContainer.clearChildren()
 
             image = UIImage(fetchImage(track.artwork))
                 .constrain {
